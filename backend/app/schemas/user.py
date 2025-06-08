@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
+from uuid import UUID
 import enum
 
 class UserRole(str, enum.Enum):
@@ -14,13 +15,12 @@ class UserCreate(BaseModel):
     firstname: str
     lastname: str
     middle_initial: Optional[str]
-    student_no: Optional[str]
     course: Optional[str]
     batch_year: Optional[int]
     role: UserRole
 
 class UserOut(BaseModel):
-    id: str
+    id: UUID
     username: str
     email: EmailStr
     firstname: str

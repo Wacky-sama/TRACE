@@ -20,7 +20,6 @@ class User(Base):
     firstname = Column(String, nullable=False)
     lastname = Column(String, nullable=False)
     middle_initial = Column(String)
-    student_no = Column(String)
     course = Column(String)
     batch_year = Column(Integer)
     role = Column(Enum(UserRole), nullable=False)

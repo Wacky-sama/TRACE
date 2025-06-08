@@ -14,8 +14,8 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/register", response_model=UserOut)
-def register(user: UserCreate, db: Session = Depends(get_db)):
+@router.post("/register/alumni", response_model=UserOut)
+def register_alumni(user: UserCreate, db: Session = Depends(get_db)):
     if db.query(User).filter(User.email == user.email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
     new_user = User(
@@ -25,7 +25,6 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         firstname=user.firstname,
         lastname=user.lastname,
         middle_initial=user.middle_initial,
-        student_no=user.student_no,
         course=user.course,
         batch_year=user.batch_year,
         role=user.role

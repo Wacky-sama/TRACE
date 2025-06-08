@@ -41,7 +41,7 @@ function AuthPage() {
     if (Object.keys(errors).length > 0) return;
 
     try {
-      const res = await axios.post('http://localhost:8000/login', {
+      const res = await axios.post('http://localhost:8000/users/login', {
         username: identifier,
         password
       });
@@ -68,7 +68,7 @@ function AuthPage() {
   if (Object.keys(errors).length > 0) return;
 
   try {
-    await axios.post('http://localhost:8000/register/alumni', {
+    await axios.post('http://localhost:8000/users/register/alumni', {
       username: registerIdentifier,
       email, 
       password: registerPassword,
@@ -76,7 +76,8 @@ function AuthPage() {
       firstname: firstName,
       middle_initial: middleInitial,
       course,
-      batch_year: batchYear
+      batch_year: batchYear,
+      role: 'alumni'
     });
     alert("Registration submitted. Wait for approval.");
     setIsRegistering(false);
