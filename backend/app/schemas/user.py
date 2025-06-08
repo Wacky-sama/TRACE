@@ -3,6 +3,10 @@ from typing import Optional
 from uuid import UUID
 import enum
 
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
 class UserRole(str, enum.Enum):
     admin = "admin"
     organizer = "organizer"

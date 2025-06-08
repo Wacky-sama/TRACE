@@ -42,7 +42,7 @@ function AuthPage() {
 
     try {
       const res = await axios.post('http://localhost:8000/users/login', {
-        username: identifier,
+       identifier,
         password
       });
       localStorage.setItem('token', res.data.token);
