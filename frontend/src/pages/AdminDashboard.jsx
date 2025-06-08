@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  IoMenu, IoArrowBack, IoArrowDownCircle, IoArrowForwardCircle,
-  IoPersonOutline, IoShieldCheckmarkOutline, IoLogOut
-} from 'react-icons/io5';
+import {IoMenu, IoArrowBack, IoArrowDownCircle, IoArrowForwardCircle, IoPersonOutline, IoShieldCheckmarkOutline, IoLogOut} from 'react-icons/io5';
 
 function AdminDashboard() {
   const [activePanel, setActivePanel] = useState('user-management');
@@ -24,19 +21,7 @@ function AdminDashboard() {
   };
 
   const renderPanel = () => {
-    switch (activePanel) {
-      case 'user':
-      case 'events':
-        return <h2>Events Panel (Coming soon...)</h2>;
-      case 'account-info':
-        return <h2>Account Information Panel</h2>;
-      case 'change-password':
-        return <h2>Change Password Panel</h2>;
-      case 'register-face':
-        return <RegisterFacePage />;
-      default:
-        return null;
-    }
+    
   };
 
   return (

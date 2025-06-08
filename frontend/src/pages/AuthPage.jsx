@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -32,6 +33,9 @@ function AuthPage() {
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showRegisterConfirmPassword, setShowRegisterConfirmPassword] = useState(false);
 
+  // Navigation
+  const navigate = useNavigate();
+
   const handleLogin = async () => {
     const errors = {};
     if (!identifier) errors.identifier = "Username or Email is required";
@@ -41,12 +45,12 @@ function AuthPage() {
     if (Object.keys(errors).length > 0) return;
 
     try {
-      const res = await axios.post('http://localhost:8000/users/login', {
+      const res = await axios.post('http://192.168.10.2:8000/users/login', {
        identifier,
         password
       });
       localStorage.setItem('token', res.data.token);
-      window.location.href = '/dashboard';
+      navigate('/dashboard');
     } catch (err) {
       alert('Login failed!' + (err.response?.data?.detail) || '');
     }
@@ -68,7 +72,7 @@ function AuthPage() {
   if (Object.keys(errors).length > 0) return;
 
   try {
-    await axios.post('http://localhost:8000/users/register/alumni', {
+    await axios.post('http://192.168.10.2:8000/users/register/alumni', {
       username: registerIdentifier,
       email, 
       password: registerPassword,
