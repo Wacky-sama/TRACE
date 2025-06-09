@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouseUser, faUsers, faChartSimple, faFile, faBell, faRightFromBracket,faBars } from '@fortawesome/free-solid-svg-icons';
+import { faHouseUser, faUsers, faCalendar, faChartSimple, faFile, faBell, faRightFromBracket,faBars } from '@fortawesome/free-solid-svg-icons';
 
-const AdminSidebar = () => {
+const AdminSidebar = ({onPanelChange}) => {
   const [isOpen, setIsOpen] = useState(true);
 
   const navigationItems = [
-    { icon: faHouseUser, label: 'Dashboard', path: '/dashboard' },
-    { icon: faUsers, label: 'Users', path: '/users' },
-    { icon: faChartSimple, label: 'Analytics', path: '/analytics' },
-    { icon: faFile, label: 'Reports', path: '/reports' },
-    { icon: faBell, label: 'Notifications', path: '/notifications' },
+    { icon: faHouseUser, label: 'Dashboard', panel: 'dashboard' },
+    { icon: faUsers, label: 'Users', panel: 'users' },
+    {icon: faCalendar, label: 'Events', panel: 'events'},
+    { icon: faChartSimple, label: 'Analytics', panel: 'analytics' },
+    { icon: faFile, label: 'Reports', panel: 'reports' },
+    { icon: faBell, label: 'Notifications', panel: 'notifications' },
   ];
 
   const handleLogout = () => {
@@ -38,16 +39,16 @@ const AdminSidebar = () => {
         <ul className="space-y-2 px-3">
           {navigationItems.map((item) => (
             <li key={item.label}>
-              <a
-                href={item.path}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors group"
+              <button
+                onClick={() => onPanelChange(item.panel)}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors group"
               >
                 <FontAwesomeIcon 
                   icon={item.icon} 
                   className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" 
                 />
                 {isOpen && <span className="font-medium">{item.label}</span>}
-              </a>
+              </button>
             </li>
           ))}
         </ul>

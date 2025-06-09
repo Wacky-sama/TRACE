@@ -1,12 +1,13 @@
 from fastapi import APIRouter,  BackgroundTasks, Body, Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
 from starlette import status
 from typing import List
 from sqlalchemy.orm import Session
 from app.schemas.user import UserCreate, UserOut, UserLogin, UserPendingApprovalOut
-from app.models.user import User
+from app.models.user import User, UserRole
 from app.database import SessionLocal
 from app.utils.email_sender import send_email
-from app.utils.security import hash_password, verify_password, create_access_token
+from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
 from datetime import timedelta
 
 router = APIRouter()
@@ -20,7 +21,7 @@ def get_db():
 
 @router.post("/login")
 def login(
-    identifier: str = Body(..., embed=True),  # username or email from your frontend
+    identifier: str = Body(..., embed=True),
     password: str = Body(..., embed=True),
     db: Session = Depends(get_db)
 ):
@@ -38,6 +39,71 @@ def login(
     token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
 
     return {"token": token}
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+    try:
+        payload = decode_access_token(token)
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    
+    username = payload.get("sub")
+    if not username:
+        raise HTTPException(status_code=401, detail="Invalid token payload")
+
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+@router.post("/admin/create-user", response_model=UserOut, status_code=201)
+def create_user_as_admin(
+    user_data: UserCreate,
+    background_tasks: BackgroundTasks,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.role != UserRole.admin:
+        raise HTTPException(status_code=403, detail="Only admins can create users")
+
+    if db.query(User).filter(User.email == user_data.email).first():
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    admin_count = db.query(User).filter(User.role == UserRole.admin).count()
+    organizer_count = db.query(User).filter(User.role == UserRole.organizer).count()
+
+    if user_data.role == UserRole.admin and admin_count >= 2:
+        raise HTTPException(status_code=400, detail="Maximum number of Admins (2) reached")
+
+    if user_data.role == UserRole.organizer and organizer_count >= 5:
+        raise HTTPException(status_code=400, detail="Maximum number of Event Organizers (5) reached")
+
+    if user_data.role == UserRole.alumni:
+        raise HTTPException(status_code=400, detail="Alumni cannot be created by admin, please register via alumni route")
+
+    new_user = User(
+        username=user_data.username,
+        email=user_data.email,
+        password_hash=hash_password(user_data.password),
+        lastname=user_data.lastname,
+        firstname=user_data.firstname,
+        middle_initial=user_data.middle_initial,
+        course=user_data.course,
+        batch_year=user_data.batch_year,
+        role=user_data.role,
+        is_approved=True 
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    subject = "TRACE System - Account Created"
+    body = f"Hello {new_user.firstname},\n\nAn account has been created for you on the TRACE System. \n\nUsername:{new_user.username}\nPassword:{user_data.password}\n\nPlease log in and change your password immediately.\n\nBest regards, \nTRACE Team"
+
+    background_tasks.add_task(send_email, to_email=new_user.email, subject=subject, body=body)
+
+    return new_user
 
 @router.post("/register/alumni", response_model=UserOut)
 def register_alumni(
@@ -75,7 +141,7 @@ def register_alumni(
 
 @router.get("/pending-alumni", response_model=List[UserPendingApprovalOut])
 def get_pending_alumni(db: Session = Depends(get_db)):
-    pending_alumni = db.query(User).filter(User.role == "alumni", User.is_approved == False).all()
+    pending_alumni = db.query(User).filter(User.role == UserRole.alumni, User.is_approved == False).all()
     return pending_alumni
 
 @router.patch("/{user_id}/approve", status_code=status.HTTP_204_NO_CONTENT)
@@ -102,7 +168,16 @@ def decline_user(user_id: str, db: Session = Depends(get_db)):
     db.commit()
     return
 
-@router.get("/count")
-def get_total_users(db: Session = Depends(get_db)):
-    count = db.query(User).count()
-    return {"total_users": count}
+@router.get("/stats")
+def get_user_stats(db: Session = Depends(get_db)):
+    total_users = db.query(User).count()
+    admins = db.query(User).filter(User.role == UserRole.admin).count()
+    organizers = db.query(User).filter(User.role == UserRole.organizer).count()
+    alumni = db.query(User).filter(User.role == UserRole.alumni).count()
+    
+    return {
+        "total_users": total_users,
+        "admins": admins,
+        "organizers": organizers,
+        "alumni": alumni
+    }

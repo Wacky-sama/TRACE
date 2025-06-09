@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { login } from '../services/Auth';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 function AuthPage() {
   const [isRegistering, setIsRegistering] = useState(false);
-
+  const [loginError, setLoginError] = useState('');
+  const [registerError, setRegisterError] = useState('');
+  const [registerSuccess, setRegisterSuccess] = useState('');
+  
   // Error states
   const [loginErrors, setLoginErrors] = useState({});
   const [registerErrors, setRegisterErrors] = useState({});
@@ -40,17 +44,16 @@ function AuthPage() {
     if (!password) errors.password = "Password is required";
     
     setLoginErrors(errors);
+    setLoginError(''); // Clear previous login errors
+    
     if (Object.keys(errors).length > 0) return;
 
     try {
-      const res = await axios.post('http://192.168.10.2:8000/users/login', {
-       identifier,
-        password
-      });
-      localStorage.setItem('token', res.data.token);
+      await login(identifier, password);
       navigate('/dashboard');
+      setLoginError('');
     } catch (err) {
-      alert('Login failed!' + (err.response?.data?.detail) || '');
+       setLoginError(err.response?.data?.detail ?? err.message);
     }
   };
 
@@ -67,6 +70,9 @@ function AuthPage() {
     if (registerPassword !== registerConfirmPassword) errors.registerConfirmPassword = "Passwords do not match";
 
     setRegisterErrors(errors);
+    setRegisterError(''); // Clear previous registration errors
+    setRegisterSuccess(''); // Clear previous success messages
+    
     if (Object.keys(errors).length > 0) return;
 
     try {
@@ -81,8 +87,10 @@ function AuthPage() {
         batch_year: batchYear,
         role: 'alumni'
       });
-      alert("Registration submitted. Wait for approval.");
-      setIsRegistering(false);
+      
+      setRegisterSuccess("Registration submitted successfully! Please wait for approval.");
+      
+      // Clear form after successful registration
       setRegisterIdentifier('');
       setEmail('');
       setLastName('');
@@ -93,8 +101,15 @@ function AuthPage() {
       setRegisterPassword('');
       setRegisterConfirmPassword('');
       setRegisterErrors({});
+      
+      // Optionally switch back to login after a delay
+      setTimeout(() => {
+        setIsRegistering(false);
+        setRegisterSuccess('');
+      }, 3000);
+      
     } catch (err) {
-      alert('Registration failed! ' + (err.response?.data?.detail || ''));
+      setRegisterError('Registration failed! ' + (err.response?.data?.detail || 'Please try again.'));
     }
   };
 
@@ -124,107 +139,162 @@ function AuthPage() {
             {isRegistering ? "Register" : "Login"}
           </h2>
 
+          {/* Login Error Display */}
+          {!isRegistering && loginError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-4 text-sm">
+              {loginError}
+            </div>
+          )}
+
+          {/* Registration Error/Success Display */}
+          {isRegistering && registerError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-4 text-sm">
+              {registerError}
+            </div>
+          )}
+          
+          {isRegistering && registerSuccess && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md mb-4 text-sm">
+              {registerSuccess}
+            </div>
+          )}
+
           {isRegistering ? (
             <>
-              <input
-                  type="text"
-                  placeholder="Username"
-                  value={registerIdentifier}
-                  onChange={e => setRegisterIdentifier(e.target.value)}
-                  className="w-full p-3 mb-3 border border-gray-300 rounded-md text-sm"
-              />
-              {registerErrors.registerIdentifier && <p className="text-red-500 text-sm">{registerErrors.registerIdentifier}</p>}
-
-              <input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  className="w-full p-3 mb-3 border border-gray-300 rounded-md text-sm"
-              />
-              {registerErrors.email && <p className="text-red-500 text-xs">{registerErrors.email}</p>}
-
-              <input
-                  type="text"
-                  placeholder="Last Name"
-                  value={lastName}
-                  onChange={e => setLastName(e.target.value)}
-                  className="w-full p-3 mb-3 border border-gray-300 rounded-md text-sm"
-              />
-              {registerErrors.lastName && <p className="text-red-500 text-xs">{registerErrors.lastName}</p>}
-
-              <input
-                  type="text"
-                  placeholder="First Name"
-                  value={firstName}
-                  onChange={e => setFirstName(e.target.value)}
-                  className="w-full p-3 mb-3 border border-gray-300 rounded-md text-sm"
-              />
-               {registerErrors.firstName && <p className="text-red-500 text-xs">{registerErrors.firstName}</p>}
-
-              <input
-                  type="text"
-                  placeholder="Middle Initial"
-                  value={middleInitial}
-                  onChange={e => setMiddleInitial(e.target.value)}
-                  className="w-full p-3 mb-3 border border-gray-300 rounded-md text-sm"
-              />
-               {registerErrors.middleInitial && <p className="text-red-500 text-xs">{registerErrors.middleInitial}</p>}
-
-              <select
-                  value={course}
-                  onChange={e => setCourse(e.target.value)}
-                  className="w-full p-3 mb-3 border border-gray-300 rounded-md text-sm"
-                  >
-                  <option value="">Select Course</option>
-                  <option value="BACHELOR OF SCIENCE IN AGRICULTURE">BACHELOR OF SCIENCE IN AGRICULTURE</option>
-                  <option value="BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM">BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM</option>
-                  <option value="BACHELOR OF SCIENCE IN CRIMINOLOGY">BACHELOR OF SCIENCE IN CRIMINOLOGY</option>
-                  <option value="BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT">BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT</option>
-                  <option value="BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY">BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY</option>
-                  <option value="BACHELOR OF ELEMENTARY EDUCATION">BACHELOR OF ELEMENTARY EDUCATION</option>
-                  <option value="BACHELOR OF SECONDARY EDUCATION">BACHELOR OF SECONDARY EDUCATION</option>
-              </select>
-               {registerErrors.course && <p className="text-red-500 text-xs">{registerErrors.course}</p>}
-
-              <input
-                  type="number"
-                  placeholder="Batch Year"
-                  value={batchYear}
-                  onChange={e => setBatchYear(e.target.value)}
-                  className="w-full p-3 mb-3 border border-gray-300 rounded-md text-sm"
-              />
-              {registerErrors.batchYear && <p className="text-red-500 text-xs">{registerErrors.batchYear}</p>}
-
-              <div className="relative mb-3">
+              <div className="mb-4">
                 <input
-                  type={showRegisterPassword ? "text" : "password"}
-                  placeholder="Password"
-                  value={registerPassword}
-                  onChange={e => setRegisterPassword(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                    type="text"
+                    placeholder="Username"
+                    value={registerIdentifier}
+                    onChange={e => setRegisterIdentifier(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-md text-sm"
                 />
-              {registerErrors.registerPassword && <p className="text-red-500 text-xs">{registerErrors.registerPassword}</p>}
-
-                <span className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
-                  onClick={() => setShowRegisterPassword(prev => !prev)}>
-                  {showRegisterPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
-                </span>
+                <div className="h-5 mt-1">
+                  {registerErrors.registerIdentifier && <p className="text-red-500 text-xs">{registerErrors.registerIdentifier}</p>}
+                </div>
               </div>
 
-              <div className="relative mb-6">
+              <div className="mb-4">
                 <input
-                  type={showRegisterConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm Password"
-                  value={registerConfirmPassword}
-                  onChange={e => setRegisterConfirmPassword(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-md text-sm"
                 />
-                {registerErrors.registerConfirmPassword && <p className="text-red-500 text-xs">{registerErrors.registerConfirmPassword}</p>}
-                <span className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
-                  onClick={() => setShowRegisterConfirmPassword(prev => !prev)}>
-                  {showRegisterConfirmPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
-                </span>
+                <div className="h-5 mt-1">
+                  {registerErrors.email && <p className="text-red-500 text-xs">{registerErrors.email}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <input
+                    type="text"
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChange={e => setLastName(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                />
+                <div className="h-5 mt-1">
+                  {registerErrors.lastName && <p className="text-red-500 text-xs">{registerErrors.lastName}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <input
+                    type="text"
+                    placeholder="First Name"
+                    value={firstName}
+                    onChange={e => setFirstName(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                />
+                <div className="h-5 mt-1">
+                  {registerErrors.firstName && <p className="text-red-500 text-xs">{registerErrors.firstName}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <input
+                    type="text"
+                    placeholder="Middle Initial"
+                    value={middleInitial}
+                    onChange={e => setMiddleInitial(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                />
+                <div className="h-5 mt-1">
+                  {registerErrors.middleInitial && <p className="text-red-500 text-xs">{registerErrors.middleInitial}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <select
+                    value={course}
+                    onChange={e => setCourse(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                    >
+                    <option value="">Select Course</option>
+                    <option value="BACHELOR OF SCIENCE IN AGRICULTURE">BACHELOR OF SCIENCE IN AGRICULTURE</option>
+                    <option value="BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM">BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM</option>
+                    <option value="BACHELOR OF SCIENCE IN CRIMINOLOGY">BACHELOR OF SCIENCE IN CRIMINOLOGY</option>
+                    <option value="BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT">BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT</option>
+                    <option value="BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY">BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY</option>
+                    <option value="BACHELOR OF ELEMENTARY EDUCATION">BACHELOR OF ELEMENTARY EDUCATION</option>
+                    <option value="BACHELOR OF SECONDARY EDUCATION">BACHELOR OF SECONDARY EDUCATION</option>
+                </select>
+                <div className="h-5 mt-1">
+                  {registerErrors.course && <p className="text-red-500 text-xs">{registerErrors.course}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <input
+                    type="number"
+                    placeholder="Batch Year"
+                    value={batchYear}
+                    onChange={e => setBatchYear(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                />
+                <div className="h-5 mt-1">
+                  {registerErrors.batchYear && <p className="text-red-500 text-xs">{registerErrors.batchYear}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <div className="relative">
+                  <input
+                    type={showRegisterPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={registerPassword}
+                    onChange={e => setRegisterPassword(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-md text-sm pr-10"
+                  />
+                  <span className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
+                    onClick={() => setShowRegisterPassword(prev => !prev)}>
+                    {showRegisterPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
+                  </span>
+                </div>
+                <div className="h-5 mt-1">
+                  {registerErrors.registerPassword && <p className="text-red-500 text-xs">{registerErrors.registerPassword}</p>}
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <div className="relative">
+                  <input
+                    type={showRegisterConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm Password"
+                    value={registerConfirmPassword}
+                    onChange={e => setRegisterConfirmPassword(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-md text-sm pr-10"
+                  />
+                  <span className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
+                    onClick={() => setShowRegisterConfirmPassword(prev => !prev)}>
+                    {showRegisterConfirmPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
+                  </span>
+                </div>
+                <div className="h-5 mt-1">
+                  {registerErrors.registerConfirmPassword && <p className="text-red-500 text-xs">{registerErrors.registerConfirmPassword}</p>}
+                </div>
               </div>
 
               <button
@@ -236,34 +306,42 @@ function AuthPage() {
             </>
           ) : (
             <>
-              <input
-                type="text"
-                placeholder="Email or Username"
-                value={identifier}
-                onChange={e => setIdentifier(e.target.value)}
-                className="w-full p-3 mb-4 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              {loginErrors.identifier && <p className="text-red-500 text-xs">{loginErrors.identifier}</p>}
-
-              <div className="relative mb-6">
+              <div className="mb-4">
                 <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  type="text"
+                  placeholder="Email or Username"
+                  value={identifier}
+                  onChange={e => setIdentifier(e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                {loginErrors.password && <p className="text-red-500 text-xs">{loginErrors.password}</p>}
-                <span
-                  className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
-                  onClick={() => setShowPassword(prev => !prev)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={e => { if (e.key === 'Enter') setShowPassword(prev => !prev); }}
-                >
-                  {showPassword ? <FontAwesomeIcon icon={faEye} size="md" /> : <FontAwesomeIcon icon={faEyeSlash} size="md" />}
-                </span>
+                <div className="h-5 mt-1">
+                  {loginErrors.identifier && <p className="text-red-500 text-xs">{loginErrors.identifier}</p>}
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+                  />
+                  <span
+                    className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
+                    onClick={() => setShowPassword(prev => !prev)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={e => { if (e.key === 'Enter') setShowPassword(prev => !prev); }}
+                  >
+                    {showPassword ? <FontAwesomeIcon icon={faEye} size="md" /> : <FontAwesomeIcon icon={faEyeSlash} size="md" />}
+                  </span>
+                </div>
+                <div className="h-5 mt-1">
+                  {loginErrors.password && <p className="text-red-500 text-xs">{loginErrors.password}</p>}
+                </div>
               </div>
 
               <button
