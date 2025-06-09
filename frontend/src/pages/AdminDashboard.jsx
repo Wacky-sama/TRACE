@@ -99,7 +99,7 @@ const AdminDashboard = () => {
       case 'users':
         return <Users />;
       case 'create-user':
-        return <AdminCreateUser />;
+        return <AdminCreateUser token={localStorage.getItem("token")}/>;
       default:
         return <div className="p-6">Select a panel to view details.</div>;
     }

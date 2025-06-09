@@ -89,8 +89,6 @@ def create_user_as_admin(
         lastname=user_data.lastname,
         firstname=user_data.firstname,
         middle_initial=user_data.middle_initial,
-        course=user_data.course,
-        batch_year=user_data.batch_year,
         role=user_data.role,
         is_approved=True 
     )
