@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Body
+from fastapi import APIRouter,  BackgroundTasks, Body, Depends, HTTPException
+from starlette import status
+from typing import List
 from sqlalchemy.orm import Session
-from app.schemas.user import UserCreate, UserOut, UserLogin
+from app.schemas.user import UserCreate, UserOut, UserLogin, UserPendingApprovalOut
 from app.models.user import User
 from app.database import SessionLocal
 from app.utils.email_sender import send_email
@@ -70,3 +72,37 @@ def register_alumni(
     background_tasks.add_task(send_email, to_email=new_user.email, subject=subject, body=body)
 
     return new_user
+
+@router.get("/pending-alumni", response_model=List[UserPendingApprovalOut])
+def get_pending_alumni(db: Session = Depends(get_db)):
+    pending_alumni = db.query(User).filter(User.role == "alumni", User.is_approved == False).all()
+    return pending_alumni
+
+@router.patch("/{user_id}/approve", status_code=status.HTTP_204_NO_CONTENT)
+def approve_user(user_id: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user.is_approved:
+        raise HTTPException(status_code=400, detail="User already approved")
+
+    user.is_approved = True
+    db.commit()
+    return
+
+@router.patch("/{user_id}/decline", status_code=status.HTTP_204_NO_CONTENT)
+def decline_user(user_id: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user.is_approved:
+        raise HTTPException(status_code=400, detail="User already approved, can't decline")
+
+    db.delete(user)
+    db.commit()
+    return
+
+@router.get("/count")
+def get_total_users(db: Session = Depends(get_db)):
+    count = db.query(User).count()
+    return {"total_users": count}

@@ -41,5 +41,17 @@ class UserOut(BaseModel):
     role: UserRole
     is_approved: bool
 
+class UserPendingApprovalOut(BaseModel):
+    id: UUID
+    username: str
+    email: EmailStr
+    lastname: str
+    firstname: str
+    middle_initial: Optional[str]
+    course: Optional[str]
+    batch_year: Optional[int]
+    role: UserRole
+    is_approved: bool
+
     class Config:
         from_attributes = True

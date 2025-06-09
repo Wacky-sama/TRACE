@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AuthPage from "./pages/AuthPage"
 import AdminDashboard from "./pages/AdminDashboard"
+import Users from './pages/Users';
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -33,10 +34,18 @@ function App() {
             </ProtectedRoute>
           } 
         />
+        <Route 
+          path="/users" 
+          element={
+            <ProtectedRoute>
+              <Users />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
   )
 }
 
-export default App
+export default App;

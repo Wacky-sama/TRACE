@@ -1,154 +1,77 @@
-import { useState, useEffect } from 'react';
-import {IoMenu, IoArrowBack, IoArrowDownCircle, IoArrowForwardCircle, IoPersonOutline, IoShieldCheckmarkOutline, IoLogOut} from 'react-icons/io5';
+import { useEffect, useState } from 'react';
+import AdminSidebar from '../components/common/AdminSidebar';
+import axios from 'axios';
 
-function AdminDashboard() {
-  const [activePanel, setActivePanel] = useState('user-management');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [showUserManagementDropdown, setShowUserManagementDropdown] = useState(false);
-  const [showAccountDropdown, setShowAccountDropdown] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+const AdminDashboard = () => {
+  const [totalUsers, setTotalUsers] = useState(null);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
+    const fetchTotalUsers = async () => {
+      try {
+        const response = await axios.get('http://192.168.10.2:8000/users/count');
+        setTotalUsers(response.data.count);
+      } catch (error) {
+        console.error('Error fetching total users:', error);
+      }
+    };
+    fetchTotalUsers();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    window.location.href = '/';
-  };
-
-  const renderPanel = () => {
-    
-  };
-
   return (
-    <div className="flex h-screen font-sans relative">
-      {!isSidebarOpen && (
-        <button
-          className="fixed top-4 left-4 text-3xl text-gray-800 z-[1001] md:hidden"
-          onClick={() => setIsSidebarOpen(true)}
-        >
-          <IoMenu />
-        </button>
-      )}
+    <div className="flex min-h-screen bg-gray-100">
+      <AdminSidebar />
+      <main className="flex-1 p-6">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
+          
+          {/* Dashboard content */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-sm font-medium text-gray-500">Total Users</h3>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {totalUsers !== null ? totalUsers : 'Loading...'}
+              </p>
+              <p className="text-xs text-green-600 mt-1">Live Data</p>
+            </div>    
+            
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-sm font-medium text-gray-500">Active Sessions</h3>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
 
-      <aside className={`bg-gray-800 text-white p-5 transition-transform duration-300 fixed top-0 bottom-0 z-[999] w-64 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0`}>
-        <button
-          className="text-white text-2xl mb-6 md:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        >
-          <IoArrowBack />
-        </button>
-
-        <ul className="space-y-4">
-          {/* User Management */}
-          <li>
-            <span
-              className={`cursor-pointer flex items-center ${activePanel === 'user-management' ? 'text-teal-400 font-bold' : ''}`}
-              onClick={() => {
-                setShowUserManagementDropdown(prev => !prev);
-                setActivePanel('user-management');
-              }}
-            >
-              {showUserManagementDropdown ? <IoArrowDownCircle className="mr-2" /> : <IoArrowForwardCircle className="mr-2" />}
-              User Management
-            </span>
-
-            {showUserManagementDropdown && (
-              <ul className="ml-6 mt-2 space-y-2">
-                <li>
-                  <a
-                    href="#roles"
-                    className={`flex items-center ${activePanel === 'roles' ? 'text-emerald-400 font-bold' : 'text-white'}`}
-                    onClick={() => setActivePanel('roles')}
-                  >
-                    <IoShieldCheckmarkOutline className="mr-2" />
-                    Roles
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#users"
-                    className={`flex items-center ${activePanel === 'user' ? 'text-emerald-400 font-bold' : 'text-white'}`}
-                    onClick={() => setActivePanel('user')}
-                  >
-                    <IoPersonOutline className="mr-2" />
-                    Users
-                  </a>
-                </li>
-              </ul>
-            )}
-          </li>
-
-          {/* Events */}
-          <li>
-            <a
-              href="#events"
-              className={`block ${activePanel === 'events' ? 'text-teal-400 font-bold' : 'text-white'}`}
-              onClick={() => setActivePanel('events')}
-            >
-              Events
-            </a>
-          </li>
-
-          {/* Account */}
-          <li>
-            <span
-              className={`cursor-pointer flex items-center ${['account', 'account-info', 'change-password', 'register-face'].includes(activePanel) ? 'text-teal-400 font-bold' : ''}`}
-              onClick={() => {
-                setShowAccountDropdown(prev => !prev);
-                setActivePanel('account');
-              }}
-            >
-              {showAccountDropdown ? <IoArrowDownCircle className="mr-2" /> : <IoArrowForwardCircle className="mr-2" />}
-              Account
-            </span>
-
-            {showAccountDropdown && (
-              <ul className="ml-6 mt-2 space-y-2">
-                <li>
-                  <a
-                    href="#account-info"
-                    className={`${activePanel === 'account-info' ? 'text-emerald-400 font-bold' : 'text-white'}`}
-                    onClick={() => setActivePanel('account-info')}
-                  >
-                    Account Information
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#change-password"
-                    className={`${activePanel === 'change-password' ? 'text-emerald-400 font-bold' : 'text-white'}`}
-                    onClick={() => setActivePanel('change-password')}
-                  >
-                    Change Password
-                  </a>
-                </li>
-              </ul>
-            )}
-          </li>
-
-          <hr className="border-gray-500 my-4" />
-
-          {/* Logout */}
-          <li>
-            <button
-              onClick={handleLogout}
-              className="flex items-center text-white hover:text-red-400 transition-colors"
-            >
-              <IoLogOut className="mr-2" />
-              Logout
-            </button>
-          </li>
-        </ul>
-      </aside>
-
-      <main className="flex-1 bg-gray-100 p-6 overflow-auto">{renderPanel()}</main>
+              </p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">New user registered</span>
+                  <span className="text-xs text-gray-500">2 min ago</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+              <div className="space-y-2">
+                <button className="w-full text-left p-3 rounded-md bg-blue-50 hover:bg-blue-100 transition-colors">
+                  Create New User
+                </button>
+                <button className="w-full text-left p-3 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors">
+                  Generate Report
+                </button>
+                <button className="w-full text-left p-3 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors">
+                  Send Notification
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
-}
+};
 
 export default AdminDashboard;
