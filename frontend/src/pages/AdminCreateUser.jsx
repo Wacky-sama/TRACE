@@ -12,8 +12,6 @@ const AdminCreateUser = ({ token }) => {
     lastname: '',
     firstname: '',
     middle_initial: '',
-    course: '',
-    batch_year: '',
     role: 'organizer',
   });
 
@@ -133,7 +131,7 @@ const AdminCreateUser = ({ token }) => {
         className="w-full p-3 border border-gray-300 rounded-md text-sm"
       >
         <option value="admin">Admin</option>
-        <option value="organizer">Organizer</option>
+        <option value="organizer">Event Organizer</option>
       </select>
       {errors.role && <p className="text-red-500 text-sm">{errors.role}</p>}
 

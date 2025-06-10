@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouseUser, faUsers, faCalendar, faChartSimple, faFile, faBell, faRightFromBracket,faBars } from '@fortawesome/free-solid-svg-icons';
+import { faHouseUser, faUsers, faCalendar, faChartSimple, faFile, faBell, faRightFromBracket, faGear, faBars } from '@fortawesome/free-solid-svg-icons';
 
 const AdminSidebar = ({onPanelChange}) => {
   const [isOpen, setIsOpen] = useState(true);
@@ -12,6 +12,7 @@ const AdminSidebar = ({onPanelChange}) => {
     { icon: faChartSimple, label: 'Analytics', panel: 'analytics' },
     { icon: faFile, label: 'Reports', panel: 'reports' },
     { icon: faBell, label: 'Notifications', panel: 'notifications' },
+    { icon: faGear, label: 'Account Settings', panel: 'settings' }
   ];
 
   const handleLogout = () => {

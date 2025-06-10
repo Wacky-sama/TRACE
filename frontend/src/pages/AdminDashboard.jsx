@@ -27,7 +27,7 @@ const AdminDashboard = () => {
   const chartData = userStats
     ? [
         { role: 'Admins', count: userStats.admins },
-        { role: 'Organizers', count: userStats.organizers },
+        { role: 'Event Organizers', count: userStats.organizers },
         { role: 'Alumni', count: userStats.alumni },
       ]
     : [];
@@ -60,10 +60,10 @@ const AdminDashboard = () => {
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="role" />
-                <YAxis allowDecimals={false} />
-                 <Tooltip />
-                 <Bar dataKey="count" fill="#2563EB" /> 
+              <XAxis dataKey="role" />
+              <YAxis allowDecimals={false} />
+              <Tooltip formatter={(value) => [value, 'Count']}/>
+              <Bar dataKey="count" name="Count" fill="#2563EB" /> 
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -87,9 +87,6 @@ const AdminDashboard = () => {
             </button>
             <button className="w-full text-left p-3 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors">
               Generate Report
-            </button>
-            <button className="w-full text-left p-3 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors">
-              Send Notification
             </button>
           </div>
         </div>
