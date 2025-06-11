@@ -97,7 +97,7 @@ def create_user_as_admin(
     db.refresh(new_user)
 
     subject = "TRACE System - Account Created"
-    body = f"Hello {new_user.firstname},\n\nAn account has been created for you on the TRACE System. \n\nUsername:{new_user.username}\nPassword:{user_data.password}\n\nPlease log in and change your password immediately.\n\nBest regards, \nTRACE Team"
+    body = f"Hello {new_user.firstname},\n\nAn account has been created for you on the TRACE System. \n\nUsername: {new_user.username}\nPassword: {user_data.password}\n\nPlease log in and change your password immediately.\n\nBest regards, \nTRACE Team"
 
     background_tasks.add_task(send_email, to_email=new_user.email, subject=subject, body=body)
 
