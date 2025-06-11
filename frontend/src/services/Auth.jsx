@@ -12,5 +12,7 @@ export async function login(identifier, password) {
 
   const data = await res.json();
   localStorage.setItem("token", data.token); 
-  return data.token;
+  localStorage.setItem("role", data.role);
+
+  return { token: data.token, role: data.role };
 }

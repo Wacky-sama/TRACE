@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { login } from '../services/Auth';
 import { useNavigate } from 'react-router-dom';
@@ -49,13 +49,32 @@ function AuthPage() {
     if (Object.keys(errors).length > 0) return;
 
     try {
-      await login(identifier, password);
-      navigate('/dashboard');
-      setLoginError('');
+      const { role } = await login(identifier, password);
+
+      if (role === "admin") {
+        navigate("/admin/dashboard");
+      } else if (role === "organizer") {
+        navigate("/organizer/dashboard");
+      } else if (role === "alumni") {
+        navigate("/alumni/dashboard");
+      }
+      else {
+        setLoginError("Unauthorized access. Please contact the administrator.");
+      }
+
     } catch (err) {
        setLoginError(err.response?.data?.detail ?? err.message);
     }
   };
+
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
+  if (token && role) {
+    navigate(`/${role}/dashboard`);
+  }
+}, [navigate]);
 
   const handleRegister = async () => {
     const errors = {};
@@ -70,8 +89,8 @@ function AuthPage() {
     if (registerPassword !== registerConfirmPassword) errors.registerConfirmPassword = "Passwords do not match";
 
     setRegisterErrors(errors);
-    setRegisterError(''); // Clear previous registration errors
-    setRegisterSuccess(''); // Clear previous success messages
+    setRegisterError(''); 
+    setRegisterSuccess('');
     
     if (Object.keys(errors).length > 0) return;
 
@@ -90,7 +109,6 @@ function AuthPage() {
       
       setRegisterSuccess("Registration submitted successfully! Please wait for approval.");
       
-      // Clear form after successful registration
       setRegisterIdentifier('');
       setEmail('');
       setLastName('');
@@ -101,8 +119,7 @@ function AuthPage() {
       setRegisterPassword('');
       setRegisterConfirmPassword('');
       setRegisterErrors({});
-      
-      // Optionally switch back to login after a delay
+
       setTimeout(() => {
         setIsRegistering(false);
         setRegisterSuccess('');

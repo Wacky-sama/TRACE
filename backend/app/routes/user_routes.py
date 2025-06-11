@@ -41,7 +41,7 @@ def login(
     access_token_expires = timedelta(minutes=60)  # or load from env
     token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
 
-    return {"token": token}
+    return {"token": token, "role": user.role}
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 

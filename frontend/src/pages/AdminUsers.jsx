@@ -48,15 +48,15 @@ const Users = () => {
   };
 
   const handleEditUser = (user) => {
-    alert('Edit user ${user.username} (ID: ${user.id}) - This feature is under construction! 🚧');
+    alert(`Edit user ${user.username} (ID: ${user.id}) - This feature is under construction! 🚧`);
   };
 
   const handleDeleteUser = (user) => {
-    alert('Delete user ${user.username} (ID: ${user.id}) - This feature is under construction! 🚧');
+    alert(`Delete user ${user.username} (ID: ${user.id}) - This feature is under construction! 🚧`);
   };
 
   const handleBlockUser = (user) => {
-    alert('Edit user ${user.username} (ID: ${user.id}) - This feature is under construction! 🚧');
+    alert(`Edit user ${user.username} (ID: ${user.id}) - This feature is under construction! 🚧`);
   };
 
   useEffect(() => {

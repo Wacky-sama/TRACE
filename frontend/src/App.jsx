@@ -1,16 +1,39 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AuthPage from "./pages/AuthPage"
 import AdminDashboard from "./pages/AdminDashboard"
+import EventOrganizerDashboard from "./pages/EventOrganizerDashboard";
+import AlumniDashboard from "./pages/AlumniDashboard";
 import AdminUsers from './pages/AdminUsers';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem('token');
-  return token ? children : <Navigate to="/login" replace />;
+  const role = localStorage.getItem('role');
+
+  if (!token) return <Navigate to="/login" replace />;
+  
+  if (allowedRoles && !allowedRoles.includes(role)) {
+    return <Navigate to="/login" replace />
+  }
+
+  return children;
 };
 
 const PublicRoute = ({ children }) => {
   const token = localStorage.getItem('token');
-  return token ? <Navigate to="/dashboard" replace /> : children;
+  const role = localStorage.getItem('role');
+
+  const validRoles = ['admin', 'organizer', 'alumni'];
+
+  if (token && validRoles.includes(role)) {
+  return <Navigate to={`/${role}/dashboard`} replace />;
+}
+
+if (token && !validRoles.includes(role)) {
+  localStorage.clear();
+  return <Navigate to="/login" replace />;
+}
+
+  return children;
 };
 
 function App() {
@@ -27,17 +50,33 @@ function App() {
           } 
         />
         <Route 
-          path="/dashboard" 
+          path="/admin/dashboard" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin']}>
               <AdminDashboard />
             </ProtectedRoute>
           } 
         />
         <Route 
-          path="/users" 
+          path="/organizer/dashboard" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['organizer']}>
+              <EventOrganizerDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/alumni/dashboard" 
+          element={
+            <ProtectedRoute allowedRoles={['alumni']}>
+              <AlumniDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/admin/users" 
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
               <AdminUsers />
             </ProtectedRoute>
           }

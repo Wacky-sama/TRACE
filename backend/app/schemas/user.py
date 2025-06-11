@@ -13,6 +13,10 @@ class UserRole(str, enum.Enum):
     organizer = "organizer"
     alumni = "alumni"
 
+class TokenResponse(BaseModel):
+    token: str
+    role: UserRole
+
 class UserCreate(BaseModel):
     username: str
     email: EmailStr
