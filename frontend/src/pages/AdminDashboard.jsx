@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import AdminCreateUser from './AdminCreateUser';
 import AdminSidebar from '../components/common/AdminSidebar';
 import { BarChart,Bar,XAxis,YAxis,Tooltip,ResponsiveContainer,CartesianGrid } from 'recharts';
-import Users from './Users';
+import AdminUsers from './AdminUsers';
 import axios from 'axios';
 
 const AdminDashboard = () => {
@@ -41,14 +41,14 @@ const AdminDashboard = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-sm font-medium text-gray-500">Total Users</h3>
+          <h3 className="text-sm font-medium text-gray-500">Total AdminUsers</h3>
           <p className="text-3xl font-bold text-gray-900 mt-2">
             {userStats !== null ? userStats.total_users : 'Loading...'}
           </p>
           <p className="text-xs text-green-600 mt-1">Live Data</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-sm font-medium text-gray-500">Active Users</h3>
+          <h3 className="text-sm font-medium text-gray-500">Active AdminUsers</h3>
           <p className="text-3xl font-bold text-gray-900 mt-2">
             {/* Maybe display session count here */}
           </p>
@@ -56,7 +56,7 @@ const AdminDashboard = () => {
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow mb-8">
-        <h3 className="text-lg font-semibold mb-4">Users by Role</h3>
+        <h3 className="text-lg font-semibold mb-4">AdminUsers by Role</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -94,7 +94,7 @@ const AdminDashboard = () => {
     </>
   );
       case 'users':
-        return <Users />;
+        return <AdminUsers />;
       case 'create-user':
         return <AdminCreateUser token={localStorage.getItem("token")}/>;
       default:
