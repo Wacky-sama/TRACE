@@ -8,7 +8,7 @@ from app.models.user import User, UserRole
 from app.database import SessionLocal
 from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 router = APIRouter()
 
@@ -34,6 +34,9 @@ def login(
 
     if not verify_password(password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username/email or password")
+    
+    if not user.is_active or user.deleted_at:
+        raise HTTPException(status_code=403, detail="User is blocked or deleted")
 
     access_token_expires = timedelta(minutes=60)  # or load from env
     token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
@@ -144,8 +147,32 @@ def get_pending_alumni(db: Session = Depends(get_db)):
 
 @router.get("/registered-users", response_model=List[UserProfileOut])
 def get_registered_users(db: Session = Depends(get_db)):
-    registered_users = db.query(User).filter(User.is_approved == True, User.role.in_([UserRole.alumni, UserRole.organizer])).all()
+    registered_users = db.query(User).filter(User.is_approved == True, User.role.in_([UserRole.alumni, UserRole.organizer]), User.deleted_at.is_(None)).all()
     return registered_users
+
+@router.patch("/{user_id}/block", status_code=204)
+def block_user(user_id: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user or user.deleted_at:
+        raise HTTPException(status_code=404, detail="User not found")
+    user.is_active = False
+    db.commit() 
+
+@router.patch("/{user_id}/unblock", status_code=204)
+def unblock_user(user_id: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user or user.deleted_at:
+        raise HTTPException(status_code=404, detail="User not found")
+    user.is_active = True
+    db.commit()
+
+@router.delete("/{user_id}", status_code=204)
+def soft_delete_user(user_id: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user or user.deleted_at:
+        raise HTTPException(status_code=404, detail="User not found")
+    user.deleted_at = datetime.utcnow()
+    db.commit()
 
 @router.patch("/{user_id}/approve", status_code=status.HTTP_204_NO_CONTENT)
 def approve_user(user_id: str, db: Session = Depends(get_db)):

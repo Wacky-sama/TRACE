@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, field_validator, model_validator
 from typing import Optional
 from uuid import UUID
+from datetime import datetime
 import enum
 
 class UserLogin(BaseModel):
@@ -40,6 +41,8 @@ class UserOut(BaseModel):
     firstname: str
     role: UserRole
     is_approved: bool
+    is_active: bool
+    deleted_at: Optional[datetime]
 
 class UserPendingApprovalOut(BaseModel):
     id: UUID

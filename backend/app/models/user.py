@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Boolean, Enum, Integer, DateTime
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.sql import func
 from app.database import Base
 import uuid
 import enum
@@ -23,6 +24,8 @@ class User(Base):
     course = Column(String)
     batch_year = Column(Integer)
     role = Column(Enum(UserRole), nullable=False)
+    is_active = Column(Boolean, default=True)
+    deleted_at = Column(DateTime, nullable=True)
     is_approved = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow)

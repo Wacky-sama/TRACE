@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserPen, faUserSlash, faUserMinus } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 const Users = () => {
@@ -43,6 +45,18 @@ const Users = () => {
     } finally {
       setActionLoadingId(null);
     }
+  };
+
+  const handleEditUser = (user) => {
+    alert('Edit user ${user.username} (ID: ${user.id}) - This feature is under construction! 🚧');
+  };
+
+  const handleDeleteUser = (user) => {
+    alert('Delete user ${user.username} (ID: ${user.id}) - This feature is under construction! 🚧');
+  };
+
+  const handleBlockUser = (user) => {
+    alert('Edit user ${user.username} (ID: ${user.id}) - This feature is under construction! 🚧');
   };
 
   useEffect(() => {
@@ -129,7 +143,8 @@ const Users = () => {
               <th className="p-3">Course</th>
               <th className="p-3">Batch</th>
               <th className="p-3">Role</th>
-              <th className="p-3">Status</th>
+              <th className="p-3">Active</th>
+              <th className="p-3">Actions</th>
             </tr>
           </thead>
           <tbody className="text-sm">
@@ -146,7 +161,18 @@ const Users = () => {
                     <td className="p-3">{user.course || '-'}</td>
                     <td className="p-3">{user.batch_year || '-'}</td>
                     <td className="p-3 capitalize">{user.role}</td>
-                    <td className="p-3 text-green-600">Approved</td>
+                    <td className="p-3 text-green-600">Online</td>
+                    <td className="p-5 flex items-center gap-2">
+                        <button onClick={() => handleEditUser(user)} className="text-yellow-500 hover:text-yellow-700" title="Edit User">
+                          <FontAwesomeIcon icon={faUserPen}/>
+                        </button>
+                        <button onClick={() => handleDeleteUser(user)} className="text-red-500 hover:text-red-700" title="Edit User">
+                          <FontAwesomeIcon icon={faUserMinus}/>
+                        </button>
+                        <button onClick={() => handleBlockUser(user)} className="text-blue-500 hover:text-blue-700" title="Edit User">
+                          <FontAwesomeIcon icon={faUserSlash}/>
+                        </button>
+                    </td>
                   </tr>
                 ))
             ) : (
