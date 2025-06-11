@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from starlette import status
 from typing import List
 from sqlalchemy.orm import Session
-from app.schemas.user import UserCreate, UserOut, UserLogin, UserPendingApprovalOut
+from app.schemas.user import UserCreate, UserOut, UserLogin, UserPendingApprovalOut, UserProfileOut
 from app.models.user import User, UserRole
 from app.database import SessionLocal
 from app.utils.email_sender import send_email
@@ -141,6 +141,11 @@ def register_alumni(
 def get_pending_alumni(db: Session = Depends(get_db)):
     pending_alumni = db.query(User).filter(User.role == UserRole.alumni, User.is_approved == False).all()
     return pending_alumni
+
+@router.get("/registered-users", response_model=List[UserProfileOut])
+def get_registered_users(db: Session = Depends(get_db)):
+    registered_users = db.query(User).filter(User.is_approved == True, User.role.in_([UserRole.alumni, UserRole.organizer])).all()
+    return registered_users
 
 @router.patch("/{user_id}/approve", status_code=status.HTTP_204_NO_CONTENT)
 def approve_user(user_id: str, db: Session = Depends(get_db)):

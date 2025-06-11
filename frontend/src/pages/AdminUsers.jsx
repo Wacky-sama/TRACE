@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const Users = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
+  const [registeredUsers, setRegisteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState(null);
 
@@ -13,6 +14,18 @@ const Users = () => {
     } catch (error) {
       console.error('Error fetching users:', error);
       alert('Failed to fetch users — backend might be on coffee break ☕️');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRegisteredUsers = async () => {
+    try {
+      const response = await axios.get('http://192.168.10.2:8000/users/registered-users');
+      setRegisteredUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching registered users:', error);
+      alert('Failed to fetch registered users — backend might be on coffee break ☕️');
     } finally {
       setLoading(false);
     }
@@ -34,6 +47,7 @@ const Users = () => {
 
   useEffect(() => {
     fetchPendingUsers();
+    fetchRegisteredUsers();
   }, []);
 
   if (loading) return <p className="p-4">Loading...</p>;
@@ -96,6 +110,49 @@ const Users = () => {
               <tr>
                 <td colSpan="10" className="p-4 text-center text-gray-500">
                   No pending users found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      <h2 className="text-2xl font-bold mt-10 mb-6">Registered Users</h2>
+      <div className="overflow-auto">
+        <table className="min-w-full bg-white border rounded-lg shadow">
+          <thead className="bg-gray-100 text-left text-sm text-gray-700">
+            <tr>
+              <th className="p-3">Username</th>
+              <th className="p-3">Email</th>
+              <th className="p-3">Lastname</th>
+              <th className="p-3">Firstname</th>
+              <th className="p-3">M.I.</th>
+              <th className="p-3">Course</th>
+              <th className="p-3">Batch</th>
+              <th className="p-3">Role</th>
+              <th className="p-3">Status</th>
+            </tr>
+          </thead>
+          <tbody className="text-sm">
+            {registeredUsers.length ? (
+              registeredUsers
+                .filter(user => ['alumni', 'organizer'].includes(user.role))
+                .map(user => (
+                  <tr key={user.id} className="border-t">
+                    <td className="p-3">{user.username}</td>
+                    <td className="p-3">{user.email}</td>
+                    <td className="p-3">{user.lastname}</td>
+                    <td className="p-3">{user.firstname}</td>
+                    <td className="p-3">{user.middle_initial || '-'}</td>
+                    <td className="p-3">{user.course || '-'}</td>
+                    <td className="p-3">{user.batch_year || '-'}</td>
+                    <td className="p-3 capitalize">{user.role}</td>
+                    <td className="p-3 text-green-600">Approved</td>
+                  </tr>
+                ))
+            ) : (
+              <tr>
+                <td colSpan="9" className="p-4 text-center text-gray-500">
+                  No registered users found.
                 </td>
               </tr>
             )}
