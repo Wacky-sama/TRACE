@@ -250,3 +250,8 @@ def get_active_users(db: Session = Depends(get_db)):
 def get_blocked_users(db: Session = Depends(get_db)):
     blocked_users = db.query(User).filter(User.is_active == False, User.deleted_at.is_(None)).count()
     return {"blocked_users": blocked_users}
+
+@router.get("/archived")
+def get_archived_users(db: Session = Depends(get_db)):
+    archived_users = db.query(User).filter(User.deleted_at.isnot(None)).count()
+    return {"archived_users": archived_users}

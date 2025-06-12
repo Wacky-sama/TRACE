@@ -9,19 +9,22 @@ const AdminDashboard = () => {
   const [userStats, setUserStats] = useState(null);
   const [activeUsers, setActiveUsers] = useState(null);
   const [blockedUsers, setBlockedUsers] = useState(null);
+  const [archivedUsers, setArchivedUsers] = useState(null);
   const [activePanel, setActivePanel] = useState('dashboard');
 
   useEffect(() => {
   const fetchUserStats = async () => {
     try {
-      const [statsRes, activeRes, blockedRes] = await Promise.all([
+      const [statsRes, activeRes, blockedRes, archivedRes] = await Promise.all([
         axios.get('http://192.168.10.2:8000/users/stats'),
         axios.get('http://192.168.10.2:8000/users/active'),
         axios.get('http://192.168.10.2:8000/users/blocked'),
+        axios.get('http://192.168.10.2:8000/users/archived'),
       ]);
       setUserStats(statsRes.data);
       setActiveUsers(activeRes.data.active_users);
       setBlockedUsers(blockedRes.data.blocked_users);
+      setArchivedUsers(archivedRes.data.archived_users);
     } catch (error) {
       console.error('Error fetching user stats: ', error); 
     }
@@ -74,7 +77,7 @@ const AdminDashboard = () => {
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Archived Users</h3>
           <p className="text-3xl font-bold text-gray-900 mt-2">
-            {blockedUsers !== null ? blockedUsers : 'Loading...'}
+            {archivedUsers !== null ? archivedUsers : 'Loading...'}
           </p>
           <p className='text-xs text-green-600 mt-1'>Live Data</p>
         </div>
