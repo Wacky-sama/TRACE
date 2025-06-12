@@ -1,9 +1,9 @@
-import React from 'react'
+import EventOrganizerSidebar from "../components/common/EventOrganizerSidebar";
 
 const EventOrganizerDashboard = () => {
   return (
     <div>
-       return <h1>Hello Admin!</h1>;
+       <EventOrganizerSidebar />
     </div>
   )
 }

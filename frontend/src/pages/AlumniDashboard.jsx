@@ -1,9 +1,10 @@
 import React from 'react'
+import AlumniSidebar from '../components/common/AlumniSidebar';
 
 const AlumniDashboard = () => {
   return (
     <div>
-       return <h1>Hello Admin!</h1>;
+      <AlumniSidebar />;
     </div>
   )
 }
