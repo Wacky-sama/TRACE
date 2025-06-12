@@ -2,10 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import Base, engine
 from app.routes import user_routes
+from app.middleware.auth_middleware import UpdateLastSeenMiddleware
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+app.add_middleware(UpdateLastSeenMiddleware)
 
 origins = [
     "http://localhost:5173",

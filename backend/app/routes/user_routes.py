@@ -6,7 +6,8 @@ from typing import List, Optional
 from app.config import settings
 from app.database import SessionLocal
 from app.models.user import User, UserRole
-from app.schemas.user import UserCreate, UserOut, UserPendingApprovalOut, PaginatedUserResponse, UpdateLastSeenMiddleware
+from app.middleware.auth_middleware import UpdateLastSeenMiddleware
+from app.schemas.user import UserCreate, UserOut, UserPendingApprovalOut, PaginatedUserResponse
 from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
 from datetime import timedelta, datetime
@@ -263,6 +264,6 @@ def get_online_users(db: Session = Depends(get_db)):
         User.last_seen >= five_minutes_ago,
         User.is_active == True,
         User.deleted_at.is_(None),
-        User.role.in_([UserRole.alumni, UserRole.organizer])
+        User.role.in_([UserRole.admin, UserRole.alumni, UserRole.organizer])
     ).count()
     return {"online_users": online_users}

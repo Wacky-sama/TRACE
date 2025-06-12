@@ -14,31 +14,43 @@ const AdminDashboard = () => {
   const [activePanel, setActivePanel] = useState('dashboard');
 
   useEffect(() => {
-  const fetchUserStats = async () => {
-    try {
-      const [statsRes, activeRes, blockedRes, archivedRes, onlineRes] = await Promise.all([
-        axios.get('http://192.168.10.2:8000/users/stats'),
-        axios.get('http://192.168.10.2:8000/users/active'),
-        axios.get('http://192.168.10.2:8000/users/blocked'),
-        axios.get('http://192.168.10.2:8000/users/archived'),
-        axios.get('http://192.168.10.2:8000/users/online'),
-      ]);
-      setUserStats(statsRes.data);
-      setActiveUsers(activeRes.data.active_users);
-      setBlockedUsers(blockedRes.data.blocked_users);
-      setArchivedUsers(archivedRes.data.archived_users);
-      setOnlineUsers(onlineRes.data.online_users);
-    } catch (error) {
-      console.error('Error fetching user stats: ', error); 
-    }
-  };
+    const fetchUserStats = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        
+        const config = token ? {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        } : {};
 
-  fetchUserStats();
-  const interval = setInterval(fetchUserStats, 10000);
+        console.log('Fetching with token:', token ? 'Present' : 'Missing');
 
-  return () => clearInterval(interval);
-}, []);
+        const [statsRes, activeRes, blockedRes, archivedRes, onlineRes] = await Promise.all([
+          axios.get('http://192.168.10.2:8000/users/stats', config),
+          axios.get('http://192.168.10.2:8000/users/active', config),
+          axios.get('http://192.168.10.2:8000/users/blocked', config),
+          axios.get('http://192.168.10.2:8000/users/archived', config),
+          axios.get('http://192.168.10.2:8000/users/online', config),
+        ]);
 
+        setUserStats(statsRes.data);
+        setActiveUsers(activeRes.data.active_users);
+        setBlockedUsers(blockedRes.data.blocked_users);
+        setArchivedUsers(archivedRes.data.archived_users);
+        setOnlineUsers(onlineRes.data.online_users);
+        
+        console.log('Online users:', onlineRes.data.online_users);
+      } catch (error) {
+        console.error('Error fetching user stats: ', error); 
+      }
+    };
+
+    fetchUserStats();
+    const interval = setInterval(fetchUserStats, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const chartData = userStats
     ? [
