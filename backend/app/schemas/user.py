@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, field_validator, model_validator
-from typing import Optional
+from typing import Optional, List
 from uuid import UUID
 from datetime import datetime
 import enum
@@ -71,6 +71,13 @@ class UserProfileOut(BaseModel):
     batch_year: Optional[int]
     role: UserRole
     is_approved: bool
+
+class PaginatedUserResponse(BaseModel):
+    users: List[UserProfileOut]
+    total: int
+    page: int
+    limit: int
+    pages: int
 
     class Config:
         from_attributes = True

@@ -1,12 +1,12 @@
-from fastapi import APIRouter,  BackgroundTasks, Body, Depends, HTTPException
+from fastapi import APIRouter,  BackgroundTasks, Body, Depends, HTTPException, Query
 from fastapi.security import OAuth2PasswordBearer
 from starlette import status
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from app.config import settings
 from app.database import SessionLocal
 from app.models.user import User, UserRole
-from app.schemas.user import UserCreate, UserOut, UserLogin, UserPendingApprovalOut, UserProfileOut
+from app.schemas.user import UserCreate, UserOut, UserPendingApprovalOut, PaginatedUserResponse
 from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
 from datetime import timedelta, datetime
@@ -146,10 +146,38 @@ def get_pending_alumni(db: Session = Depends(get_db)):
     pending_alumni = db.query(User).filter(User.role == UserRole.alumni, User.is_approved == False).all()
     return pending_alumni
 
-@router.get("/registered-users", response_model=List[UserProfileOut])
-def get_registered_users(db: Session = Depends(get_db)):
-    registered_users = db.query(User).filter(User.is_approved == True, User.role.in_([UserRole.alumni, UserRole.organizer]), User.deleted_at.is_(None)).all()
-    return registered_users
+@router.get("/registered-users", response_model=PaginatedUserResponse)
+def get_registered_users(
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100),
+    role: Optional[str] = None,
+    course: Optional[str] = None,
+    batch_year: Optional[int] = None,
+    db: Session = Depends(get_db)
+):
+    query = db.query(User).filter(
+        User.is_approved == True,
+        User.deleted_at.is_(None)
+    )
+
+    if role:
+        query = query.filter(User.role == role)
+    if course:
+        query = query.filter(User.course == course)
+    if batch_year:
+        query = query.filter(User.batch_year == batch_year)
+
+    total = query.count()
+    pages = (total + limit - 1) // limit
+    users = query.offset((page - 1) * limit).limit(limit).all()
+
+    return {
+        "users": users,
+        "total": total,
+        "page": page,
+        "limit": limit,
+        "pages": pages
+    }
 
 @router.patch("/{user_id}/block", status_code=204)
 def block_user(user_id: str, db: Session = Depends(get_db)):
