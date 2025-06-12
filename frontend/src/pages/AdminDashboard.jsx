@@ -7,22 +7,29 @@ import axios from 'axios';
 
 const AdminDashboard = () => {
   const [userStats, setUserStats] = useState(null);
+  const [activeUsers, setActiveUsers] = useState(null);
   const [activePanel, setActivePanel] = useState('dashboard');
 
   useEffect(() => {
-    const fetchUserStats = async () => {
-      try {
-        const response = await axios.get('http://192.168.10.2:8000/users/stats');
-        setUserStats(response.data);
-      } catch (error) {
-        console.error('Error fetching total users:', error);
-      }
-    };
-    fetchUserStats();
-    const interval = setInterval(fetchUserStats, 10000);
+  const fetchUserStats = async () => {
+    try {
+      const [statsRes, activeRes] = await Promise.all([
+        axios.get('http://192.168.10.2:8000/users/stats'),
+        axios.get('http://192.168.10.2:8000/users/active'),
+      ]);
+      setUserStats(statsRes.data);
+      setActiveUsers(activeRes.data.active_users);
+    } catch (error) {
+      console.error('Error fetching user stats: ', error); 
+    }
+  };
 
-    return () => clearInterval(interval);
-  }, []);
+  fetchUserStats();
+  const interval = setInterval(fetchUserStats, 10000);
+
+  return () => clearInterval(interval);
+}, []);
+
 
   const chartData = userStats
     ? [
@@ -50,8 +57,9 @@ const AdminDashboard = () => {
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Active Users</h3>
           <p className="text-3xl font-bold text-gray-900 mt-2">
-            {/* Maybe display session count here */}
+            {activeUsers !== null ? activeUsers : 'Loading...'}
           </p>
+          <p className='text-xs text-green-600 mt-1'>Live Data</p>
         </div>
       </div>
 

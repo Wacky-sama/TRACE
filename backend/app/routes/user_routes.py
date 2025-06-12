@@ -212,3 +212,8 @@ def get_user_stats(db: Session = Depends(get_db)):
         "organizers": organizers,
         "alumni": alumni
     }
+
+@router.get("/active")
+def get_active_users(db: Session = Depends(get_db)):
+    active_users = db.query(User).filter(User.is_active == True, User.deleted_at.is_(None)).count()
+    return {"active_users": active_users}
