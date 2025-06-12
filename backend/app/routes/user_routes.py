@@ -1,11 +1,12 @@
 from fastapi import APIRouter,  BackgroundTasks, Body, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from starlette import status
-from typing import List
 from sqlalchemy.orm import Session
-from app.schemas.user import UserCreate, UserOut, UserLogin, UserPendingApprovalOut, UserProfileOut
-from app.models.user import User, UserRole
+from typing import List
+from app.config import settings
 from app.database import SessionLocal
+from app.models.user import User, UserRole
+from app.schemas.user import UserCreate, UserOut, UserLogin, UserPendingApprovalOut, UserProfileOut
 from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
 from datetime import timedelta, datetime
@@ -38,7 +39,7 @@ def login(
     if not user.is_active or user.deleted_at:
         raise HTTPException(status_code=403, detail="User is blocked or deleted")
 
-    access_token_expires = timedelta(minutes=60)  # or load from env
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)  
     token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
 
     return {"token": token, "role": user.role}
