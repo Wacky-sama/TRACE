@@ -61,6 +61,20 @@ const AdminDashboard = () => {
           </p>
           <p className='text-xs text-green-600 mt-1'>Live Data</p>
         </div>
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h3 className="text-sm font-medium text-gray-500">Blocked Users</h3>
+          <p className="text-3xl font-bold text-gray-900 mt-2">
+            {/* For users who got blocked */}
+          </p>
+          <p className='text-xs text-green-600 mt-1'>Live Data</p>
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h3 className="text-sm font-medium text-gray-500">Online Users</h3>
+          <p className="text-3xl font-bold text-gray-900 mt-2">
+            {/* For users who are online. (Alumni and Event Organizer) */}
+          </p>
+          <p className='text-xs text-green-600 mt-1'>Live Data</p>
+        </div>
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow mb-8">
