@@ -6,7 +6,7 @@ from typing import List, Optional
 from app.config import settings
 from app.database import SessionLocal
 from app.models.user import User, UserRole
-from app.schemas.user import UserCreate, UserOut, UserPendingApprovalOut, PaginatedUserResponse
+from app.schemas.user import UserCreate, UserOut, UserPendingApprovalOut, PaginatedUserResponse, UpdateLastSeenMiddleware
 from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
 from datetime import timedelta, datetime
@@ -195,7 +195,7 @@ def unblock_user(user_id: str, db: Session = Depends(get_db)):
     user.is_active = True
     db.commit()
 
-@router.delete("/{user_id}", status_code=204)
+@router.delete("/{user_id}/delete", status_code=204)
 def soft_delete_user(user_id: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user or user.deleted_at:
@@ -255,3 +255,14 @@ def get_blocked_users(db: Session = Depends(get_db)):
 def get_archived_users(db: Session = Depends(get_db)):
     archived_users = db.query(User).filter(User.deleted_at.isnot(None)).count()
     return {"archived_users": archived_users}
+
+@router.get("/online")
+def get_online_users(db: Session = Depends(get_db)):    
+    five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
+    online_users = db.query(User).filter(
+        User.last_seen >= five_minutes_ago,
+        User.is_active == True,
+        User.deleted_at.is_(None),
+        User.role.in_([UserRole.alumni, UserRole.organizer])
+    ).count()
+    return {"online_users": online_users}

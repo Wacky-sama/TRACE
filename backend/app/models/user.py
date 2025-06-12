@@ -1,9 +1,9 @@
+import uuid
+import enum
 from sqlalchemy import Column, String, Boolean, Enum, Integer, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from app.database import Base
-import uuid
-import enum
 from datetime import datetime
 
 class UserRole(str, enum.Enum):
@@ -20,7 +20,7 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     firstname = Column(String, nullable=False)
     lastname = Column(String, nullable=False)
-    middle_initial = Column(String)
+    middle_initial = Column(String(1))
     course = Column(String)
     batch_year = Column(Integer)
     role = Column(Enum(UserRole), nullable=False)
@@ -28,4 +28,5 @@ class User(Base):
     deleted_at = Column(DateTime, nullable=True)
     is_approved = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    last_seen = Column(DateTime, default=datetime.utcnow)
