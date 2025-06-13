@@ -5,7 +5,30 @@
 -- Dumped from database version 16.9 (Ubuntu 16.9-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 16.9 (Ubuntu 16.9-1.pgdg22.04+1)
 
--- Started on 2025-06-13 17:52:26 PST
+-- Started on 2025-06-13 17:57:04 PST
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 3488 (class 1262 OID 16388)
+-- Name: trace_db; Type: DATABASE; Schema: -; Owner: trace_admin
+--
+
+CREATE DATABASE trace_db WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_PH.UTF-8';
+
+
+ALTER DATABASE trace_db OWNER TO trace_admin;
+
+\connect trace_db
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -27,7 +50,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 
 
 --
--- TOC entry 3488 (class 0 OID 0)
+-- TOC entry 3489 (class 0 OID 0)
 -- Dependencies: 2
 -- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: 
 --
@@ -213,7 +236,7 @@ COPY public.gts_responses (id, user_id, full_name, permanent_address, contact_em
 --
 
 COPY public.users (id, username, email, password_hash, lastname, firstname, middle_initial, course, batch_year, role, is_active, deleted_at, is_approved, created_at, updated_at, last_seen) FROM stdin;
-6729ef7b-c54b-4e89-8a88-d1c6293cbb17	wacky	tabugadirkenjibrocks@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$5S5iGs3R5b+1pUc+ZlX/CA$K5rZVs75OG0UGiFkAYkzNab2uYsuFwzjfeIc5XqnUUQ	Tabugadir	Kenji "Brocks"	I	\N	\N	admin	t	\N	t	2025-06-13 17:30:54.81682	2025-06-13 09:52:00.526581	2025-06-13 09:52:00.526276
+6729ef7b-c54b-4e89-8a88-d1c6293cbb17	wacky	tabugadirkenjibrocks@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$5S5iGs3R5b+1pUc+ZlX/CA$K5rZVs75OG0UGiFkAYkzNab2uYsuFwzjfeIc5XqnUUQ	Tabugadir	Kenji "Brocks"	I	\N	\N	admin	t	\N	t	2025-06-13 17:30:54.81682	2025-06-13 09:57:00.599463	2025-06-13 09:57:00.59909
 97dc98d4-16df-4933-8c63-085f38d477ff	xed	tagubaphilipjoshuav@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$HmPM2TsnhHDufS/lHEMIYQ$uSlzFWErg/Mko9wWHn+mL7G9Ym6TivBlmy2asrirSjk	Taguba	Philip Joshua	V	\N	\N	admin	t	\N	t	2025-06-13 09:39:28.701098	2025-06-13 09:39:28.701102	2025-06-13 09:39:28.701104
 b18d9dc8-bbc3-4f35-8ef8-11dbe2591d4f	louieboy	louieboysalviejo06@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$as3Z2/ufc87Zm9Oa09o7hw$XF5H9Em/+FCj1hD5QF8EVme4C/OtB9P1LfitkRUAsCo	Salviejo	Victor Louis	R	\N	\N	organizer	t	\N	t	2025-06-13 09:40:12.260692	2025-06-13 09:40:12.260695	2025-06-13 09:40:12.260696
 \.
@@ -318,7 +341,7 @@ ALTER TABLE ONLY public.gts_responses
     ADD CONSTRAINT gts_responses_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
--- Completed on 2025-06-13 17:52:42 PST
+-- Completed on 2025-06-13 17:57:16 PST
 
 --
 -- PostgreSQL database dump complete

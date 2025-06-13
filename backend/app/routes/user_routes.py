@@ -101,8 +101,23 @@ def create_user_as_admin(
     db.commit()
     db.refresh(new_user)
 
+    role_display_names = {
+        UserRole.admin: "Administrator",
+        UserRole.organizer: "Event Organizer",
+    }
+    display_role = role_display_names.get(new_user.role, new_user.role.value)
+
     subject = "TRACE System - Account Created"
-    body = f"Hello {new_user.firstname},\n\nAn account has been created for you on the TRACE System. \n\nUsername: {new_user.username}\nPassword: {user_data.password}\n\nPlease log in and change your password immediately.\n\nBest regards, \nTRACE Team"
+    body = (
+        f"Hello {new_user.firstname},\n\n"
+        f"An account has been created for you on the TRACE System.\n\n"
+        f"Username: {new_user.username}\n"
+        f"Password: {user_data.password}\n"
+        f"Role: {display_role}\n\n"
+        "Please log in and change your password immediately.\n\n"
+        "Best regards,\n"
+        "TRACE Team"
+    )
 
     background_tasks.add_task(send_email, to_email=new_user.email, subject=subject, body=body)
 
