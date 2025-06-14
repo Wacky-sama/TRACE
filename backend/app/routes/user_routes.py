@@ -272,7 +272,7 @@ def get_archived_users(db: Session = Depends(get_db)):
     archived_users = db.query(User).filter(User.deleted_at.isnot(None)).count()
     return {"archived_users": archived_users}
 
-@router.get("/online")
+@router.get("/online", response_model=List[UserOut])
 def get_online_users(db: Session = Depends(get_db)):    
     five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
     online_users = db.query(User).filter(
@@ -280,5 +280,6 @@ def get_online_users(db: Session = Depends(get_db)):
         User.is_active == True,
         User.deleted_at.is_(None),
         User.role.in_([UserRole.admin, UserRole.alumni, UserRole.organizer])
-    ).count()
-    return {"online_users": online_users}
+    ).all()
+
+    return online_users

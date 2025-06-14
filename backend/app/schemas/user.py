@@ -43,6 +43,7 @@ class UserOut(BaseModel):
     email: EmailStr
     lastname: str
     firstname: str
+    middle_initial: Optional[str]
     role: UserRole
     is_approved: bool
     is_active: bool

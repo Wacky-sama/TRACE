@@ -38,9 +38,9 @@ const AdminDashboard = () => {
         setActiveUsers(activeRes.data.active_users);
         setBlockedUsers(blockedRes.data.blocked_users);
         setArchivedUsers(archivedRes.data.archived_users);
-        setOnlineUsers(onlineRes.data.online_users);
+        setOnlineUsers(onlineRes.data);
         
-        console.log('Online users:', onlineRes.data.online_users);
+        console.log('Online users:', onlineRes.data);
       } catch (error) {
         console.error('Error fetching user stats: ', error); 
       }
@@ -98,9 +98,17 @@ const AdminDashboard = () => {
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Online Users</h3>
-          <p className="text-3xl font-bold text-gray-900 mt-2">
-            {onlineUsers !== null ? onlineUsers : 'Loading...'}
-          </p>
+          {onlineUsers ? (
+            <ul className='mt-2'>
+              {onlineUsers.map(user => (
+                <li key={user.id} className='text-gray-800 text-sm'>
+                  {user.firstname} {user.middle_initial}. {user.lastname} 
+                </li>
+              ))}
+            </ul>
+            ) : (
+            <p className="text-sm text-gray-500 mt-2">Loading...</p>
+          )}
           <p className='text-xs text-green-600 mt-1'>Live Data</p>
         </div>
       </div>
