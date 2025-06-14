@@ -135,7 +135,7 @@ const AdminDashboard = () => {
         </div>
         <div className="lg:col-span-2 flex justify-center">
           <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center w-full max-w-sm">
-            <h3 className="text-sm font-medium text-gray-500">Online Users</h3>
+            <h3 className="text-sm font-medium text-green-500">Online Users</h3>
             {onlineUsers ? (
               <ul className="mt-2">
                 {onlineUsers.map(user => (
@@ -147,7 +147,6 @@ const AdminDashboard = () => {
               ) : (
               <p className="text-sm text-gray-500 mt-2">Loading...</p>
             )}
-            <p className="text-xs text-green-600 mt-1">Live Data</p>
           </div>
         </div>
       </div>

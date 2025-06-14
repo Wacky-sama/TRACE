@@ -6,7 +6,6 @@ from app.models.user import User
 from app.utils.security import decode_access_token
 import logging
 
-# Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

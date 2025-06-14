@@ -24,7 +24,8 @@ const Users = () => {
   const fetchRegisteredUsers = async () => {
     try {
       const response = await axios.get('http://192.168.10.2:8000/users/registered-users');
-      setRegisteredUsers(response.data);
+      console.log('Registered users:', response.data);
+      setRegisteredUsers(response.data.users);
     } catch (error) {
       console.error('Error fetching registered users:', error);
       alert('Failed to fetch registered users — backend might be on coffee break ☕️');

@@ -185,10 +185,20 @@ def get_registered_users(
 
     total = query.count()
     pages = (total + limit - 1) // limit
+
     users = query.offset((page - 1) * limit).limit(limit).all()
 
+    now = datetime.utcnow()
+    five_minutes_ago = now - timedelta(minutes=5)
+
+    users_out = []
+    for user in users:
+        user_data = UserProfileOut.from_orm(user).dict()
+        user_data["is_online"] = user.last_seen and user.last_seen > five_minutes_ago
+        users_out.append(user_data)
+
     return {
-        "users": users,
+        "users": users_out,
         "total": total,
         "page": page,
         "limit": limit,
