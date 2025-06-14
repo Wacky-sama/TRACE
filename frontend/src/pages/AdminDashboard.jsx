@@ -95,22 +95,7 @@ const AdminDashboard = () => {
             {archivedUsers !== null ? archivedUsers : 'Loading...'}
           </p>
           <p className='text-xs text-green-600 mt-1'>Live Data</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-sm font-medium text-gray-500">Online Users</h3>
-          {onlineUsers ? (
-            <ul className='mt-2'>
-              {onlineUsers.map(user => (
-                <li key={user.id} className='text-gray-800 text-sm'>
-                  {user.firstname} {user.middle_initial}. {user.lastname} 
-                </li>
-              ))}
-            </ul>
-            ) : (
-            <p className="text-sm text-gray-500 mt-2">Loading...</p>
-          )}
-          <p className='text-xs text-green-600 mt-1'>Live Data</p>
-        </div>
+        </div> 
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow mb-8">
@@ -146,6 +131,23 @@ const AdminDashboard = () => {
             <button className="w-full text-left p-3 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors">
               Generate Report
             </button>
+          </div>
+        </div>
+        <div className="lg:col-span-2 flex justify-center">
+          <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center w-full max-w-sm">
+            <h3 className="text-sm font-medium text-gray-500">Online Users</h3>
+            {onlineUsers ? (
+              <ul className="mt-2">
+                {onlineUsers.map(user => (
+                  <li key={user.id} className="text-gray-800 text-sm">
+                    {user.firstname} {user.middle_initial}. {user.lastname}
+                  </li>
+                ))}
+              </ul>
+              ) : (
+              <p className="text-sm text-gray-500 mt-2">Loading...</p>
+            )}
+            <p className="text-xs text-green-600 mt-1">Live Data</p>
           </div>
         </div>
       </div>
