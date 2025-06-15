@@ -33,7 +33,7 @@ class UpdateLastSeenMiddleware(BaseHTTPMiddleware):
                     old_last_seen = user.last_seen
                     user.last_seen = datetime.utcnow()
                     db.commit()
-                    logger.info(f"Updated last_seen for {username}: {old_last_seen} -> {user.last_seen}")
+                    logger.info(f"Updated last_seen for {username} ({user.role.value}): " f"{old_last_seen} -> {user.last_seen}")
                 else:
                     logger.warning(f"User not found: {username}")
                     
