@@ -50,6 +50,16 @@ const AdminDashboard = () => {
       ]
     : [];
 
+    const formatRole = (role) => {
+    switch (role) {
+      case 'admin': return 'Admin';
+      case 'organizer': return 'Event Organizer';
+      case 'alumni': return 'Alumni';
+      default: return role;
+    }
+  };
+
+
    const renderPanel = () => {
     switch (activePanel) {
       case 'dashboard':
@@ -130,7 +140,7 @@ const AdminDashboard = () => {
               <ul className="mt-2">
                 {onlineUsers.map(user => (
                   <li key={user.id} className="text-gray-800 text-sm">
-                    {user.firstname} {user.middle_initial}. {user.lastname}
+                    {user.firstname} {user.middle_initial}. {user.lastname} - {formatRole(user.role)}
                   </li>
                 ))}
               </ul>
