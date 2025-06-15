@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPen, faUserSlash, faUserMinus } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
+import api from '../services/api';
 
 const Users = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
@@ -11,7 +11,7 @@ const Users = () => {
 
   const fetchPendingUsers = async () => {
     try {
-      const response = await axios.get('http://192.168.10.2:8000/users/pending-alumni');
+      const response = await api.get('/users/pending-alumni');
       setPendingUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -23,7 +23,7 @@ const Users = () => {
 
   const fetchRegisteredUsers = async () => {
     try {
-      const response = await axios.get('http://192.168.10.2:8000/users/registered-users');
+      const response = await api.get('/users/registered-users');
       console.log('Registered users:', response.data);
       setRegisteredUsers(response.data.users);
     } catch (error) {
@@ -37,7 +37,7 @@ const Users = () => {
   const handleAction = async (userId, action) => {
     setActionLoadingId(userId);
     try {
-      await axios.patch(`http://192.168.10.2:8000/users/${userId}/${action}`);
+      await api.patch(`/users/${userId}/${action}`);
       setPendingUsers(prev => prev.filter(user => user.id !== userId));
       alert(`User ${action}d successfully! 🎉`);
     } catch (error) {

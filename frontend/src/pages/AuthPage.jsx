@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { login } from '../services/Auth';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -44,7 +44,7 @@ function AuthPage() {
     if (!password) errors.password = "Password is required";
     
     setLoginErrors(errors);
-    setLoginError(''); // Clear previous login errors
+    setLoginError(''); 
     
     if (Object.keys(errors).length > 0) return;
 
@@ -95,7 +95,7 @@ function AuthPage() {
     if (Object.keys(errors).length > 0) return;
 
     try {
-      await axios.post('http://192.168.10.2:8000/users/register/alumni', {
+      await api.post('/users/register/alumni', {
         username: registerIdentifier,
         email, 
         password: registerPassword,

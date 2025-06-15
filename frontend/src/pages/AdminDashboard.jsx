@@ -3,7 +3,7 @@ import AdminCreateUser from './AdminCreateUser';
 import AdminSidebar from '../components/common/AdminSidebar';
 import { BarChart,Bar,XAxis,YAxis,Tooltip,ResponsiveContainer,CartesianGrid } from 'recharts';
 import AdminUsers from './AdminUsers';
-import axios from 'axios';
+import api from '../services/api';
 
 const AdminDashboard = () => {
   const [userStats, setUserStats] = useState(null);
@@ -27,11 +27,11 @@ const AdminDashboard = () => {
         console.log('Fetching with token:', token ? 'Present' : 'Missing');
 
         const [statsRes, activeRes, blockedRes, archivedRes, onlineRes] = await Promise.all([
-          axios.get('http://192.168.10.2:8000/users/stats', config),
-          axios.get('http://192.168.10.2:8000/users/active', config),
-          axios.get('http://192.168.10.2:8000/users/blocked', config),
-          axios.get('http://192.168.10.2:8000/users/archived', config),
-          axios.get('http://192.168.10.2:8000/users/online', config),
+          api.get('/users/stats', config),
+          api.get('/users/active', config),
+          api.get('/users/blocked', config),
+          api.get('/users/archived', config),
+          api.get('/users/online', config),
         ]);
 
         setUserStats(statsRes.data);
