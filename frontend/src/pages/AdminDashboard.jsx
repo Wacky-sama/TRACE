@@ -16,22 +16,12 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchUserStats = async () => {
       try {
-        const token = localStorage.getItem("token");
-        
-        const config = token ? {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        } : {};
-
-        console.log('Fetching with token:', token ? 'Present' : 'Missing');
-
         const [statsRes, activeRes, blockedRes, archivedRes, onlineRes] = await Promise.all([
-          api.get('/users/stats', config),
-          api.get('/users/active', config),
-          api.get('/users/blocked', config),
-          api.get('/users/archived', config),
-          api.get('/users/online', config),
+          api.get('/users/stats'),
+          api.get('/users/active'),
+          api.get('/users/blocked'),
+          api.get('/users/archived'),
+          api.get('/users/online'),
         ]);
 
         setUserStats(statsRes.data);

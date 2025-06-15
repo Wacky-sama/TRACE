@@ -1,22 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import EventOrganizerSidebar from "../components/common/EventOrganizerSidebar";
-import axios from 'axios';
+import api from '../services/api';
 
 const EventOrganizerDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        
-        const config = token ? {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        } : {};
-
-        console.log('Fetching with token:', token ? 'Present' : 'Missing');
+        const res = await api.get('/events/organizer-overview'); // or your relevant endpoint
+        console.log('Fetched data:', res.data);
       } catch (error) {
-        console.error('Error fetching data: ', error); 
+        console.error('Error fetching organizer dashboard data:', error);
       }
     };
 
@@ -25,9 +18,9 @@ const EventOrganizerDashboard = () => {
 
   return (
     <div>
-       <EventOrganizerSidebar />
+      <EventOrganizerSidebar />
     </div>
-  )
-}
+  );
+};
 
 export default EventOrganizerDashboard;
