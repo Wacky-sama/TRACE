@@ -50,7 +50,7 @@ const AdminDashboard = () => {
       ]
     : [];
 
-    const formatRole = (role) => {
+  const formatRole = (role) => {
     switch (role) {
       case 'admin': return 'Admin';
       case 'organizer': return 'Event Organizer';
@@ -58,7 +58,6 @@ const AdminDashboard = () => {
       default: return role;
     }
   };
-
 
    const renderPanel = () => {
     switch (activePanel) {

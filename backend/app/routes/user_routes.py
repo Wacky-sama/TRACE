@@ -1,26 +1,27 @@
 from fastapi import APIRouter,  BackgroundTasks, Body, Depends, HTTPException, Query
 from fastapi.security import OAuth2PasswordBearer
-from starlette import status
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from starlette import status
+from typing import List, Optional, Generator
 from app.config import settings
 from app.database import SessionLocal
 from app.models.user import User, UserRole
-from app.middleware.auth_middleware import UpdateLastSeenMiddleware
-from app.schemas.user import UserCreate, UserOut, UserPendingApprovalOut, PaginatedUserResponse
+from app.schemas.user import UserCreate, UserOut, UserPendingApprovalOut, PaginatedUserResponse, UserProfileOut
 from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
 from datetime import timedelta, datetime
 
 router = APIRouter()
 
-def get_db():
+# Dependency to provide a DB session for each request
+def get_db() -> Generator[Session, None, None]:
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
 
+# Login with username or email; returns JWT token and user role
 @router.post("/login")
 def login(
     identifier: str = Body(..., embed=True),
@@ -38,13 +39,14 @@ def login(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username/email or password")
     
     if not user.is_active or user.deleted_at:
-        raise HTTPException(status_code=403, detail="User is blocked or deleted")
+        raise HTTPException(status_code=403, detail="Access Denied!")
 
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)  
     token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
 
     return {"token": token, "role": user.role}
 
+# Dependency to get the current user from JWT token
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
@@ -62,6 +64,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
+ # Admin-only route to create Admin or Event Organizer accounts (limits: 2 Admins, 5 Organizers)
 @router.post("/admin/create-user", response_model=UserOut, status_code=201)
 def create_user_as_admin(
     user_data: UserCreate,
@@ -123,6 +126,7 @@ def create_user_as_admin(
 
     return new_user
 
+# Public endpoint for alumni registration (requires admin approval)
 @router.post("/register/alumni", response_model=UserOut)
 def register_alumni(
     user: UserCreate,
@@ -157,11 +161,13 @@ def register_alumni(
 
     return new_user
 
+# List all unapproved alumni registrations
 @router.get("/pending-alumni", response_model=List[UserPendingApprovalOut])
 def get_pending_alumni(db: Session = Depends(get_db)):
     pending_alumni = db.query(User).filter(User.role == UserRole.alumni, User.is_approved == False).all()
     return pending_alumni
 
+# List approved, non-archived users with optional filters (role, course, batch year)
 @router.get("/registered-users", response_model=PaginatedUserResponse)
 def get_registered_users(
     page: int = Query(1, ge=1),
@@ -205,6 +211,7 @@ def get_registered_users(
         "pages": pages
     }
 
+#  Set user as inactive (block); user must not be archived
 @router.patch("/{user_id}/block", status_code=204)
 def block_user(user_id: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
@@ -213,6 +220,7 @@ def block_user(user_id: str, db: Session = Depends(get_db)):
     user.is_active = False
     db.commit() 
 
+# Reactivate a previously blocked user
 @router.patch("/{user_id}/unblock", status_code=204)
 def unblock_user(user_id: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
@@ -221,6 +229,7 @@ def unblock_user(user_id: str, db: Session = Depends(get_db)):
     user.is_active = True
     db.commit()
 
+# Soft-delete user by setting deleted_at timestamp
 @router.delete("/{user_id}/delete", status_code=204)
 def soft_delete_user(user_id: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
@@ -229,6 +238,7 @@ def soft_delete_user(user_id: str, db: Session = Depends(get_db)):
     user.deleted_at = datetime.utcnow()
     db.commit()
 
+# Approve pending user (typically alumni registration)
 @router.patch("/{user_id}/approve", status_code=status.HTTP_204_NO_CONTENT)
 def approve_user(user_id: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
@@ -241,6 +251,7 @@ def approve_user(user_id: str, db: Session = Depends(get_db)):
     db.commit()
     return
 
+# Decline pending user by deleting record (only if not yet approved)
 @router.patch("/{user_id}/decline", status_code=status.HTTP_204_NO_CONTENT)
 def decline_user(user_id: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
@@ -253,6 +264,7 @@ def decline_user(user_id: str, db: Session = Depends(get_db)):
     db.commit()
     return
 
+# Get total user count and counts per role
 @router.get("/stats")
 def get_user_stats(db: Session = Depends(get_db)):
     total_users = db.query(User).count()
@@ -266,22 +278,25 @@ def get_user_stats(db: Session = Depends(get_db)):
         "organizers": organizers,
         "alumni": alumni
     }
-
+# Count users who are active and not archived (i.e., not blocked or soft-deleted)
 @router.get("/active")
 def get_active_users(db: Session = Depends(get_db)):
     active_users = db.query(User).filter(User.is_active == True, User.deleted_at.is_(None)).count()
     return {"active_users": active_users}
 
+# Count users who are blocked (inactive) but not archived
 @router.get("/blocked")
 def get_blocked_users(db: Session = Depends(get_db)):
     blocked_users = db.query(User).filter(User.is_active == False, User.deleted_at.is_(None)).count()
     return {"blocked_users": blocked_users}
 
+# Count soft-deleted users (i.e., users with a non-null deleted_at)
 @router.get("/archived")
 def get_archived_users(db: Session = Depends(get_db)):
     archived_users = db.query(User).filter(User.deleted_at.isnot(None)).count()
     return {"archived_users": archived_users}
 
+# Get users active in the last 5 minutes, not blocked or archived, with valid roles
 @router.get("/online", response_model=List[UserOut])
 def get_online_users(db: Session = Depends(get_db)):    
     five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
