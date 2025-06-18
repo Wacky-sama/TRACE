@@ -73,6 +73,9 @@ class UserProfileOut(BaseModel):
     role: UserRole
     is_approved: bool
 
+    class Config:
+        from_attributes = True
+
 class PaginatedUserResponse(BaseModel):
     users: List[UserProfileOut]
     total: int
