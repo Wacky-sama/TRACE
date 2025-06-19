@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AuthPage from "./pages/AuthPage"
-import AdminDashboard from "./pages/AdminDashboard"
-import EventOrganizerDashboard from "./pages/EventOrganizerDashboard";
-import AlumniDashboard from "./pages/AlumniDashboard";
-import AdminUsers from './pages/AdminUsers';
+import AdminDashboard from "./pages/Admin/AdminDashboard"
+import EventOrganizerDashboard from "./pages/Event Organizer/EventOrganizerDashboard";
+import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
+import AdminUsers from './pages/Admin/AdminUsers';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem('token');

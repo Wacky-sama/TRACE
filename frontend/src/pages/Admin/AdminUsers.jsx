@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPen, faUserSlash, faUserMinus } from '@fortawesome/free-solid-svg-icons';
-import api from '../services/api';
+import api from '../../services/api';
 
-const Users = () => {
+const AdminUsers = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
   const [registeredUsers, setRegisteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -131,7 +131,7 @@ const Users = () => {
           </tbody>
         </table>
       </div>
-      <h2 className="text-2xl font-bold mt-10 mb-6">Registered Users</h2>
+      <h2 className="text-2xl font-bold mt-10 mb-6">Registered AdminUsers</h2>
       <div className="overflow-auto">
         <table className="min-w-full bg-white border rounded-lg shadow">
           <thead className="bg-gray-100 text-left text-sm text-gray-700">
@@ -190,4 +190,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default AdminUsers;
