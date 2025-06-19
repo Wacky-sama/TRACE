@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, aliased
+from sqlalchemy import select
 from uuid import UUID
 from datetime import datetime
 from app.database import get_db
@@ -33,33 +34,34 @@ def create_event(
     db.refresh(new_event)
     return new_event
 
+def get_events_by_status(db: Session, status: str):
+    creator = aliased(User)
+    results = (
+        db.query(event_models.Event, creator.firstname, creator.lastname)
+        .join(creator, event_models.Event.created_by == creator.id)
+        .filter(event_models.Event.status == status)
+        .all()
+    )
+
+    return [
+        event_schemas.EventOut(
+            **{**event.__dict__, "created_by_name": f"{firstname} {lastname}"}
+        )
+        for event, firstname, lastname in results
+    ]
+
+
 @router.get("/pending", response_model=list[event_schemas.EventOut])
 def get_pending_events(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
-    
-    events = db.query(event_models.Event).filter(event_models.Event.status == "pending").all()
-    result = []
-    for event in events:
-        creator = db.query(User).filter(User.id == event.created_by).first()
-        event_data = event.__dict__.copy()
-        event_data["created_by_name"] = f"{creator.firstname} {creator.lastname}" if creator else None
-        result.append(event_data)
-    return result
+    return get_events_by_status(db, "pending")
 
 @router.get("/approved", response_model=list[event_schemas.EventOut])
 def get_approved_events(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
-    
-    events = db.query(event_models.Event).filter(event_models.Event.status == "approved").all()
-    result = []
-    for event in events:
-        creator = db.query(User).filter(User.id == event.created_by).first()
-        event_data = event.__dict__.copy()
-        event_data["created_by_name"] = f"{creator.firstname} {creator.lastname}" if creator else None
-        result.append(event_data)
-    return result
+    return get_events_by_status(db, "approved")
 
 @router.post("/{event_id}/{action}")
 def update_event_status(
@@ -81,4 +83,4 @@ def update_event_status(
     event.status = "approved" if action == "approve" else "declined"
     db.commit()
     db.refresh(event)
-    return {"message": f"Event {action}d successfully", "event": event}
+    return event
