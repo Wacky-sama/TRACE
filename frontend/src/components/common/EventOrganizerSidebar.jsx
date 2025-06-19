@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouseUser, faUsers, faCalendar, faChartSimple, faFile, faBell, faRightFromBracket, faGear, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faHouseUser, faCalendar, faFile, faBell, faRightFromBracket, faGear, faBars } from '@fortawesome/free-solid-svg-icons';
 
 const EventOrganizerSidebar = ({onPanelChange}) => {
   const [isOpen, setIsOpen] = useState(true);
 
   const navigationItems = [
     { icon: faHouseUser, label: 'Dashboard', panel: 'dashboard' },
-    { icon: faUsers, label: 'Users', panel: 'users' },
     {icon: faCalendar, label: 'Events', panel: 'events'},
-    { icon: faChartSimple, label: 'Analytics', panel: 'analytics' },
     { icon: faFile, label: 'Reports', panel: 'reports' },
     { icon: faBell, label: 'Notifications', panel: 'notifications' },
     { icon: faGear, label: 'Account Settings', panel: 'settings' }
@@ -22,7 +20,6 @@ const EventOrganizerSidebar = ({onPanelChange}) => {
 
   return (
     <div className={`bg-gray-800 text-white transition-all duration-300 ${isOpen ? 'w-64' : 'w-16'} min-h-screen`}>
-      {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-700">
         <div className={`flex items-center gap-3 ${!isOpen && 'justify-center'}`}>
           {isOpen && <span className="font-semibold text-lg">Event Organizer Panel</span>}
@@ -35,7 +32,6 @@ const EventOrganizerSidebar = ({onPanelChange}) => {
         </button>
       </div>
 
-      {/* Navigation */}
       <nav className="mt-4">
         <ul className="space-y-2 px-3">
           {navigationItems.map((item) => (
@@ -54,10 +50,8 @@ const EventOrganizerSidebar = ({onPanelChange}) => {
           ))}
         </ul>
 
-        {/* Horizontal line after Notifications */}
         <div className="mx-3 my-4 border-t border-gray-600"></div>
 
-        {/* Logout */}
         <div className="px-3">
           <button
             onClick={handleLogout}

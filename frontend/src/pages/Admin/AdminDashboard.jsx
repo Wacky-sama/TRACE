@@ -125,10 +125,10 @@ const AdminDashboard = () => {
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
           <div className="space-y-2">
-            <button onClick={() => setActivePanel('create-user')} className="w-full text-left p-3 rounded-md bg-blue-50 hover:bg-blue-100 transition-colors">
+            <button onClick={() => setActivePanel('create-user')} className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
               Create New User
             </button>
-            <button className="w-full text-left p-3 rounded-md bg-blue-50 hover:bg-blue-100 transition-colors">
+            <button className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
               Generate Report
             </button>
           </div>
