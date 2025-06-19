@@ -3,7 +3,7 @@ import api from '../services/api';
 import { login } from '../services/Auth';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faUser, faLock } from '@fortawesome/free-solid-svg-icons';
 
 function AuthPage() {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -324,13 +324,26 @@ function AuthPage() {
           ) : (
             <>
               <div className="mb-4">
-                <input
-                  type="text"
-                  placeholder="Email or Username"
-                  value={identifier}
-                  onChange={e => setIdentifier(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                <div className="relative">
+                  <FontAwesomeIcon 
+                    icon={faUser} 
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" 
+                  />
+                  <input
+                    type="text"
+                    id="identifier"
+                    value={identifier}
+                    onChange={e => setIdentifier(e.target.value)}
+                    className="w-full p-3 pt-6 pl-10 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 peer"
+                    placeholder=" "
+                  />
+                  <label
+                    htmlFor="identifier"
+                    className="absolute left-10 top-1/2 -translate-y-1/2 text-gray-500 text-sm transition-all duration-200 transform origin-left peer-focus:top-1 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-blue-500 peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-600"
+                  >
+                    Email or Username
+                  </label>
+                </div>
                 <div className="h-5 mt-1">
                   {loginErrors.identifier && <p className="text-red-500 text-xs">{loginErrors.identifier}</p>}
                 </div>
@@ -338,13 +351,24 @@ function AuthPage() {
 
               <div className="mb-6">
                 <div className="relative">
+                  <FontAwesomeIcon 
+                    icon={faLock} 
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" 
+                  />
                   <input
                     type={showPassword ? "text" : "password"}
-                    placeholder="Password"
+                    id="password"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+                    className="w-full p-3 pt-6 pl-10 pr-10 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 peer"
+                    placeholder=" "
                   />
+                  <label
+                    htmlFor="password"
+                    className="absolute left-10 top-1/2 -translate-y-1/2 text-gray-500 text-sm transition-all duration-200 transform origin-left peer-focus:top-1 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-blue-500 peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-600"
+                  >
+                    Password
+                  </label>
                   <span
                     className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
                     onClick={() => setShowPassword(prev => !prev)}
