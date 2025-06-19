@@ -8,6 +8,12 @@ class EventAction(str, Enum):
     approve = "approve"
     decline = "decline"
 
+    def to_db(self) -> str:
+        return {
+            "approve": "approved",
+            "decline": "declined"
+        }[self.value]
+
 class EventCreate(BaseModel):
     title: str
     description: Optional[str] = None
