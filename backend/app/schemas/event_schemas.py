@@ -1,7 +1,12 @@
 from pydantic import BaseModel
+from enum import Enum
 from uuid import UUID
 from datetime import date, datetime
 from typing import Optional
+
+class EventAction(str, Enum):
+    approve = "approve"
+    decline = "decline"
 
 class EventCreate(BaseModel):
     title: str
@@ -21,4 +26,4 @@ class EventOut(BaseModel):
     created_by_name: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
