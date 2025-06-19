@@ -18,6 +18,7 @@ class EventOut(BaseModel):
     status: str
     created_by: UUID
     created_at: datetime
+    created_by_name: Optional[str] = None
 
     class Config:
         orm_mode = True

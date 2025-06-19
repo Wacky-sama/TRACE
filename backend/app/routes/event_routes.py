@@ -32,3 +32,53 @@ def create_event(
     db.commit()
     db.refresh(new_event)
     return new_event
+
+@router.get("/pending", response_model=list[event_schemas.EventOut])
+def get_pending_events(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    events = db.query(event_models.Event).filter(event_models.Event.status == "pending").all()
+    result = []
+    for event in events:
+        creator = db.query(User).filter(User.id == event.created_by).first()
+        event_data = event.__dict__.copy()
+        event_data["created_by_name"] = f"{creator.firstname} {creator.lastname}" if creator else None
+        result.append(event_data)
+    return result
+
+@router.get("/approved", response_model=list[event_schemas.EventOut])
+def get_approved_events(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    events = db.query(event_models.Event).filter(event_models.Event.status == "approved").all()
+    result = []
+    for event in events:
+        creator = db.query(User).filter(User.id == event.created_by).first()
+        event_data = event.__dict__.copy()
+        event_data["created_by_name"] = f"{creator.firstname} {creator.lastname}" if creator else None
+        result.append(event_data)
+    return result
+
+@router.post("/{event_id}/{action}")
+def update_event_status(
+    event_id: UUID,
+    action: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    event = db.query(event_models.Event).filter(event_models.Event.id == event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    if action not in ("approve", "decline"):
+        raise HTTPException(status_code=400, detail="Invalid action")
+
+    event.status = "approved" if action == "approve" else "declined"
+    db.commit()
+    db.refresh(event)
+    return {"message": f"Event {action}d successfully", "event": event}
