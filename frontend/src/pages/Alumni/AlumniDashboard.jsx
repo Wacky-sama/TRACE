@@ -1,5 +1,5 @@
 import React from 'react'
-import AlumniSidebar from '../components/common/AlumniSidebar';
+import AlumniSidebar from '../../components/common/AlumniSidebar';
 
 const AlumniDashboard = () => {
   return (

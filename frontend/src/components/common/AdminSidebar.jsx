@@ -22,7 +22,6 @@ const AdminSidebar = ({onPanelChange}) => {
 
   return (
     <div className={`bg-gray-800 text-white transition-all duration-300 ${isOpen ? 'w-64' : 'w-16'} min-h-screen`}>
-      {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-700">
         <div className={`flex items-center gap-3 ${!isOpen && 'justify-center'}`}>
           {isOpen && <span className="font-semibold text-lg">Admin Panel</span>}
@@ -35,7 +34,6 @@ const AdminSidebar = ({onPanelChange}) => {
         </button>
       </div>
 
-      {/* Navigation */}
       <nav className="mt-4">
         <ul className="space-y-2 px-3">
           {navigationItems.map((item) => (
@@ -54,10 +52,8 @@ const AdminSidebar = ({onPanelChange}) => {
           ))}
         </ul>
 
-        {/* Horizontal line after Notifications */}
         <div className="mx-3 my-4 border-t border-gray-600"></div>
 
-        {/* Logout */}
         <div className="px-3">
           <button
             onClick={handleLogout}

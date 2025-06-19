@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import EventOrganizerSidebar from "../components/common/EventOrganizerSidebar";
-import api from '../services/api';
+import EventOrganizerSidebar from "../../components/common/EventOrganizerSidebar";
+import api from '../../services/api';
 
 const EventOrganizerDashboard = () => {
   useEffect(() => {

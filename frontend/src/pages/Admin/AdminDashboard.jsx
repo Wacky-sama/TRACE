@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import AdminCreateUser from './AdminCreateUser';
-import AdminSidebar from '../components/common/AdminSidebar';
+import AdminSidebar from '../../components/common/AdminSidebar';
 import { BarChart,Bar,XAxis,YAxis,Tooltip,ResponsiveContainer,CartesianGrid } from 'recharts';
 import AdminUsers from './AdminUsers';
-import api from '../services/api';
+import AdminEvents from './AdminEvents';
+import api from '../../services/api';
 
 const AdminDashboard = () => {
   const [userStats, setUserStats] = useState(null);
@@ -127,7 +128,7 @@ const AdminDashboard = () => {
             <button onClick={() => setActivePanel('create-user')} className="w-full text-left p-3 rounded-md bg-blue-50 hover:bg-blue-100 transition-colors">
               Create New User
             </button>
-            <button className="w-full text-left p-3 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors">
+            <button className="w-full text-left p-3 rounded-md bg-blue-50 hover:bg-blue-100 transition-colors">
               Generate Report
             </button>
           </div>
@@ -153,6 +154,8 @@ const AdminDashboard = () => {
   );
       case 'users':
         return <AdminUsers />;
+      case 'events':
+        return <AdminEvents />;
       case 'create-user':
         return <AdminCreateUser token={localStorage.getItem("token")}/>;
       default:
