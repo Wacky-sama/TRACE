@@ -2,7 +2,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from datetime import datetime
 from app.database import SessionLocal
-from app.models.user import User
+from app.models.user_models import User
 from app.utils.security import decode_access_token
 import logging
 

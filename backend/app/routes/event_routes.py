@@ -4,7 +4,7 @@ from uuid import UUID
 from datetime import datetime
 from app.database import get_db
 from app.routes.user_routes import get_current_user  
-from app.models.user import User  
+from app.models.user_models import User  
 from app.models import event_models
 from app.schemas import event_schemas
 
