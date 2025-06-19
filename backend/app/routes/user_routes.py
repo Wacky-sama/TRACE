@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 from typing import List, Optional, Generator
 from app.config import settings
-from app.database import SessionLocal
+from app.database import get_db
 from app.models.user import User, UserRole
 from app.schemas.user import UserCreate, UserOut, UserPendingApprovalOut, PaginatedUserResponse, UserProfileOut
 from app.utils.email_sender import send_email
@@ -12,14 +12,6 @@ from app.utils.security import hash_password, verify_password, create_access_tok
 from datetime import timedelta, datetime
 
 router = APIRouter()
-
-# Dependency to provide a DB session for each request
-def get_db() -> Generator[Session, None, None]:
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 # Login with username or email; returns JWT token and user role
 @router.post("/login")
