@@ -80,7 +80,7 @@ def update_event_status(
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
-    event.status = "approved" if action == EventAction.approve else "declined"
+    event.status = action.to_db()
     db.commit()
     db.refresh(event)
     return {
