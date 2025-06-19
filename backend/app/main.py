@@ -24,6 +24,7 @@ app.add_middleware(
 )
 
 app.include_router(user_routes.router, prefix="/users", tags=["Users"])
+app.include_router(event_routes.router, prefix="/events", tags=["Events"])
 
 @app.get("/")
 def root():
