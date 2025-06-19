@@ -2,11 +2,11 @@ from fastapi import APIRouter,  BackgroundTasks, Body, Depends, HTTPException, Q
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from starlette import status
-from typing import List, Optional, Generator
+from typing import List, Optional
 from app.config import settings
 from app.database import get_db
-from app.models.user import User, UserRole
-from app.schemas.user import UserCreate, UserOut, UserPendingApprovalOut, PaginatedUserResponse, UserProfileOut
+from app.models.user_models import User, UserRole
+from app.schemas.user_schemas import UserCreate, UserOut, UserPendingApprovalOut, PaginatedUserResponse, UserProfileOut
 from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
 from datetime import timedelta, datetime
