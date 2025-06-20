@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPen, faUserSlash, faUserMinus } from '@fortawesome/free-solid-svg-icons';
+import { faUserPen, faUserSlash, faUserMinus, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 const AdminUsers = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
   const [approvedUsers, setApprovedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -42,7 +43,7 @@ const AdminUsers = () => {
       setActionLoadingId(null);
     }
   };
-
+  
   const renderTable = (users, showActions = false) => (
     <table className="min-w-full bg-white border rounded-lg shadow">
       <thead className="bg-gray-100 text-left text-sm text-gray-700">
@@ -127,14 +128,40 @@ const AdminUsers = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">Pending Alumni Approvals</h2>
-      <div className="overflow-auto mb-12">
-        {renderTable(pendingUsers, true)}
+      <h2 className="text-2xl font-bold">Users</h2>
+
+      <div className="flex justify-end items-center mb-4 space-x-2">
+        <input
+          type="text"
+          placeholder="Search User"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border border-gray-300 rounded px-3 py-1"
+        />
+        <FontAwesomeIcon icon={faMagnifyingGlass} className="text-gray-600"/>
       </div>
 
-      <h2 className="text-2xl font-bold mb-6">Approved Users</h2>
+      <div className="border-t border-gray-600 mb-6"></div>
+
+      <h3 className="text-2xl font-bold mb-6">Pending Alumni Approvals</h3>
+      <div className="overflow-auto mb-12">
+        {renderTable(
+          pendingUsers.filter((u) =>
+            `${u.firstname} ${u.lastname} ${u.username}`.toLowerCase().includes(searchTerm.toLowerCase())
+          ),
+          true
+        )}
+      </div>
+
+      <h3 className="text-2xl font-bold mb-6">Registered Users</h3>
       <div className="overflow-auto">
-        {renderTable(approvedUsers.filter(u => ['alumni', 'organizer'].includes(u.role)))}
+        {renderTable(
+          approvedUsers
+            .filter((u) => ['alumni', 'organizer'].includes(u.role))
+            .filter((u) =>
+              `${u.firstname} ${u.lastname} ${u.username}`.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+        )}
       </div>
     </div>
   );
