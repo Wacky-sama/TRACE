@@ -1,3 +1,4 @@
+import { getToken, getRole, isApproved, clearAuthData } from './utils/storage';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,9 +9,9 @@ import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
 import AdminUsers from './pages/Admin/AdminUsers';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
-  const token = localStorage.getItem('token');
-  const role = localStorage.getItem('role');
-  const is_approved = localStorage.getItem('is_approved') === 'true';
+  const token = getToken();
+  const role = getRole();
+  const is_approved = isApproved();
 
   if (!token) return <Navigate to="/login" replace />;
   
@@ -25,8 +26,8 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 };
 
 const PublicRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
-  const role = localStorage.getItem('role');
+  const token = getToken();
+  const role = getRole();
 
   const validRoles = ['admin', 'organizer', 'alumni'];
 
@@ -35,7 +36,7 @@ const PublicRoute = ({ children }) => {
 }
 
 if (token && !validRoles.includes(role)) {
-  localStorage.clear();
+  clearAuthData();
   return <Navigate to="/login" replace />;
 }
 
