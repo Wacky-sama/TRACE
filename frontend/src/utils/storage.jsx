@@ -13,3 +13,8 @@ export const clearAuthData = () => {
   localStorage.removeItem("role");
   localStorage.removeItem("is_approved");
 };
+
+export const logoutUser = () => {
+  clearAuthData();
+  window.location.href = "/login"; 
+};
