@@ -15,5 +15,5 @@ export async function login(identifier, password) {
   localStorage.setItem("role", data.role);
   localStorage.setItem("is_approved",data.is_approved);
 
-  return { token: data.token, role: data.role, is_approved: data.is_approved };
+  return { token: data.token, role: data.role, username: data.username, is_approved: data.is_approved };
 }

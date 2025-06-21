@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,35 +11,33 @@ const AdminUsers = () => {
   const [actionLoadingId, setActionLoadingId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const [pendingRes, approvedRes] = await Promise.all([
-          api.get('/users/pending-alumni'),
-          api.get('/users/registered-users'),
-        ]);
-        setPendingUsers(pendingRes.data);
-        setApprovedUsers(approvedRes.data.users);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        alert('Backend is probably on a nap break');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchUsers = async () => {
+    try {
+      const [pendingRes, approvedRes] = await Promise.all([
+        api.get('/users/pending-alumni'),
+        api.get('/users/registered-users'),
+      ]);
+      setPendingUsers(pendingRes.data);
+      setApprovedUsers(approvedRes.data.users);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      toast.error('Failed to load users. Backend is probably on a nap break.');
+    }
+  };
 
-    fetchUsers();
+  useEffect(() => {
+    fetchUsers().finally(() => setLoading(false));
   }, []);
 
   const handleAction = async (userId, action) => {
     setActionLoadingId(userId);
     try {
       await api.patch(`/users/${userId}/${action}`);
-      setPendingUsers(prev => prev.filter(user => user.id !== userId));
-      alert(`User ${action}d successfully!`);
+      await fetchUsers();
+      toast.success(`User ${action}d successfully!`);
     } catch (error) {
       console.error(`Failed to ${action} user:`, error);
-      alert(`Could not ${action} the user. Try again.`);
+      toast.error(`Could not ${action} the user. Try again.`);
     } finally {
       setActionLoadingId(null);
     }

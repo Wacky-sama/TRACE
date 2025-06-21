@@ -36,7 +36,7 @@ def login(
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)  
     token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
 
-    return {"token": token, "role": user.role}
+    return {"token": token, "role": user.role, "username": user.username, "is_approved": user.is_approved}
 
 # Dependency to get the current user from JWT token
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
@@ -103,16 +103,20 @@ def create_user_as_admin(
     display_role = role_display_names.get(new_user.role, new_user.role.value)
 
     subject = "TRACE System - Account Created"
-    body = (
-        f"Hello {new_user.firstname},\n\n"
-        f"An account has been created for you on the TRACE System.\n\n"
-        f"Username: {new_user.username}\n"
-        f"Password: {user_data.password}\n"
-        f"Role: {display_role}\n\n"
-        "Please log in and change your password immediately.\n\n"
-        "Best regards,\n"
-        "TRACE Team"
-    )
+    body = f"""\
+    Hello {new_user.firstname},
+
+    An account has been created for you on the TRACE System.
+
+    Username: {new_user.username}
+    Password: {user_data.password}
+    Role: {display_role}
+
+    Please log in and change your password immediately.
+
+    Best regards,  
+    TRACE Team
+    """
 
     background_tasks.add_task(send_email, to_email=new_user.email, subject=subject, body=body)
 
@@ -147,7 +151,15 @@ def register_alumni(
     db.refresh(new_user)
 
     subject = "TRACE System - Registration Received"
-    body = f"Hello {new_user.firstname},\n\nThank you for registering as an Alumni. Your registration is under review. We will notify you once approved.\n\nBest regards,\nTRACE Team"
+    body = f"""\
+    Hello {new_user.firstname},
+
+    Thank you for registering as an Alumni. Your registration is under review.  
+    We will notify you once it is approved.
+
+    Best regards,  
+    TRACE Team
+    """
 
     background_tasks.add_task(send_email, to_email=new_user.email, subject=subject, body=body)
 
@@ -232,7 +244,7 @@ def soft_delete_user(user_id: str, db: Session = Depends(get_db)):
 
 # Approve pending user (typically alumni registration)
 @router.patch("/{user_id}/approve", status_code=status.HTTP_204_NO_CONTENT)
-def approve_user(user_id: str, db: Session = Depends(get_db)):
+def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -241,16 +253,47 @@ def approve_user(user_id: str, db: Session = Depends(get_db)):
 
     user.is_approved = True
     db.commit()
+
+    subject = "Your Alumni Account Has Been Approved"
+    body = f"""\
+    Dear {user.lastname}, {user.firstname},
+
+    We are pleased to inform you that your registration to the TRACE System has been approved.
+
+    You may now log in using your credentials to access the alumni dashboard.
+
+    If you have any questions, feel free to contact us.
+
+    Best regards,  
+    TRACE Team
+    """
+
+    background_tasks.add(send_email, user.email, subject, body)
+
     return
 
 # Decline pending user by deleting record (only if not yet approved)
 @router.patch("/{user_id}/decline", status_code=status.HTTP_204_NO_CONTENT)
-def decline_user(user_id: str, db: Session = Depends(get_db)):
+def decline_user(user_id: str, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     if user.is_approved:
         raise HTTPException(status_code=400, detail="User already approved, can't decline")
+
+    subject = "Alumni Registration Status"
+    body = f"""\
+    Dear {user.firstname} {user.lastname},
+
+    Thank you for your interest in joining our Alumni System.
+
+    After reviewing your registration, we regret to inform you that your request has not been approved at this time.
+
+    Sincerely,  
+    Alumni Registration Team
+    """
+
+    background_tasks.add_task(send_email, user.email, subject, body)
 
     db.delete(user)
     db.commit()
