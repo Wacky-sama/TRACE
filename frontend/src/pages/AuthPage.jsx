@@ -1,3 +1,4 @@
+import { setAuthData, getToken, getRole, isApproved, clearAuthData } from '../utils/storage';
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import { login } from '../services/auth';
@@ -49,7 +50,8 @@ function AuthPage() {
     if (Object.keys(errors).length > 0) return;
 
     try {
-      const { role, is_approved } = await login(identifier, password);
+      const { token, role, is_approved } = await login(identifier, password);
+      setAuthData({ token, role, is_approved });
 
       if (role === "alumni" && !is_approved) {
         setLoginError("Your account is pending approval by the admin.");
@@ -71,13 +73,13 @@ function AuthPage() {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
-    const is_approved = localStorage.getItem("is_approved") === "true";
+    const token = getToken();
+    const role = getRole();
+    const is_approved = isApproved();
 
   if (token && role) {
     if (role === "alumni" && !is_approved) {
-      localStorage.clear();
+      clearAuthData();
       return;
     }
     

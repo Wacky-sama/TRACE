@@ -1,9 +1,10 @@
+import { getToken } from '../../utils/storage';
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
-const AdminCreateUser = ({ token }) => {
+const AdminCreateUser = () => {
   const [form, setForm] = useState({
     username: '',
     email: '',
@@ -52,10 +53,10 @@ const AdminCreateUser = ({ token }) => {
     try {
       const payload = { ...form };
       delete payload.confirmPassword;
-      await axios.post(
-        'http://192.168.10.2:8000/users/admin/create-user',
+      await api.post(
+        '/users/admin/create-user',
         payload,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${getToken()}` } }
       );
       setMessage("User created successfully!");
       setForm({
