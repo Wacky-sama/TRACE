@@ -88,9 +88,3 @@ def update_event_status(
     "event": event_schemas.EventOut.from_orm(event)
 }
 
-@router.post("/{event_id}/attend")
-def attend_event(event_id: UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if current_user.role != "alumni":
-        raise HTTPException(status_code=403, detail="Only alumni can attend events.")
-
-    return {"message": "Successfully registered attendance"}

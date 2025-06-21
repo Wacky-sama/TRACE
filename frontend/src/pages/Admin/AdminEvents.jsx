@@ -54,6 +54,7 @@ const AdminEvents = () => {
               <th className="p-3">Location</th>
               <th className="p-3">Description</th>
               <th className="p-3">Created By</th>
+              <th className="p-3">Date</th>
               <th className="p-3">Status</th>
               <th className="p-3">Actions</th>
             </tr>
@@ -66,6 +67,7 @@ const AdminEvents = () => {
                   <td className="p-3">{event.location}</td>
                   <td className="p-3">{event.description || '-'}</td>
                   <td className="p-3">{event.created_by_name || event.created_by}</td>
+                  <td className="p-3">{event.event_date || event.event_date}</td>
                   <td className="p-3 capitalize">{event.status}</td>
                   <td className="p-3 space-x-2">
                     <button
@@ -109,6 +111,7 @@ const AdminEvents = () => {
               <th className="p-3">Location</th>
               <th className="p-3">Description</th>
               <th className="p-3">Created By</th>
+              <th className="p-3">Date</th>
               <th className="p-3">Status</th>
             </tr>
           </thead>
@@ -120,6 +123,7 @@ const AdminEvents = () => {
                   <td className="p-3">{event.location}</td>
                   <td className="p-3">{event.description || '-'}</td>
                   <td className="p-3">{event.created_by_name || event.created_by}</td>
+                  <td className="p-3">{event.event_date || event.event_date}</td>
                   <td className="p-3 capitalize text-green-600">{event.status}</td>
                 </tr>
               ))
