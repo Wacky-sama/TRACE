@@ -62,7 +62,7 @@ def get_pending_events(db: Session = Depends(get_db), current_user: User = Depen
 
 @router.get("/approved", response_model=list[event_schemas.EventOut])
 def get_approved_events(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if current_user.role != "admin":
+    if current_user.role not in {"admin", "alumni", "organizer"}:
         raise HTTPException(status_code=403, detail="Not authorized")
     return get_events_by_status(db, "approved")
 
@@ -88,3 +88,9 @@ def update_event_status(
     "event": event_schemas.EventOut.from_orm(event)
 }
 
+@router.post("/{event_id}/attend")
+def attend_event(event_id: UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role != "alumni":
+        raise HTTPException(status_code=403, detail="Only alumni can attend events.")
+
+    return {"message": "Successfully registered attendance"}
