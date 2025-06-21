@@ -16,6 +16,7 @@ class UserRole(str, enum.Enum):
 class TokenResponse(BaseModel):
     token: str
     role: UserRole
+    is_approved: bool
 
 class UserCreate(BaseModel):
     username: str

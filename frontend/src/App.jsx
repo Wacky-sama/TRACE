@@ -8,11 +8,15 @@ import AdminUsers from './pages/Admin/AdminUsers';
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem('token');
   const role = localStorage.getItem('role');
+  const is_approved = localStorage.getItem('is_approved') === 'true';
 
   if (!token) return <Navigate to="/login" replace />;
   
   if (allowedRoles && !allowedRoles.includes(role)) {
     return <Navigate to="/login" replace />
+  }
+  if (role === 'alumni' && !is_approved) {
+    return <Navigate to="/login" replace />;
   }
 
   return children;

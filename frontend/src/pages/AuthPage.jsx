@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
-import { login } from '../services/Auth';
+import { login } from '../services/auth';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faUser, faLock } from '@fortawesome/free-solid-svg-icons';
@@ -49,7 +49,12 @@ function AuthPage() {
     if (Object.keys(errors).length > 0) return;
 
     try {
-      const { role } = await login(identifier, password);
+      const { role, is_approved } = await login(identifier, password);
+
+      if (role === "alumni" && !is_approved) {
+        setLoginError("Your account is pending approval by the admin.");
+        return;
+      }
 
       if (role === "admin") {
         navigate("/admin/dashboard");
@@ -57,21 +62,25 @@ function AuthPage() {
         navigate("/organizer/dashboard");
       } else if (role === "alumni") {
         navigate("/alumni/dashboard");
-      }
-      else {
+      } else {
         setLoginError("Unauthorized access. Please contact the administrator.");
       }
-
     } catch (err) {
-       setLoginError(err.response?.data?.detail ?? err.message);
-    }
+      setLoginError(err.response?.data?.detail ?? err.message);
+      }
   };
 
   useEffect(() => {
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    const is_approved = localStorage.getItem("is_approved") === "true";
 
   if (token && role) {
+    if (role === "alumni" && !is_approved) {
+      localStorage.clear();
+      return;
+    }
+    
     navigate(`/${role}/dashboard`);
   }
 }, [navigate]);
