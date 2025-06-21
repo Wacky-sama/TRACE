@@ -1,9 +1,12 @@
+import { clearAuthData } from '../../utils/storage';
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouseUser, faUsers, faCalendar, faChartSimple, faFile, faBell, faRightFromBracket, faGear, faBars } from '@fortawesome/free-solid-svg-icons';
 
 const AlumniSidebar = ({onPanelChange}) => {
   const [isOpen, setIsOpen] = useState(true);
+  const navigate = useNavigate();
 
   const navigationItems = [
     { icon: faHouseUser, label: 'Dashboard', panel: 'dashboard' },
@@ -16,8 +19,8 @@ const AlumniSidebar = ({onPanelChange}) => {
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    window.location.href = '/login';
+    clearAuthData();
+    navigate('/login');
   };
 
   return (
