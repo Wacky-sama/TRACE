@@ -69,13 +69,20 @@ const CreateEventForm = () => {
         rows={3}
       />
 
-      <input
+      <select
         name="location"
         value={form.location}
         onChange={handleChange}
-        placeholder="Location"
         className="w-full p-3 border border-gray-300 rounded-md text-sm"
-      />
+      >
+        <option value="">Select a location</option>
+        <option value="GYM">GYM</option>
+        <option value="Conference Hall">Conference Hall</option>
+        <option value="Oval">Oval</option>
+        <option value="Admin Building">Admin Building</option>
+        <option value="Mabric Hall">Mabric Hall</option>
+      </select>
+
       {errors.location && <p className="text-red-500 text-sm">{errors.location}</p>}
 
       <input
