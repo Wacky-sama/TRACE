@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import AuthPage from "./pages/AuthPage"
 import AdminDashboard from "./pages/Admin/AdminDashboard"
 import EventOrganizerDashboard from "./pages/Event Organizer/EventOrganizerDashboard";
@@ -41,7 +43,6 @@ if (token && !validRoles.includes(role)) {
 };
 
 function App() {
-
   return (
     <Router>
       <Routes>
@@ -87,6 +88,7 @@ function App() {
         />
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
+      <ToastContainer position="top-right" autoClose={3000} pauseOnHover />
     </Router>
   )
 }
