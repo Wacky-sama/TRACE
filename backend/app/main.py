@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import Base, engine
-from app.routes import user_routes, event_routes
+from app.routes import user_routes, event_routes, event_attendance_routes
 from app.middleware.auth_middleware import UpdateLastSeenMiddleware
 
 Base.metadata.create_all(bind=engine)
@@ -25,6 +25,7 @@ app.add_middleware(
 
 app.include_router(user_routes.router, prefix="/users", tags=["Users"])
 app.include_router(event_routes.router, prefix="/events", tags=["Events"])
+app.include_router(event_attendance_routes.router)
 
 @app.get("/")
 def root():
