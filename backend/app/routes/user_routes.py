@@ -343,3 +343,8 @@ def get_online_users(db: Session = Depends(get_db)):
     ).all()
 
     return online_users
+
+# Get current user
+@router.get("/me", response_model=UserProfileOut)
+def get_current_user_profile(current_user: User = Depends(get_current_user)):
+    return current_user

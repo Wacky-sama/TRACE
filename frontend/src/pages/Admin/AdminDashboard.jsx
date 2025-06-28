@@ -12,17 +12,19 @@ const AdminDashboard = () => {
   const [blockedUsers, setBlockedUsers] = useState(null);
   const [archivedUsers, setArchivedUsers] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const [activePanel, setActivePanel] = useState('dashboard');
 
   useEffect(() => {
     const fetchUserStats = async () => {
       try {
-        const [statsRes, activeRes, blockedRes, archivedRes, onlineRes] = await Promise.all([
+        const [statsRes, activeRes, blockedRes, archivedRes, onlineRes, meRes] = await Promise.all([
           api.get('/users/stats'),
           api.get('/users/active'),
           api.get('/users/blocked'),
           api.get('/users/archived'),
           api.get('/users/online'),
+          api.get('/users/me'),
         ]);
 
         setUserStats(statsRes.data);
@@ -30,6 +32,7 @@ const AdminDashboard = () => {
         setBlockedUsers(blockedRes.data.blocked_users);
         setArchivedUsers(archivedRes.data.archived_users);
         setOnlineUsers(onlineRes.data);
+        setCurrentUser(meRes.data);
         
         console.log('Online users:', onlineRes.data);
       } catch (error) {
@@ -167,7 +170,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <AdminSidebar onPanelChange={setActivePanel}/>
+      <AdminSidebar onPanelChange={setActivePanel} user={currentUser} />
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto">
           {renderPanel()}
