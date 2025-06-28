@@ -4,9 +4,10 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouseUser, faUsers, faCalendar, faChartSimple, faFile, faBell, faRightFromBracket, faGear, faBars } from '@fortawesome/free-solid-svg-icons';
 
-const AlumniSidebar = ({onPanelChange}) => {
+const AlumniSidebar = ({onPanelChange, user}) => {
   const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
+
 
   const navigationItems = [
     { icon: faHouseUser, label: 'Dashboard', panel: 'dashboard' },
@@ -25,10 +26,20 @@ const AlumniSidebar = ({onPanelChange}) => {
 
   return (
     <div className={`bg-gray-800 text-white transition-all duration-300 ${isOpen ? 'w-64' : 'w-16'} min-h-screen`}>
-      {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-700">
-        <div className={`flex items-center gap-3 ${!isOpen && 'justify-center'}`}>
-          {isOpen && <span className="font-semibold text-lg">Alumni Panel</span>}
+        <div className={`w-full ${!isOpen ? 'justify-center' : 'flex flex-col items-center gap-1'} `}>
+          {isOpen && user && (
+            <div className="text-center w-full">
+              <div className="font-semibold text-sm text-white">
+                {user.firstname}{" "}
+                {user.middle_initial ? `${user.middle_initial}. ` : ""}
+                {user.lastname}
+              </div>
+              <div className="text-xs text-gray-400 capitalize">
+                {user.role}
+              </div>
+            </div>
+          )}
         </div>
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -38,7 +49,6 @@ const AlumniSidebar = ({onPanelChange}) => {
         </button>
       </div>
 
-      {/* Navigation */}
       <nav className="mt-4">
         <ul className="space-y-2 px-3">
           {navigationItems.map((item) => (
@@ -57,10 +67,8 @@ const AlumniSidebar = ({onPanelChange}) => {
           ))}
         </ul>
 
-        {/* Horizontal line after Notifications */}
         <div className="mx-3 my-4 border-t border-gray-600"></div>
 
-        {/* Logout */}
         <div className="px-3">
           <button
             onClick={handleLogout}

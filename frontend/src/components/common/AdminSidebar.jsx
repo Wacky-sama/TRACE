@@ -26,18 +26,18 @@ const AdminSidebar = ({onPanelChange, user}) => {
   return (
     <div className={`bg-gray-800 text-white transition-all duration-300 ${isOpen ? 'w-64' : 'w-16'} min-h-screen`}>
       <div className="flex items-center justify-between p-4 border-b border-gray-700">
-        <div className={`flex flex-col items-center gap-1 ${!isOpen && 'justify-center'}`}>
+        <div className={`w-full ${!isOpen ? 'justify-center' : 'flex flex-col items-center gap-1'} `}>
           {isOpen && user && (
-            <>
-              <span className="font-semibold text-sm text-white text-center">
+            <div className="text-center w-full">
+              <div className="font-semibold text-sm text-white">
                 {user.firstname}{" "}
                 {user.middle_initial ? `${user.middle_initial}. ` : ""}
                 {user.lastname}
-              </span>
-              <span className="text-xs text-gray-400 capitalize text-center">
+              </div>
+              <div className="text-xs text-gray-400 capitalize">
                 {user.role}
-              </span>
-            </>
+              </div>
+            </div>
           )}
         </div>
         <button
