@@ -1,8 +1,13 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+from app.config import settings
 from app.database import Base, engine
 from app.routes import user_routes, event_routes, event_attendance_routes
 from app.middleware.auth_middleware import UpdateLastSeenMiddleware
+
+load_dotenv()
 
 Base.metadata.create_all(bind=engine)
 
@@ -10,14 +15,9 @@ app = FastAPI()
 
 app.add_middleware(UpdateLastSeenMiddleware)
 
-origins = [
-    "http://localhost:5173",
-    "http://192.168.10.2:5173"
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

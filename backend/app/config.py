@@ -1,6 +1,5 @@
-import os
-from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
+from typing import List
 
 class Settings(BaseSettings):
     SECRET_KEY: str
@@ -18,6 +17,14 @@ class Settings(BaseSettings):
     SMTP_USER: str
     SMTP_PASSWORD: str
     EMAIL_FROM: str
+
+    CORS_ORIGINS: List[str]
+
+    @classmethod
+    def split_origins(cls, v):
+        if isinstance(v, str):
+            return [origin.strip() for origin in v.split(",")]
+        return v
 
     class Config:
         env_file = ".env"
