@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouseUser, faUsers, faCalendar, faChartSimple, faFile, faBell, faRightFromBracket, faGear, faBars } from '@fortawesome/free-solid-svg-icons';
 
-const AdminSidebar = ({onPanelChange}) => {
+const AdminSidebar = ({onPanelChange, user}) => {
   const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
 
@@ -26,8 +26,19 @@ const AdminSidebar = ({onPanelChange}) => {
   return (
     <div className={`bg-gray-800 text-white transition-all duration-300 ${isOpen ? 'w-64' : 'w-16'} min-h-screen`}>
       <div className="flex items-center justify-between p-4 border-b border-gray-700">
-        <div className={`flex items-center gap-3 ${!isOpen && 'justify-center'}`}>
-          {isOpen && <span className="font-semibold text-lg">Admin Panel</span>}
+        <div className={`flex flex-col items-center gap-1 ${!isOpen && 'justify-center'}`}>
+          {isOpen && user && (
+            <>
+              <span className="font-semibold text-sm text-white text-center">
+                {user.firstname}{" "}
+                {user.middle_initial ? `${user.middle_initial}. ` : ""}
+                {user.lastname}
+              </span>
+              <span className="text-xs text-gray-400 capitalize text-center">
+                {user.role}
+              </span>
+            </>
+          )}
         </div>
         <button
           onClick={() => setIsOpen(!isOpen)}
