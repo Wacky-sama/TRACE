@@ -140,7 +140,9 @@ const AdminDashboard = () => {
               <ul className="mt-2">
                 {onlineUsers.map(user => (
                   <li key={user.id} className="text-gray-800 text-sm">
-                    {user.firstname} {user.middle_initial}. {user.lastname} - {formatRole(user.role)}
+                    {user.firstname}{" "} 
+                    {user.middle_initial ? `${user.middle_initial}. ` : ""} 
+                    {user.lastname} - {formatRole(user.role)}
                   </li>
                 ))}
               </ul>
