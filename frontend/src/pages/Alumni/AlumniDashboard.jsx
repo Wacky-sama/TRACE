@@ -4,6 +4,19 @@ import AlumniSidebar from '../../components/common/AlumniSidebar';
 
 const AlumniDashboard = () => {
   const [events, setEvents] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const res = await api.get('/users/me');
+        setCurrentUser(res.data);
+      } catch (err) {
+        console.error('Failed to fetch current user:', err);
+      }
+    };
+    fetchCurrentUser();
+  }, []);
 
   useEffect(() => {
     const fetchApprovedEvents = async () => {
@@ -20,7 +33,7 @@ const AlumniDashboard = () => {
 
   return (
     <div className="flex">
-      <AlumniSidebar />
+      <AlumniSidebar user={currentUser} />
       <main className="flex-1 p-6">
         <h2 className="text-2xl font-bold mb-6">Approved Events</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
