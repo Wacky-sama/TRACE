@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouseUser, faCalendar, faFile, faBell, faRightFromBracket, faGear, faBars } from '@fortawesome/free-solid-svg-icons';
 
-const EventOrganizerSidebar = ({onPanelChange}) => {
+const EventOrganizerSidebar = ({onPanelChange, user}) => {
   const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
 
@@ -24,8 +24,19 @@ const EventOrganizerSidebar = ({onPanelChange}) => {
   return (
     <div className={`bg-gray-800 text-white transition-all duration-300 ${isOpen ? 'w-64' : 'w-16'} min-h-screen`}>
       <div className="flex items-center justify-between p-4 border-b border-gray-700">
-        <div className={`flex items-center gap-3 ${!isOpen && 'justify-center'}`}>
-          {isOpen && <span className="font-semibold text-lg">Event Organizer Panel</span>}
+        <div className={`w-full ${!isOpen ? 'justify-center' : 'flex flex-col items-center gap-1'} `}>
+          {isOpen && user && (
+            <div className="text-center w-full">
+              <div className="font-semibold text-sm text-white">
+                {user.firstname}{" "}
+                {user.middle_initial ? `${user.middle_initial}. ` : ""}
+                {user.lastname}
+              </div>
+              <div className="text-xs text-gray-400 capitalize">
+                {user.role}
+              </div>
+            </div>
+          )}
         </div>
         <button
           onClick={() => setIsOpen(!isOpen)}

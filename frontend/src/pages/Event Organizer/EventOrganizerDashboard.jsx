@@ -5,18 +5,18 @@ import api from '../../services/api';
 
 const EventOrganizerDashboard = () => {
   const [activePanel, setActivePanel] = useState('dashboard');
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await api.get('/events/organizer-overview');
-        console.log('Fetched data:', res.data);
-      } catch (error) {
-        console.error('Error fetching organizer dashboard data:', error);
-      }
-    };
-
-    fetchData();
+      const fetchCurrentUser = async () => {
+        try {
+          const res = await api.get('/users/me');
+          setCurrentUser(res.data);
+        } catch (err) {
+          console.error('Failed to fetch current user:', err);
+        }
+      };
+      fetchCurrentUser();
   }, []);
 
   const renderPanel = () => {
@@ -44,7 +44,7 @@ const EventOrganizerDashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <EventOrganizerSidebar onPanelChange={setActivePanel} />
+      <EventOrganizerSidebar onPanelChange={setActivePanel} user={currentUser}/>
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto">
           {renderPanel()}
