@@ -21,7 +21,7 @@ const AlumniDashboard = () => {
   useEffect(() => {
     const fetchApprovedEvents = async () => {
       try {
-        const res = await api.get('/events/approved');
+        const res = await api.get('/events');
         setEvents(res.data);
       } catch (err) {
         console.error('Failed to fetch approved events:', err);
@@ -35,7 +35,7 @@ const AlumniDashboard = () => {
     <div className="flex">
       <AlumniSidebar user={currentUser} />
       <main className="flex-1 p-6">
-        <h2 className="text-2xl font-bold mb-6">Approved Events</h2>
+        <h2 className="text-2xl font-bold mb-6">Events</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {events.length > 0 ? events.map((event) => (
             <div key={event.id} className="bg-white p-4 rounded-lg shadow">
@@ -49,7 +49,7 @@ const AlumniDashboard = () => {
               </button>
             </div>
           )) : (
-            <p className="text-gray-500">No approved events available.</p>
+            <p className="text-gray-500">No events available.</p>
           )}
         </div>
       </main>
