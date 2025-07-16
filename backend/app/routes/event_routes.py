@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Body, Depends, HTTPException
 from sqlalchemy.orm import Session, aliased
 from sqlalchemy import select
 from uuid import UUID
@@ -81,3 +81,44 @@ def update_event_status(
     "event": event_schemas.EventOut.from_orm(event)
 }
 
+
+@router.delete("/{event_id}")
+def delete_event(
+    event_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    event = db.query(event_models.Event).filter(event_models.Event.id == event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    db.delete(event)
+    db.commit()
+    return {"message": "Event deleted successfully"}
+
+
+@router.put("/{event_id}", response_model=event_schemas.EventOut)
+def update_event(
+    event_id: UUID,
+    event_in: event_schemas.EventCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    event = db.query(event_models.Event).filter(event_models.Event.id == event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    event.title = event_in.title
+    event.description = event_in.description
+    event.location = event_in.location
+    event.event_date = event_in.event_date
+
+    db.commit()
+    db.refresh(event)
+    return event
