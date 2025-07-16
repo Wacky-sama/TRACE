@@ -2,7 +2,7 @@ import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPen, faUserSlash, faUserMinus, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faUserSlash, faUserMinus, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 const AdminUsers = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
@@ -98,9 +98,6 @@ const AdminUsers = () => {
                   </>
                 ) : (
                   <>
-                    <button title="Edit" className="text-yellow-500 hover:text-yellow-700">
-                      <FontAwesomeIcon icon={faUserPen} />
-                    </button>
                     <button title="Delete" className="text-red-500 hover:text-red-700">
                       <FontAwesomeIcon icon={faUserMinus} />
                     </button>
@@ -156,7 +153,7 @@ const AdminUsers = () => {
       <div className="overflow-auto">
         {renderTable(
           approvedUsers
-            .filter((u) => ['alumni', 'organizer'].includes(u.role))
+            .filter((u) => ['alumni'].includes(u.role))
             .filter((u) =>
               `${u.firstname} ${u.lastname} ${u.username}`.toLowerCase().includes(searchTerm.toLowerCase())
             )
