@@ -2,7 +2,7 @@ import axios from "axios";
 import { getToken } from "../utils/storage";
 
 const api = axios.create({
-    baseURL: "http://192.168.10.2:8000",
+    baseURL: import.meta.env.VITE_API_URL,
 });
 
 api.interceptors.request.use((config) => {

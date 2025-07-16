@@ -2,7 +2,7 @@ import { clearAuthData } from '../../utils/storage';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouseUser, faUsers, faCalendar, faChartSimple, faFile, faBell, faRightFromBracket, faGear, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faHouseUser, faCalendar, faBell, faRightFromBracket, faGear, faBars } from '@fortawesome/free-solid-svg-icons';
 
 const AlumniSidebar = ({onPanelChange, user}) => {
   const [isOpen, setIsOpen] = useState(true);
@@ -11,10 +11,7 @@ const AlumniSidebar = ({onPanelChange, user}) => {
 
   const navigationItems = [
     { icon: faHouseUser, label: 'Dashboard', panel: 'dashboard' },
-    { icon: faUsers, label: 'Users', panel: 'users' },
-    {icon: faCalendar, label: 'Events', panel: 'events'},
-    { icon: faChartSimple, label: 'Analytics', panel: 'analytics' },
-    { icon: faFile, label: 'Reports', panel: 'reports' },
+    { icon: faCalendar, label: 'Events', panel: 'events'},
     { icon: faBell, label: 'Notifications', panel: 'notifications' },
     { icon: faGear, label: 'Account Settings', panel: 'settings' }
   ];
