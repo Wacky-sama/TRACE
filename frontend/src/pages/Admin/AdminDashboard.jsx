@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import AdminCreateUser from './AdminCreateUser';
+import AdminCreateEvent from './AdminCreateEvent';
 import AdminSidebar from '../../components/common/AdminSidebar';
 import { BarChart,Bar,XAxis,YAxis,Tooltip,ResponsiveContainer,CartesianGrid } from 'recharts';
 import AdminUsers from './AdminUsers';
@@ -48,16 +49,13 @@ const AdminDashboard = () => {
 
   const chartData = userStats
     ? [
-        { role: 'Admins', count: userStats.admins },
-        { role: 'Event Organizers', count: userStats.organizers },
-        { role: 'Alumni', count: userStats.alumni },
+        { role: 'Alumni', count: userStats.alumni }
       ]
     : [];
 
   const formatRole = (role) => {
     switch (role) {
       case 'admin': return 'Admin';
-      case 'organizer': return 'Event Organizer';
       case 'alumni': return 'Alumni';
       default: return role;
     }
@@ -129,7 +127,10 @@ const AdminDashboard = () => {
           <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
           <div className="space-y-2">
             <button onClick={() => setActivePanel('create-user')} className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
-              Create New User
+              Create User
+            </button>
+            <button onClick={() => setActivePanel('create-event')} className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
+              Create Event
             </button>
             <button className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
               Generate Report
@@ -163,8 +164,10 @@ const AdminDashboard = () => {
         return <AdminEvents />;
       case 'create-user':
         return <AdminCreateUser token={localStorage.getItem("token")}/>;
+      case 'create-event':
+        return <AdminCreateEvent token={localStorage.getItem("token")}/>;
       default:
-        return <div className="p-6">Select a panel to view details.</div>;
+        return <div className="p-6">Under development.</div>;
     }
   };
 

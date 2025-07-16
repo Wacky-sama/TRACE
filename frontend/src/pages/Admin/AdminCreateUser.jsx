@@ -13,7 +13,7 @@ const AdminCreateUser = () => {
     lastname: '',
     firstname: '',
     middle_initial: '',
-    role: 'organizer',
+    role: 'admin',
   });
 
   const [errors, setErrors] = useState({});
@@ -30,8 +30,8 @@ const AdminCreateUser = () => {
     if (form.password !== form.confirmPassword) errs.confirmPassword = "Passwords do not match";
     if (!form.lastname) errs.lastname = "Last name is required";
     if (!form.firstname) errs.firstname = "First name is required";
-    if (form.role !== 'admin' && form.role !== 'organizer') {
-      errs.role = "Role must be either admin or organizer";
+    if (form.role !== 'admin') {
+      errs.role = "Role must be admin";
     }
     return errs;
   };
@@ -67,7 +67,7 @@ const AdminCreateUser = () => {
         lastname: '',
         firstname: '',
         middle_initial: '',
-        role: 'organizer',
+        role: 'admin',
       });
     } catch (error) {
       setMessage(error.response?.data?.detail || "Creation failed");
@@ -118,7 +118,7 @@ const AdminCreateUser = () => {
 
       <input
         name="middle_initial"
-        value={form.middle_initial}
+        value={form.middle_initial.toUpperCase()}
         onChange={handleChange}
         placeholder="Middle Initial"
         maxLength={1}
@@ -132,7 +132,6 @@ const AdminCreateUser = () => {
         className="w-full p-3 border border-gray-300 rounded-md text-sm"
       >
         <option value="admin">Admin</option>
-        <option value="organizer">Event Organizer</option>
       </select>
       {errors.role && <p className="text-red-500 text-sm">{errors.role}</p>}
 

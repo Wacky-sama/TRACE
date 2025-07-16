@@ -18,8 +18,8 @@ def create_event(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)  
 ):
-    if current_user.role != "organizer":
-        raise HTTPException(status_code=403, detail="Only event organizers can create events.")
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Only Admin can create events.")
 
     new_event = event_models.Event(
         title=event_in.title,
@@ -27,7 +27,7 @@ def create_event(
         location=event_in.location,
         event_date=event_in.event_date,
         created_by=current_user.id,
-        status="pending",
+        status="approved",  # Default status for created events
         created_at=datetime.utcnow()
     )
     db.add(new_event)
@@ -53,16 +53,9 @@ def get_events_by_status(db, status, skip=0, limit=100):
         for event, firstname, lastname in results
     ]
 
-
-@router.get("/pending", response_model=list[event_schemas.EventOut])
-def get_pending_events(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="Not authorized")
-    return get_events_by_status(db, "pending")
-
-@router.get("/approved", response_model=list[event_schemas.EventOut])
-def get_approved_events(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if current_user.role not in {"admin", "alumni", "organizer"}:
+@router.get("/", response_model=list[event_schemas.EventOut])
+def get_events(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role not in {"admin", "alumni"}:
         raise HTTPException(status_code=403, detail="Not authorized")
     return get_events_by_status(db, "approved")
 
