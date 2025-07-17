@@ -5,8 +5,6 @@
 -- Dumped from database version 16.9 (Ubuntu 16.9-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 16.9 (Ubuntu 16.9-1.pgdg22.04+1)
 
--- Started on 2025-06-13 17:57:04 PST
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -19,7 +17,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 3488 (class 1262 OID 16388)
 -- Name: trace_db; Type: DATABASE; Schema: -; Owner: trace_admin
 --
 
@@ -42,7 +39,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 2 (class 3079 OID 16408)
 -- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -50,8 +46,6 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 
 
 --
--- TOC entry 3489 (class 0 OID 0)
--- Dependencies: 2
 -- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: 
 --
 
@@ -59,7 +53,6 @@ COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UU
 
 
 --
--- TOC entry 854 (class 1247 OID 16391)
 -- Name: userrole; Type: TYPE; Schema: public; Owner: trace_admin
 --
 
@@ -77,7 +70,6 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 218 (class 1259 OID 16516)
 -- Name: event_attendance; Type: TABLE; Schema: public; Owner: trace_admin
 --
 
@@ -95,7 +87,6 @@ CREATE TABLE public.event_attendance (
 ALTER TABLE public.event_attendance OWNER TO trace_admin;
 
 --
--- TOC entry 217 (class 1259 OID 16495)
 -- Name: events; Type: TABLE; Schema: public; Owner: trace_admin
 --
 
@@ -118,7 +109,6 @@ CREATE TABLE public.events (
 ALTER TABLE public.events OWNER TO trace_admin;
 
 --
--- TOC entry 216 (class 1259 OID 16420)
 -- Name: gts_responses; Type: TABLE; Schema: public; Owner: trace_admin
 --
 
@@ -173,7 +163,6 @@ CREATE TABLE public.gts_responses (
 ALTER TABLE public.gts_responses OWNER TO trace_admin;
 
 --
--- TOC entry 219 (class 1259 OID 16535)
 -- Name: users; Type: TABLE; Schema: public; Owner: trace_admin
 --
 
@@ -200,8 +189,6 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO trace_admin;
 
 --
--- TOC entry 3481 (class 0 OID 16516)
--- Dependencies: 218
 -- Data for Name: event_attendance; Type: TABLE DATA; Schema: public; Owner: trace_admin
 --
 
@@ -210,18 +197,15 @@ COPY public.event_attendance (id, event_id, user_id, status, registered_at, atte
 
 
 --
--- TOC entry 3480 (class 0 OID 16495)
--- Dependencies: 217
 -- Data for Name: events; Type: TABLE DATA; Schema: public; Owner: trace_admin
 --
 
 COPY public.events (id, title, description, location, event_date, created_by, status, approved_by, approved_at, remarks, created_at) FROM stdin;
+9b5109da-efae-4340-8600-aecb1a72ca07	Testing for Development 1	Hello, Alumni! Hello, Admin!	Conference Hall	2025-07-31	6729ef7b-c54b-4e89-8a88-d1c6293cbb17	approved	\N	\N	\N	2025-07-16 13:52:54.928609
 \.
 
 
 --
--- TOC entry 3479 (class 0 OID 16420)
--- Dependencies: 216
 -- Data for Name: gts_responses; Type: TABLE DATA; Schema: public; Owner: trace_admin
 --
 
@@ -230,20 +214,18 @@ COPY public.gts_responses (id, user_id, full_name, permanent_address, contact_em
 
 
 --
--- TOC entry 3482 (class 0 OID 16535)
--- Dependencies: 219
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: trace_admin
 --
 
 COPY public.users (id, username, email, password_hash, lastname, firstname, middle_initial, course, batch_year, role, is_active, deleted_at, is_approved, created_at, updated_at, last_seen) FROM stdin;
-6729ef7b-c54b-4e89-8a88-d1c6293cbb17	wacky	tabugadirkenjibrocks@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$5S5iGs3R5b+1pUc+ZlX/CA$K5rZVs75OG0UGiFkAYkzNab2uYsuFwzjfeIc5XqnUUQ	Tabugadir	Kenji "Brocks"	I	\N	\N	admin	t	\N	t	2025-06-13 17:30:54.81682	2025-06-13 09:57:00.599463	2025-06-13 09:57:00.59909
-97dc98d4-16df-4933-8c63-085f38d477ff	xed	tagubaphilipjoshuav@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$HmPM2TsnhHDufS/lHEMIYQ$uSlzFWErg/Mko9wWHn+mL7G9Ym6TivBlmy2asrirSjk	Taguba	Philip Joshua	V	\N	\N	admin	t	\N	t	2025-06-13 09:39:28.701098	2025-06-13 09:39:28.701102	2025-06-13 09:39:28.701104
-b18d9dc8-bbc3-4f35-8ef8-11dbe2591d4f	louieboy	louieboysalviejo06@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$as3Z2/ufc87Zm9Oa09o7hw$XF5H9Em/+FCj1hD5QF8EVme4C/OtB9P1LfitkRUAsCo	Salviejo	Victor Louis	R	\N	\N	organizer	t	\N	t	2025-06-13 09:40:12.260692	2025-06-13 09:40:12.260695	2025-06-13 09:40:12.260696
+bcabea0b-e652-4e60-b36c-f27fe540346d	xed	tagubaphilipjoshuav@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$8l6LMca4t7aWUooRolSqlQ$Cte47qg3K55k++lMpqnt1Vub1u4jST5hY0NaaPczcDA	Taguba	Philip Joshua	V	\N	\N	admin	t	\N	t	2025-06-13 10:58:49.791987	2025-06-19 09:14:28.792237	2025-06-19 09:14:28.791567
+6729ef7b-c54b-4e89-8a88-d1c6293cbb17	wacky	tabugadirkenjibrocks@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$5S5iGs3R5b+1pUc+ZlX/CA$K5rZVs75OG0UGiFkAYkzNab2uYsuFwzjfeIc5XqnUUQ	Tabugadir	Kenji "Brocks"	I	\N	\N	admin	t	\N	t	2025-06-13 17:30:54.81682	2025-07-16 14:08:52.408228	2025-07-16 14:08:52.407923
+9b3c1a73-abae-455d-a4c4-fdf4c24e7132	louieboy	louieboysalviejo06@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$rvWeE6L0/l/rfa9VilGKcQ$gX+sCVy1XtE6S7pCrjyTiubDN7RR7OzBx/7cxyVC7hA	Salviejo	Victor Louis	R	\N	\N	organizer	t	\N	t	2025-06-13 10:56:53.414138	2025-07-14 07:35:26.946204	2025-07-14 07:35:26.945845
+44ead4c4-70d6-487e-bcdd-c2f583ab46cb	hansooyoung	hsykenji@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$OWdMaY1RKqX0HgOAsHYuhQ$PpJjCPs26dlAkEo1LfYvmoIF57KBALOjQVuM6jpYzII	Sooyoung	Han		BACHELOR OF ELEMENTARY EDUCATION	2020	alumni	t	\N	t	2025-06-21 05:58:12.999105	2025-07-16 14:09:15.3105	2025-07-16 14:09:15.310049
 \.
 
 
 --
--- TOC entry 3324 (class 2606 OID 16524)
 -- Name: event_attendance event_attendance_pkey; Type: CONSTRAINT; Schema: public; Owner: trace_admin
 --
 
@@ -252,7 +234,6 @@ ALTER TABLE ONLY public.event_attendance
 
 
 --
--- TOC entry 3322 (class 2606 OID 16505)
 -- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: trace_admin
 --
 
@@ -261,7 +242,6 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3320 (class 2606 OID 16428)
 -- Name: gts_responses gts_responses_pkey; Type: CONSTRAINT; Schema: public; Owner: trace_admin
 --
 
@@ -270,7 +250,6 @@ ALTER TABLE ONLY public.gts_responses
 
 
 --
--- TOC entry 3326 (class 2606 OID 16544)
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: trace_admin
 --
 
@@ -279,7 +258,6 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3328 (class 2606 OID 16542)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: trace_admin
 --
 
@@ -288,7 +266,6 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3330 (class 2606 OID 16546)
 -- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: trace_admin
 --
 
@@ -297,7 +274,6 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3334 (class 2606 OID 16525)
 -- Name: event_attendance event_attendance_event_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: trace_admin
 --
 
@@ -306,7 +282,6 @@ ALTER TABLE ONLY public.event_attendance
 
 
 --
--- TOC entry 3335 (class 2606 OID 16562)
 -- Name: event_attendance event_attendance_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: trace_admin
 --
 
@@ -315,7 +290,6 @@ ALTER TABLE ONLY public.event_attendance
 
 
 --
--- TOC entry 3332 (class 2606 OID 16557)
 -- Name: events events_approved_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: trace_admin
 --
 
@@ -324,7 +298,6 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3333 (class 2606 OID 16552)
 -- Name: events events_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: trace_admin
 --
 
@@ -333,15 +306,12 @@ ALTER TABLE ONLY public.events
 
 
 --
--- TOC entry 3331 (class 2606 OID 16547)
 -- Name: gts_responses gts_responses_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: trace_admin
 --
 
 ALTER TABLE ONLY public.gts_responses
     ADD CONSTRAINT gts_responses_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
-
--- Completed on 2025-06-13 17:57:16 PST
 
 --
 -- PostgreSQL database dump complete
