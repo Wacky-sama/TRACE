@@ -76,9 +76,6 @@ def create_user_as_admin(
     if user_data.role == UserRole.admin and admin_count >= 2:
         raise HTTPException(status_code=400, detail="Maximum number of Admins (2) reached")
 
-    if user_data.role == UserRole.organizer and organizer_count >= 5:
-        raise HTTPException(status_code=400, detail="Maximum number of Event Organizers (5) reached")
-
     if user_data.role == UserRole.alumni:
         raise HTTPException(status_code=400, detail="Alumni cannot be created by admin, please register via alumni route")
 
@@ -96,11 +93,10 @@ def create_user_as_admin(
     db.commit()
     db.refresh(new_user)
 
-    role_display_names = {
+    role_display_name = {
         UserRole.admin: "Administrator",
-        UserRole.organizer: "Event Organizer",
     }
-    display_role = role_display_names.get(new_user.role, new_user.role.value)
+    display_role = role_display_name.get(new_user.role, new_user.role.value)
 
     subject = "TRACE System - Account Created"
     body = f"""\
@@ -132,7 +128,7 @@ def register_alumni(
     if db.query(User).filter(User.email == user.email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    is_approved = user.role in ("admin", "organizer")
+    is_approved = user.role in ("admin")
 
     new_user = User(
         username=user.username,

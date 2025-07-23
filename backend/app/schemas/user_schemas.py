@@ -10,7 +10,6 @@ class UserLogin(BaseModel):
 
 class UserRole(str, enum.Enum):
     admin = "admin"
-    organizer = "organizer"
     alumni = "alumni"
 
 class TokenResponse(BaseModel):
