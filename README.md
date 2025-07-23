@@ -1,6 +1,6 @@
 # 🚀 TRACE: Tracking Alumni for Centralized Events
 
-> A centralized platform for managing and tracking alumni-related events, approvals, and user roles.
+> An event management system for CSU-Gonzaga that streamlines alumni registration, check-in, and attendance tracking using secure QR code verification and real-time dashboards.
 
 ## 🛠️ Running the System (Development Stage)
 
