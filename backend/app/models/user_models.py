@@ -29,3 +29,7 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     last_seen = Column(DateTime, default=datetime.utcnow)
+    birthday = Column(DateTime, nullable=True)
+    present_address = Column(String, nullable=True)
+    contact_number = Column(String, nullable=True)
+    name_extension = Column(String, nullable=True)
