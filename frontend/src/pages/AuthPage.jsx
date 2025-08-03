@@ -21,16 +21,28 @@ function AuthPage() {
   const [password, setPassword] = useState('');
 
   // Register fields
+  // Personal Information
   const [registerIdentifier, setRegisterIdentifier] = useState('');
   const [email, setEmail] = useState('');
   const [lastName, setLastName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [middleInitial, setMiddleInitial] = useState('');
+  const [nameExtension, setNameExtension] = useState('');
+  const [birthday, setBirthday] = useState('');
+  const [age, setAge] = useState('');
+  const [presentAddress,  setPresentAddress] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
   const [course, setCourse] = useState('');
   const [batchYear, setBatchYear] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
   const [registerConfirmPassword, setRegisterConfirmPassword] = useState('');
-
+  // Employment Information
+  const [nature, setNature] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [companyAddress, setCompanyAddress] = useState('');
+  const [position, setPosition] = useState('');
+  const [status, setStatus] = useState('');
+  
   // Password visibility toggles
   const [showPassword, setShowPassword] = useState(false);
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
@@ -60,8 +72,6 @@ function AuthPage() {
 
       if (role === "admin") {
         navigate("/admin/dashboard");
-      } else if (role === "organizer") {
-        navigate("/organizer/dashboard");
       } else if (role === "alumni") {
         navigate("/alumni/dashboard");
       } else {
@@ -93,11 +103,17 @@ function AuthPage() {
     if (!email) errors.email = "Email is required";
     if (!lastName) errors.lastName = "Last name is required";
     if (!firstName) errors.firstName = "First name is required";
+    if (!birthday) errors.birthday = "Birthday is required";
+    if (!age) errors.age = "Age is required";
+    if (!presentAddress) errors.presentAddress = "Present address is required";
+    if (!contactNumber) errors.contactNumber = "Contact number is required";
     if (!course) errors.course = "Course is required";
     if (!batchYear) errors.batchYear = "Batch year is required";
     if (!registerPassword) errors.registerPassword = "Password is required";
     if (!registerConfirmPassword) errors.registerConfirmPassword = "Confirm Password is required";
     if (registerPassword !== registerConfirmPassword) errors.registerConfirmPassword = "Passwords do not match";
+    if (!nature) errors.nature = "Nature of employment is required";
+    if (!status) errors.status = "Employment status is required";
 
     setRegisterErrors(errors);
     setRegisterError(''); 
@@ -190,16 +206,7 @@ function AuthPage() {
           {isRegistering ? (
             <>
               <div className="mb-4">
-                <input
-                    type="text"
-                    placeholder="Username"
-                    value={registerIdentifier}
-                    onChange={e => setRegisterIdentifier(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                />
-                <div className="h-5 mt-1">
-                  {registerErrors.registerIdentifier && <p className="text-red-500 text-xs">{registerErrors.registerIdentifier}</p>}
-                </div>
+                <h2 className='flex'>Personal Information</h2>
               </div>
 
               <div className="mb-4">
@@ -212,6 +219,17 @@ function AuthPage() {
                 />
                 <div className="h-5 mt-1">
                   {registerErrors.email && <p className="text-red-500 text-xs">{registerErrors.email}</p>}
+                </div>
+
+                <input
+                    type="text"
+                    placeholder="Username"
+                    value={registerIdentifier}
+                    onChange={e => setRegisterIdentifier(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                />
+                <div className="h-5 mt-1">
+                  {registerErrors.registerIdentifier && <p className="text-red-500 text-xs">{registerErrors.registerIdentifier}</p>}
                 </div>
               </div>
 
@@ -251,6 +269,71 @@ function AuthPage() {
                 />
                 <div className="h-5 mt-1">
                   {registerErrors.middleInitial && <p className="text-red-500 text-xs">{registerErrors.middleInitial}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <input
+                  type="text"
+                  placeholder="Name Extension (e.g. Jr., Sr., III)"
+                  value={nameExtension}
+                  onChange={e => setNameExtension(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                />
+                <div className="h-5 mt-1">
+                  {registerErrors.nameExtension && <p className="text-red-500 text-xs">{registerErrors.nameExtension}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <input
+                  type="date"
+                  placeholder="Birthday"
+                  value={birthday}
+                  onChange={e => setBirthday(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                />
+                <div className="h-5 mt-1">
+                  {registerErrors.birthday && <p className="text-red-500 text-xs">{registerErrors.birthday}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <input
+                  type="number"
+                  placeholder="Age"
+                  value={age}
+                  onChange={e => setAge(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                />
+                <div className="h-5 mt-1">
+                  {registerErrors.age && <p className="text-red-500 text-xs">{registerErrors.age}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <input
+                  type="text"
+                  placeholder="Present Address"
+                  value={presentAddress}
+                  onChange={e => setPresentAddress(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                />
+                <div className="h-5 mt-1">
+                  {registerErrors.presentAddress && <p className="text-red-500 text-xs">{registerErrors.presentAddress}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <input
+                  type="tel"
+                  placeholder="Contact Number"
+                  value={contactNumber}
+                  onChange={e => setContactNumber(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                />
+                <div className="h-5 mt-1">
+                  {registerErrors.contactNumber && <p className="text-red-500 text-xs">{registerErrors.contactNumber}</p>}
                 </div>
               </div>
 
@@ -306,7 +389,7 @@ function AuthPage() {
                 </div>
               </div>
 
-              <div className="mb-6">
+              <div className="mb-4">
                 <div className="relative">
                   <input
                     type={showRegisterConfirmPassword ? "text" : "password"}
@@ -324,6 +407,84 @@ function AuthPage() {
                   {registerErrors.registerConfirmPassword && <p className="text-red-500 text-xs">{registerErrors.registerConfirmPassword}</p>}
                 </div>
               </div>
+
+              <div className="mb-4">
+                <h2 className='flex'>Employment Information</h2>
+              </div>
+
+              <div className="mb-4">
+                <input
+                  type="text"
+                  placeholder="Nature (Local / Abroad)"
+                  value={nature}
+                  onChange={e => setNature(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                />
+                <div className="h-5 mt-1">
+                  {registerErrors.presentAddress && <p className="text-red-500 text-xs">{registerErrors.presentAddress}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <input
+                  type="text"
+                  placeholder="Company Name"
+                  value={companyName}
+                  onChange={e => setCompanyName(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                />
+                <div className="h-5 mt-1">
+                  {registerErrors.presentAddress && <p className="text-red-500 text-xs">{registerErrors.presentAddress}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <input
+                  type="text"
+                  placeholder="Company Address"
+                  value={companyAddress}
+                  onChange={e => setCompanyAddress(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                />
+                <div className="h-5 mt-1">
+                  {registerErrors.presentAddress && <p className="text-red-500 text-xs">{registerErrors.presentAddress}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <input
+                  type="text"
+                  placeholder="Position"
+                  value={position}
+                  onChange={e => setPosition(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                />
+                <div className="h-5 mt-1">
+                  {registerErrors.presentAddress && <p className="text-red-500 text-xs">{registerErrors.presentAddress}</p>}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <select
+                  value={status}
+                  onChange={e => setStatus(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                >
+                  <option value="">Select Employment Status</option>
+                  <option value="Employed - Permanent">Employed – Permanent</option>
+                  <option value="Employed - Contractual">Employed – Contractual</option>
+                  <option value="Self-employed / Freelance">Self-employed / Freelance</option>
+                  <option value="Unemployed">Unemployed</option>
+                  <option value="Student">Student</option>
+                  <option value="Retired">Retired</option>
+                  <option value="Looking for Work">Looking for Work</option>
+                  <option value="Others">Others</option>
+                </select>
+                <div className="h-5 mt-1">
+                  {registerErrors.status && <p className="text-red-500 text-xs">{registerErrors.status}</p>}
+                </div>
+              </div>
+
 
               <button
                 onClick={handleRegister}
@@ -417,10 +578,10 @@ function AuthPage() {
 
           <p className="mt-6 text-sm text-gray-500">
             Developed by:
-            <br />Tabugadir, Kenji "Brocks" I.
-            <br />Taguba, Philip Joshua V.
-            <br />Salviejo, Victor Louis R.
             <br />Balgos, Wendel B.
+            <br />Salviejo, Victor Louis R.
+            <br />Taguba, Philip Joshua V.
+            <br />Tabugadir, Kenji "Brocks" I.
           </p>
           </div>
         </div>
