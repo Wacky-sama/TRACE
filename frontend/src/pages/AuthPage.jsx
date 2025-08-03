@@ -1,5 +1,7 @@
 import { setAuthData, getToken, getRole, isApproved, clearAuthData } from '../utils/storage';
 import { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import api from '../services/api';
 import { login } from '../services/auth';
 import { useNavigate } from 'react-router-dom';
@@ -28,7 +30,7 @@ function AuthPage() {
   const [firstName, setFirstName] = useState('');
   const [middleInitial, setMiddleInitial] = useState('');
   const [nameExtension, setNameExtension] = useState('');
-  const [birthday, setBirthday] = useState('');
+  const [birthday, setBirthday] = useState(null);
   const [age, setAge] = useState('');
   const [presentAddress,  setPresentAddress] = useState('');
   const [contactNumber, setContactNumber] = useState('');
@@ -97,6 +99,21 @@ function AuthPage() {
   }
 }, [navigate]);
 
+  useEffect(() => {
+  if (birthday) {
+    const today = new Date();
+    const birthDate = new Date(birthday);
+    let calculatedAge = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      calculatedAge--;
+    }
+    setAge(calculatedAge);
+  } else {
+    setAge('');
+  }
+}, [birthday]);
+
   const handleRegister = async () => {
     const errors = {};
     if (!registerIdentifier) errors.registerIdentifier = "Username is required";
@@ -123,14 +140,23 @@ function AuthPage() {
 
     try {
       await api.post('/users/register/alumni', {
-        username: registerIdentifier,
         email, 
-        password: registerPassword,
+        username: registerIdentifier,
         lastname: lastName,
         firstname: firstName,
         middle_initial: middleInitial,
+        name_extension: nameExtension,
+        birthday,
+        present_address: presentAddress,
+        contact_number: contactNumber,
         course,
         batch_year: batchYear,
+        password: registerPassword,
+        nature,
+        company_name: companyName,
+        company_address: companyAddress,
+        position,
+        status,
         role: 'alumni'
       });
       
@@ -286,15 +312,28 @@ function AuthPage() {
               </div>
 
               <div className="mb-4">
-                <input
-                  type="date"
-                  placeholder="Birthday"
-                  value={birthday}
-                  onChange={e => setBirthday(e.target.value)}
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Birthday
+                </label>
+                <DatePicker
+                  maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
+                  minDate={new Date(1900, 0, 1)}
+                  selected={birthday}
+                  onChange={(date) => setBirthday(date)}
+                  dateFormat="MM/dd/yyyy"
+                  placeholderText="Select your birthday"
                   className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                  showMonthDropdown
+                  showYearDropdown
+                  dropdownMode="select"
+                  yearDropdownItemNumber={200}
+                  scrollableYearDropdown
+                  isClearable
                 />
                 <div className="h-5 mt-1">
-                  {registerErrors.birthday && <p className="text-red-500 text-xs">{registerErrors.birthday}</p>}
+                  {registerErrors.birthday && (
+                    <p className="text-red-500 text-xs">{registerErrors.birthday}</p>
+                  )}
                 </div>
               </div>
 
@@ -421,7 +460,7 @@ function AuthPage() {
                   className="w-full p-3 border border-gray-300 rounded-md text-sm"
                 />
                 <div className="h-5 mt-1">
-                  {registerErrors.presentAddress && <p className="text-red-500 text-xs">{registerErrors.presentAddress}</p>}
+                  {registerErrors.nature && <p className="text-red-500 text-xs">{registerErrors.nature}</p>}
                 </div>
               </div>
 
@@ -434,7 +473,7 @@ function AuthPage() {
                   className="w-full p-3 border border-gray-300 rounded-md text-sm"
                 />
                 <div className="h-5 mt-1">
-                  {registerErrors.presentAddress && <p className="text-red-500 text-xs">{registerErrors.presentAddress}</p>}
+                  {registerErrors.companyName && <p className="text-red-500 text-xs">{registerErrors.companyName}</p>}
                 </div>
               </div>
 
@@ -447,7 +486,7 @@ function AuthPage() {
                   className="w-full p-3 border border-gray-300 rounded-md text-sm"
                 />
                 <div className="h-5 mt-1">
-                  {registerErrors.presentAddress && <p className="text-red-500 text-xs">{registerErrors.presentAddress}</p>}
+                  {registerErrors.companyAddress && <p className="text-red-500 text-xs">{registerErrors.companyAddress}</p>}
                 </div>
               </div>
 
@@ -460,7 +499,7 @@ function AuthPage() {
                   className="w-full p-3 border border-gray-300 rounded-md text-sm"
                 />
                 <div className="h-5 mt-1">
-                  {registerErrors.presentAddress && <p className="text-red-500 text-xs">{registerErrors.presentAddress}</p>}
+                  {registerErrors.position && <p className="text-red-500 text-xs">{registerErrors.position}</p>}
                 </div>
               </div>
 
@@ -475,7 +514,6 @@ function AuthPage() {
                   <option value="Employed - Contractual">Employed – Contractual</option>
                   <option value="Self-employed / Freelance">Self-employed / Freelance</option>
                   <option value="Unemployed">Unemployed</option>
-                  <option value="Student">Student</option>
                   <option value="Retired">Retired</option>
                   <option value="Looking for Work">Looking for Work</option>
                   <option value="Others">Others</option>
@@ -484,7 +522,6 @@ function AuthPage() {
                   {registerErrors.status && <p className="text-red-500 text-xs">{registerErrors.status}</p>}
                 </div>
               </div>
-
 
               <button
                 onClick={handleRegister}
