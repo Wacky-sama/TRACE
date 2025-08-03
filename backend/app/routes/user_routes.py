@@ -71,7 +71,6 @@ def create_user_as_admin(
         raise HTTPException(status_code=400, detail="Email already registered")
     
     admin_count = db.query(User).filter(User.role == UserRole.admin).count()
-    organizer_count = db.query(User).filter(User.role == UserRole.organizer).count()
 
     if user_data.role == UserRole.admin and admin_count >= 2:
         raise HTTPException(status_code=400, detail="Maximum number of Admins (2) reached")
@@ -300,13 +299,11 @@ def decline_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
 def get_user_stats(db: Session = Depends(get_db)):
     total_users = db.query(User).count()
     admins = db.query(User).filter(User.role == UserRole.admin).count()
-    organizers = db.query(User).filter(User.role == UserRole.organizer).count()
     alumni = db.query(User).filter(User.role == UserRole.alumni).count()
     
     return {
         "total_users": total_users,
         "admins": admins,
-        "organizers": organizers,
         "alumni": alumni
     }
 # Count users who are active and not archived (i.e., not blocked or soft-deleted)
@@ -335,7 +332,7 @@ def get_online_users(db: Session = Depends(get_db)):
         User.last_seen >= five_minutes_ago,
         User.is_active == True,
         User.deleted_at.is_(None),
-        User.role.in_([UserRole.admin, UserRole.alumni, UserRole.organizer])
+        User.role.in_([UserRole.admin, UserRole.alumni])
     ).all()
 
     return online_users
