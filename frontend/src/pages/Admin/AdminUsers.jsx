@@ -30,18 +30,25 @@ const AdminUsers = () => {
   }, []);
 
   const handleAction = async (userId, action) => {
-    setActionLoadingId(userId);
-    try {
-      await api.patch(`/users/${userId}/${action}`);
-      await fetchUsers();
-      toast.success(`User ${action}d successfully!`);
-    } catch (error) {
-      console.error(`Failed to ${action} user:`, error);
+  setActionLoadingId(userId);
+  try {
+    await api.patch(`/users/${userId}/${action}`);
+    await fetchUsers();
+    toast.success(`User ${action}d successfully!`);
+  } catch (error) {
+    if (error.response?.status === 404) {
+      toast.error("User not found. It may have already been deleted.");
+      await fetchUsers(); // Refresh list to remove ghost users
+    } else if (error.response?.status === 400) {
+      toast.error(error.response.data.detail || "Bad request.");
+    } else {
       toast.error(`Could not ${action} the user. Try again.`);
-    } finally {
-      setActionLoadingId(null);
     }
-  };
+    console.error(`Failed to ${action} user:`, error);
+  } finally {
+    setActionLoadingId(null);
+  }
+};
   
   const renderTable = (users, showActions = false) => (
     <table className="min-w-full bg-white border rounded-lg shadow">
