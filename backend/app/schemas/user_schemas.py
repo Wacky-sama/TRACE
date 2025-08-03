@@ -26,6 +26,10 @@ class UserCreate(BaseModel):
     middle_initial: Optional[str] = None
     course: Optional[str] = None
     batch_year: Optional[int] = None
+    name_extension: Optional[str] = None
+    birthday: Optional[datetime] = None
+    present_address: Optional[str] = None
+    contact_number: Optional[str] = None
     role: UserRole
 
     @model_validator(mode='after')
@@ -44,10 +48,37 @@ class UserOut(BaseModel):
     lastname: str
     firstname: str
     middle_initial: Optional[str]
+    name_extension: Optional[str]
+    birthday: Optional[datetime]
+    present_address: Optional[str]
+    contact_number: Optional[str]
+    course: Optional[str]
+    batch_year: Optional[int]
     role: UserRole
     is_approved: bool
     is_active: bool
     deleted_at: Optional[datetime]
+
+class UserProfileOut(BaseModel):
+    id: UUID
+    username: str
+    email: EmailStr
+    lastname: str
+    firstname: str
+    middle_initial: Optional[str]
+    name_extension: Optional[str]
+    birthday: Optional[datetime]
+    present_address: Optional[str]
+    contact_number: Optional[str]
+    course: Optional[str]
+    batch_year: Optional[int]
+    role: UserRole
+    is_approved: bool
+
+    class Config:
+        from_attributes = True
+    class Config:
+        from_attributes = True
 
 class UserPendingApprovalOut(BaseModel):
     id: UUID
@@ -61,20 +92,6 @@ class UserPendingApprovalOut(BaseModel):
     role: UserRole
     is_approved: bool
 
-class UserProfileOut(BaseModel):
-    id: UUID
-    username: str
-    email: EmailStr
-    lastname: str
-    firstname: str
-    middle_initial: Optional[str]
-    course: Optional[str]
-    batch_year: Optional[int]
-    role: UserRole
-    is_approved: bool
-
-    class Config:
-        from_attributes = True
 
 class PaginatedUserResponse(BaseModel):
     users: List[UserProfileOut]
