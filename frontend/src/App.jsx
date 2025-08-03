@@ -4,7 +4,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AuthPage from "./pages/AuthPage"
 import AdminDashboard from "./pages/Admin/AdminDashboard"
-import EventOrganizerDashboard from "./pages/Event Organizer/EventOrganizerDashboard";
 import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
 import AdminUsers from './pages/Admin/AdminUsers';
 
@@ -29,7 +28,7 @@ const PublicRoute = ({ children }) => {
   const token = getToken();
   const role = getRole();
 
-  const validRoles = ['admin', 'organizer', 'alumni'];
+  const validRoles = ['admin', 'alumni'];
 
   if (token && validRoles.includes(role)) {
   return <Navigate to={`/${role}/dashboard`} replace />;
@@ -60,14 +59,6 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={['admin']}>
               <AdminDashboard />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/organizer/dashboard" 
-          element={
-            <ProtectedRoute allowedRoles={['organizer']}>
-              <EventOrganizerDashboard />
             </ProtectedRoute>
           } 
         />
