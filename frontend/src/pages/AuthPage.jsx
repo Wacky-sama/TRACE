@@ -129,7 +129,6 @@ function AuthPage() {
     if (!registerPassword) errors.registerPassword = "Password is required";
     if (!registerConfirmPassword) errors.registerConfirmPassword = "Confirm Password is required";
     if (registerPassword !== registerConfirmPassword) errors.registerConfirmPassword = "Passwords do not match";
-    if (!nature) errors.nature = "Nature of employment is required";
     if (!status) errors.status = "Employment status is required";
 
     setRegisterErrors(errors);
@@ -160,24 +159,36 @@ function AuthPage() {
         role: 'alumni'
       });
       
-      setRegisterSuccess("Registration submitted successfully! Please wait for approval.");
-      
-      setRegisterIdentifier('');
-      setEmail('');
-      setLastName('');
-      setFirstName('');
-      setMiddleInitial('');
-      setCourse('');
-      setBatchYear('');
-      setRegisterPassword('');
-      setRegisterConfirmPassword('');
-      setRegisterErrors({});
+      const resetRegisterForm = () => {
+        setRegisterIdentifier('');
+        setEmail('');
+        setLastName('');
+        setFirstName('');
+        setMiddleInitial('');
+        setNameExtension('');
+        setBirthday(null);
+        setAge('');
+        setPresentAddress('');
+        setContactNumber('');
+        setCourse('');
+        setBatchYear('');
+        setRegisterPassword('');
+        setRegisterConfirmPassword('');
+        setNature('');
+        setCompanyName('');
+        setCompanyAddress('');
+        setPosition('');
+        setStatus('');
+        setRegisterErrors({});
+      };
 
+      setRegisterSuccess("Registration submitted successfully! Please wait for approval.");
+      resetRegisterForm();
+      
       setTimeout(() => {
         setIsRegistering(false);
         setRegisterSuccess('');
       }, 3000);
-      
     } catch (err) {
       setRegisterError('Registration failed! ' + (err.response?.data?.detail || 'Please try again.'));
     }
@@ -338,12 +349,12 @@ function AuthPage() {
               </div>
 
               <div className="mb-4">
-                <input
+              <input
                   type="number"
                   placeholder="Age"
                   value={age}
-                  onChange={e => setAge(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                  readOnly
+                  className="w-full p-3 border border-gray-300 rounded-md text-sm bg-gray-100"
                 />
                 <div className="h-5 mt-1">
                   {registerErrors.age && <p className="text-red-500 text-xs">{registerErrors.age}</p>}
