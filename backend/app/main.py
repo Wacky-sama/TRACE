@@ -29,4 +29,4 @@ app.include_router(event_attendance_routes.router)
 
 @app.get("/")
 def root():
-    return {"message": "TRACE System Prototype backend is running"}
+    return {"message": "TRACE System Prototype backend is running!"}
