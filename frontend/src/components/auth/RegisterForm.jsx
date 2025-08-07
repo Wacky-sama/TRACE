@@ -86,7 +86,8 @@ function RegisterForm({ setIsRegistering }) {
         course: course,
         batch_year: batchYear,
         password: registerPassword,
-        place_of_work: nature,
+        // Employment Information
+        place_of_work: placeOfWork,
         company_name: companyName,
         company_address: companyAddress,
         position,
