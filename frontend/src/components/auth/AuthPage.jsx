@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { getToken, getRole, isApproved, clearAuthData } from '../../utils/storage';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
@@ -44,13 +45,29 @@ function AuthPage() {
                         <h2 className="text-2xl font-semibold mb-6">
                             {isRegistering ? "Register" : "Login"}
                         </h2>
-
-                        {isRegistering ? (
-                            <RegisterForm setIsRegistering={setIsRegistering} />
-                        ) : (
-                            <LoginForm />
-                        )}
-
+                        <AnimatePresence mode="wait">
+                            {isRegistering ? (
+                                <motion.div
+                                    key="register"
+                                    initial={{ opacity: 0, x: 50 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -50 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <RegisterForm setIsRegistering={setIsRegistering} />
+                                </motion.div>
+                                ) : (
+                                <motion.div
+                                    key="login"
+                                    initial={{ opacity: 0, x: -50 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 50 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <LoginForm />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                         <p className="text-sm text-gray-500 mb-4">
                             {isRegistering ? "Already have an account?" : "Don't have an account?"}{" "}
                             <button

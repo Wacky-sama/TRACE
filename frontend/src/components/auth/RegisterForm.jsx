@@ -71,19 +71,19 @@ function RegisterForm({ setIsRegistering }) {
 
     try {
       await api.post('/users/register/alumni', {
-        email,
+        email: email,
         username: registerIdentifier,
         lastname: lastName,
         firstname: firstName,
         middle_initial: middleInitial,
         name_extension: nameExtension,
-        birthday,
+        birthday: birthday,
         present_address: presentAddress,
         contact_number: contactNumber,
-        course,
+        course: course,
         batch_year: batchYear,
         password: registerPassword,
-        nature,
+        place_of_work: nature,
         company_name: companyName,
         company_address: companyAddress,
         position,
@@ -130,12 +130,12 @@ function RegisterForm({ setIsRegistering }) {
         {/* Feedback messages */}
         {registerError && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-4 text-sm">
-            {registerError}
+                {registerError}
             </div>
         )}
         {registerSuccess && (
             <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md mb-4 text-sm">
-            {registerSuccess}
+                {registerSuccess}
             </div>
         )}
 
@@ -362,7 +362,7 @@ function RegisterForm({ setIsRegistering }) {
         <div className="mb-4">
             <input
                 type="text"
-                placeholder="Nature (Local / Abroad)"
+                placeholder="Place of Work (Local / Abroad)"
                 value={nature}
                 onChange={e => setNature(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-md text-sm"
