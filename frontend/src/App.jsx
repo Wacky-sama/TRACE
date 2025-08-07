@@ -2,7 +2,7 @@ import { getToken, getRole, isApproved, clearAuthData } from './utils/storage';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import AuthPage from "./pages/AuthPage"
+import AuthPage from './components/auth/AuthPage';
 import AdminDashboard from "./pages/Admin/AdminDashboard"
 import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
 import AdminUsers from './pages/Admin/AdminUsers';
