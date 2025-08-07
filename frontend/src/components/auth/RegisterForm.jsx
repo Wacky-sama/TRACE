@@ -1,198 +1,442 @@
-import { useState } from 'react';
+// RegisterForm.jsx
+import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import api from '../../services/api';
 
-function RegisterForm({ onSubmit, error, success }) {
-  const [formData, setFormData] = useState({
-    registerIdentifier: '', email: '', lastName: '', firstName: '', middleInitial: '', nameExtension: '',
-    birthday: null, age: '', presentAddress: '', contactNumber: '', course: '', batchYear: '',
-    registerPassword: '', registerConfirmPassword: '', nature: '', companyName: '', companyAddress: '',
-    position: '', status: ''
-  });
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+function RegisterForm({ setIsRegistering }) {
+  const [registerIdentifier, setRegisterIdentifier] = useState('');
+  const [email, setEmail] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [middleInitial, setMiddleInitial] = useState('');
+  const [nameExtension, setNameExtension] = useState('');
+  const [birthday, setBirthday] = useState(null);
+  const [age, setAge] = useState('');
+  const [presentAddress, setPresentAddress] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
+  const [course, setCourse] = useState('');
+  const [batchYear, setBatchYear] = useState('');
+  const [registerPassword, setRegisterPassword] = useState('');
+  const [registerConfirmPassword, setRegisterConfirmPassword] = useState('');
+  const [nature, setNature] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [companyAddress, setCompanyAddress] = useState('');
+  const [position, setPosition] = useState('');
+  const [status, setStatus] = useState('');
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showRegisterConfirmPassword, setShowRegisterConfirmPassword] = useState(false);
   const [registerErrors, setRegisterErrors] = useState({});
+  const [registerError, setRegisterError] = useState('');
+  const [registerSuccess, setRegisterSuccess] = useState('');
 
-  const handleChange = (field, value) => {
-    if (field === 'birthday') {
+  useEffect(() => {
+    if (birthday) {
       const today = new Date();
-      const birthDate = new Date(value);
+      const birthDate = new Date(birthday);
       let calculatedAge = today.getFullYear() - birthDate.getFullYear();
       const m = today.getMonth() - birthDate.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) calculatedAge--;
-      setFormData(prev => ({ ...prev, birthday: value, age: calculatedAge.toString() }));
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        calculatedAge--;
+      }
+      setAge(calculatedAge);
     } else {
-      setFormData(prev => ({ ...prev, [field]: value }));
+      setAge('');
+    }
+  }, [birthday]);
+
+  const handleRegister = async () => {
+    const errors = {};
+    if (!registerIdentifier) errors.registerIdentifier = "Username is required";
+    if (!email) errors.email = "Email is required";
+    if (!lastName) errors.lastName = "Last name is required";
+    if (!firstName) errors.firstName = "First name is required";
+    if (!birthday) errors.birthday = "Birthday is required";
+    if (!age) errors.age = "Age is required";
+    if (!presentAddress) errors.presentAddress = "Present address is required";
+    if (!contactNumber) errors.contactNumber = "Contact number is required";
+    if (!course) errors.course = "Course is required";
+    if (!batchYear) errors.batchYear = "Batch year is required";
+    if (!registerPassword) errors.registerPassword = "Password is required";
+    if (!registerConfirmPassword) errors.registerConfirmPassword = "Confirm Password is required";
+    if (registerPassword !== registerConfirmPassword) errors.registerConfirmPassword = "Passwords do not match";
+    if (!status) errors.status = "Employment status is required";
+
+    setRegisterErrors(errors);
+    setRegisterError('');
+    setRegisterSuccess('');
+    if (Object.keys(errors).length > 0) return;
+
+    try {
+      await api.post('/users/register/alumni', {
+        email,
+        username: registerIdentifier,
+        lastname: lastName,
+        firstname: firstName,
+        middle_initial: middleInitial,
+        name_extension: nameExtension,
+        birthday,
+        present_address: presentAddress,
+        contact_number: contactNumber,
+        course,
+        batch_year: batchYear,
+        password: registerPassword,
+        nature,
+        company_name: companyName,
+        company_address: companyAddress,
+        position,
+        status,
+        role: 'alumni'
+      });
+
+      const resetRegisterForm = () => {
+        setRegisterIdentifier('');
+        setEmail('');
+        setLastName('');
+        setFirstName('');
+        setMiddleInitial('');
+        setNameExtension('');
+        setBirthday(null);
+        setAge('');
+        setPresentAddress('');
+        setContactNumber('');
+        setCourse('');
+        setBatchYear('');
+        setRegisterPassword('');
+        setRegisterConfirmPassword('');
+        setNature('');
+        setCompanyName('');
+        setCompanyAddress('');
+        setPosition('');
+        setStatus('');
+        setRegisterErrors({});
+      };
+
+      setRegisterSuccess("Registration submitted successfully! Please wait for approval.");
+      resetRegisterForm();
+      setTimeout(() => {
+        setIsRegistering(false);
+        setRegisterSuccess('');
+      }, 3000);
+    } catch (err) {
+      setRegisterError('Registration failed! ' + (err.response?.data?.detail || 'Please try again.'));
     }
   };
 
-  const resetForm = () => {
-    setFormData({
-        registerIdentifier: '', 
-        email: '', 
-        lastName: '', 
-        firstName: '', 
-        middleInitial: '', 
-        nameExtension: '',
-        birthday: null, 
-        age: '', 
-        presentAddress: '', 
-        contactNumber: '',
-        course: '', 
-        batchYear: '',
-        registerPassword: '', 
-        registerConfirmPassword: '', 
-        nature: '', 
-        companyName: '', 
-        companyAddress: '',
-        position: '', 
-        status: ''
-    });
-    setRegisterErrors({});
-  };
-
-  const handleSubmit = () => {
-    onSubmit(formData, setRegisterErrors, () => {}, resetForm);
-  };
-
   return (
-    <div className="max-w-md w-full mx-auto text-center">
-      <h2 className="text-2xl font-semibold mb-6">Register</h2>
+    <div>
+        {/* Feedback messages */}
+        {registerError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-4 text-sm">
+            {registerError}
+            </div>
+        )}
+        {registerSuccess && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md mb-4 text-sm">
+            {registerSuccess}
+            </div>
+        )}
 
-      {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-4 text-sm">{error}</div>}
-      {success && <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md mb-4 text-sm">{success}</div>}
-
-      <h3 className="text-left font-medium mb-2">Personal Information</h3>
-      {['email', 'registerIdentifier', 'lastName', 'firstName', 'middleInitial', 'nameExtension', 'presentAddress', 'contactNumber'].map(field => (
-        <div className="mb-4" key={field}>
-          <input
-            type="text"
-            placeholder={field.replace(/([A-Z])/g, ' $1')}
-            value={formData[field]}
-            onChange={e => handleChange(field, e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-md text-sm"
-          />
-          {registerErrors[field] && <p className="text-red-500 text-xs mt-1">{registerErrors[field]}</p>}
+        <div className="mb-4">
+            <h2 className='flex'>Personal Information</h2>
         </div>
-      ))}
 
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Birthday</label>
-        <DatePicker
-          selected={formData.birthday}
-          onChange={date => handleChange('birthday', date)}
-          dateFormat="MM/dd/yyyy"
-          maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
-          minDate={new Date(1900, 0, 1)}
-          className="w-full p-3 border border-gray-300 rounded-md text-sm"
-          placeholderText="Select your birthday"
-          showMonthDropdown
-          showYearDropdown
-          dropdownMode="select"
-        />
-        {registerErrors.birthday && <p className="text-red-500 text-xs mt-1">{registerErrors.birthday}</p>}
-      </div>
+        <div className="mb-4">
+            <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.email && <p className="text-red-500 text-xs">{registerErrors.email}</p>}
+            </div>
 
-      <div className="mb-4">
-        <input
-          type="number"
-          placeholder="Age"
-          value={formData.age}
-          readOnly
-          className="w-full p-3 border border-gray-300 rounded-md text-sm bg-gray-100"
-        />
-        {registerErrors.age && <p className="text-red-500 text-xs mt-1">{registerErrors.age}</p>}
-      </div>
+            <input
+                type="text"
+                placeholder="Username"
+                value={registerIdentifier}
+                onChange={e => setRegisterIdentifier(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.registerIdentifier && <p className="text-red-500 text-xs">{registerErrors.registerIdentifier}</p>}
+            </div>
+        </div>
 
-      <div className="mb-4">
-        <select
-          value={formData.course}
-          onChange={e => handleChange('course', e.target.value)}
-          className="w-full p-3 border border-gray-300 rounded-md text-sm"
+        <div className="mb-4">
+            <input
+                type="text"
+                placeholder="Last Name"
+                value={lastName}
+                onChange={e => setLastName(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.lastName && <p className="text-red-500 text-xs">{registerErrors.lastName}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <input
+                type="text"
+                placeholder="First Name"
+                value={firstName}
+                onChange={e => setFirstName(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.firstName && <p className="text-red-500 text-xs">{registerErrors.firstName}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <input
+                type="text"
+                placeholder="Middle Initial"
+                value={middleInitial}
+                onChange={e => setMiddleInitial(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.middleInitial && <p className="text-red-500 text-xs">{registerErrors.middleInitial}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <input
+                type="text"
+                placeholder="Name Extension (e.g. Jr., Sr., III)"
+                value={nameExtension}
+                onChange={e => setNameExtension(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.nameExtension && <p className="text-red-500 text-xs">{registerErrors.nameExtension}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+                Birthday
+            </label>
+            <DatePicker
+                maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
+                minDate={new Date(1900, 0, 1)}
+                selected={birthday}
+                onChange={(date) => setBirthday(date)}
+                dateFormat="MM/dd/yyyy"
+                placeholderText="Select your birthday"
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                showMonthDropdown
+                showYearDropdown
+                dropdownMode="select"
+                yearDropdownItemNumber={200}
+                scrollableYearDropdown
+                isClearable
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.birthday && (
+                    <p className="text-red-500 text-xs">{registerErrors.birthday}</p>
+                )}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <input
+                type="number"
+                placeholder="Age"
+                value={age}
+                readOnly
+                className="w-full p-3 border border-gray-300 rounded-md text-sm bg-gray-100"
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.age && <p className="text-red-500 text-xs">{registerErrors.age}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <input
+                type="text"
+                placeholder="Present Address"
+                value={presentAddress}
+                onChange={e => setPresentAddress(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.presentAddress && <p className="text-red-500 text-xs">{registerErrors.presentAddress}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <input
+                type="tel"
+                placeholder="Contact Number"
+                value={contactNumber}
+                onChange={e => setContactNumber(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.contactNumber && <p className="text-red-500 text-xs">{registerErrors.contactNumber}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <select
+                value={course}
+                onChange={e => setCourse(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            >
+                <option value="">Select Course</option>
+                <option value="BACHELOR OF SCIENCE IN AGRICULTURE">BACHELOR OF SCIENCE IN AGRICULTURE</option>
+                <option value="BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM">BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM</option>
+                <option value="BACHELOR OF SCIENCE IN CRIMINOLOGY">BACHELOR OF SCIENCE IN CRIMINOLOGY</option>
+                <option value="BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT">BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT</option>
+                <option value="BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY">BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY</option>
+                <option value="BACHELOR OF ELEMENTARY EDUCATION">BACHELOR OF ELEMENTARY EDUCATION</option>
+                <option value="BACHELOR OF SECONDARY EDUCATION">BACHELOR OF SECONDARY EDUCATION</option>
+            </select>
+            <div className="h-5 mt-1">
+                {registerErrors.course && <p className="text-red-500 text-xs">{registerErrors.course}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <input
+                type="number"
+                placeholder="Batch Year"
+                value={batchYear}
+                onChange={e => setBatchYear(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.batchYear && <p className="text-red-500 text-xs">{registerErrors.batchYear}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <div className="relative">
+                <input
+                    type={showRegisterPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={registerPassword}
+                    onChange={e => setRegisterPassword(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-md text-sm pr-10"
+                />
+                <span className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
+                onClick={() => setShowRegisterPassword(prev => !prev)}>
+                    {showRegisterPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
+                </span>
+            </div>
+            <div className="h-5 mt-1">
+                {registerErrors.registerPassword && <p className="text-red-500 text-xs">{registerErrors.registerPassword}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <div className="relative">
+                <input
+                    type={showRegisterConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm Password"
+                    value={registerConfirmPassword}
+                    onChange={e => setRegisterConfirmPassword(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-md text-sm pr-10"
+                />
+                <span className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
+                    onClick={() => setShowRegisterConfirmPassword(prev => !prev)}>
+                {showRegisterConfirmPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
+                </span>
+            </div>
+            <div className="h-5 mt-1">
+                {registerErrors.registerConfirmPassword && <p className="text-red-500 text-xs">{registerErrors.registerConfirmPassword}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <h2 className='flex'>Employment Information</h2>
+        </div>
+
+        <div className="mb-4">
+            <input
+                type="text"
+                placeholder="Nature (Local / Abroad)"
+                value={nature}
+                onChange={e => setNature(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.nature && <p className="text-red-500 text-xs">{registerErrors.nature}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <input
+                type="text"
+                placeholder="Company Name"
+                value={companyName}
+                onChange={e => setCompanyName(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.companyName && <p className="text-red-500 text-xs">{registerErrors.companyName}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <input
+                type="text"
+                placeholder="Company Address"
+                value={companyAddress}
+                onChange={e => setCompanyAddress(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.companyAddress && <p className="text-red-500 text-xs">{registerErrors.companyAddress}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <input
+                type="text"
+                placeholder="Position"
+                value={position}
+                onChange={e => setPosition(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            />
+            <div className="h-5 mt-1">
+                {registerErrors.position && <p className="text-red-500 text-xs">{registerErrors.position}</p>}
+            </div>
+        </div>
+
+        <div className="mb-4">
+            <select
+                value={status}
+                onChange={e => setStatus(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+            >
+                <option value="">Select Employment Status</option>
+                <option value="Employed - Permanent">Employed – Permanent</option>
+                <option value="Employed - Contractual">Employed – Contractual</option>
+                <option value="Self-employed / Freelance">Self-employed / Freelance</option>
+                <option value="Unemployed">Unemployed</option>
+                <option value="Retired">Retired</option>
+                <option value="Looking for Work">Looking for Work</option>
+                <option value="Others">Others</option>
+            </select>
+            <div className="h-5 mt-1">
+                {registerErrors.status && <p className="text-red-500 text-xs">{registerErrors.status}</p>}
+            </div>
+        </div>
+
+        <button
+            onClick={handleRegister}
+            className="w-full bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 mb-4"
         >
-          <option value="">Select Course</option>
-          <option value="BACHELOR OF SCIENCE IN AGRICULTURE">BACHELOR OF SCIENCE IN AGRICULTURE</option>
-          <option value="BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM">BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM</option>
-          <option value="BACHELOR OF SCIENCE IN CRIMINOLOGY">BACHELOR OF SCIENCE IN CRIMINOLOGY</option>
-          <option value="BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT">BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT</option>
-          <option value="BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY">BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY</option>
-          <option value="BACHELOR OF ELEMENTARY EDUCATION">BACHELOR OF ELEMENTARY EDUCATION</option>
-          <option value="BACHELOR OF SECONDARY EDUCATION">BACHELOR OF SECONDARY EDUCATION</option>
-        </select>
-        {registerErrors.course && <p className="text-red-500 text-xs mt-1">{registerErrors.course}</p>}
-      </div>
-
-      <div className="mb-4">
-        <input
-          type="number"
-          placeholder="Batch Year"
-          value={formData.batchYear}
-          onChange={e => handleChange('batchYear', e.target.value)}
-          className="w-full p-3 border border-gray-300 rounded-md text-sm"
-        />
-        {registerErrors.batchYear && <p className="text-red-500 text-xs mt-1">{registerErrors.batchYear}</p>}
-      </div>
-
-      {['registerPassword', 'registerConfirmPassword'].map((field) => (
-        <div className="mb-4 relative" key={field}>
-          <input
-            type={(field === 'registerPassword' && showPassword) || (field === 'registerConfirmPassword' && showConfirmPassword) ? 'text' : 'password'}
-            placeholder={field === 'registerPassword' ? 'Password' : 'Confirm Password'}
-            value={formData[field]}
-            onChange={e => handleChange(field, e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-md text-sm pr-10"
-          />
-          <span
-            className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
-            onClick={() => field === 'registerPassword' ? setShowPassword(p => !p) : setShowConfirmPassword(p => !p)}
-          >
-            <FontAwesomeIcon icon={(field === 'registerPassword' ? showPassword : showConfirmPassword) ? faEye : faEyeSlash} />
-          </span>
-          {registerErrors[field] && <p className="text-red-500 text-xs mt-1">{registerErrors[field]}</p>}
-        </div>
-      ))}
-
-      <h3 className="text-left font-medium mb-2">Employment Information</h3>
-      {['nature', 'companyName', 'companyAddress', 'position'].map(field => (
-        <div className="mb-4" key={field}>
-          <input
-            type="text"
-            placeholder={field.replace(/([A-Z])/g, ' $1')}
-            value={formData[field]}
-            onChange={e => handleChange(field, e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-md text-sm"
-          />
-          {registerErrors[field] && <p className="text-red-500 text-xs mt-1">{registerErrors[field]}</p>}
-        </div>
-      ))}
-
-      <div className="mb-4">
-        <select
-          value={formData.status}
-          onChange={e => handleChange('status', e.target.value)}
-          className="w-full p-3 border border-gray-300 rounded-md text-sm"
-        >
-          <option value="">Select Employment Status</option>
-          <option value="Employed - Permanent">Employed – Permanent</option>
-          <option value="Employed - Contractual">Employed – Contractual</option>
-          <option value="Self-employed / Freelance">Self-employed / Freelance</option>
-          <option value="Unemployed">Unemployed</option>
-          <option value="Retired">Retired</option>
-          <option value="Looking for Work">Looking for Work</option>
-          <option value="Others">Others</option>
-        </select>
-        {registerErrors.status && <p className="text-red-500 text-xs mt-1">{registerErrors.status}</p>}
-      </div>
-
-      <button
-        onClick={handleSubmit}
-        className="w-full bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 mb-4"
-      >
-        Register
-      </button>
+            Register
+        </button>
     </div>
   );
 }
