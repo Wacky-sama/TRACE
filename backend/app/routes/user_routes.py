@@ -124,8 +124,10 @@ def register_alumni(
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ):
-    if db.query(User).filter(User.email == user.email).first():
+    if db.query(User).filter(User.email == user.email, User.deleted_at.is_(None)).first():
         raise HTTPException(status_code=400, detail="Email already registered")
+    if db.query(User).filter(User.username == user.username, User.deleted_at.is_(None)).first():
+        raise HTTPException(status_code=400, detail="Username already registered")
     
     is_approved = user.role in ("admin")
 
@@ -136,6 +138,10 @@ def register_alumni(
         lastname=user.lastname,
         firstname=user.firstname,
         middle_initial=user.middle_initial,
+        name_extension=user.name_extension,
+        birthday=user.birthday,
+        present_address=user.present_address,
+        contact_number=user.contact_number,
         course=user.course,
         batch_year=user.batch_year,
         role=user.role,

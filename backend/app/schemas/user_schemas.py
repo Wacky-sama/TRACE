@@ -27,7 +27,7 @@ class UserCreate(BaseModel):
     course: Optional[str] = None
     batch_year: Optional[int] = None
     name_extension: Optional[str] = None
-    birthday: Optional[datetime] = None
+    birthday: Optional[date] = None
     present_address: Optional[str] = None
     contact_number: Optional[str] = None
     role: UserRole
