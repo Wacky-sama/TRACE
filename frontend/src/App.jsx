@@ -31,13 +31,13 @@ const PublicRoute = ({ children }) => {
   const validRoles = ['admin', 'alumni'];
 
   if (token && validRoles.includes(role)) {
-  return <Navigate to={`/${role}/dashboard`} replace />;
-}
+    return <Navigate to={`/${role}/dashboard`} replace />;
+  }
 
-if (token && !validRoles.includes(role)) {
-  clearAuthData();
-  return <Navigate to="/login" replace />;
-}
+  if (token && !validRoles.includes(role)) {
+    clearAuthData();
+    return <Navigate to="/login" replace />;
+  }
 
   return children;
 };
