@@ -77,8 +77,6 @@ class UserProfileOut(BaseModel):
 
     class Config:
         from_attributes = True
-    class Config:
-        from_attributes = True
 
 class UserPendingApprovalOut(BaseModel):
     id: UUID
