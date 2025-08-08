@@ -439,7 +439,7 @@ function RegisterForm({ setIsRegistering }) {
                 <div className="flex justify-between gap-2">
                     <button
                         onClick={prevStep}
-                        lassName="bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400"
+                        className="bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400"
                     >
                         Back
                     </button>
