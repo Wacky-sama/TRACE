@@ -2,26 +2,6 @@
 
 > An event management system for CSU-Gonzaga that streamlines alumni registration, check-in, and attendance tracking using secure QR code verification and real-time dashboards.
 
-## ⚙️ Prerequisites (Linux Setup)
-
-Make sure your system has **Node.js** and **Python** installed.
-
-### Install Node.js (LTS) on Linux
-```bash
-# Using apt (Debian/Ubuntu/Linux Mint)
-sudo apt update
-sudo apt install nodejs npm -y
-```
-
-# (Optional but recommended) Install Node Version Manager (NVM)
-# This makes it easy to switch Node.js versions. 
-# Visit [Download Node.js](https://nodejs.org/en/download) 
-
-
-
-
-
-
 ## 🛠️ Running the System (Development Stage)
 
 ### Frontend
