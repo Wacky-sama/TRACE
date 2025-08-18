@@ -10,3 +10,4 @@ ENV/
 env.bak/
 venv.bak/
 requirements.txt.bak
+venv
