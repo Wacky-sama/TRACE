@@ -33,7 +33,7 @@ pip3 --version
 
 ## 🛠️ Running the System (Development Stage)
 
-### Frontend
+### Frontend (React + Vite)
 ```bash
 # Navigate to the frontend directory
 cd TRACE/frontend
@@ -44,18 +44,24 @@ npm install
 # Start the Vite development server
 npm run dev
 ```
+### Frontend runs at: http://localhost:5173/
 
-### Backend
+### Backend (FastAPI)
 ```bash
 # Navigate to the backend directory
 cd TRACE/backend
 
-# Activate the Python virtual environment
-source venv/bin/activate
+# Create and activate a virtual environment (only needed once)
+python3 -m venv venv
+source venv/bin/activate # deactivate with: deactivate
+
+# Install dependencies
+pip install -r requirements.txt
 
 # Run the FastAPI development server
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
+### Backend runs at: http://localhost:8000
 
 ### Guide by: Tabugadir, Kenji "Brocks" I.
 ### Visit my [Facebook](https://www.facebook.com/Wackyfu/).
