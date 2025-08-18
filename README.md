@@ -58,4 +58,4 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ### Guide by: Tabugadir, Kenji "Brocks" I.
-### Visit my [Facebook](https://www.facebook.com/Wackyfu/)
+### Visit my [Facebook](https://www.facebook.com/Wackyfu/).
