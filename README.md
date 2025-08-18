@@ -13,9 +13,9 @@ sudo apt update
 sudo apt install nodejs npm -y
 ```
 
-# (Optional but recommended) Install Node Version Manager (NVM)
-# This makes it easy to switch Node.js versions. 
-# Visit [Download Node.js](https://nodejs.org/en/download) 
+## (Optional but recommended) Install Node Version Manager (NVM)
+## This makes it easy to switch Node.js versions. 
+## Visit [Download Node.js](https://nodejs.org/en/download) 
 
 
 
