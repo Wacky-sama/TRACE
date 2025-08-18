@@ -19,3 +19,4 @@ logs/
 .env.test.local
 .env.production.local
 git.sh
+README.md.bak
