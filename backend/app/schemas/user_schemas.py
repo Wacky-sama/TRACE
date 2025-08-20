@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, model_validator
 from typing import Optional, List
 from uuid import UUID
-from datetime import datetime
+from datetime import datetime, date
 import enum
 
 class UserLogin(BaseModel):
