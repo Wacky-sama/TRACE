@@ -33,8 +33,7 @@ sudo apt install nodejs npm -y
 
 ## (Optional but recommended) Install Node Version Manager (NVM)
 This makes it easy to switch Node.js versions. 
-## Visit [Download Node.js](https://nodejs.org/en/download) 
-## Just follow the steps there.
+Visit [Download Node.js](https://nodejs.org/en/download) and follow the steps there.
 
 ### Install Python 3 and pip
 ```bash
@@ -82,5 +81,5 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ### Backend runs at: http://localhost:8000
 
 ## 👨‍💻 Developer
-Built with love by: Tabugadir, Kenji "Brocks" I.
+Built with ❤️ by **Tabugadir, Kenji "Brocks" I.**
 👉 [Facebook](https://www.facebook.com/Wackyfu/).
