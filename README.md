@@ -1,6 +1,24 @@
 # 🚀 TRACE: Tracking Alumni for Centralized Events
+**Connecting CSU–Gonzaga alumni through centralized events and smart tracking.**
 
-> An event management system for CSU-Gonzaga that streamlines alumni registration, check-in, and attendance tracking using secure QR code verification and real-time dashboards.
+> A web-based alumni management system for Cagayan State University – Gonzaga Campus that streamlines registration, check-ins, and attendance tracking using secure QR codes and real-time dashboards.
+
+---
+## ✨ Features  
+- **Role-based Access**:  
+  - **Admin** → Create/manage events, approve alumni registrations, print employment status forms, and manage up to two admin accounts.  
+  - **Alumni** → Update profiles, accept/decline events, and generate event QR codes (active only during event time).  
+- **QR Code Verification**: Secure and time-bound check-ins for events.  
+- **Employment Tracking**: Admins can export alumni employment forms for record-keeping.  
+- **Centralized Dashboard**: Real-time overview of alumni engagement and event participation.  
+---
+
+## 🖥️ Tech Stack  
+- **Frontend**: React + Vite  
+- **Backend**: Python (FastAPI)  
+- **Database**: PostgreSQL  
+
+---
 
 ## ⚙️ Prerequisites (Linux Setup)
 
@@ -14,7 +32,7 @@ sudo apt install nodejs npm -y
 ```
 
 ## (Optional but recommended) Install Node Version Manager (NVM)
-## This makes it easy to switch Node.js versions. 
+This makes it easy to switch Node.js versions. 
 ## Visit [Download Node.js](https://nodejs.org/en/download) 
 ## Just follow the steps there.
 
@@ -63,5 +81,6 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 ### Backend runs at: http://localhost:8000
 
-### Guide by: Tabugadir, Kenji "Brocks" I.
-### Visit my [Facebook](https://www.facebook.com/Wackyfu/).
+## 👨‍💻 Developer
+Built with love by: Tabugadir, Kenji "Brocks" I.
+👉 [Facebook](https://www.facebook.com/Wackyfu/).
