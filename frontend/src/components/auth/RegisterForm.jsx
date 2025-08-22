@@ -47,6 +47,15 @@ function RegisterForm({ setIsRegistering }) {
     }
   }, [birthday]);
 
+  useEffect(() => {
+    if (status === "Unemployed" || status === "Retired") {
+        setNature("");
+        setCompanyName("");
+        setCompanyAddress("");
+        setPosition("");
+    }
+  }, [status]);
+
   const nextStep = () => setStep(prev => prev + 1);
   const prevStep = () => setStep(prev => prev - 1);
 
@@ -72,6 +81,7 @@ function RegisterForm({ setIsRegistering }) {
     setRegisterSuccess('');
     if (Object.keys(errors).length > 0) return;
 
+    // The user who register is always an alumni
     try {
       await api.post('/users/register/alumni', {
         email: email,
@@ -365,58 +375,6 @@ function RegisterForm({ setIsRegistering }) {
                 <h2 className="text-lg font-semibold mb-2">Employment Information</h2>
 
                 <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Place of Work (Local / Abroad)"
-                        value={nature}
-                        onChange={e => setNature(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.nature && <p className="text-red-500 text-xs">{registerErrors.nature}</p>}
-                    </div>
-                </div>
-
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Company Name"
-                        value={companyName}
-                        onChange={e => setCompanyName(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.companyName && <p className="text-red-500 text-xs">{registerErrors.companyName}</p>}
-                    </div>
-                </div>
-
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Company Address"
-                        value={companyAddress}
-                        onChange={e => setCompanyAddress(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.companyAddress && <p className="text-red-500 text-xs">{registerErrors.companyAddress}</p>}
-                    </div>
-                </div>
-
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Position"
-                        value={position}
-                        onChange={e => setPosition(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.position && <p className="text-red-500 text-xs">{registerErrors.position}</p>}
-                    </div>
-                </div>
-
-                <div className="mb-4">
                     <select
                         value={status}
                         onChange={e => setStatus(e.target.value)}
@@ -435,7 +393,63 @@ function RegisterForm({ setIsRegistering }) {
                         {registerErrors.status && <p className="text-red-500 text-xs">{registerErrors.status}</p>}
                     </div>
                 </div>
-                    
+
+                {status !== "Unemployed" && status !== "Retired" && status !== "Looking for Work" && (
+                    <>
+                        <div className="mb-4">
+                            <input
+                                type="text"
+                                placeholder="Place of Work (Local / Abroad)"
+                                value={nature}
+                                onChange={e => setNature(e.target.value)}
+                                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                            />
+                            <div className="h-5 mt-1">
+                                {registerErrors.nature && <p className="text-red-500 text-xs">{registerErrors.nature}</p>}
+                            </div>
+                        </div>
+
+                        <div className="mb-4">
+                            <input
+                                type="text"
+                                placeholder="Company Name"
+                                value={companyName}
+                                onChange={e => setCompanyName(e.target.value)}
+                                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                            />
+                            <div className="h-5 mt-1">
+                                {registerErrors.companyName && <p className="text-red-500 text-xs">{registerErrors.companyName}</p>}
+                            </div>
+                        </div>
+
+                        <div className="mb-4">
+                            <input
+                                type="text"
+                                placeholder="Company Address"
+                                value={companyAddress}
+                                onChange={e => setCompanyAddress(e.target.value)}
+                                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                            />
+                            <div className="h-5 mt-1">
+                                {registerErrors.companyAddress && <p className="text-red-500 text-xs">{registerErrors.companyAddress}</p>}
+                            </div>
+                        </div>
+
+                        <div className="mb-4">
+                            <input
+                                type="text"
+                                placeholder="Position"
+                                value={position}
+                                onChange={e => setPosition(e.target.value)}
+                                className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                            />
+                            <div className="h-5 mt-1">
+                                {registerErrors.position && <p className="text-red-500 text-xs">{registerErrors.position}</p>}
+                            </div>
+                        </div>
+                    </>
+                )}
+
                 <div className="flex justify-between gap-2">
                     <button
                         onClick={prevStep}
