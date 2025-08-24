@@ -58,7 +58,7 @@ For Windows user, make sure you have **Node.js (LTS)** and **Python 3** installe
 
 Install Node.js (LTS) on Windows
 
-1. Download from Node.js official site.
+1. Download from [Node.js](https://nodejs.org/en/download) official site.
 
 2. Run the installer (.msi) and follow the steps.
 
