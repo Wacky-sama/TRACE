@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, model_validator
+from pydantic import BaseModel, EmailStr, model_validator, Field
 from typing import Optional, List
 from uuid import UUID
 from datetime import datetime, date
@@ -25,7 +25,12 @@ class UserCreate(BaseModel):
     firstname: str
     middle_initial: Optional[str] = None
     course: Optional[str] = None
-    batch_year: Optional[int] = None
+    batch_year: Optional[int] = Field(
+        None,
+        ge=1900,
+        le=datetime.utcnow().year,
+        description="Graduation year must be between 1900 and the current year"
+    )
     name_extension: Optional[str] = None
     birthday: Optional[date] = None
     present_address: Optional[str] = None
