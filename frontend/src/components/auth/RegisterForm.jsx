@@ -262,45 +262,49 @@ function RegisterForm({ setIsRegistering }) {
           <FloatingInput ref={fieldRefs.batchYear} id="batchYear" type="number" value={batchYear} onChange={e => setBatchYear(e.target.value)} label="Batch Year" error={registerErrors.batchYear} />
 
           {/* Password */}
-          <div className="relative mb-4" ref={fieldRefs.registerPassword}>
-            <FloatingInput
-              id="registerPassword"
-              type={showRegisterPassword ? "text" : "password"}
-              value={registerPassword}
-              onChange={e => setRegisterPassword(e.target.value)}
-              label="Password"
-              error={registerErrors.registerPassword}
-            />
+        <FloatingInput
+            ref={fieldRefs.registerPassword}
+            id="registerPassword"
+            type={showRegisterPassword ? "text" : "password"}
+            value={registerPassword}
+            onChange={e => setRegisterPassword(e.target.value)}
+            label="Password"
+            error={registerErrors.registerPassword}
+        >
             <span
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
-              onClick={() => setShowRegisterPassword(prev => !prev)}
-              tabIndex={0}
-              role="button"
-              aria-label="Toggle password visibility"
+                className="cursor-pointer text-gray-500"
+                onClick={() => setShowRegisterPassword(prev => !prev)}
+                tabIndex={0}
+                role="button"
+                aria-label="Toggle password visibility"
             >
-              {showRegisterPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
-            </span>
-          </div>
+                {showRegisterPassword ? (
+                <FontAwesomeIcon icon={faEye} />
+                ) : (
+                <FontAwesomeIcon icon={faEyeSlash} />
+                )}
+             </span>
+        </FloatingInput>
 
-          <div className="relative mb-4" ref={fieldRefs.registerConfirmPassword}>
-            <FloatingInput
-              id="registerConfirmPassword"
-              type={showRegisterConfirmPassword ? "text" : "password"}
-              value={registerConfirmPassword}
-              onChange={e => setRegisterConfirmPassword(e.target.value)}
-              label="Confirm Password"
-              error={registerErrors.registerConfirmPassword}
-            />
-            <span
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
-              onClick={() => setShowRegisterConfirmPassword(prev => !prev)}
-              tabIndex={0}
-              role="button"
-              aria-label="Toggle confirm password visibility"
-            >
-              {showRegisterConfirmPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
-            </span>
-          </div>
+        <FloatingInput
+            ref={fieldRefs.registerConfirmPassword}
+            id="registerConfirmPassword"
+            type={showRegisterConfirmPassword ? "text" : "password"}
+            value={registerConfirmPassword}
+            onChange={e => setRegisterConfirmPassword(e.target.value)}
+            label="Confirm Password"
+            error={registerErrors.registerConfirmPassword}
+        >
+          <span
+            className="cursor-pointer text-gray-500"
+            onClick={() => setShowRegisterConfirmPassword(prev => !prev)}
+            tabIndex={0}
+            role="button"
+            aria-label="Toggle confirm password visibility"
+          >
+            {showRegisterConfirmPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
+          </span>
+        </FloatingInput>
 
           <button
             onClick={nextStep}
