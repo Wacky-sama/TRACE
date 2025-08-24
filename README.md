@@ -64,6 +64,29 @@ node -v
 npm -v
 ```
 
+Install Python 3 on Windows
+1. Download from Python.org.
+2. Run the installer and check the box that says "Add Python to PATH".
+3. Verify installation:
+```bash
+python --version
+pip --version
+```
+
+Create Virtual Environment (Windows)
+```bash
+# Navigate to the backend folder
+cd TRACE\backend
+
+# Create virtual environment
+python -m venv venv
+
+# Activate it
+venv\Scripts\activate
+
+# Deactivate when done
+deactivate
+```
 
 ## 🛠️ Running the System (Development Stage)
 
