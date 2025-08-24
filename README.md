@@ -37,6 +37,8 @@ sudo apt install nodejs npm -y
 ## (Optional but recommended) Install Node Version Manager (NVM)
 This makes it easy to switch Node.js versions. 
 Visit [Download Node.js](https://nodejs.org/en/download) and follow the steps there.
+![Linux](/home/wackysama/Pictures/Linux.png)
+
 
 ### Install Python 3 and pip
 ```bash
