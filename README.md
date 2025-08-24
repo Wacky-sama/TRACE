@@ -49,6 +49,8 @@ python3 --version
 pip3 --version
 ```
 
+---
+
 ### Windows Setup
 For Windows user, make sure you have **Node.js (LTS)** and **Python 3** installed.
 
