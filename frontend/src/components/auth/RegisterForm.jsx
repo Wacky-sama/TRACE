@@ -1,37 +1,67 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import api from '../../services/api';
+import FloatingInput from '../FloatingInput';
+import FloatingSelect from '../FloatingSelect';
 
 function RegisterForm({ setIsRegistering }) {
-    const [step, setStep] = useState(1);
-    const [registerIdentifier, setRegisterIdentifier] = useState('');
-    const [email, setEmail] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [middleInitial, setMiddleInitial] = useState('');
-    const [nameExtension, setNameExtension] = useState('');
-    const [birthday, setBirthday] = useState(null);
-    const [age, setAge] = useState('');
-    const [presentAddress, setPresentAddress] = useState('');
-    const [contactNumber, setContactNumber] = useState('');
-    const [course, setCourse] = useState('');
-    const [batchYear, setBatchYear] = useState('');
-    const [registerPassword, setRegisterPassword] = useState('');
-    const [registerConfirmPassword, setRegisterConfirmPassword] = useState('');
-    const [nature, setNature] = useState('');
-    const [companyName, setCompanyName] = useState('');
-    const [companyAddress, setCompanyAddress] = useState('');
-    const [position, setPosition] = useState('');
-    const [status, setStatus] = useState('');
-    const [showRegisterPassword, setShowRegisterPassword] = useState(false);
-    const [showRegisterConfirmPassword, setShowRegisterConfirmPassword] = useState(false);
-    const [registerErrors, setRegisterErrors] = useState({});
-    const [registerError, setRegisterError] = useState('');
-    const [registerSuccess, setRegisterSuccess] = useState('');
+  const [step, setStep] = useState(1);
 
+  // Personal Info
+  const [registerIdentifier, setRegisterIdentifier] = useState('');
+  const [email, setEmail] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [middleInitial, setMiddleInitial] = useState('');
+  const [nameExtension, setNameExtension] = useState('');
+  const [birthday, setBirthday] = useState(null);
+  const [age, setAge] = useState('');
+  const [presentAddress, setPresentAddress] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
+  const [course, setCourse] = useState('');
+  const [batchYear, setBatchYear] = useState('');
+  const [registerPassword, setRegisterPassword] = useState('');
+  const [registerConfirmPassword, setRegisterConfirmPassword] = useState('');
+
+  // Employment Info
+  const [placeOfWork, setPlaceOfWork] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [companyAddress, setCompanyAddress] = useState('');
+  const [position, setPosition] = useState('');
+  const [status, setStatus] = useState('');
+
+  // Toggles + validation
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showRegisterConfirmPassword, setShowRegisterConfirmPassword] = useState(false);
+  const [registerErrors, setRegisterErrors] = useState({});
+  const [registerError, setRegisterError] = useState('');
+  const [registerSuccess, setRegisterSuccess] = useState('');
+
+  // 🔥 Refs for scrolling
+  const fieldRefs = {
+    registerIdentifier: useRef(null),
+    email: useRef(null),
+    lastName: useRef(null),
+    firstName: useRef(null),
+    birthday: useRef(null),
+    age: useRef(null),
+    presentAddress: useRef(null),
+    contactNumber: useRef(null),
+    course: useRef(null),
+    batchYear: useRef(null),
+    registerPassword: useRef(null),
+    registerConfirmPassword: useRef(null),
+    status: useRef(null),
+    placeOfWork: useRef(null),
+    companyName: useRef(null),
+    companyAddress: useRef(null),
+    position: useRef(null)
+  };
+
+  // Auto-calc age
   useEffect(() => {
     if (birthday) {
       const today = new Date();
@@ -47,19 +77,27 @@ function RegisterForm({ setIsRegistering }) {
     }
   }, [birthday]);
 
+  // Reset employment fields when status changes
   useEffect(() => {
-    if (status === "Unemployed" || status === "Retired") {
-        setNature("");
-        setCompanyName("");
-        setCompanyAddress("");
-        setPosition("");
+    if (status === "Unemployed" || status === "Retired" || status === "Looking for Work") {
+      setPlaceOfWork("");
+      setCompanyName("");
+      setCompanyAddress("");
+      setPosition("");
     }
   }, [status]);
 
-  const nextStep = () => setStep(prev => prev + 1);
-  const prevStep = () => setStep(prev => prev - 1);
+  // 🔥 Helper to scroll to first error
+  const scrollToError = (errors) => {
+    const firstKey = Object.keys(errors)[0];
+    if (firstKey && fieldRefs[firstKey]?.current) {
+      fieldRefs[firstKey].current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      fieldRefs[firstKey].current.focus();
+    }
+  };
 
-  const handleRegister = async () => {
+  // --- Validation functions ---
+  const validateStep1 = () => {
     const errors = {};
     if (!registerIdentifier) errors.registerIdentifier = "Username is required";
     if (!email) errors.email = "Email is required";
@@ -73,63 +111,70 @@ function RegisterForm({ setIsRegistering }) {
     if (!batchYear) errors.batchYear = "Batch year is required";
     if (!registerPassword) errors.registerPassword = "Password is required";
     if (!registerConfirmPassword) errors.registerConfirmPassword = "Confirm Password is required";
-    if (registerPassword !== registerConfirmPassword) errors.registerConfirmPassword = "Passwords do not match";
-    if (!status) errors.status = "Employment status is required";
+    if (registerPassword !== registerConfirmPassword)
+      errors.registerConfirmPassword = "Passwords do not match";
 
     setRegisterErrors(errors);
+    if (Object.keys(errors).length > 0) scrollToError(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const validateStep2 = () => {
+    const errors = {};
+    if (!status) errors.status = "Employment status is required";
+    if (status !== "Unemployed" && status !== "Retired" && status !== "Looking for Work") {
+      if (!placeOfWork) errors.placeOfWork = "Place of work is required";
+      if (!companyName) errors.companyName = "Company name is required";
+      if (!companyAddress) errors.companyAddress = "Company address is required";
+      if (!position) errors.position = "Position is required";
+    }
+
+    setRegisterErrors(errors);
+    if (Object.keys(errors).length > 0) scrollToError(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  // --- Step navigation ---
+  const nextStep = () => {
+    if (step === 1 && validateStep1()) {
+      setStep(2);
+    }
+  };
+
+  const prevStep = () => setStep(1);
+
+  // --- Submit ---
+  const handleRegister = async () => {
+    const step1Valid = validateStep1();
+    const step2Valid = validateStep2();
+    if (!step1Valid || !step2Valid) return;
+
     setRegisterError('');
     setRegisterSuccess('');
-    if (Object.keys(errors).length > 0) return;
 
-    // The user who register is always an alumni
     try {
       await api.post('/users/register/alumni', {
-        email: email,
+        email,
         username: registerIdentifier,
         lastname: lastName,
         firstname: firstName,
         middle_initial: middleInitial,
         name_extension: nameExtension,
-        birthday: birthday,
+        birthday,
         present_address: presentAddress,
         contact_number: contactNumber,
-        course: course,
+        course,
         batch_year: batchYear,
         password: registerPassword,
-        // Employment Information
+        role: 'alumni',
         place_of_work: placeOfWork,
         company_name: companyName,
         company_address: companyAddress,
         position,
-        status,
-        role: 'alumni'
+        status
       });
 
-      const resetRegisterForm = () => {
-        setRegisterIdentifier('');
-        setEmail('');
-        setLastName('');
-        setFirstName('');
-        setMiddleInitial('');
-        setNameExtension('');
-        setBirthday(null);
-        setAge('');
-        setPresentAddress('');
-        setContactNumber('');
-        setCourse('');
-        setBatchYear('');
-        setRegisterPassword('');
-        setRegisterConfirmPassword('');
-        setNature('');
-        setCompanyName('');
-        setCompanyAddress('');
-        setPosition('');
-        setStatus('');
-        setRegisterErrors({});
-      };
-
       setRegisterSuccess("Registration submitted successfully! Please wait for approval.");
-      resetRegisterForm();
       setTimeout(() => {
         setIsRegistering(false);
         setRegisterSuccess('');
@@ -141,333 +186,209 @@ function RegisterForm({ setIsRegistering }) {
 
   return (
     <div>
-        {/* Feedback messages */}
-        {registerError && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-4 text-sm">
-                {registerError}
-            </div>
-        )}
-        {registerSuccess && (
-            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md mb-4 text-sm">
-                {registerSuccess}
-            </div>
-        )}
-        {step === 1 && (
-            <div>
-                <h2 className="text-lg font-semibold mb-2">Personal Information</h2>
-                <div className="mb-4">
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.email && <p className="text-red-500 text-xs">{registerErrors.email}</p>}
-                    </div>
+      {/* Feedback messages */}
+      {registerError && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-4 text-sm">
+          {registerError}
+        </div>
+      )}
+      {registerSuccess && (
+        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md mb-4 text-sm">
+          {registerSuccess}
+        </div>
+      )}
 
-                    <input
-                        type="text"
-                        placeholder="Username"
-                        value={registerIdentifier}
-                        onChange={e => setRegisterIdentifier(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.registerIdentifier && <p className="text-red-500 text-xs">{registerErrors.registerIdentifier}</p>}
-                    </div>
-                </div>
+      {step === 1 && (
+        <>
+          <h2 className="text-lg font-semibold mb-2">Personal Information</h2>
 
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Last Name"
-                        value={lastName}
-                        onChange={e => setLastName(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.lastName && <p className="text-red-500 text-xs">{registerErrors.lastName}</p>}
-                    </div>
-                </div>
+          <FloatingInput ref={fieldRefs.email} id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} label="Email" error={registerErrors.email} />
 
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="First Name"
-                        value={firstName}
-                        onChange={e => setFirstName(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.firstName && <p className="text-red-500 text-xs">{registerErrors.firstName}</p>}
-                    </div>
-                </div>
+          <FloatingInput ref={fieldRefs.registerIdentifier} id="username" value={registerIdentifier} onChange={e => setRegisterIdentifier(e.target.value)} label="Username" error={registerErrors.registerIdentifier} />
 
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Middle Initial"
-                        value={middleInitial}
-                        onChange={e => setMiddleInitial(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.middleInitial && <p className="text-red-500 text-xs">{registerErrors.middleInitial}</p>}
-                    </div>
-                </div>
+          <FloatingInput ref={fieldRefs.lastName} id="lastName" value={lastName} onChange={e => setLastName(e.target.value)} label="Last Name" error={registerErrors.lastName} />
 
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Name Extension (e.g. Jr., Sr., III)"
-                        value={nameExtension}
-                        onChange={e => setNameExtension(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.nameExtension && <p className="text-red-500 text-xs">{registerErrors.nameExtension}</p>}
-                    </div>
-                </div>
+          <FloatingInput ref={fieldRefs.firstName} id="firstName" value={firstName} onChange={e => setFirstName(e.target.value)} label="First Name" error={registerErrors.firstName} />
 
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Birthday
-                    </label>
-                    <DatePicker
-                        maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
-                        minDate={new Date(1900, 0, 1)}
-                        selected={birthday}
-                        onChange={(date) => setBirthday(date)}
-                        dateFormat="MM/dd/yyyy"
-                        placeholderText="Select your birthday"
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                        showMonthDropdown
-                        showYearDropdown
-                        dropdownMode="select"
-                        yearDropdownItemNumber={200}
-                        scrollableYearDropdown
-                        isClearable
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.birthday && (
-                            <p className="text-red-500 text-xs">{registerErrors.birthday}</p>
-                        )}
-                    </div>
-                </div>
+          <FloatingInput ref={fieldRefs.middleInitial} id="middleInitial" value={middleInitial} onChange={e => setMiddleInitial(e.target.value)} label="Middle Initial" error={registerErrors.middleInitial} />
 
-                <div className="mb-4">
-                    <input
-                        type="number"
-                        placeholder="Age"
-                        value={age}
-                        readOnly
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm bg-gray-100"
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.age && <p className="text-red-500 text-xs">{registerErrors.age}</p>}
-                    </div>
-                </div>
+          <FloatingInput ref={fieldRefs.nameExtension} id="nameExtension" value={nameExtension} onChange={e => setNameExtension(e.target.value)} label="Name Extension (e.g., Jr., Sr., III)" error={registerErrors.nameExtension} />
 
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Present Address"
-                        value={presentAddress}
-                        onChange={e => setPresentAddress(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.presentAddress && <p className="text-red-500 text-xs">{registerErrors.presentAddress}</p>}
-                    </div>
-                </div>
+          {/* Birthday */}
+          <div className="mb-4" ref={fieldRefs.birthday}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Birthday</label>
+            <DatePicker
+              maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
+              minDate={new Date(1900, 0, 1)}
+              selected={birthday}
+              onChange={(date) => setBirthday(date)}
+              dateFormat="MM/dd/yyyy"
+              placeholderText="Select your birthday"
+              className="w-full p-3 border border-gray-300 rounded-md text-sm"
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              yearDropdownItemNumber={200}
+              scrollableYearDropdown
+              isClearable
+            />
+            {registerErrors.birthday && <p className="text-red-500 text-xs">{registerErrors.birthday}</p>}
+          </div>
 
-                <div className="mb-4">
-                    <input
-                        type="tel"
-                        placeholder="Contact Number"
-                        value={contactNumber}
-                        onChange={e => setContactNumber(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.contactNumber && <p className="text-red-500 text-xs">{registerErrors.contactNumber}</p>}
-                    </div>
-                </div>
+          <FloatingInput ref={fieldRefs.age} id="age" type="number" value={age} label="Age" readOnly error={registerErrors.age} />
 
-                <div className="mb-4">
-                    <select
-                        value={course}
-                        onChange={e => setCourse(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    >
-                        <option value="">Select Course</option>
-                        <option value="BACHELOR OF SCIENCE IN AGRICULTURE">BACHELOR OF SCIENCE IN AGRICULTURE</option>
-                        <option value="BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM">BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM</option>
-                        <option value="BACHELOR OF SCIENCE IN CRIMINOLOGY">BACHELOR OF SCIENCE IN CRIMINOLOGY</option>
-                        <option value="BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT">BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT</option>
-                        <option value="BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY">BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY</option>
-                        <option value="BACHELOR OF ELEMENTARY EDUCATION">BACHELOR OF ELEMENTARY EDUCATION</option>
-                        <option value="BACHELOR OF SECONDARY EDUCATION">BACHELOR OF SECONDARY EDUCATION</option>
-                    </select>
-                    <div className="h-5 mt-1">
-                        {registerErrors.course && <p className="text-red-500 text-xs">{registerErrors.course}</p>}
-                    </div>
-                </div>
+          <FloatingInput ref={fieldRefs.presentAddress} id="presentAddress" value={presentAddress} onChange={e => setPresentAddress(e.target.value)} label="Present Address" error={registerErrors.presentAddress} />
 
-                <div className="mb-4">
-                    <input
-                        type="number"
-                        placeholder="Batch Year"
-                        value={batchYear}
-                        onChange={e => setBatchYear(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    />
-                    <div className="h-5 mt-1">
-                        {registerErrors.batchYear && <p className="text-red-500 text-xs">{registerErrors.batchYear}</p>}
-                    </div>
-                </div>
+          <FloatingInput ref={fieldRefs.contactNumber} id="contactNumber" type="tel" value={contactNumber} onChange={e => setContactNumber(e.target.value)} label="Contact Number" error={registerErrors.contactNumber} />
 
-                <div className="mb-4">
-                    <div className="relative">
-                        <input
-                            type={showRegisterPassword ? "text" : "password"}
-                            placeholder="Password"
-                            value={registerPassword}
-                            onChange={e => setRegisterPassword(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-md text-sm pr-10"
-                        />
-                        <span className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
-                        onClick={() => setShowRegisterPassword(prev => !prev)}>
-                            {showRegisterPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
-                        </span>
-                    </div>
-                    <div className="h-5 mt-1">
-                        {registerErrors.registerPassword && <p className="text-red-500 text-xs">{registerErrors.registerPassword}</p>}
-                    </div>
-                </div>
+          <FloatingSelect
+            ref={fieldRefs.course}
+            id="course"
+            value={course}
+            onChange={e => setCourse(e.target.value)}
+            label="Course"
+            error={registerErrors.course}
+            options={[
+              "BACHELOR OF SCIENCE IN AGRICULTURE",
+              "BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM",
+              "BACHELOR OF SCIENCE IN CRIMINOLOGY",
+              "BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT",
+              "BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY",
+              "BACHELOR OF ELEMENTARY EDUCATION",
+              "BACHELOR OF SECONDARY EDUCATION"
+            ]}
+          />
 
-                <div className="mb-4">
-                    <div className="relative">
-                        <input
-                            type={showRegisterConfirmPassword ? "text" : "password"}
-                            placeholder="Confirm Password"
-                            value={registerConfirmPassword}
-                            onChange={e => setRegisterConfirmPassword(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-md text-sm pr-10"
-                        />
-                        <span className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
-                            onClick={() => setShowRegisterConfirmPassword(prev => !prev)}>
-                        {showRegisterConfirmPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
-                        </span>
-                    </div>
-                    <div className="h-5 mt-1">
-                        {registerErrors.registerConfirmPassword && <p className="text-red-500 text-xs">{registerErrors.registerConfirmPassword}</p>}
-                    </div>
-                    <button onClick={nextStep} className="w-full bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 mb-4">Next</button>
-                </div>
-            </div>
-        )}
+          <FloatingInput ref={fieldRefs.batchYear} id="batchYear" type="number" value={batchYear} onChange={e => setBatchYear(e.target.value)} label="Batch Year" error={registerErrors.batchYear} />
 
-        {step === 2 && (
-            <div>
-                <h2 className="text-lg font-semibold mb-2">Employment Information</h2>
+          {/* Password */}
+          <div className="relative mb-4" ref={fieldRefs.registerPassword}>
+            <FloatingInput
+              id="registerPassword"
+              type={showRegisterPassword ? "text" : "password"}
+              value={registerPassword}
+              onChange={e => setRegisterPassword(e.target.value)}
+              label="Password"
+              error={registerErrors.registerPassword}
+            />
+            <span
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+              onClick={() => setShowRegisterPassword(prev => !prev)}
+              tabIndex={0}
+              role="button"
+              aria-label="Toggle password visibility"
+            >
+              {showRegisterPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
+            </span>
+          </div>
 
-                <div className="mb-4">
-                    <select
-                        value={status}
-                        onChange={e => setStatus(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                    >
-                        <option value="">Select Employment Status</option>
-                        <option value="Employed - Permanent">Employed – Permanent</option>
-                        <option value="Employed - Contractual">Employed – Contractual</option>
-                        <option value="Self-employed / Freelance">Self-employed / Freelance</option>
-                        <option value="Unemployed">Unemployed</option>
-                        <option value="Retired">Retired</option>
-                        <option value="Looking for Work">Looking for Work</option>
-                        <option value="Others">Others</option>
-                    </select>
-                    <div className="h-5 mt-1">
-                        {registerErrors.status && <p className="text-red-500 text-xs">{registerErrors.status}</p>}
-                    </div>
-                </div>
+          <div className="relative mb-4" ref={fieldRefs.registerConfirmPassword}>
+            <FloatingInput
+              id="registerConfirmPassword"
+              type={showRegisterConfirmPassword ? "text" : "password"}
+              value={registerConfirmPassword}
+              onChange={e => setRegisterConfirmPassword(e.target.value)}
+              label="Confirm Password"
+              error={registerErrors.registerConfirmPassword}
+            />
+            <span
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+              onClick={() => setShowRegisterConfirmPassword(prev => !prev)}
+              tabIndex={0}
+              role="button"
+              aria-label="Toggle confirm password visibility"
+            >
+              {showRegisterConfirmPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
+            </span>
+          </div>
 
-                {status !== "Unemployed" && status !== "Retired" && status !== "Looking for Work" && (
-                    <>
-                        <div className="mb-4">
-                            <input
-                                type="text"
-                                placeholder="Place of Work (Local / Abroad)"
-                                value={nature}
-                                onChange={e => setNature(e.target.value)}
-                                className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                            />
-                            <div className="h-5 mt-1">
-                                {registerErrors.nature && <p className="text-red-500 text-xs">{registerErrors.nature}</p>}
-                            </div>
-                        </div>
+          <button
+            onClick={nextStep}
+            className="w-full bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 mb-4"
+          >
+            Next
+          </button>
+        </>
+      )}
 
-                        <div className="mb-4">
-                            <input
-                                type="text"
-                                placeholder="Company Name"
-                                value={companyName}
-                                onChange={e => setCompanyName(e.target.value)}
-                                className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                            />
-                            <div className="h-5 mt-1">
-                                {registerErrors.companyName && <p className="text-red-500 text-xs">{registerErrors.companyName}</p>}
-                            </div>
-                        </div>
+      {step === 2 && (
+        <div>
+          <h2 className="text-lg font-semibold mb-2">Employment Information</h2>
 
-                        <div className="mb-4">
-                            <input
-                                type="text"
-                                placeholder="Company Address"
-                                value={companyAddress}
-                                onChange={e => setCompanyAddress(e.target.value)}
-                                className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                            />
-                            <div className="h-5 mt-1">
-                                {registerErrors.companyAddress && <p className="text-red-500 text-xs">{registerErrors.companyAddress}</p>}
-                            </div>
-                        </div>
+          <FloatingSelect
+            ref={fieldRefs.status}
+            id="status"
+            value={status}
+            onChange={e => setStatus(e.target.value)}
+            label="Employment Status"
+            error={registerErrors.status}
+            options={[
+              "Employed - Permanent",
+              "Employed - Contractual",
+              "Self-employed / Freelance",
+              "Unemployed",
+              "Retired",
+              "Looking for Work",
+              "Others"
+            ]}
+          />
 
-                        <div className="mb-4">
-                            <input
-                                type="text"
-                                placeholder="Position"
-                                value={position}
-                                onChange={e => setPosition(e.target.value)}
-                                className="w-full p-3 border border-gray-300 rounded-md text-sm"
-                            />
-                            <div className="h-5 mt-1">
-                                {registerErrors.position && <p className="text-red-500 text-xs">{registerErrors.position}</p>}
-                            </div>
-                        </div>
-                    </>
-                )}
+          {status !== "Unemployed" && status !== "Retired" && status !== "Looking for Work" && (
+            <>
+              <FloatingSelect
+                ref={fieldRefs.placeOfWork}
+                id="placeOfWork"
+                value={placeOfWork}
+                onChange={e => setPlaceOfWork(e.target.value)}
+                label="Place of Work"
+                error={registerErrors.placeOfWork}
+                options={["Local", "Abroad"]}
+              />
+              <FloatingInput
+                ref={fieldRefs.companyName}
+                id="companyName"
+                value={companyName}
+                onChange={e => setCompanyName(e.target.value)}
+                label="Company Name"
+                error={registerErrors.companyName}
+              />
+              <FloatingInput
+                ref={fieldRefs.companyAddress}
+                id="companyAddress"
+                value={companyAddress}
+                onChange={e => setCompanyAddress(e.target.value)}
+                label="Company Address"
+                error={registerErrors.companyAddress}
+              />
+              <FloatingInput
+                ref={fieldRefs.position}
+                id="position"
+                value={position}
+                onChange={e => setPosition(e.target.value)}
+                label="Position"
+                error={registerErrors.position}
+              />
+            </>
+          )}
 
-                <div className="flex justify-between gap-2">
-                    <button
-                        onClick={prevStep}
-                        className="bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400"
-                    >
-                        Back
-                    </button>
-                    <button
-                        onClick={handleRegister}
-                        className="flex-1 bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700"
-                    >
-                        Register
-                    </button>
-                </div>
-            </div>
-        )}
+          <div className="flex justify-between gap-2">
+            <button
+              onClick={prevStep}
+              className="bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400"
+            >
+              Back
+            </button>
+            <button
+              onClick={handleRegister}
+              className="flex-1 bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700"
+            >
+              Register
+            </button>
+          </div>
+        </div>
+      )}
     </div>
-    );
+  );
 }
 
 export default RegisterForm;
