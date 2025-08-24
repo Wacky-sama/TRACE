@@ -235,11 +235,31 @@ function RegisterForm({ setIsRegistering }) {
             {registerErrors.birthday && <p className="text-red-500 text-xs">{registerErrors.birthday}</p>}
           </div>
 
-          <FloatingInput ref={fieldRefs.age} id="age" type="number" value={age} label="Age" readOnly error={registerErrors.age} />
+          <FloatingInput 
+            ref={fieldRefs.age} 
+            id="age" type="number" 
+            value={age} label="Age" 
+            readOnly error={registerErrors.age} 
+          />
 
-          <FloatingInput ref={fieldRefs.presentAddress} id="presentAddress" value={presentAddress} onChange={e => setPresentAddress(e.target.value)} label="Present Address" error={registerErrors.presentAddress} />
+          <FloatingInput 
+            ref={fieldRefs.presentAddress} 
+            id="presentAddress" 
+            value={presentAddress} 
+            onChange={e => setPresentAddress(e.target.value)}
+            label="Present Address" 
+            error={registerErrors.presentAddress} 
+           />
 
-          <FloatingInput ref={fieldRefs.contactNumber} id="contactNumber" type="tel" value={contactNumber} onChange={e => setContactNumber(e.target.value)} label="Contact Number" error={registerErrors.contactNumber} />
+          <FloatingInput 
+            ref={fieldRefs.contactNumber} 
+            id="contactNumber" 
+            type="tel" 
+            value={contactNumber} 
+            onChange={e => setContactNumber(e.target.value)} 
+            label="Contact Number" 
+            error={registerErrors.contactNumber} 
+          />
 
           <FloatingSelect
             ref={fieldRefs.course}
@@ -259,7 +279,16 @@ function RegisterForm({ setIsRegistering }) {
             ]}
           />
 
-          <FloatingInput ref={fieldRefs.batchYear} id="batchYear" type="number" value={batchYear} onChange={e => setBatchYear(e.target.value)} label="Batch Year" error={registerErrors.batchYear} />
+        <FloatingSelect
+            ref={fieldRefs.batchYear}
+            id="batchYear"
+            value={batchYear}
+            onChange={e => setBatchYear(e.target.value)}
+            label="Batch Year"
+            error={registerErrors.batchYear}
+            options={Array.from({ length: new Date().getFullYear() - 1950 + 1 }, (_, i) => (1950 + i).toString())}
+        />
+
 
           {/* Password */}
         <FloatingInput
