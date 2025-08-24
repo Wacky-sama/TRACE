@@ -90,6 +90,8 @@ venv\Scripts\activate
 deactivate
 ```
 
+---
+
 ## 🛠️ Running the System (Development Stage)
 
 ### Frontend (React + Vite)
