@@ -20,8 +20,9 @@
 
 ---
 
-## ⚙️ Prerequisites (Linux Setup)
+## ⚙️ Prerequisites 
 
+### Linux Setup
 Make sure your system has **Node.js** and **Python** installed.
 
 ### Install Node.js (LTS) on Linux
@@ -47,6 +48,22 @@ npm -v
 python3 --version
 pip3 --version
 ```
+
+### Windows Setup
+For Windows user, make sure you have **Node.js (LTS)** and **Python 3** installed.
+
+Install Node.js (LTS) on Windows
+
+1. Download from Node.js official site.
+
+2. Run the installer (.msi) and follow the steps.
+
+3. Verify installation:
+```bash
+node -v
+npm -v
+```
+
 
 ## 🛠️ Running the System (Development Stage)
 
