@@ -124,6 +124,8 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 ### Backend runs at: http://localhost:8000
 
+---
+
 ## 👨‍💻 Developer
 Built with ❤️ by **Tabugadir, Kenji "Brocks" I.**
 👉 [Facebook](https://www.facebook.com/Wackyfu/).
