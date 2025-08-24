@@ -85,8 +85,10 @@ function AuthPage() {
                             <br />Taguba, Philip Joshua V.
                             <br />
                             <a 
-                            href="mailto:tabugadirkenjibrocks@gmail.com"
-                            className="text-blue-600 hover:underline"
+                                href="https://mail.google.com/mail/?view=cm&fs=1&to=tabugadirkenjibrocks@gmail.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:underline"
                             >
                             Tabugadir, Kenji "Brocks" I.
                             </a>
