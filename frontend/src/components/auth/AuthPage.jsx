@@ -83,7 +83,13 @@ function AuthPage() {
                             <br />Balgos, Wendel B.
                             <br />Salviejo, Victor Louis R.
                             <br />Taguba, Philip Joshua V.
-                            <br />Tabugadir, Kenji "Brocks" I.
+                            <br />
+                            <a 
+                            href="mailto:tabugadirkenjibrocks@gmail.com"
+                            className="text-blue-600 hover:underline"
+                            >
+                            Tabugadir, Kenji "Brocks" I.
+                            </a>
                         </p>
                     </div>
                 </div>
