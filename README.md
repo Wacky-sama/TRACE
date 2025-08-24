@@ -65,7 +65,7 @@ npm -v
 ```
 
 Install Python 3 on Windows
-1. Download from Python.org.
+1. Download from [Python.org.](https://www.python.org/downloads/)
 2. Run the installer and check the box that says "Add Python to PATH".
 3. Verify installation:
 ```bash
