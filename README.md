@@ -4,6 +4,7 @@
 > A web-based alumni management system for Cagayan State University – Gonzaga Campus that streamlines registration, check-ins, and attendance tracking using secure QR codes and real-time dashboards.
 
 ---
+
 ## ✨ Features  
 - **Role-based Access**:  
   - **Admin** → Create/manage events, approve alumni registrations, print employment status forms, and manage up to two admin accounts.  
@@ -11,6 +12,7 @@
 - **QR Code Verification**: Secure and time-bound check-ins for events.  
 - **Employment Tracking**: Admins can export alumni employment forms for record-keeping.  
 - **Centralized Dashboard**: Real-time overview of alumni engagement and event participation.  
+
 ---
 
 ## 🖥️ Tech Stack  
