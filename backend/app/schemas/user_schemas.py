@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, model_validator, Field
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
 from uuid import UUID
 from datetime import datetime, date
@@ -17,16 +17,17 @@ class TokenResponse(BaseModel):
     role: UserRole
     is_approved: bool
 
-class UserCreate(BaseModel):
+# Alumni Registration Schema
+class AlumniRegister(BaseModel):
     username: str
     email: EmailStr
     password: str
     lastname: str
     firstname: str
     middle_initial: Optional[str] = None
-    course: Optional[str] = None
-    batch_year: Optional[int] = Field(
-        None,
+    course: str
+    batch_year: int = Field(
+        ...,
         ge=1900,
         le=datetime.utcnow().year,
         description="Graduation year must be between 1900 and the current year"
@@ -35,16 +36,16 @@ class UserCreate(BaseModel):
     birthday: Optional[date] = None
     present_address: Optional[str] = None
     contact_number: Optional[str] = None
-    role: UserRole
 
-    @model_validator(mode='after')
-    def check_alumni_fields(self):
-        if self.role == UserRole.alumni:
-            if not self.course:
-                raise ValueError('Course is required for alumni')
-            if not self.batch_year:
-                raise ValueError('Batch year is required for alumni')
-        return self
+# Admin-only user creation schema
+class AdminUserCreate(BaseModel):
+    username: str
+    email: EmailStr
+    password: str
+    lastname: str
+    firstname: str
+    middle_initial: Optional[str] = None
+    role: UserRole
 
 class UserOut(BaseModel):
     id: UUID
@@ -94,7 +95,6 @@ class UserPendingApprovalOut(BaseModel):
     batch_year: Optional[int]
     role: UserRole
     is_approved: bool
-
 
 class PaginatedUserResponse(BaseModel):
     users: List[UserProfileOut]
