@@ -4,7 +4,7 @@ from sqlalchemy import Column, String, Boolean, Enum, Integer, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from app.database import Base
-from datetime import datetime
+from datetime import datetime, date
 
 class UserRole(str, enum.Enum):
     admin = "admin"
@@ -29,7 +29,7 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     last_seen = Column(DateTime, default=datetime.utcnow)
-    birthday = Column(DateTime, nullable=True)
+    birthday = Column(Date, nullable=True)
     present_address = Column(String, nullable=True)
     contact_number = Column(String, nullable=True)
     name_extension = Column(String, nullable=True)
