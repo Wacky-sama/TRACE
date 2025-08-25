@@ -11,7 +11,10 @@ from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
 from datetime import timedelta, datetime
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/users", 
+    tags=["Users"]
+)
 
 # Login with username or email; returns JWT token and user role
 @router.post("/login")
