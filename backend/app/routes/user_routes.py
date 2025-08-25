@@ -8,15 +8,21 @@ from app.config import settings
 from app.database import get_db
 from app.models.user_models import User, UserRole
 from app.models.gts_responses_models import GTSResponse
-from app.schemas.user_schemas import (AdminUserCreate, 
+from app.schemas.user_schemas import (UserLogin,
+                                      AdminUserCreate, 
                                       AlumniRegister, 
                                       UserOut, 
                                       UserPendingApprovalOut, 
-                                      PaginatedUserResponse, 
+                                      PaginatedUserResponse,
+                                      TokenResponse, 
                                       UserProfileOut)
 from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
 from datetime import timedelta, datetime
+import asyncio
+
+def send_email_sync(to_email: str, subject: str, body: str):
+    asyncio.run(send_email(to_email, subject, body))
 
 router = APIRouter(
     prefix="/users", 
@@ -24,20 +30,19 @@ router = APIRouter(
 )
 
 # Login with username or email; returns JWT token and user role
-@router.post("/login")
+@router.post("/login", response_model=TokenResponse)
 def login(
-    identifier: str = Body(..., embed=True),
-    password: str = Body(..., embed=True),
+    credentials: UserLogin,
     db: Session = Depends(get_db)
 ):
     user = db.query(User).filter(
-        (User.username == identifier) | (User.email == identifier)
+        (User.username == credentials.identifier) | (User.email == credentials.identifier)
     ).first()
 
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username/email or password")
 
-    if not verify_password(password, user.password_hash):
+    if not verify_password(credentials.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username/email or password")
     
     if not user.is_active or user.deleted_at:
@@ -46,7 +51,12 @@ def login(
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)  
     token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
 
-    return {"token": token, "role": user.role, "username": user.username, "is_approved": user.is_approved}
+    return TokenResponse(
+        token=token,
+        role=user.role,
+        username=user.username,
+        is_approved=user.is_approved
+    )
 
 # Dependency to get the current user from JWT token
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
@@ -123,7 +133,7 @@ def create_user_as_admin(
     TRACE Team
     """
 
-    background_tasks.add_task(send_email, to_email=new_user.email, subject=subject, body=body)
+    background_tasks.add_task(send_email_sync, to_email=new_user.email, subject=subject, body=body)
 
     return new_user
 
@@ -155,7 +165,7 @@ def register_alumni(
             contact_number=user.contact_number,
             course=user.course,
             batch_year=user.batch_year,
-            role="alumni",
+            role=UserRole.alumni,
             is_approved=False,   # waits for admin approval
         )
         db.add(new_user)
@@ -177,7 +187,7 @@ def register_alumni(
     Best regards,  
     TRACE Team
      """
-    background_tasks.add_task(send_email, to_email=new_user.email, subject=subject, body=body)
+    background_tasks.add_task(send_email_sync, to_email=new_user.email, subject=subject, body=body)
 
     return new_user
 
@@ -203,7 +213,12 @@ def get_registered_users(
     )
 
     if role:
-        query = query.filter(User.role == role)
+        try:
+            role_enum = UserRole(role)
+            query = query.filter(User.role == role_enum)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid role")
+
     if course:
         query = query.filter(User.course == course)
     if batch_year:
@@ -312,9 +327,9 @@ def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
     TRACE Team
     """
 
-    background_tasks.add_task(send_email, user.email, subject, body)
+    background_tasks.add_task(send_email_sync, user.email, subject, body)
 
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return 
 
 # Decline pending user by deleting record (only if not yet approved)
 @router.patch("/{user_id}/decline", status_code=status.HTTP_204_NO_CONTENT)
@@ -338,12 +353,12 @@ def decline_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
     Alumni Registration Team
     """
 
-    background_tasks.add_task(send_email, user.email, subject, body)
+    background_tasks.add_task(send_email_sync, user.email, subject, body)
 
     db.delete(user)
     db.commit()
 
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return 
 
 # Get total user count and counts per role
 @router.get("/stats")

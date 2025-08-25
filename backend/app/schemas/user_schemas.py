@@ -5,7 +5,7 @@ from datetime import datetime, date
 import enum
 
 class UserLogin(BaseModel):
-    username: str
+    identifier: str
     password: str
 
 class UserRole(str, enum.Enum):
@@ -16,6 +16,7 @@ class TokenResponse(BaseModel):
     token: str
     role: UserRole
     is_approved: bool
+    username: str
 
 # Alumni Registration Schema
 class AlumniRegister(BaseModel):
@@ -55,7 +56,7 @@ class UserOut(BaseModel):
     firstname: str
     middle_initial: Optional[str]
     name_extension: Optional[str]
-    birthday: Optional[datetime]
+    birthday: Optional[date]
     present_address: Optional[str]
     contact_number: Optional[str]
     course: Optional[str]
@@ -65,6 +66,9 @@ class UserOut(BaseModel):
     is_active: bool
     deleted_at: Optional[datetime]
 
+    class Config:
+        orm_mode = True
+
 class UserProfileOut(BaseModel):
     id: UUID
     username: str
@@ -73,7 +77,7 @@ class UserProfileOut(BaseModel):
     firstname: str
     middle_initial: Optional[str]
     name_extension: Optional[str]
-    birthday: Optional[datetime]
+    birthday: Optional[date]
     present_address: Optional[str]
     contact_number: Optional[str]
     course: Optional[str]
@@ -82,7 +86,7 @@ class UserProfileOut(BaseModel):
     is_approved: bool
 
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class UserPendingApprovalOut(BaseModel):
     id: UUID
@@ -96,6 +100,9 @@ class UserPendingApprovalOut(BaseModel):
     role: UserRole
     is_approved: bool
 
+    class Config:
+        orm_mode = True
+
 class PaginatedUserResponse(BaseModel):
     users: List[UserProfileOut]
     total: int
@@ -104,4 +111,4 @@ class PaginatedUserResponse(BaseModel):
     pages: int
 
     class Config:
-        from_attributes = True
+        orm_mode = True
