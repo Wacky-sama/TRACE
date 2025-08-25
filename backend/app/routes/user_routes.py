@@ -19,10 +19,6 @@ from app.schemas.user_schemas import (UserLogin,
 from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
 from datetime import timedelta, datetime
-import asyncio
-
-def send_email_sync(to_email: str, subject: str, body: str):
-    asyncio.run(send_email(to_email, subject, body))
 
 router = APIRouter(
     prefix="/users", 
@@ -133,7 +129,7 @@ def create_user_as_admin(
     TRACE Team
     """
 
-    background_tasks.add_task(send_email_sync, to_email=new_user.email, subject=subject, body=body)
+    background_tasks.add_task(send_email, to_email=new_user.email, subject=subject, body=body)
 
     return new_user
 
@@ -187,7 +183,7 @@ def register_alumni(
     Best regards,  
     TRACE Team
      """
-    background_tasks.add_task(send_email_sync, to_email=new_user.email, subject=subject, body=body)
+    background_tasks.add_task(send_email, to_email=new_user.email, subject=subject, body=body)
 
     return new_user
 
@@ -327,7 +323,7 @@ def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
     TRACE Team
     """
 
-    background_tasks.add_task(send_email_sync, user.email, subject, body)
+    background_tasks.add_task(send_email, user.email, subject, body)
 
     return 
 
@@ -353,7 +349,7 @@ def decline_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
     Alumni Registration Team
     """
 
-    background_tasks.add_task(send_email_sync, user.email, subject, body)
+    background_tasks.add_task(send_email, user.email, subject, body)
 
     db.delete(user)
     db.commit()
