@@ -1,10 +1,10 @@
 import uuid
 import enum
-from sqlalchemy import Column, String, Boolean, Enum, Integer, DateTime
+from sqlalchemy import Column, String, Boolean, Enum, Integer, DateTime, Date
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from app.database import Base
-from datetime import datetime, date
+from datetime import datetime
 
 class UserRole(str, enum.Enum):
     admin = "admin"
@@ -26,9 +26,9 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     deleted_at = Column(DateTime, nullable=True)
     is_approved = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    last_seen = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+    last_seen = Column(DateTime, server_default=func.now())
     birthday = Column(Date, nullable=True)
     present_address = Column(String, nullable=True)
     contact_number = Column(String, nullable=True)
