@@ -30,7 +30,7 @@ function RegisterForm({ setIsRegistering }) {
   const [placeOfWork, setPlaceOfWork] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [companyAddress, setCompanyAddress] = useState('');
-  const [position, setPosition] = useState('');
+  const [occupation, setOccupation] = useState([]);
   const [status, setStatus] = useState('');
 
   // Toggles + validation
@@ -40,7 +40,7 @@ function RegisterForm({ setIsRegistering }) {
   const [registerError, setRegisterError] = useState('');
   const [registerSuccess, setRegisterSuccess] = useState('');
 
-  // 🔥 Refs for scrolling
+  //  Refs for scrolling
   const fieldRefs = {
     registerIdentifier: useRef(null),
     email: useRef(null),
@@ -58,7 +58,7 @@ function RegisterForm({ setIsRegistering }) {
     placeOfWork: useRef(null),
     companyName: useRef(null),
     companyAddress: useRef(null),
-    position: useRef(null)
+    occupation: useRef(null)
   };
 
   // Auto-calc age
@@ -83,7 +83,7 @@ function RegisterForm({ setIsRegistering }) {
       setPlaceOfWork("");
       setCompanyName("");
       setCompanyAddress("");
-      setPosition("");
+      setOccupation("");
     }
   }, [status]);
 
@@ -126,7 +126,7 @@ function RegisterForm({ setIsRegistering }) {
       if (!placeOfWork) errors.placeOfWork = "Place of work is required";
       if (!companyName) errors.companyName = "Company name is required";
       if (!companyAddress) errors.companyAddress = "Company address is required";
-      if (!position) errors.position = "Position is required";
+      if (!occupation) errors.occupation = "Position is required";
     }
 
     setRegisterErrors(errors);
@@ -170,7 +170,7 @@ function RegisterForm({ setIsRegistering }) {
         place_of_work: placeOfWork,
         company_name: companyName,
         company_address: companyAddress,
-        position,
+        occupation,
         status
       });
 
@@ -393,14 +393,39 @@ function RegisterForm({ setIsRegistering }) {
                 label="Company Address"
                 error={registerErrors.companyAddress}
               />
-              <FloatingInput
-                ref={fieldRefs.position}
-                id="position"
-                value={position}
-                onChange={e => setPosition(e.target.value)}
-                label="Position"
-                error={registerErrors.position}
-              />
+              <div className="mb-4" ref={fieldRefs.occupation}>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Present Occupation</label>
+                {[
+                  "Officials of Government and Special-Interest Organizations, Corporate Executives, Managers, Managing Proprietors and Supervisors",
+                  "Professionals",
+                  "Technicians and Associate Professionals",
+                  "Clerks",
+                  "Service workers and Shop and Market Sales Workers",
+                  "Farmers, Forestry Workers and Fishermen",
+                  "Trades and Related Workers",
+                  "Plant and machine Operators and Assemblers",
+                  "Laborers and Unskilled Workers",
+                  "Others (please specify)"
+                ].map((option) => (
+                  <label key={option} className="flex items-center gap-2 mb-2">
+                    <input
+                      type="checkbox"
+                      value={option}
+                      checked={occupation.includes(option)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setOccupation([...occupation, option]);
+                        } else {
+                          setOccupation(occupation.filter(o => o !== option));
+                        }
+                      }}
+                      className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    />
+                    <span className="text-sm text-gray-700">{option}</span>
+                  </label>
+                ))}
+                {registerErrors.occupation && <p className="text-red-500 text-xs">{registerErrors.occupation}</p>}
+              </div>
             </>
           )}
 

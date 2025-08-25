@@ -7,7 +7,9 @@ from app.routes.user_routes import get_current_user
 from app.models.user_models import User
 from app.schemas.event_attendance_schemas import AttendanceOut
 
-router = APIRouter(prefix="/attendance", tags=["Attendance"])
+router = APIRouter(
+    prefix="/attendance", 
+    tags=["Attendance"])
 
 @router.post("/{event_id}", response_model=AttendanceOut)
 def attend_event(
