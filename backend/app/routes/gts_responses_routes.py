@@ -19,6 +19,8 @@ def create_gts_response(
 ):
     gts = GTSResponse(
         user_id=user_id,
+        ever_employed=request.ever_employed,
+        is_employed=request.is_employed,
         employment_status=request.employment_status,
         place_of_work=request.place_of_work,
         company_name=request.company_name,

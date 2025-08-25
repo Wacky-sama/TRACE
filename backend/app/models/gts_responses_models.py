@@ -35,6 +35,7 @@ class GTSResponse(Base):
     trainings = Column(JSONB, nullable=True)
 
     # 🔹 Employment info (initial + extended)
+    ever_employed = Column(Boolean, nullable=True)
     is_employed = Column(Boolean, nullable=True)
     employment_status = Column(Text, nullable=True)
     occupation = Column(ARRAY(String), nullable=True)
