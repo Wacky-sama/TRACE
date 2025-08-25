@@ -45,56 +45,47 @@ function RegisterForm({ setIsRegistering }) {
     setRegisterSuccess('');
 
     try {
-      const formDataForServer = {
+      const employmentOptions = ['Employed - Permanent', 'Employed - Contractual', 'Self-employed / Freelance'];
+      const isEmployed = employmentOptions.includes(formData.status);
+
+      const payload = {
         email: formData.email.trim(),
         username: formData.registerIdentifier.trim(),
         lastname: formData.lastName.trim(),
         firstname: formData.firstName.trim(),
-        middle_initial: formData.middleInitial.trim(),
-        name_extension: formData.nameExtension.trim(),
+        middle_initial: formData.middleInitial?.trim() || '',
+        name_extension: formData.nameExtension?.trim() || '',
         birthday: formData.birthday
-        ? new Date(formData.birthday).toISOString().split("T")[0]
-        : null,
+          ? new Date(formData.birthday).toISOString().split('T')[0]
+          : null,
         present_address: formData.presentAddress.trim(),
         contact_number: formData.contactNumber.trim(),
         course: formData.course.trim(),
         batch_year: formData.batchYear.trim(),
         password: formData.registerPassword.trim(),
         role: 'alumni',
-        status: formData.status,
-      };
 
-      const employmentOptions = ['Employed - Permanent', 'Employed - Contractual', 'Self-employed / Freelance'];
-      const isEmployed = employmentOptions.includes(formData.status);
-      const everEmployed = isEmployed;
-
-      const gtsPayload = {
-        ever_employed: everEmployed,
         is_employed: isEmployed,
-        employment_status: isEmployed ? formData.status : "",
-        place_of_work: isEmployed ? formData.placeOfWork.trim() : "",
-        company_name: isEmployed ? formData.companyName.trim() : "",
-        company_address: isEmployed ? formData.companyAddress.trim() : "",
-        occupation: isEmployed && finalOccupations.length ? finalOccupations.map(o => o.trim()) : [],
+        employment_status: isEmployed ? formData.status : null,
+        place_of_work: isEmployed ? formData.placeOfWork?.trim() : null,
+        company_name: isEmployed ? formData.companyName?.trim() : null,
+        company_address: isEmployed ? formData.companyAddress?.trim() : null,
+        occupation: isEmployed && finalOccupations.length ? finalOccupations.map(o => o.trim()) : null
       };
 
-      const userResponse = await api.post('/users/register/alumni', formDataForServer);
-      const userId = userResponse.data.id;
-
-      await api.post(`/gts_responses/${userId}`, gtsPayload);
+      const response = await api.post('/users/register/alumni', payload);
 
       setRegisterSuccess('Registration submitted successfully! Please wait for approval.');
       setTimeout(() => setIsRegistering(false), 3000);
-      } catch (err) {
+
+    } catch (err) {
       if (err.response?.data) {
-        console.error("Server validation error:", err.response.data);
-        setRegisterError(
-          `Registration failed! ${JSON.stringify(err.response.data, null, 2)}`
-        );
+        console.error('Server validation error:', err.response.data);
+        setRegisterError(`Registration failed! ${JSON.stringify(err.response.data, null, 2)}`);
       } else {
-          setRegisterError(`Registration failed! ${err.message ?? "Please try again."}`);
-        }
+        setRegisterError(`Registration failed! ${err.message ?? 'Please try again.'}`);
       }
+    }
   }
 
   return (

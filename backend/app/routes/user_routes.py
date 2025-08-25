@@ -1,4 +1,4 @@
-from fastapi import APIRouter,  BackgroundTasks, Body, Depends, HTTPException, Query
+from fastapi import APIRouter,  BackgroundTasks, Body, Depends, HTTPException, Query, Response
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
@@ -8,7 +8,12 @@ from app.config import settings
 from app.database import get_db
 from app.models.user_models import User, UserRole
 from app.models.gts_responses_models import GTSResponse
-from app.schemas.user_schemas import UserCreate, UserOut, UserPendingApprovalOut, PaginatedUserResponse, UserProfileOut
+from app.schemas.user_schemas import (AdminUserCreate, 
+                                      AlumniRegister, 
+                                      UserOut, 
+                                      UserPendingApprovalOut, 
+                                      PaginatedUserResponse, 
+                                      UserProfileOut)
 from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
 from datetime import timedelta, datetime
@@ -61,10 +66,10 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
- # Admin-only route to create Admin or Event Organizer accounts (limits: 2 Admins, 5 Organizers)
+ # Admin-only route to create Admin accounts (limits: 2 Admins)
 @router.post("/admin/create-user", response_model=UserOut, status_code=201)
 def create_user_as_admin(
-    user_data: UserCreate,
+    user_data: AdminUserCreate,
     background_tasks: BackgroundTasks,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -125,7 +130,7 @@ def create_user_as_admin(
 # Public endpoint for alumni registration (requires admin approval)
 @router.post("/register/alumni", response_model=UserOut)
 def register_alumni(
-    user: UserCreate,
+    user: AlumniRegister,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ):
@@ -136,6 +141,7 @@ def register_alumni(
         raise HTTPException(status_code=400, detail="Username already registered")
 
     try:
+        # Create new user
         new_user = User(
             username=user.username,
             email=user.email,
@@ -150,36 +156,17 @@ def register_alumni(
             course=user.course,
             batch_year=user.batch_year,
             role="alumni",
-            is_approved=False,
+            is_approved=False,   # waits for admin approval
         )
         db.add(new_user)
-        db.flush()  
-
-        full_name = f"{user.lastname}, {user.firstname} {user.middle_initial or ''} {user.name_extension or ''}".strip()
-        new_response = GTSResponse(
-            user_id=new_user.id,
-            full_name=full_name,
-            birthday=user.birthday,
-            degree=user.course,
-            year_graduated=user.batch_year,
-            contact_email=user.email,
-            mobile=user.contact_number,
-            is_employed=user.isEmployed,
-            place_of_work=user.place_of_work if user.isEmployed else None,
-            company_name=user.company_name if user.isEmployed else None,
-            company_address=user.company_address if user.isEmployed else None,
-            occupation=user.occupation if user.isEmployed else None,
-            ever_employed=True if user.isEmployed else False,
-        )
-        db.add(new_response)
-
-        db.commit()  
+        db.commit()
         db.refresh(new_user)
 
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Registration failed: {str(e)}")
 
+    # Send confirmation email
     subject = "TRACE System - Registration Received"
     body = f"""\
     Hello {new_user.firstname},
@@ -189,7 +176,7 @@ def register_alumni(
 
     Best regards,  
     TRACE Team
-    """
+     """
     background_tasks.add_task(send_email, to_email=new_user.email, subject=subject, body=body)
 
     return new_user
@@ -283,6 +270,34 @@ def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
     user.is_approved = True
     db.commit()
 
+    # Create a blank GTSResponse record so alumni can later update it
+    try:
+        full_name = f"{user.firstname} {user.middle_initial + '.' if user.middle_initial else ''} {user.lastname}".strip()
+        gts_response = GTSResponse(
+            user_id=user.id,
+            full_name=full_name,
+            permanent_address=user.present_address,
+            birthday=user.birthday,
+            degree=user.course,
+            year_graduated=user.batch_year,
+            contact_email=user.email,
+            mobile=user.contact_number,
+            ever_employed=None,         # left blank for survey
+            is_employed=None,           # left blank for survey
+            employment_status=None,     # left blank for survey
+            company_name=None,          # left blank for survey
+            place_of_work=None,         # left blank for survey
+            company_address=None,       # left blank for survey
+            occupation=None,            # left blank for survey
+            civil_status=None           # left blank for survey
+        )
+        db.add(gts_response)
+        db.commit()
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to create GTSResponse: {str(e)}")
+
+    # Send approval email
     subject = "Your Alumni Account Has Been Approved"
     body = f"""\
     Dear {user.lastname}, {user.firstname},
@@ -297,9 +312,9 @@ def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
     TRACE Team
     """
 
-    background_tasks.add(send_email, user.email, subject, body)
+    background_tasks.add_task(send_email, user.email, subject, body)
 
-    return
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 # Decline pending user by deleting record (only if not yet approved)
 @router.patch("/{user_id}/decline", status_code=status.HTTP_204_NO_CONTENT)
@@ -310,6 +325,7 @@ def decline_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
     if user.is_approved:
         raise HTTPException(status_code=400, detail="User already approved, can't decline")
 
+    # Send decline email
     subject = "Alumni Registration Status"
     body = f"""\
     Dear {user.firstname} {user.lastname},
@@ -326,7 +342,8 @@ def decline_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
 
     db.delete(user)
     db.commit()
-    return
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 # Get total user count and counts per role
 @router.get("/stats")
@@ -365,6 +382,7 @@ def get_online_users(db: Session = Depends(get_db)):
     online_users = db.query(User).filter(
         User.last_seen >= five_minutes_ago,
         User.is_active == True,
+        User.is_approved == True,
         User.deleted_at.is_(None),
         User.role.in_([UserRole.admin, UserRole.alumni])
     ).all()
