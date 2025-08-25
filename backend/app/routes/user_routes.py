@@ -1,11 +1,13 @@
 from fastapi import APIRouter,  BackgroundTasks, Body, Depends, HTTPException, Query
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
 from starlette import status
 from typing import List, Optional
 from app.config import settings
 from app.database import get_db
 from app.models.user_models import User, UserRole
+from app.models.gts_responses_models import GTSResponse
 from app.schemas.user_schemas import UserCreate, UserOut, UserPendingApprovalOut, PaginatedUserResponse, UserProfileOut
 from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
@@ -127,32 +129,56 @@ def register_alumni(
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ):
+    # Check for existing email/username
     if db.query(User).filter(User.email == user.email, User.deleted_at.is_(None)).first():
         raise HTTPException(status_code=400, detail="Email already registered")
     if db.query(User).filter(User.username == user.username, User.deleted_at.is_(None)).first():
         raise HTTPException(status_code=400, detail="Username already registered")
-    
-    is_approved = user.role in ("admin")
 
-    new_user = User(
-        username=user.username,
-        email=user.email,
-        password_hash=hash_password(user.password),
-        lastname=user.lastname,
-        firstname=user.firstname,
-        middle_initial=user.middle_initial,
-        name_extension=user.name_extension,
-        birthday=user.birthday,
-        present_address=user.present_address,
-        contact_number=user.contact_number,
-        course=user.course,
-        batch_year=user.batch_year,
-        role=user.role,
-        is_approved=is_approved
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+    try:
+        new_user = User(
+            username=user.username,
+            email=user.email,
+            password_hash=hash_password(user.password),
+            lastname=user.lastname,
+            firstname=user.firstname,
+            middle_initial=user.middle_initial,
+            name_extension=user.name_extension,
+            birthday=user.birthday,
+            present_address=user.present_address,
+            contact_number=user.contact_number,
+            course=user.course,
+            batch_year=user.batch_year,
+            role="alumni",
+            is_approved=False,
+        )
+        db.add(new_user)
+        db.flush()  
+
+        full_name = f"{user.lastname}, {user.firstname} {user.middle_initial or ''} {user.name_extension or ''}".strip()
+        new_response = GTSResponse(
+            user_id=new_user.id,
+            full_name=full_name,
+            birthday=user.birthday,
+            degree=user.course,
+            year_graduated=user.batch_year,
+            contact_email=user.email,
+            mobile=user.contact_number,
+            is_employed=user.isEmployed,
+            place_of_work=user.place_of_work if user.isEmployed else None,
+            company_name=user.company_name if user.isEmployed else None,
+            company_address=user.company_address if user.isEmployed else None,
+            occupation=user.occupation if user.isEmployed else None,
+            ever_employed=True if user.isEmployed else False,
+        )
+        db.add(new_response)
+
+        db.commit()  
+        db.refresh(new_user)
+
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Registration failed: {str(e)}")
 
     subject = "TRACE System - Registration Received"
     body = f"""\
@@ -164,7 +190,6 @@ def register_alumni(
     Best regards,  
     TRACE Team
     """
-
     background_tasks.add_task(send_email, to_email=new_user.email, subject=subject, body=body)
 
     return new_user

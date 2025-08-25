@@ -10,7 +10,7 @@ from app.models import event_models
 from app.schemas import event_schemas
 from app.schemas.event_schemas import EventAction
 
-router = APIRouter()
+router = APIRouter(prefix="/events", tags=["Events"])
 
 @router.post("/", response_model=event_schemas.EventOut)
 def create_event(
