@@ -11,43 +11,53 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // auto-calc age
+  // Auto-calc age
   useEffect(() => {
     if (formData.birthday) {
       const today = new Date();
       const birthDate = new Date(formData.birthday);
-      let calculatedAge = today.getFullYear() - birthDate.getFullYear();
+      let age = today.getFullYear() - birthDate.getFullYear();
       const m = today.getMonth() - birthDate.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        calculatedAge--;
-      }
-      setFormData((prev) => ({ ...prev, age: calculatedAge }));
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+      setFormData(prev => ({ ...prev, age }));
     } else {
-      setFormData((prev) => ({ ...prev, age: "" }));
+      setFormData(prev => ({ ...prev, age: "" }));
     }
   }, [formData.birthday, setFormData]);
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.email) newErrors.email = "Email is required";
-    if (!formData.registerIdentifier) newErrors.registerIdentifier = "Username required";
-    if (!formData.lastName) newErrors.lastName = "Last name required";
-    if (!formData.firstName) newErrors.firstName = "First name required";
+    if (!formData.email?.trim()) newErrors.email = "Email is required";
+    if (!formData.registerIdentifier?.trim()) newErrors.registerIdentifier = "Username required";
+    if (!formData.lastName?.trim()) newErrors.lastName = "Last name required";
+    if (!formData.firstName?.trim()) newErrors.firstName = "First name required";
     if (!formData.birthday) newErrors.birthday = "Birthday required";
-    if (!formData.presentAddress) newErrors.presentAddress = "Present address required";
+    if (!formData.presentAddress?.trim()) newErrors.presentAddress = "Present address required";
     if (!formData.course) newErrors.course = "Course required";
     if (!formData.batchYear) newErrors.batchYear = "Batch year required";
     if (!formData.registerPassword) newErrors.registerPassword = "Password required";
     if (!formData.registerConfirmPassword) newErrors.registerConfirmPassword = "Confirm Password required";
     if (formData.registerPassword !== formData.registerConfirmPassword)
       newErrors.registerConfirmPassword = "Passwords do not match";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleNext = () => {
-    if (validate()) nextStep();
+    if (validate()) {
+      // Trim inputs before moving to next step
+      setFormData(prev => ({
+        ...prev,
+        email: prev.email.trim(),
+        registerIdentifier: prev.registerIdentifier.trim(),
+        lastName: prev.lastName.trim(),
+        firstName: prev.firstName.trim(),
+        middleInitial: prev.middleInitial?.trim() || "",
+        nameExtension: prev.nameExtension?.trim() || "",
+        presentAddress: prev.presentAddress.trim(),
+      }));
+      nextStep();
+    }
   };
 
   return (
@@ -58,7 +68,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         id="email"
         type="email"
         value={formData.email}
-        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        onChange={e => setFormData({ ...formData, email: e.target.value })}
         label="Email"
         error={errors.email}
       />
@@ -66,7 +76,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       <FloatingInput
         id="registerIdentifier"
         value={formData.registerIdentifier}
-        onChange={(e) => setFormData({ ...formData, registerIdentifier: e.target.value })}
+        onChange={e => setFormData({ ...formData, registerIdentifier: e.target.value })}
         label="Username"
         error={errors.registerIdentifier}
       />
@@ -74,7 +84,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       <FloatingInput
         id="lastName"
         value={formData.lastName}
-        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+        onChange={e => setFormData({ ...formData, lastName: e.target.value })}
         label="Last Name"
         error={errors.lastName}
       />
@@ -82,7 +92,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       <FloatingInput
         id="firstName"
         value={formData.firstName}
-        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+        onChange={e => setFormData({ ...formData, firstName: e.target.value })}
         label="First Name"
         error={errors.firstName}
       />
@@ -90,7 +100,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       <FloatingInput
         id="middleInitial"
         value={formData.middleInitial || ""}
-        onChange={(e) => setFormData({ ...formData, middleInitial: e.target.value })}
+        onChange={e => setFormData({ ...formData, middleInitial: e.target.value })}
         label="Middle Initial"
         error={errors.middleInitial}
       />
@@ -98,7 +108,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       <FloatingInput
         id="nameExtension"
         value={formData.nameExtension || ""}
-        onChange={(e) => setFormData({ ...formData, nameExtension: e.target.value })}
+        onChange={e => setFormData({ ...formData, nameExtension: e.target.value })}
         label="Name Extension (e.g., Jr., Sr., III)"
         error={errors.nameExtension}
       />
@@ -110,7 +120,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
           minDate={new Date(1900, 0, 1)}
           selected={formData.birthday ? new Date(formData.birthday) : null}
-          onChange={(date) => setFormData({ ...formData, birthday: date })}
+          onChange={date => setFormData({ ...formData, birthday: date })}
           dateFormat="MM/dd/yyyy"
           placeholderText="Select your birthday"
           className="w-full p-3 border border-gray-300 rounded-md text-sm"
@@ -129,7 +139,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       <FloatingInput
         id="presentAddress"
         value={formData.presentAddress}
-        onChange={(e) => setFormData({ ...formData, presentAddress: e.target.value })}
+        onChange={e => setFormData({ ...formData, presentAddress: e.target.value })}
         label="Present Address"
         error={errors.presentAddress}
       />
@@ -138,7 +148,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         id="contactNumber"
         type="tel"
         value={formData.contactNumber || ""}
-        onChange={(e) => setFormData({ ...formData, contactNumber: e.target.value })}
+        onChange={e => setFormData({ ...formData, contactNumber: e.target.value })}
         label="Contact Number"
         error={errors.contactNumber}
       />
@@ -146,7 +156,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       <FloatingSelect
         id="course"
         value={formData.course}
-        onChange={(e) => setFormData({ ...formData, course: e.target.value })}
+        onChange={e => setFormData({ ...formData, course: e.target.value })}
         label="Course"
         error={errors.course}
         options={[
@@ -163,7 +173,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       <FloatingSelect
         id="batchYear"
         value={formData.batchYear}
-        onChange={(e) => setFormData({ ...formData, batchYear: e.target.value })}
+        onChange={e => setFormData({ ...formData, batchYear: e.target.value })}
         label="Batch Year"
         error={errors.batchYear}
         options={Array.from({ length: new Date().getFullYear() - 1950 + 1 }, (_, i) => (1950 + i).toString())}
@@ -173,7 +183,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         id="registerPassword"
         type={showPass ? "text" : "password"}
         value={formData.registerPassword}
-        onChange={(e) => setFormData({ ...formData, registerPassword: e.target.value })}
+        onChange={e => setFormData({ ...formData, registerPassword: e.target.value })}
         label="Password"
         error={errors.registerPassword}
       >
@@ -186,7 +196,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         id="registerConfirmPassword"
         type={showConfirm ? "text" : "password"}
         value={formData.registerConfirmPassword}
-        onChange={(e) => setFormData({ ...formData, registerConfirmPassword: e.target.value })}
+        onChange={e => setFormData({ ...formData, registerConfirmPassword: e.target.value })}
         label="Confirm Password"
         error={errors.registerConfirmPassword}
       >
