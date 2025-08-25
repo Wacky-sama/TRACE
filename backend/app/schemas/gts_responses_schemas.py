@@ -4,17 +4,20 @@ from uuid import UUID
 
 
 class GTSResponseCreate(BaseModel):
-    employment_status: str
+    ever_employed: Optional[bool] = None
+    is_employed: Optional[bool] = None
+    employment_status: Optional[str] = None
     place_of_work: Optional[str] = None
     company_name: Optional[str] = None
     company_address: Optional[str] = None
     occupation: Optional[str] = None
 
-
 class GTSResponseOut(BaseModel):
     id: UUID
     user_id: UUID
-    employment_status: str
+    ever_employed: Optional[bool]
+    is_employed: Optional[bool]
+    employment_status: Optional[str]
     place_of_work: Optional[str]
     company_name: Optional[str]
     company_address: Optional[str]
