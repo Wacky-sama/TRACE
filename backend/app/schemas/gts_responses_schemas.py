@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from typing import Optional
 from uuid import UUID
 
-
 class GTSResponseCreate(BaseModel):
     ever_employed: Optional[bool] = None
     is_employed: Optional[bool] = None
@@ -11,6 +10,7 @@ class GTSResponseCreate(BaseModel):
     company_name: Optional[str] = None
     company_address: Optional[str] = None
     occupation: Optional[str] = None
+    civil_status: Optional[str] = None
 
 class GTSResponseOut(BaseModel):
     id: UUID
@@ -22,6 +22,7 @@ class GTSResponseOut(BaseModel):
     company_name: Optional[str]
     company_address: Optional[str]
     occupation: Optional[str]
+    civil_status: Optional[str]
 
     class Config:
         from_attributes = True

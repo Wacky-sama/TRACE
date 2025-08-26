@@ -1,8 +1,9 @@
+import enum
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
 from uuid import UUID
 from datetime import datetime, date
-import enum
+from app.schemas.gts_responses_schemas import GTSResponseOut
 
 class UserLogin(BaseModel):
     identifier: str
@@ -11,6 +12,12 @@ class UserLogin(BaseModel):
 class UserRole(str, enum.Enum):
     admin = "admin"
     alumni = "alumni"
+
+class SexEnum(str, enum.Enum):
+    male = "Male"
+    female = "Female"
+    other = "Other"
+    prefer_not_to_say = "Prefer not to say"
 
 class TokenResponse(BaseModel):
     token: str
@@ -37,6 +44,7 @@ class AlumniRegister(BaseModel):
     birthday: Optional[date] = None
     present_address: Optional[str] = None
     contact_number: Optional[str] = None
+    sex: Optional[SexEnum] = None
 
 # Admin-only user creation schema
 class AdminUserCreate(BaseModel):
@@ -65,6 +73,13 @@ class UserOut(BaseModel):
     is_approved: bool
     is_active: bool
     deleted_at: Optional[datetime]
+    sex: Optional[SexEnum]
+
+    class Config:
+        from_attributes = True
+
+class UserWithGTSResponseOut(UserOut):
+    latest_gts: Optional[GTSResponseOut] = None
 
     class Config:
         from_attributes = True
@@ -84,6 +99,7 @@ class UserProfileOut(BaseModel):
     batch_year: Optional[int]
     role: UserRole
     is_approved: bool
+    sex: Optional[SexEnum]
 
     class Config:
         from_attributes = True
@@ -99,6 +115,7 @@ class UserPendingApprovalOut(BaseModel):
     batch_year: Optional[int]
     role: UserRole
     is_approved: bool
+    sex: Optional[SexEnum]
 
     class Config:
         from_attributes = True

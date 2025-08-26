@@ -10,6 +10,12 @@ class UserRole(str, enum.Enum):
     admin = "admin"
     alumni = "alumni"
 
+class SexEnum(str, enum.Enum):
+    male = "Male"
+    female = "Female"
+    other = "Other"
+    prefer_not_to_say = "Prefer not to say"
+
 class User(Base):
     __tablename__ = "users"
 
@@ -33,3 +39,4 @@ class User(Base):
     present_address = Column(String, nullable=True)
     contact_number = Column(String, nullable=True)
     name_extension = Column(String, nullable=True)
+    sex = Column(Enum(SexEnum), nullable=True) 
