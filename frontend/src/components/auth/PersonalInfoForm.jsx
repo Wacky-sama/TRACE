@@ -32,6 +32,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
     if (!formData.lastName?.trim()) newErrors.lastName = "Last name required";
     if (!formData.firstName?.trim()) newErrors.firstName = "First name required";
     if (!formData.birthday) newErrors.birthday = "Birthday required";
+    if (!formData.sex) newErrors.sex = "Sex is required";
     if (!formData.presentAddress?.trim()) newErrors.presentAddress = "Present address required";
     if (!formData.course) newErrors.course = "Course required";
     if (!formData.batchYear) newErrors.batchYear = "Batch year required";
@@ -135,6 +136,19 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       </div>
 
       <FloatingInput id="age" type="number" value={formData.age || ""} label="Age" readOnly />
+
+      <FloatingSelect
+        id="sex"
+        value={formData.sex || ""}
+        onChange={e => setFormData({ ...formData, sex: e.target.value })}
+        label="Sex"
+        error={errors.sex}
+        options={[
+          "Male",
+          "Female",
+          "Prefer not to say",
+        ]}
+      />
 
       <FloatingInput
         id="presentAddress"
