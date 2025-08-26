@@ -67,7 +67,7 @@ class UserOut(BaseModel):
     deleted_at: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UserProfileOut(BaseModel):
     id: UUID
@@ -86,7 +86,7 @@ class UserProfileOut(BaseModel):
     is_approved: bool
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UserPendingApprovalOut(BaseModel):
     id: UUID
@@ -101,7 +101,7 @@ class UserPendingApprovalOut(BaseModel):
     is_approved: bool
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class PaginatedUserResponse(BaseModel):
     users: List[UserProfileOut]
@@ -111,4 +111,4 @@ class PaginatedUserResponse(BaseModel):
     pages: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
