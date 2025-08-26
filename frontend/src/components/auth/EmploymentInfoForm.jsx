@@ -1,33 +1,48 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import FloatingInput from '../FloatingInput';
 import FloatingSelect from '../FloatingSelect';
 
 const EMPLOYED_STATUSES = [
-  'Employed - Permanent',
-  'Employed - Contractual',
+  'Regular or Permanent',
+  'Contractual',
+  'Temporary',
   'Self-employed / Freelance',
-  'Others',
+  'Casual',
 ];
 
 const NON_EMPLOYED_STATUSES = ['Unemployed', 'Retired', 'Looking for Work'];
+const NON_EMPLOYED_REASONS = [
+  'Advance or further study',
+  'Family concern and decided not to find a job',
+  'Health-related reasons',
+  'Lack of work experience',
+  'No job opportunity',
+  'Did not look for a job',
+  'Other reasons, please specify',
+];
+
 const EMPLOYMENT_NOW_OPTIONS = ['Yes', 'No', 'Never employed'];
 
 const OCCUPATION_OPTIONS = [
-  'Software Engineer',
-  'Teacher',
-  'Nurse',
-  'Doctor',
-  'Freelancer',
-  'Business Owner',
-  'Other',
+  'Officials of Government and Special-Interest Organizations, Corporate Executives, Managers, Managing Proprietors and Supervisors',
+  'Professionals',
+  'Technicians and Associate Professionals',
+  'Clerks',
+  'Service Workers and Shop and Market Sales Workers',
+  'Farmers, Forestry Workers and Fishermen',
+  'Trades and Related Workers',
+  'Plant and Machine Operators and Assemblers',
+  'Laborers and Unskilled Workers',
+  'Others',
 ];
 
-function EmploymentSnapshotForm({ formData, setFormData, prevStep, handleRegister }) {
+function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister }) {
   const [errors, setErrors] = useState({});
   const [otherOccupation, setOtherOccupation] = useState('');
-  const [isFormValid, setIsFormValid] = useState(false);
+  const [nonEmployedReasons, setNonEmployedReasons] = useState([]);
+  const [otherNonEmployedReason, setOtherNonEmployedReason] = useState(''); 
 
-  // Unified validation
+  // Only validate on submit
   const validate = () => {
     const newErrors = {};
 
@@ -46,26 +61,59 @@ function EmploymentSnapshotForm({ formData, setFormData, prevStep, handleRegiste
       }
     }
 
-    if (formData.employmentNow === 'No' && !formData.status) {
-      newErrors.status = 'Select your current situation.';
+    if (formData.employmentNow === 'No') {
+      if (nonEmployedReasons.length === 0) {
+        newErrors.status = 'Select at least one reason.';
+      }
+      if (nonEmployedReasons.includes('Other reasons, please specify') && !otherNonEmployedReason.trim()) {
+        newErrors.otherNonEmployedReason = 'Please specify your reason.';
+      }
     }
 
     if (formData.employmentNow === 'Never employed') {
-      // just enforce that status stays "Never employed"
       if (formData.status !== 'Never employed') {
         newErrors.status = 'Invalid status for never employed.';
       }
     }
 
     setErrors(newErrors);
-    setIsFormValid(Object.keys(newErrors).length === 0);
     return Object.keys(newErrors).length === 0;
   };
 
-  // Run validation live whenever inputs change
-  useEffect(() => {
-    validate();
-  }, [formData, otherOccupation]);
+  const handleNonEmployedReasonChange = reason => {
+    let updated;
+    if (nonEmployedReasons.includes(reason)) {
+      updated = nonEmployedReasons.filter(r => r !== reason);
+      if (reason === 'Other reasons, please specify') setOtherNonEmployedReason('');
+    } else {
+      updated = [...nonEmployedReasons, reason];
+    }
+    setNonEmployedReasons(updated);
+  };
+
+  const handleOccupationChange = option => {
+    setFormData(prev => {
+      const current = prev.occupation;
+      let updated;
+      if (current.includes(option)) {
+        updated = current.filter(o => o !== option);
+        if (option === 'Other') setOtherOccupation('');
+      } else {
+        updated = [...current, option];
+      }
+      return { ...prev, occupation: updated };
+    });
+  };
+
+  const onSubmit = async () => {
+    if (!validate()) return;
+
+    const finalOccupations = formData.occupation.map(o =>
+      o === 'Other' ? otherOccupation.trim() : o.trim()
+    );
+
+    await handleRegister(finalOccupations);
+  };
 
   // Reset fields based on employmentNow
   useEffect(() => {
@@ -99,30 +147,6 @@ function EmploymentSnapshotForm({ formData, setFormData, prevStep, handleRegiste
 
     setOtherOccupation('');
   }, [formData.employmentNow, setFormData]);
-
-  const handleOccupationChange = option => {
-    setFormData(prev => {
-      const current = prev.occupation;
-      let updated;
-      if (current.includes(option)) {
-        updated = current.filter(o => o !== option);
-        if (option === 'Other') setOtherOccupation('');
-      } else {
-        updated = [...current, option];
-      }
-      return { ...prev, occupation: updated };
-    });
-  };
-
-  const onSubmit = async () => {
-    if (!validate()) return;
-
-    const finalOccupations = formData.occupation.map(o =>
-      o === 'Other' ? otherOccupation.trim() : o.trim()
-    );
-
-    await handleRegister(finalOccupations);
-  };
 
   return (
     <div>
@@ -183,7 +207,6 @@ function EmploymentSnapshotForm({ formData, setFormData, prevStep, handleRegiste
             error={errors.companyAddress}
           />
 
-          {/* Occupations */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">Occupation(s)</label>
             <div className="flex flex-wrap gap-2">
@@ -223,14 +246,42 @@ function EmploymentSnapshotForm({ formData, setFormData, prevStep, handleRegiste
 
       {/* If unemployed */}
       {formData.employmentNow === 'No' && (
-        <FloatingSelect
-          id="status"
-          value={formData.status}
-          onChange={e => setFormData({ ...formData, status: e.target.value })}
-          label="Current Situation"
-          error={errors.status}
-          options={NON_EMPLOYED_STATUSES}
-        />
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Why? (You may select multiple answers)</label>
+          <div className="flex flex-wrap gap-2">
+            {NON_EMPLOYED_REASONS.map(reason => (
+              <label
+                key={reason}
+                className={`px-2 py-1 border rounded cursor-pointer ${
+                  nonEmployedReasons.includes(reason)
+                    ? 'bg-blue-600 text-white border-blue-600'
+                    : 'bg-white text-gray-700'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  value={reason}
+                  checked={nonEmployedReasons.includes(reason)}
+                  onChange={() => handleNonEmployedReasonChange(reason)}
+                  className="hidden"
+                />
+                {reason}
+              </label>
+            ))}
+          </div>
+
+          {nonEmployedReasons.includes('Other reasons, please specify') && (
+            <FloatingInput
+              id="otherNonEmployedReason"
+              value={otherNonEmployedReason}
+              onChange={e => setOtherNonEmployedReason(e.target.value.trimStart())}
+              label="Please specify"
+              error={errors.otherNonEmployedReason}
+            />
+          )}
+
+          {errors.status && <p className="text-red-500 text-xs mt-1">{errors.status}</p>}
+        </div>
       )}
 
       <div className="flex justify-between mt-4">
@@ -239,12 +290,7 @@ function EmploymentSnapshotForm({ formData, setFormData, prevStep, handleRegiste
         </button>
         <button
           onClick={onSubmit}
-          disabled={!isFormValid}
-          className={`px-6 py-2 rounded ${
-            isFormValid
-              ? 'bg-blue-600 text-white hover:bg-blue-700'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
+          className="px-6 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
         >
           Register
         </button>
@@ -253,4 +299,4 @@ function EmploymentSnapshotForm({ formData, setFormData, prevStep, handleRegiste
   );
 }
 
-export default EmploymentSnapshotForm;
+export default EmploymentInfoForm;
