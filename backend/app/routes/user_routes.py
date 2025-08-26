@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import APIRouter,  BackgroundTasks, Depends, HTTPException, Query
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -272,7 +273,7 @@ def soft_delete_user(user_id: str, db: Session = Depends(get_db)):
 # Approve pending user (typically alumni registration)
 @router.patch("/{user_id}/approve", status_code=status.HTTP_204_NO_CONTENT)
 def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(User).filter(User.id == UUID(user_id)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     if user.is_approved:
