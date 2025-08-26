@@ -20,6 +20,7 @@ function RegisterForm({ setIsRegistering }) {
     nameExtension: '',
     birthday: null,
     age: '',
+    sex: '',
     presentAddress: '',
     contactNumber: '',
     course: '',
@@ -58,6 +59,7 @@ function RegisterForm({ setIsRegistering }) {
         birthday: formData.birthday
           ? new Date(formData.birthday).toISOString().split('T')[0]
           : null,
+        sex: formData.sex?.trim() || '',
         present_address: formData.presentAddress.trim(),
         contact_number: formData.contactNumber.trim(),
         course: formData.course.trim(),
