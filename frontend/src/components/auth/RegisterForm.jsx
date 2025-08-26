@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import api from '../../services/api';
 import PersonalInfoForm from './PersonalInfoForm';
-import EmploymentSnapshotForm from './EmploymentSnapshotForm';
+import EmploymentInfoForm from './EmploymentInfoForm';
 
 function RegisterForm({ setIsRegistering }) {
   const [step, setStep] = useState(1);
@@ -110,7 +110,7 @@ function RegisterForm({ setIsRegistering }) {
       )}
 
       {step === 2 && (
-        <EmploymentSnapshotForm
+        <EmploymentInfoForm
           formData={formData}
           setFormData={setFormData}
           prevStep={prevStep}

@@ -31,4 +31,3 @@ def create_gts_response(
     db.commit()
     db.refresh(gts)
     return gts
-

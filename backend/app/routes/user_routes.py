@@ -278,11 +278,11 @@ def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
     if user.is_approved:
         raise HTTPException(status_code=400, detail="User already approved")
 
-    user.is_approved = True
-    db.commit()
-
-    # Create a blank GTSResponse record so alumni can later update it
     try:
+        # Update user approval status
+        user.is_approved = True
+
+        # Create a blank GTSResponse record so alumni can later update it
         full_name = f"{user.firstname} {user.middle_initial + '.' if user.middle_initial else ''} {user.lastname}".strip()
         gts_response = GTSResponse(
             user_id=user.id,
@@ -293,20 +293,24 @@ def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
             year_graduated=user.batch_year,
             contact_email=user.email,
             mobile=user.contact_number,
-            ever_employed=None,         # left blank for survey
-            is_employed=None,           # left blank for survey
-            employment_status=None,     # left blank for survey
-            company_name=None,          # left blank for survey
-            place_of_work=None,         # left blank for survey
-            company_address=None,       # left blank for survey
-            occupation=None,            # left blank for survey
-            civil_status=None           # left blank for survey
+            ever_employed=None,         
+            is_employed=None,           
+            employment_status=None,     
+            company_name=None,          
+            place_of_work=None,         
+            company_address=None,       
+            occupation=None,            
+            civil_status=None           
         )
         db.add(gts_response)
+        
+        # Single commit for both operations
         db.commit()
+        
     except SQLAlchemyError as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"Failed to create GTSResponse: {str(e)}")
+        print(f"Error occurred: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to approve user: {str(e)}")
 
     # Send approval email
     subject = "Your Alumni Account Has Been Approved"
