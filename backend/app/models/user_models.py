@@ -37,6 +37,7 @@ class User(Base):
     last_seen = Column(DateTime, server_default=func.now())
     birthday = Column(Date, nullable=True)
     present_address = Column(String, nullable=True)
+    permanent_address = Column(String, nullable=True)
     contact_number = Column(String, nullable=True)
     name_extension = Column(String, nullable=True)
     sex = Column(Enum(SexEnum), nullable=True) 

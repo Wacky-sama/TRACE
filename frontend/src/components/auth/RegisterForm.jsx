@@ -18,6 +18,7 @@ function RegisterForm({ setIsRegistering }) {
     age: '',
     sex: '',
     presentAddress: '',
+    permanentAddress: '',
     contactNumber: '',
     course: '',
     batchYear: '',
@@ -44,15 +45,12 @@ function RegisterForm({ setIsRegistering }) {
     setRegisterSuccess('');
 
     try {
-      // const employmentOptions = ['Employed - Permanent', 'Employed - Contractual', 'Self-employed / Freelance'];
-      // const isEmployed = employmentOptions.includes(formData.employmentStatus);
-
-      // PAYLOAD 1
+      // PAYLOAD 1 - Create User
       const userPayload = {
         email: formData.email.trim(),
         username: formData.registerIdentifier.trim(),
-        last_name: formData.lastName.trim(),
-        first_name: formData.firstName.trim(),
+        lastname: formData.lastName.trim(),
+        firstname: formData.firstName.trim(),
         middle_initial: formData.middleInitial?.trim() || '',
         name_extension: formData.nameExtension?.trim() || '',
         birthday: formData.birthday
@@ -60,6 +58,7 @@ function RegisterForm({ setIsRegistering }) {
             : null,
         sex: formData.sex.trim() || null,
         present_address: formData.presentAddress.trim(),
+        permanent_address: formData.permanentAddress.trim(),
         contact_number: formData.contactNumber.trim(),
         course: formData.course.trim(),
         batch_year: parseInt(formData.batchYear.trim()),
@@ -70,13 +69,12 @@ function RegisterForm({ setIsRegistering }) {
       const userResponse = await api.post('/users/register/alumni', userPayload);
       const newUserId = userResponse.data.id;
 
-      // PAYLOAD 2
+      // PAYLOAD 2 - Create GTS Response
       const gtsResponsePayload = {
         user_id: newUserId,
 
         // Personal info from PersonalInfoForm
         full_name: `${formData.firstName} ${formData.middleInitial ? formData.middleInitial + ' ' : ''}${formData.lastName}${formData.nameExtension ? ', ' + formData.nameExtension : ''}`.trim(),
-        permanent_address: formData.presentAddress.trim(), // To be changed to present_address later
         contact_email: formData.email.trim(),
         mobile: formData.contactNumber.trim(),
         civil_status: 'Not specified', 
