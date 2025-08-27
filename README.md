@@ -1,11 +1,11 @@
-# 🚀 TRACE: Tracking Alumni for Centralized Events
+# TRACE: Tracking Alumni for Centralized Events
 **Connecting CSU–Gonzaga alumni through centralized events and smart tracking.**
 
 > A web-based alumni management system for Cagayan State University – Gonzaga Campus that streamlines registration, check-ins, and attendance tracking using secure QR codes and real-time dashboards.
 
 ---
 
-## ✨ Features  
+## Features  
 - **Role-based Access**:  
   - **Admin** → Create/manage events, approve alumni registrations, print employment status forms, and manage up to two admin accounts.  
   - **Alumni** → Update profiles, accept/decline events, and generate event QR codes (active only during event time).  
@@ -15,14 +15,14 @@
 
 ---
 
-## 🖥️ Tech Stack  
+## Tech Stack  
 - **Frontend**: React (19.0.1) + Vite (v6.3.5) 
 - **Backend**: Python (v3.12.3) + FastAPI (v0.115.12)  
 - **Database**: PostgreSQL (v16.9)
 
 ---
 
-## ⚙️ Prerequisites 
+## Prerequisites 
 
 ### Linux Setup
 Make sure your system has **Node.js** and **Python** installed.
@@ -94,7 +94,7 @@ deactivate
 
 ---
 
-## 🛠️ Running the System (Development Stage)
+## Running the System (Development Stage)
 
 ### Frontend (React + Vite)
 ```bash
@@ -128,6 +128,6 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 ---
 
-## 👨‍💻 Developer
-Built with ❤️ by **Tabugadir, Kenji "Brocks" I.**
+## Developer
+Built with love by **Tabugadir, Kenji "Brocks" I.**
 👉 [Facebook](https://www.facebook.com/Wackyfu/).
