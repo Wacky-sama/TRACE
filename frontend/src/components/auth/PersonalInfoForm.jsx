@@ -146,6 +146,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         options={[
           "Male",
           "Female",
+          "Other",
           "Prefer not to say",
         ]}
       />
