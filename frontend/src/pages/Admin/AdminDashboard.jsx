@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import AdminCreateUser from './AdminCreateUser';
 import AdminCreateEvent from './AdminCreateEvent';
-import AdminSidebar from '../../components/common/AdminSidebar';
 import { BarChart,Bar,XAxis,YAxis,Tooltip,ResponsiveContainer,CartesianGrid } from 'recharts';
 import AdminUsers from './AdminUsers';
 import AdminEvents from './AdminEvents';
@@ -173,7 +172,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <AdminSidebar onPanelChange={setActivePanel} user={currentUser} />
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto">
           {renderPanel()}

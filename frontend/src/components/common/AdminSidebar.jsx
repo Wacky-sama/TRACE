@@ -11,12 +11,22 @@ const AdminSidebar = ({onPanelChange, user}) => {
   const navigationItems = [
     { icon: faHouseUser, label: 'Dashboard', panel: 'dashboard' },
     { icon: faUsers, label: 'Users', panel: 'users' },
-    {icon: faCalendar, label: 'Events', panel: 'events'},
+    { icon: faCalendar, label: 'Events', panel: 'events'},
     { icon: faChartSimple, label: 'Analytics', panel: 'analytics' },
     { icon: faFile, label: 'Reports', panel: 'reports' },
     { icon: faBell, label: 'Notifications', panel: 'notifications' },
     { icon: faGear, label: 'Account Settings', panel: 'settings' }
   ];
+
+  const panelToRoute = {
+    dashboard: '/admin/dashboard',
+    users: '/admin/users',
+    events: '/admin/events',
+    analytics: '/admin/analytics',
+    reports: '/admin/reports',
+    notifications: '/admin/notifications',
+    settings: '/admin/settings'
+  };
 
   const handleLogout = () => {
     clearAuthData();
@@ -53,7 +63,12 @@ const AdminSidebar = ({onPanelChange, user}) => {
           {navigationItems.map((item) => (
             <li key={item.label}>
               <button
-                onClick={() => onPanelChange(item.panel)}
+                onClick={() => {
+                  onPanelChange(item.panel);
+                  if (panelToRoute[item.panel]) {
+                    navigate(panelToRoute[item.panel]);
+                  }
+                }}
                 className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors group"
               >
                 <FontAwesomeIcon 

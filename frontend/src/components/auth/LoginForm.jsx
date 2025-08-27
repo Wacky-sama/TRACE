@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faUser, faLock } from '@fortawesome/free-solid-svg-icons';
-import { login } from '../../services/auth';
-import { setAuthData } from '../../utils/storage';
+import { login, getProfile } from '../../services/auth';
+import { setAuthData, setUser } from '../../utils/storage';
 import FloatingInput from '../FloatingInput';
 
 function LoginForm() {
@@ -25,6 +25,10 @@ function LoginForm() {
     try {
       const { token, role, is_approved } = await login(identifier, password);
       setAuthData({ token, role, is_approved });
+
+      const userData = await getProfile();
+      setUser(userData);
+      window.location.reload(); 
 
       if (role === "alumni" && !is_approved) {
         setLoginError("Your account is pending approval by the admin.");

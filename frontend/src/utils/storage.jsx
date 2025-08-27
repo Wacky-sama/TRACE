@@ -8,10 +8,24 @@ export const setAuthData = ({ token, role, is_approved }) => {
   localStorage.setItem("is_approved", is_approved);
 };
 
+export const setUser = (user) => {
+  localStorage.setItem("user", JSON.stringify(user));
+};
+
+export const getUser = () => {
+  const user = localStorage.getItem("user");
+  return user ? JSON.parse(user) : null;
+};
+
+export const clearUser = () => {
+  localStorage.removeItem("user");
+};
+
 export const clearAuthData = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("role");
   localStorage.removeItem("is_approved");
+  localStorage.removeItem("user");
 };
 
 export const logoutUser = () => {
