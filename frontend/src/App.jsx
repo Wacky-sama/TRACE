@@ -1,11 +1,18 @@
+import { useState, useEffect } from 'react';
 import { getToken, getRole, isApproved, clearAuthData } from './utils/storage';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { getUser } from "./utils/storage";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AuthPage from './components/auth/AuthPage';
 import AdminDashboard from "./pages/Admin/AdminDashboard"
-import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
 import AdminUsers from './pages/Admin/AdminUsers';
+import AdminEvents from './pages/Admin/AdminEvents';
+import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
+import AlumniEvents from "./pages/Alumni/AlumniEvents";
+import AdminLayout from "./pages/Admin/AdminLayout";
+import AlumniLayout from "./pages/Alumni/AlumniLayout";
+import React from 'react';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = getToken();
@@ -43,6 +50,14 @@ const PublicRoute = ({ children }) => {
 };
 
 function App() {
+  const [user, setUser] = useState(getUser());
+
+  useEffect(() => {
+    const onStorage = () => setUser(getUser());
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
   return (
     <Router>
       <Routes>
@@ -55,29 +70,30 @@ function App() {
           } 
         />
         <Route 
-          path="/admin/dashboard" 
+          path="/admin" 
           element={
             <ProtectedRoute allowedRoles={['admin']}>
-              <AdminDashboard />
+              <AdminLayout user={user} />
             </ProtectedRoute>
           } 
-        />
+        >
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="events" element={AdminEvents} />
+        </Route>
+
         <Route 
-          path="/alumni/dashboard" 
+          path="/alumni" 
           element={
             <ProtectedRoute allowedRoles={['alumni']}>
-              <AlumniDashboard />
+              <AlumniLayout user={user} />
             </ProtectedRoute>
           } 
-        />
-        <Route 
-          path="/admin/users" 
-          element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <AdminUsers />
-            </ProtectedRoute>
-          }
-        />
+        >
+          <Route path="dashboard" element={<AlumniDashboard />} />
+          <Route path="events" element={<AlumniEvents />} />
+        </Route>
+
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
       <ToastContainer position="top-right" autoClose={3000} pauseOnHover />

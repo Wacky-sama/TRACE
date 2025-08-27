@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import AlumniSidebar from '../../components/common/AlumniSidebar';
 import AlumniEvents from './AlumniEvents';
 import api from '../../services/api';
 
@@ -59,7 +58,6 @@ const AlumniDashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <AlumniSidebar onPanelChange={setActivePanel} user={currentUser} />
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto">
           {renderPanel()}

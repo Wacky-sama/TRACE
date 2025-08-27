@@ -1,3 +1,5 @@
+import api from "./api";
+
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 export async function login(identifier, password) {
@@ -19,3 +21,8 @@ export async function login(identifier, password) {
 
   return { token: data.token, role: data.role, username: data.username, is_approved: data.is_approved };
 }
+
+export const getProfile = async () => {
+    const response = await api.get('/users/me');
+    return response.data;
+};

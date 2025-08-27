@@ -8,13 +8,19 @@ const AlumniSidebar = ({onPanelChange, user}) => {
   const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
 
-
   const navigationItems = [
     { icon: faHouseUser, label: 'Dashboard', panel: 'dashboard' },
     { icon: faCalendar, label: 'Events', panel: 'events'},
     { icon: faBell, label: 'Notifications', panel: 'notifications' },
     { icon: faGear, label: 'Account Settings', panel: 'settings' }
   ];
+
+  const panelToRoute = {
+    dashboard: '/alumni/dashboard',
+    events: '/alumni/events',
+    notifications: '/alumni/notifications',
+    settings: '/alumni/settings'
+  };
 
   const handleLogout = () => {
     clearAuthData();
@@ -46,12 +52,17 @@ const AlumniSidebar = ({onPanelChange, user}) => {
         </button>
       </div>
 
-      <nav className="mt-4">
+       <nav className="mt-4">
         <ul className="space-y-2 px-3">
           {navigationItems.map((item) => (
             <li key={item.label}>
               <button
-                onClick={() => onPanelChange(item.panel)}
+                onClick={() => {
+                  onPanelChange(item.panel);
+                  if (panelToRoute[item.panel]) {
+                    navigate(panelToRoute[item.panel]);
+                  }
+                }}
                 className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors group"
               >
                 <FontAwesomeIcon 
