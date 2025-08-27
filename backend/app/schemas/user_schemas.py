@@ -2,7 +2,7 @@ import enum
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
 from uuid import UUID
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from app.schemas.gts_responses_schemas import GTSResponseOut
 
 class UserLogin(BaseModel):
@@ -37,7 +37,7 @@ class AlumniRegister(BaseModel):
     batch_year: int = Field(
         ...,
         ge=1900,
-        le=datetime.utcnow().year,
+        le=datetime.now(timezone.utc).year,
         description="Graduation year must be between 1900 and the current year"
     )
     name_extension: Optional[str] = None

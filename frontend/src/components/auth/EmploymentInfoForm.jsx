@@ -10,7 +10,11 @@ const EMPLOYED_STATUSES = [
   'Casual',
 ];
 
-const NON_EMPLOYED_STATUSES = ['Unemployed', 'Retired', 'Looking for Work'];
+const NON_EMPLOYED_STATUSES = [
+  'Unemployed',
+  'Retired',
+  'Looking for Work'];
+
 const NON_EMPLOYED_REASONS = [
   'Advance or further study',
   'Family concern and decided not to find a job',
@@ -21,7 +25,11 @@ const NON_EMPLOYED_REASONS = [
   'Other reasons, please specify',
 ];
 
-const EMPLOYMENT_NOW_OPTIONS = ['Yes', 'No', 'Never employed'];
+const EMPLOYMENT_NOW_OPTIONS = [
+  'Yes',
+  'No',
+  'Never employed'
+];
 
 const OCCUPATION_OPTIONS = [
   'Officials of Government and Special-Interest Organizations, Corporate Executives, Managers, Managing Proprietors and Supervisors',
