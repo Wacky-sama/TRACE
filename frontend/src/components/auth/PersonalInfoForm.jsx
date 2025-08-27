@@ -33,6 +33,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
     if (!formData.birthday) newErrors.birthday = "Birthday required";
     if (!formData.sex) newErrors.sex = "Sex is required";
     if (!formData.presentAddress?.trim()) newErrors.presentAddress = "Present address required";
+    if (!formData.permanentAddress?.trim()) newErrors.permanentAddress = "Permanent address required";
     if (!formData.contactNumber?.trim()) newErrors.contactNumber = "Contact number required";
     if (!formData.course) newErrors.course = "Course required";
     if (!formData.batchYear) newErrors.batchYear = "Batch year required";
@@ -55,6 +56,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         middleInitial: prev.middleInitial?.trim() || "",
         nameExtension: prev.nameExtension?.trim() || "",
         presentAddress: prev.presentAddress.trim(),
+        permanentAddress: prev.permanentAddress?.trim(),
       }));
       nextStep();
     }
@@ -154,6 +156,14 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         onChange={e => setFormData({ ...formData, presentAddress: e.target.value })}
         label="Present Address"
         error={errors.presentAddress}
+      />
+
+      <FloatingInput
+        id="permanentAddress"
+        value={formData.permanentAddress}
+        onChange={e => setFormData({ ...formData, permanentAddress: e.target.value })}
+        label="Permanent Address"
+        error={errors.permanentAddress}
       />
 
       <FloatingInput

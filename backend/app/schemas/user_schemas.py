@@ -43,6 +43,7 @@ class AlumniRegister(BaseModel):
     name_extension: Optional[str] = None
     birthday: Optional[date] = None
     present_address: Optional[str] = None
+    permanent_address: Optional[str] = None
     contact_number: Optional[str] = None
     sex: Optional[SexEnum] = None
 
@@ -66,6 +67,7 @@ class UserOut(BaseModel):
     name_extension: Optional[str]
     birthday: Optional[date]
     present_address: Optional[str]
+    permanent_address: Optional[str] = None
     contact_number: Optional[str]
     course: Optional[str]
     batch_year: Optional[int]
@@ -94,6 +96,7 @@ class UserProfileOut(BaseModel):
     name_extension: Optional[str]
     birthday: Optional[date]
     present_address: Optional[str]
+    permanent_address: Optional[str] = None
     contact_number: Optional[str]
     course: Optional[str]
     batch_year: Optional[int]
@@ -116,6 +119,7 @@ class UserPendingApprovalOut(BaseModel):
     role: UserRole
     is_approved: bool
     sex: Optional[SexEnum]
+    permanent_address: Optional[str] = None
 
     class Config:
         from_attributes = True

@@ -158,6 +158,7 @@ def register_alumni(
             name_extension=user.name_extension,
             birthday=user.birthday,
             present_address=user.present_address,
+            permanent_address=user.permanent_address,
             contact_number=user.contact_number,
             course=user.course,
             batch_year=user.batch_year,
@@ -287,7 +288,7 @@ def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
         gts_response = GTSResponse(
             user_id=user.id,
             full_name=full_name,
-            permanent_address=user.present_address,
+            permanent_address=user.permanent_address,
             birthday=user.birthday,
             degree=user.course,
             year_graduated=user.batch_year,

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.gts_responses_models import GTSResponse
@@ -17,8 +17,13 @@ def create_gts_response(
     request: GTSResponseCreate,
     db: Session = Depends(get_db)
 ):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
     gts = GTSResponse(
         user_id=user_id,
+        permanent_address=user.permanent_address,
         ever_employed=request.ever_employed,
         is_employed=request.is_employed,
         employment_status=request.employment_status,
