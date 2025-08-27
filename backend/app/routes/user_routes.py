@@ -162,6 +162,7 @@ def register_alumni(
             contact_number=user.contact_number,
             course=user.course,
             batch_year=user.batch_year,
+            sex=user.sex,
             role=UserRole.alumni,
             is_approved=False,
         )

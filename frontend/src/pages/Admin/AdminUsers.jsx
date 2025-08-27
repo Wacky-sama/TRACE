@@ -38,7 +38,7 @@ const AdminUsers = () => {
   } catch (error) {
     if (error.response?.status === 404) {
       toast.error("User not found. It may have already been deleted.");
-      await fetchUsers(); // Refresh list to remove ghost users
+      await fetchUsers();
     } else if (error.response?.status === 400) {
       toast.error(error.response.data.detail || "Bad request.");
     } else {
@@ -61,6 +61,10 @@ const AdminUsers = () => {
           <th className="p-3">M.I.</th>
           <th className="p-3">Course</th>
           <th className="p-3">Batch</th>
+          <th className="p-3">Contact No.</th>
+          <th className="p-3">Sex</th>
+          <th className="p-3">Present Address</th>
+          <th className="p-3">Permanent Address</th>
           <th className="p-3">Role</th>
           {showActions ? <th className="p-3">Status</th> : <th className="p-3">Active</th>}
           <th className="p-3">Actions</th>
@@ -77,6 +81,10 @@ const AdminUsers = () => {
               <td className="p-3">{user.middle_initial || '-'}</td>
               <td className="p-3">{user.course || '-'}</td>
               <td className="p-3">{user.batch_year || '-'}</td>
+              <td className="p-3">{user.contact_number || '-'}</td>
+              <td className="p-3">{user.sex}</td>
+              <td className="p-3">{user.present_address || '-'}</td>
+              <td className="p-3">{user.permanent_address || '-'}</td>
               <td className="p-3 capitalize">{user.role}</td>
               <td className="p-3">
                 {showActions ? (user.is_approved ? 'Approved' : 'Pending') : <span className="text-green-600">Online</span>}

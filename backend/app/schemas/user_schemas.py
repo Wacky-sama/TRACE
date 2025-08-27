@@ -116,9 +116,11 @@ class UserPendingApprovalOut(BaseModel):
     middle_initial: Optional[str]
     course: Optional[str]
     batch_year: Optional[int]
+    contact_number: Optional[str]
     role: UserRole
     is_approved: bool
     sex: Optional[SexEnum]
+    present_address: Optional[str] = None
     permanent_address: Optional[str] = None
 
     class Config:
