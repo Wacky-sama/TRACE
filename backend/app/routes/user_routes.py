@@ -148,7 +148,6 @@ def register_alumni(
         raise HTTPException(status_code=400, detail="Username already registered")
 
     try:
-        # Create new user
         new_user = User(
             username=user.username,
             email=user.email,
@@ -163,7 +162,7 @@ def register_alumni(
             course=user.course,
             batch_year=user.batch_year,
             role=UserRole.alumni,
-            is_approved=False,   # waits for admin approval
+            is_approved=False,
         )
         db.add(new_user)
         db.commit()

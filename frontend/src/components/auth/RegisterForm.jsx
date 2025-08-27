@@ -6,11 +6,8 @@ import EmploymentInfoForm from './EmploymentInfoForm';
 function RegisterForm({ setIsRegistering }) {
   const [step, setStep] = useState(1);
 
-  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
-  const [showRegisterConfirmPassword, setShowRegisterConfirmPassword] = useState(false);
-  const [registerErrors, setRegisterErrors] = useState({});
-
   const [formData, setFormData] = useState({
+    // Step 1: Personal Info
     registerIdentifier: '',
     email: '',
     lastName: '',
@@ -26,8 +23,10 @@ function RegisterForm({ setIsRegistering }) {
     batchYear: '',
     registerPassword: '',
     registerConfirmPassword: '',
+
+    // Step 2: Employment Info
     employmentNow: '',
-    status: '',
+    employmentStatus: '',
     placeOfWork: '',
     companyName: '',
     companyAddress: '',
@@ -45,36 +44,94 @@ function RegisterForm({ setIsRegistering }) {
     setRegisterSuccess('');
 
     try {
-      const employmentOptions = ['Employed - Permanent', 'Employed - Contractual', 'Self-employed / Freelance'];
-      const isEmployed = employmentOptions.includes(formData.status);
+      // const employmentOptions = ['Employed - Permanent', 'Employed - Contractual', 'Self-employed / Freelance'];
+      // const isEmployed = employmentOptions.includes(formData.employmentStatus);
 
-      const payload = {
+      // PAYLOAD 1
+      const userPayload = {
         email: formData.email.trim(),
         username: formData.registerIdentifier.trim(),
-        lastname: formData.lastName.trim(),
-        firstname: formData.firstName.trim(),
+        last_name: formData.lastName.trim(),
+        first_name: formData.firstName.trim(),
         middle_initial: formData.middleInitial?.trim() || '',
         name_extension: formData.nameExtension?.trim() || '',
         birthday: formData.birthday
-          ? new Date(formData.birthday).toISOString().split('T')[0]
-          : null,
-        sex: formData.sex?.trim() || '',
+            ? new Date(formData.birthday).toISOString().split('T')[0]
+            : null,
+        sex: formData.sex.trim() || null,
         present_address: formData.presentAddress.trim(),
         contact_number: formData.contactNumber.trim(),
         course: formData.course.trim(),
-        batch_year: formData.batchYear.trim(),
-        password: formData.registerPassword.trim(),
+        batch_year: parseInt(formData.batchYear.trim()),
+        password: formData.registerPassword,
         role: 'alumni',
-
-        is_employed: isEmployed,
-        employment_status: isEmployed ? formData.status : null,
-        place_of_work: isEmployed ? formData.placeOfWork?.trim() : null,
-        company_name: isEmployed ? formData.companyName?.trim() : null,
-        company_address: isEmployed ? formData.companyAddress?.trim() : null,
-        occupation: isEmployed && finalOccupations.length ? finalOccupations.map(o => o.trim()) : null
       };
 
-      const response = await api.post('/users/register/alumni', payload);
+      const userResponse = await api.post('/users/register/alumni', userPayload);
+      const newUserId = userResponse.data.id;
+
+      // PAYLOAD 2
+      const gtsResponsePayload = {
+        user_id: newUserId,
+
+        // Personal info from PersonalInfoForm
+        full_name: `${formData.firstName} ${formData.middleInitial ? formData.middleInitial + ' ' : ''}${formData.lastName}${formData.nameExtension ? ', ' + formData.nameExtension : ''}`.trim(),
+        permanent_address: formData.presentAddress.trim(), // To be changed to present_address later
+        contact_email: formData.email.trim(),
+        mobile: formData.contactNumber.trim(),
+        civil_status: 'Not specified', 
+        sex: formData.sex?.trim() || 'Not specified',
+        birthday: formData.birthday
+          ? new Date(formData.birthday).toISOString().split('T')[0]
+          : null,
+        
+        // Education info from personal form
+        degree: formData.course.trim(),
+        year_graduated: parseInt(formData.batchYear.trim()),
+        
+        // Employment info from EmploymentInfoForm
+        is_employed: formData.employmentNow === 'Yes',
+        ever_employed: formData.employmentNow !== 'Never employed' ? (formData.employmentNow === 'Yes') : false,
+        
+        // If currently employed (employmentNow === 'Yes')
+        employment_status: formData.employmentNow === 'Yes' ? formData.status : null,
+        place_of_work: formData.employmentNow === 'Yes' ? formData.placeOfWork : null,
+        company_name: formData.employmentNow === 'Yes' ? formData.companyName?.trim() : null,
+        company_address: formData.employmentNow === 'Yes' ? formData.companyAddress?.trim() : null,
+        occupation: formData.employmentNow === 'Yes' && finalOccupations.length 
+          ? finalOccupations.map(o => o.trim()) 
+          : null,
+        
+        // Optional fields for registration - set to null (can be filled in full GTS later)
+        telephone: null,
+        specialization: null,
+        honors: null,
+        exams: null,
+        pursued_advance_degree: null,
+        pursued_advance_degree_reasons: null,
+        trainings: null,
+        job_sector: null,
+        first_job: null,
+        job_related_to_course: null,
+        job_start_date: null,
+        months_to_first_job: null,
+        job_find_methods: null,
+        job_reasons: null,
+        job_change_reasons: null,
+        job_level_first: null,
+        job_level_current: null,
+        first_job_salary: null,
+        curriculum_relevance_first_job: null,
+        curriculum_relevance_second_job: null,
+        useful_competencies: null,
+        curriculum_improvement_suggestions: null,
+        job_satisfaction: null,
+        job_satisfaction_reason: null,
+        desired_services: null,
+        job_problems: null,
+      };
+
+      await api.post('/gts-responses/register/alumni', gtsResponsePayload);
 
       setRegisterSuccess('Registration submitted successfully! Please wait for approval.');
       setTimeout(() => setIsRegistering(false), 3000);

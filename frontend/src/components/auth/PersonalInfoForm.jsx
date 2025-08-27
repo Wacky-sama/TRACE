@@ -8,8 +8,8 @@ import FloatingSelect from "../FloatingSelect";
 
 function PersonalInfoForm({ formData, setFormData, nextStep }) {
   const [errors, setErrors] = useState({});
-  const [showPass, setShowPass] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     if (formData.birthday) {
@@ -33,6 +33,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
     if (!formData.birthday) newErrors.birthday = "Birthday required";
     if (!formData.sex) newErrors.sex = "Sex is required";
     if (!formData.presentAddress?.trim()) newErrors.presentAddress = "Present address required";
+    if (!formData.contactNumber?.trim()) newErrors.contactNumber = "Contact number required";
     if (!formData.course) newErrors.course = "Course required";
     if (!formData.batchYear) newErrors.batchYear = "Batch year required";
     if (!formData.registerPassword) newErrors.registerPassword = "Password required";
@@ -192,27 +193,27 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
       <FloatingInput
         id="registerPassword"
-        type={showPass ? "text" : "password"}
+        type={showPassword ? "text" : "password"}
         value={formData.registerPassword}
         onChange={e => setFormData({ ...formData, registerPassword: e.target.value })}
         label="Password"
         error={errors.registerPassword}
       >
-        <span onClick={() => setShowPass(!showPass)} className="cursor-pointer">
-          <FontAwesomeIcon icon={showPass ? faEye : faEyeSlash} />
+        <span onClick={() => setShowPassword(!showPassword)} className="cursor-pointer">
+          <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
         </span>
       </FloatingInput>
 
       <FloatingInput
         id="registerConfirmPassword"
-        type={showConfirm ? "text" : "password"}
+        type={showConfirmPassword ? "text" : "password"}
         value={formData.registerConfirmPassword}
         onChange={e => setFormData({ ...formData, registerConfirmPassword: e.target.value })}
         label="Confirm Password"
         error={errors.registerConfirmPassword}
       >
-        <span onClick={() => setShowConfirm(!showConfirm)} className="cursor-pointer">
-          <FontAwesomeIcon icon={showConfirm ? faEye : faEyeSlash} />
+        <span onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="cursor-pointer">
+          <FontAwesomeIcon icon={showConfirmPassword ? faEye : faEyeSlash} />
         </span>
       </FloatingInput>
 

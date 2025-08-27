@@ -42,7 +42,6 @@ function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister })
   const [nonEmployedReasons, setNonEmployedReasons] = useState([]);
   const [otherNonEmployedReason, setOtherNonEmployedReason] = useState(''); 
 
-  // Only validate on submit
   const validate = () => {
     const newErrors = {};
 
@@ -51,7 +50,7 @@ function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister })
     }
 
     if (formData.employmentNow === 'Yes') {
-      if (!formData.status) newErrors.status = 'Select your employment status.';
+      if (!formData.employmentStatus) newErrors.employmentStatus = 'Select your employment employmentStatus.';
       if (!formData.placeOfWork?.trim()) newErrors.placeOfWork = 'Place of work required.';
       if (!formData.companyName?.trim()) newErrors.companyName = 'Company name required.';
       if (!formData.companyAddress?.trim()) newErrors.companyAddress = 'Company address required.';
@@ -63,7 +62,7 @@ function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister })
 
     if (formData.employmentNow === 'No') {
       if (nonEmployedReasons.length === 0) {
-        newErrors.status = 'Select at least one reason.';
+        newErrors.employmentStatus = 'Select at least one reason.';
       }
       if (nonEmployedReasons.includes('Other reasons, please specify') && !otherNonEmployedReason.trim()) {
         newErrors.otherNonEmployedReason = 'Please specify your reason.';
@@ -71,8 +70,8 @@ function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister })
     }
 
     if (formData.employmentNow === 'Never employed') {
-      if (formData.status !== 'Never employed') {
-        newErrors.status = 'Invalid status for never employed.';
+      if (formData.employmentStatus !== 'Never employed') {
+        newErrors.employmentStatus = 'Invalid employmentStatus for never employed.';
       }
     }
 
@@ -115,14 +114,13 @@ function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister })
     await handleRegister(finalOccupations);
   };
 
-  // Reset fields based on employmentNow
   useEffect(() => {
     setFormData(prev => {
       const updated = { ...prev };
 
       if (prev.employmentNow === 'Yes') {
-        if (NON_EMPLOYED_STATUSES.includes(prev.status) || prev.status === 'Never employed') {
-          updated.status = '';
+        if (NON_EMPLOYED_STATUSES.includes(prev.employmentStatus) || prev.employmentStatus === 'Never employed') {
+          updated.employmentStatus = '';
         }
       }
 
@@ -131,11 +129,11 @@ function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister })
         updated.companyName = '';
         updated.companyAddress = '';
         updated.occupation = [];
-        updated.status = NON_EMPLOYED_STATUSES.includes(prev.status) ? prev.status : '';
+        updated.employmentStatus = NON_EMPLOYED_STATUSES.includes(prev.employmentStatus) ? prev.employmentStatus : '';
       }
 
       if (prev.employmentNow === 'Never employed') {
-        updated.status = 'Never employed';
+        updated.employmentStatus = 'Never employed';
         updated.placeOfWork = '';
         updated.companyName = '';
         updated.companyAddress = '';
@@ -152,7 +150,6 @@ function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister })
     <div>
       <h2 className="text-lg font-semibold mb-2">Employment Information</h2>
 
-      {/* Employment Now */}
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">Are you presently employed?</label>
         <div className="flex flex-col gap-2">
@@ -173,15 +170,14 @@ function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister })
         {errors.employmentNow && <p className="text-red-500 text-xs mt-1">{errors.employmentNow}</p>}
       </div>
 
-      {/* If employed */}
       {formData.employmentNow === 'Yes' && (
         <>
           <FloatingSelect
-            id="status"
-            value={formData.status}
-            onChange={e => setFormData({ ...formData, status: e.target.value })}
+            id="employmentStatus"
+            value={formData.employmentStatus}
+            onChange={e => setFormData({ ...formData, employmentStatus: e.target.value })}
             label="Employment Status"
-            error={errors.status}
+            error={errors.employmentStatus}
             options={EMPLOYED_STATUSES}
           />
           <FloatingSelect
@@ -244,7 +240,6 @@ function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister })
         </>
       )}
 
-      {/* If unemployed */}
       {formData.employmentNow === 'No' && (
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Why? (You may select multiple answers)</label>
@@ -280,7 +275,7 @@ function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister })
             />
           )}
 
-          {errors.status && <p className="text-red-500 text-xs mt-1">{errors.status}</p>}
+          {errors.employmentStatus && <p className="text-red-500 text-xs mt-1">{errors.employmentStatus}</p>}
         </div>
       )}
 
