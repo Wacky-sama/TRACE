@@ -11,7 +11,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // Auto-calc age
   useEffect(() => {
     if (formData.birthday) {
       const today = new Date();
@@ -46,7 +45,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
   const handleNext = () => {
     if (validate()) {
-      // Trim inputs before moving to next step
       setFormData(prev => ({
         ...prev,
         email: prev.email.trim(),
@@ -114,7 +112,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         error={errors.nameExtension}
       />
 
-      {/* Birthday */}
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">Birthday</label>
         <DatePicker
