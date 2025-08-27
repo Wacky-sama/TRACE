@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { getToken, getRole, isApproved, clearAuthData } from '../../utils/storage';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 
 function AuthPage() {
-  const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isRegistering = location.pathname === '/register';
 
   useEffect(() => {
     const token = getToken();
@@ -54,7 +56,7 @@ function AuthPage() {
                                     exit={{ opacity: 0, x: -50 }}
                                     transition={{ duration: 0.3 }}
                                 >
-                                    <RegisterForm setIsRegistering={setIsRegistering} />
+                                    <RegisterForm />
                                 </motion.div>
                                 ) : (
                                 <motion.div
@@ -71,7 +73,7 @@ function AuthPage() {
                         <p className="text-sm text-gray-500 mb-4">
                             {isRegistering ? "Already have an account?" : "Don't have an account?"}{" "}
                             <button
-                                onClick={() => setIsRegistering(!isRegistering)}
+                                onClick={() => navigate(isRegistering ? "/login" : "/register")}
                                 className="text-blue-600 hover:underline"
                             >
                                 {isRegistering ? "Login here." : "Register here."}

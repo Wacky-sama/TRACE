@@ -12,7 +12,6 @@ import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
 import AlumniEvents from "./pages/Alumni/AlumniEvents";
 import AdminLayout from "./pages/Admin/AdminLayout";
 import AlumniLayout from "./pages/Alumni/AlumniLayout";
-import React from 'react';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = getToken();
@@ -63,6 +62,14 @@ function App() {
       <Routes>
         <Route 
           path="/login" 
+          element={
+            <PublicRoute>
+              <AuthPage />
+            </PublicRoute>
+          } 
+        />
+        <Route 
+          path="/register" 
           element={
             <PublicRoute>
               <AuthPage />
