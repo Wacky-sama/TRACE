@@ -6,7 +6,6 @@ import EmploymentInfoForm from './EmploymentInfoForm';
 function RegisterForm({ setIsRegistering }) {
   const [step, setStep] = useState(1);
 
-  // Toggles + validation
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showRegisterConfirmPassword, setShowRegisterConfirmPassword] = useState(false);
   const [registerErrors, setRegisterErrors] = useState({});
