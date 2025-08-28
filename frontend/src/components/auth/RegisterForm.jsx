@@ -128,7 +128,7 @@ function RegisterForm({ setIsRegistering }) {
         job_problems: null,
       };
 
-      await api.post('/gts-responses/register/alumni', gtsResponsePayload);
+      await api.post(`/gts-responses/register/alumni/${newUserId}`, gtsResponsePayload);
 
       setRegisterSuccess('Registration submitted successfully! Please wait for approval.');
       setTimeout(() => setIsRegistering(false), 3000);
