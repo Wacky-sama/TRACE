@@ -76,9 +76,8 @@ function RegisterForm({ setIsRegistering }) {
         // Personal info from PersonalInfoForm
         full_name: `${formData.firstName} ${formData.middleInitial ? formData.middleInitial + ' ' : ''}${formData.lastName}${formData.nameExtension ? ', ' + formData.nameExtension : ''}`.trim(),
         contact_email: formData.email.trim(),
-        mobile: formData.contactNumber.trim(),
-        civil_status: 'Not specified', 
-        sex: formData.sex?.trim() || 'Not specified',
+        mobile: formData.contactNumber.trim(), 
+        sex: formData.sex?.trim(),
         birthday: formData.birthday
           ? new Date(formData.birthday).toISOString().split('T')[0]
           : null,
