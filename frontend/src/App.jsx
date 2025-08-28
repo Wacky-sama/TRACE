@@ -63,10 +63,9 @@ function App() {
   const [user, setUser] = useState(getUser());
 
   useEffect(() => {
-    // Re-enable this if you need cross-tab auth sync
-    // const onStorage = () => setUser(getUser());
-    // window.addEventListener('storage', onStorage);
-    // return () => window.removeEventListener('storage', onStorage);
+    const onStorage = () => setUser(getUser());
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
   }, []);
 
   return (
