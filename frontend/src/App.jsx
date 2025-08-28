@@ -8,9 +8,9 @@ import AuthPage from './components/auth/AuthPage';
 import AdminDashboard from "./pages/Admin/AdminDashboard"
 import AdminUsers from './pages/Admin/AdminUsers';
 import AdminEvents from './pages/Admin/AdminEvents';
+import AdminLayout from "./pages/Admin/AdminLayout";
 import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
 import AlumniEvents from "./pages/Alumni/AlumniEvents";
-import AdminLayout from "./pages/Admin/AdminLayout";
 import AlumniLayout from "./pages/Alumni/AlumniLayout";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -18,12 +18,19 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   const role = getRole();
   const is_approved = isApproved();
 
-  if (!token) return <Navigate to="/login" replace />;
-  
-  if (allowedRoles && !allowedRoles.includes(role)) {
-    return <Navigate to="/login" replace />
+  // No token = not authenticated
+  if (!token) {
+    return <Navigate to="/login" replace />;
   }
-  if (role === 'alumni' && !is_approved) {
+
+  // Invalid role
+  if (allowedRoles && !allowedRoles.includes(role)) {
+    clearAuthData(); // Clean up invalid auth
+    return <Navigate to="/login" replace />;
+  }
+
+  // Alumni not approved
+  if (role === "alumni" && !is_approved) {
     return <Navigate to="/login" replace />;
   }
 
@@ -33,16 +40,20 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 const PublicRoute = ({ children }) => {
   const token = getToken();
   const role = getRole();
+  const is_approved = isApproved();
 
-  const validRoles = ['admin', 'alumni'];
-
-  if (token && validRoles.includes(role)) {
-    return <Navigate to={`/${role}/dashboard`} replace />;
+  // If authenticated with valid role, redirect to dashboard
+  if (token && role === "admin") {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+  
+  if (token && role === "alumni" && is_approved) {
+    return <Navigate to="/alumni/dashboard" replace />;
   }
 
-  if (token && !validRoles.includes(role)) {
+  // If token exists but role is invalid, clean up
+  if (token && !["admin", "alumni"].includes(role)) {
     clearAuthData();
-    return <Navigate to="/login" replace />;
   }
 
   return children;
@@ -52,14 +63,16 @@ function App() {
   const [user, setUser] = useState(getUser());
 
   useEffect(() => {
-    const onStorage = () => setUser(getUser());
-    window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
+    // Re-enable this if you need cross-tab auth sync
+    // const onStorage = () => setUser(getUser());
+    // window.addEventListener('storage', onStorage);
+    // return () => window.removeEventListener('storage', onStorage);
   }, []);
 
   return (
     <Router>
       <Routes>
+        {/* Public routes */}
         <Route 
           path="/login" 
           element={
@@ -76,6 +89,8 @@ function App() {
             </PublicRoute>
           } 
         />
+
+        {/* Admin routes */}
         <Route 
           path="/admin" 
           element={
@@ -84,11 +99,13 @@ function App() {
             </ProtectedRoute>
           } 
         >
+          <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="users" element={<AdminUsers />} />
-          <Route path="events" element={AdminEvents} />
+          <Route path="events" element={<AdminEvents />} />
         </Route>
 
+        {/* Alumni routes */}
         <Route 
           path="/alumni" 
           element={
@@ -97,15 +114,31 @@ function App() {
             </ProtectedRoute>
           } 
         >
+          <Route index element={<Navigate to="/alumni/dashboard" replace />} />
           <Route path="dashboard" element={<AlumniDashboard />} />
           <Route path="events" element={<AlumniEvents />} />
         </Route>
 
+        {/* Root redirect */}
         <Route path="/" element={<Navigate to="/login" replace />} />
+        
+        {/* Catch all - redirect to login */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
-      <ToastContainer position="top-right" autoClose={3000} pauseOnHover />
+      
+      <ToastContainer 
+        position="top-right" 
+        autoClose={3000} 
+        pauseOnHover 
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        draggable
+        pauseOnFocusLoss
+      />
     </Router>
-  )
+  );
 }
 
 export default App;
