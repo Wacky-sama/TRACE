@@ -34,7 +34,7 @@ const AdminSidebar = ({onPanelChange, user}) => {
   };
 
   return (
-    <div className={`bg-gray-800 text-white transition-all duration-300 ${isOpen ? 'w-64' : 'w-16'} min-h-screen`}>
+    <div className={`bg-gray-800 text-white transition-[width] duration-300 ${isOpen ? 'w-60' : 'w-16'} min-h-screen shrink-0`}>
       <div className="flex items-center justify-between p-4 border-b border-gray-700">
         <div className={`w-full ${!isOpen ? 'justify-center' : 'flex flex-col items-center gap-1'} `}>
           {isOpen && user && (
