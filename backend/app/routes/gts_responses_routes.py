@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
+from app.models.user_models import User
 from app.models.gts_responses_models import GTSResponse
 from app.schemas.gts_responses_schemas import GTSResponseCreate, GTSResponseOut
 from uuid import UUID
@@ -11,7 +12,7 @@ router = APIRouter(
 )
 
 # Create new GTS response (used internally during registration)
-@router.post("/{user_id}", response_model=GTSResponseOut)
+@router.post("/register/alumni/{user_id}", response_model=GTSResponseOut)
 def create_gts_response(
     user_id: UUID,
     request: GTSResponseCreate,

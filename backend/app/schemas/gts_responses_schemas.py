@@ -7,6 +7,7 @@ class GTSResponseCreate(BaseModel):
     is_employed: Optional[bool] = None
     employment_status: Optional[str] = None
     place_of_work: Optional[str] = None
+    permanent_address: Optional[str] = None
     company_name: Optional[str] = None
     company_address: Optional[str] = None
     occupation: Optional[str] = None
@@ -19,6 +20,7 @@ class GTSResponseOut(BaseModel):
     is_employed: Optional[bool]
     employment_status: Optional[str]
     place_of_work: Optional[str]
+    permanent_address: Optional[str] = None
     company_name: Optional[str]
     company_address: Optional[str]
     occupation: Optional[str]
