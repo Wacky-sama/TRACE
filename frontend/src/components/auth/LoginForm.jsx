@@ -24,21 +24,20 @@ function LoginForm() {
 
     try {
       const { token, role, is_approved } = await login(identifier, password);
-      setAuthData({ token, role, is_approved });
-
-      const userData = await getProfile();
-      setUser(userData);
-      window.location.reload(); 
-
+      
       if (role === "alumni" && !is_approved) {
         setLoginError("Your account is pending approval by the admin.");
         return;
       }
 
+      setAuthData({ token, role, is_approved });
+      const userData = await getProfile();
+      setUser(userData); 
+
       if (role === "admin") {
-        navigate("/admin/dashboard");
+        navigate("/admin/dashboard", {replace: true});
       } else if (role === "alumni") {
-        navigate("/alumni/dashboard");
+        navigate("/alumni/dashboard", {replace: true});
       } else {
         setLoginError("Unauthorized access. Please contact the administrator.");
       }

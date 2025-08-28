@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { getToken, getRole, isApproved, clearAuthData } from '../../utils/storage';
@@ -11,19 +11,19 @@ function AuthPage() {
 
   const isRegistering = location.pathname === '/register';
 
-  useEffect(() => {
-    const token = getToken();
-    const role = getRole();
-    const is_approved = isApproved();
+//   useEffect(() => {
+//     const token = getToken();
+//     const role = getRole();
+//     const is_approved = isApproved();
 
-    if (token && role) {
-      if (role === "alumni" && !is_approved) {
-        clearAuthData();
-        return;
-      }
-      navigate(`/${role}/dashboard`);
-    }
-  }, [navigate]);
+//     if (token && role) {
+//       if (role === "alumni" && !is_approved) {
+//         clearAuthData();
+//         return;
+//       }
+//       navigate(`/${role}/dashboard`);
+//     }
+//   }, [navigate]);
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
