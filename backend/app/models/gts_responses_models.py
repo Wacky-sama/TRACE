@@ -17,7 +17,7 @@ class GTSResponse(Base):
     contact_email = Column(Text, nullable=False)
     telephone = Column(Text, nullable=True)
     mobile = Column(Text, nullable=False)
-    civil_status = Column(Text, nullable=False)
+    civil_status = Column(Text, nullable=True)
     sex = Column(Text, nullable=False)
     birthday = Column(Date, nullable=False)
 
