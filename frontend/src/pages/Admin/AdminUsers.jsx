@@ -65,7 +65,7 @@ const AdminUsers = () => {
           <th className="p-3">Sex</th>
           <th className="p-3">Present Address</th>
           <th className="p-3">Permanent Address</th>
-          <th className="p-3">Role</th>
+          {/* <th className="p-3">Role</th> */}
           {showActions ? <th className="p-3">Status</th> : <th className="p-3">Active</th>}
           <th className="p-3">Actions</th>
         </tr>
@@ -85,7 +85,7 @@ const AdminUsers = () => {
               <td className="p-3">{user.sex}</td>
               <td className="p-3">{user.present_address || '-'}</td>
               <td className="p-3">{user.permanent_address || '-'}</td>
-              <td className="p-3 capitalize">{user.role}</td>
+              {/* <td className="p-3 capitalize">{user.role}</td> */}
               <td className="p-3">
                 {showActions ? (user.is_approved ? 'Approved' : 'Pending') : <span className="text-green-600">Online</span>}
               </td>
@@ -155,7 +155,7 @@ const AdminUsers = () => {
       <div className="border-t border-gray-600 mb-6"></div>
 
       <h3 className="text-2xl font-bold mb-6">Pending Alumni Approvals</h3>
-      <div className="overflow-auto mb-12">
+      <div className="overflow-x-auto max-w-full">
         {renderTable(
           pendingUsers.filter((u) =>
             `${u.firstname} ${u.lastname} ${u.username}`.toLowerCase().includes(searchTerm.toLowerCase())
@@ -165,7 +165,7 @@ const AdminUsers = () => {
       </div>
 
       <h3 className="text-2xl font-bold mb-6">Registered Users</h3>
-      <div className="overflow-auto">
+      <div className="overflow-x-auto max-w-full">
         {renderTable(
           approvedUsers
             .filter((u) => ['alumni'].includes(u.role))
