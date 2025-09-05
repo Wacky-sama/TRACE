@@ -145,9 +145,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         error={errors.sex}
         options={[
           "Male",
-          "Female",
-          "Other",
-          "Prefer not to say",
+          "Female"
         ]}
       />
 
