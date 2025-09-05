@@ -74,7 +74,12 @@ function RegisterForm({ setIsRegistering }) {
         user_id: newUserId,
 
         // Personal info from PersonalInfoForm
-        full_name: `${formData.firstName} ${formData.middleInitial ? formData.middleInitial + ' ' : ''}${formData.lastName}${formData.nameExtension ? ', ' + formData.nameExtension : ''}`.trim(),
+        full_name: [
+          formData.firstName || "Firstname",
+          formData.middleInitial || "",
+          formData.lastName || "Lastname",
+          formData.nameExtension ? `, ${formData.nameExtension}` : ""
+        ].join(" ").replace(/\s+/g, " ").trim(),
         contact_email: formData.email.trim(),
         mobile: formData.contactNumber.trim(), 
         sex: formData.sex?.trim(),
@@ -128,7 +133,7 @@ function RegisterForm({ setIsRegistering }) {
         job_problems: null,
       };
 
-      await api.post(`/gts-responses/register/alumni/${newUserId}`, gtsResponsePayload);
+      await api.post(`/gts_responses/register/alumni/${newUserId}`, gtsResponsePayload);
 
       setRegisterSuccess('Registration submitted successfully! Please wait for approval.');
       setTimeout(() => setIsRegistering(false), 3000);
