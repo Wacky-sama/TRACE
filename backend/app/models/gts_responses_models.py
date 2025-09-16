@@ -11,7 +11,7 @@ class GTSResponse(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"))
 
-    # 🔹 Basic info
+    # Basic info
     full_name = Column(Text, nullable=False)
     permanent_address = Column(Text, nullable=False)
     contact_email = Column(Text, nullable=False)
@@ -21,19 +21,19 @@ class GTSResponse(Base):
     sex = Column(Text, nullable=False)
     birthday = Column(Date, nullable=False)
 
-    # 🔹 Academic info
+    # Academic info
     degree = Column(Text, nullable=True)
     specialization = Column(Text, nullable=True)
     year_graduated = Column(Integer, nullable=True)
     honors = Column(Text, nullable=True)
     exams = Column(JSONB, nullable=True)
 
-    # 🔹 Graduate studies / training
+    # Graduate studies / training
     pursued_advance_degree = Column(Boolean, nullable=True)
     pursued_advance_degree_reasons = Column(ARRAY(Text), nullable=True)
     trainings = Column(JSONB, nullable=True)
 
-    # 🔹 Employment info (initial + extended)
+    # Employment info (initial + extended)
     ever_employed = Column(Boolean, nullable=True)
     is_employed = Column(Boolean, nullable=True)
     employment_status = Column(Text, nullable=True)
@@ -43,7 +43,7 @@ class GTSResponse(Base):
     job_sector = Column(Text, nullable=True)
     place_of_work = Column(Text, nullable=True)
 
-    # 🔹 Job details
+    # Job details
     first_job = Column(Boolean, nullable=True)
     job_related_to_course = Column(Boolean, nullable=True)
     job_start_date = Column(Date, nullable=True)
@@ -55,19 +55,19 @@ class GTSResponse(Base):
     job_level_current = Column(Text, nullable=True)
     first_job_salary = Column(Numeric, nullable=True)
 
-    # 🔹 Curriculum relevance
+    # Curriculum relevance
     curriculum_relevance_first_job = Column(Boolean, nullable=True)
     curriculum_relevance_second_job = Column(Boolean, nullable=True)
     useful_competencies = Column(ARRAY(Text), nullable=True)
     curriculum_improvement_suggestions = Column(Text, nullable=True)
 
-    # 🔹 Job satisfaction / problems
+    # Job satisfaction / problems
     job_satisfaction = Column(Text, nullable=True)
     job_satisfaction_reason = Column(Text, nullable=True)
     desired_services = Column(Text, nullable=True)
     job_problems = Column(Text, nullable=True)
 
-    # 🔹 Metadata
+    # Metadata
     submitted_at = Column(Date, server_default=func.now())
 
     # Relations

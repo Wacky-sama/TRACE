@@ -18,9 +18,9 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       let age = today.getFullYear() - birthDate.getFullYear();
       const m = today.getMonth() - birthDate.getMonth();
       if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
-      setFormData(prev => ({ ...prev, age }));
+      setFormData(formData => ({ ...formData, age }));
     } else {
-      setFormData(prev => ({ ...prev, age: "" }));
+      setFormData(formData => ({ ...formData, age: "" }));
     }
   }, [formData.birthday, setFormData]);
 
@@ -47,17 +47,20 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
   const handleNext = () => {
     if (validate()) {
-      setFormData(prev => ({
-        ...prev,
-        email: prev.email.trim(),
-        registerIdentifier: prev.registerIdentifier.trim(),
-        lastName: prev.lastName.trim(),
-        firstName: prev.firstName.trim(),
-        middleInitial: prev.middleInitial?.trim() || "",
-        nameExtension: prev.nameExtension?.trim() || "",
-        presentAddress: prev.presentAddress.trim(),
-        permanentAddress: prev.permanentAddress?.trim(),
-      }));
+      const trimmedData = {
+        ...formData,
+        email: formData.email.trim(),
+        registerIdentifier: formData.registerIdentifier.trim(),
+        lastName: formData.lastName.trim(),
+        firstName: formData.firstName.trim(),
+        middleInitial: formData.middleInitial?.trim() || "",
+        nameExtension: formData.nameExtension?.trim() || "",
+        presentAddress: formData.presentAddress.trim(),
+        permanentAddress: formData.permanentAddress?.trim(),
+      };
+      trimmedData.full_name = `${trimmedData.firstName} ${trimmedData.middleInitial ? trimmedData.middleInitial + " " : ""}${trimmedData.lastName}${trimmedData.nameExtension ? ", " + trimmedData.nameExtension : ""}`;
+
+      setFormData(trimmedData);
       nextStep();
     }
   };

@@ -24,6 +24,11 @@ def create_gts_response(
 
     gts = GTSResponse(
         user_id=user_id,
+        full_name=request.full_name,
+        contact_email=user.email,
+        mobile=user.contact_number,
+        sex=user.sex,
+        birthday=user.birthday,
         permanent_address=user.permanent_address,
         ever_employed=request.ever_employed,
         is_employed=request.is_employed,

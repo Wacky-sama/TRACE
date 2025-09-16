@@ -68,18 +68,21 @@ function RegisterForm({ setIsRegistering }) {
 
       const userResponse = await api.post('/users/register/alumni', userPayload);
       const newUserId = userResponse.data.id;
+      const fullName = [
+            formData.firstName?.trim(),
+            formData.middleInitial?.trim(),
+            formData.lastName?.trim(),
+            formData.nameExtension ? `, ${formData.nameExtension.trim()}` : null,
+          ]
+            .filter(Boolean)
+            .join(' ');
 
       // PAYLOAD 2 - Create GTS Response
       const gtsResponsePayload = {
         user_id: newUserId,
 
         // Personal info from PersonalInfoForm
-        full_name: [
-          formData.firstName || "Firstname",
-          formData.middleInitial || "",
-          formData.lastName || "Lastname",
-          formData.nameExtension ? `, ${formData.nameExtension}` : ""
-        ].join(" ").replace(/\s+/g, " ").trim(),
+        full_name: fullName,
         contact_email: formData.email.trim(),
         mobile: formData.contactNumber.trim(), 
         sex: formData.sex?.trim(),
@@ -96,7 +99,7 @@ function RegisterForm({ setIsRegistering }) {
         ever_employed: formData.employmentNow !== 'Never employed' ? (formData.employmentNow === 'Yes') : false,
         
         // If currently employed (employmentNow === 'Yes')
-        employment_status: formData.employmentNow === 'Yes' ? formData.status : null,
+        employment_status: formData.employmentNow === 'Yes' ? formData.employmentStatus : null,
         place_of_work: formData.employmentNow === 'Yes' ? formData.placeOfWork : null,
         company_name: formData.employmentNow === 'Yes' ? formData.companyName?.trim() : null,
         company_address: formData.employmentNow === 'Yes' ? formData.companyAddress?.trim() : null,

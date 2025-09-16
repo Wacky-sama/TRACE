@@ -1,8 +1,19 @@
+import enum
 from pydantic import BaseModel
 from typing import Optional
 from uuid import UUID
+from datetime import date
+
+class SexEnum(str, enum.Enum):
+    male = "Male"
+    female = "Female"
 
 class GTSResponseCreate(BaseModel):
+    full_name: Optional[str] = None
+    contact_email: Optional[str] = None
+    mobile: Optional[str] = None
+    sex: Optional[SexEnum] = None
+    birthday: Optional[date] = None
     ever_employed: Optional[bool] = None
     is_employed: Optional[bool] = None
     employment_status: Optional[str] = None
