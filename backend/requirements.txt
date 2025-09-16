@@ -7,3 +7,6 @@ PyJWT==2.10.1
 python-dotenv==1.1.0
 SQLAlchemy==2.0.41
 starlette
+psycopg2
+pydantic[email]
+argon2_cffi
