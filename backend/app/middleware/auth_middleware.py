@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 PUBLIC_ROUTES = [
     "/users/login",
     "/users/register",
+    "/gts_responses/register",
 ]
 
 class AuthMiddleware(BaseHTTPMiddleware):

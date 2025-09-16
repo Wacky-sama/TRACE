@@ -284,8 +284,10 @@ def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
         # Update user approval status
         user.is_approved = True
 
+        # Construct full name with name extension
+        full_name = f"{user.firstname} {user.middle_initial + '.' if user.middle_initial else ''} {user.lastname} {user.name_extension or ''}".strip()
+
         # Create a blank GTSResponse record so alumni can later update it
-        full_name = f"{user.firstname} {user.middle_initial + '.' if user.middle_initial else ''} {user.lastname}".strip()
         gts_response = GTSResponse(
             user_id=user.id,
             full_name=full_name,
@@ -295,14 +297,14 @@ def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
             year_graduated=None,
             contact_email=user.email,
             mobile=user.contact_number,
+            sex=user.sex,
             ever_employed=None,         
             is_employed=None,           
             employment_status=None,     
             company_name=None,          
             place_of_work=None,         
             company_address=None,       
-            occupation=None,            
-            civil_status=None           
+            occupation=None,                     
         )
         db.add(gts_response)
         
@@ -341,6 +343,9 @@ def decline_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
         raise HTTPException(status_code=404, detail="User not found")
     if user.is_approved:
         raise HTTPException(status_code=400, detail="User already approved, can't decline")
+
+    # Delete associated GTSResponse record (if it exists)
+    db.query(GTSResponse).filter(GTSResponse.user_id == user.id).delete()
 
     # Send decline email
     subject = "Alumni Registration Status"
