@@ -47,8 +47,7 @@ const OCCUPATION_OPTIONS = [
 function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister }) {
   const [errors, setErrors] = useState({});
   const [otherOccupation, setOtherOccupation] = useState('');
-  const [nonEmployedReasons, setNonEmployedReasons] = useState([]);
-  const [otherNonEmployedReason, setOtherNonEmployedReason] = useState(''); 
+  const nonEmployedReasons = formData.nonEmployedReasons || [];
 
   const validate = () => {
     const newErrors = {};
@@ -57,6 +56,7 @@ function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister })
       newErrors.employmentNow = 'Please select an option.';
     }
 
+    // Employment is Yes
     if (formData.employmentNow === 'Yes') {
       if (!formData.employmentStatus) newErrors.employmentStatus = 'Select your employment employmentStatus.';
       if (!formData.placeOfWork?.trim()) newErrors.placeOfWork = 'Place of work required.';
@@ -68,15 +68,17 @@ function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister })
       }
     }
 
+    // Employment is No
     if (formData.employmentNow === 'No') {
-      if (nonEmployedReasons.length === 0) {
+      if (formData.nonEmployedReasons.length === 0) {
         newErrors.employmentStatus = 'Select at least one reason.';
       }
-      if (nonEmployedReasons.includes('Other reasons, please specify') && !otherNonEmployedReason.trim()) {
+      if (formData.nonEmployedReasons.includes('Other reasons, please specify') && !otherNonEmployedReason.trim()) {
         newErrors.otherNonEmployedReason = 'Please specify your reason.';
       }
     }
 
+    // Employment is Never employed
     if (formData.employmentNow === 'Never employed') {
       if (formData.employmentStatus !== 'Never employed') {
         newErrors.employmentStatus = 'Invalid employmentStatus for never employed.';
@@ -88,14 +90,15 @@ function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister })
   };
 
   const handleNonEmployedReasonChange = reason => {
-    let updated;
-    if (nonEmployedReasons.includes(reason)) {
-      updated = nonEmployedReasons.filter(r => r !== reason);
-      if (reason === 'Other reasons, please specify') setOtherNonEmployedReason('');
-    } else {
-      updated = [...nonEmployedReasons, reason];
-    }
-    setNonEmployedReasons(updated);
+    setFormData(prev => {
+      let updated = [...prev.nonEmployedReasons];
+      if (updated.includes(reason)){
+        updated = updated.filter(r => r !== reason);
+      } else {
+        updated.push(reason);
+      }
+      return {...prev, nonEmployedReasons: updated};
+    });
   };
 
   const handleOccupationChange = option => {
@@ -276,8 +279,10 @@ function EmploymentInfoForm({ formData, setFormData, prevStep, handleRegister })
           {nonEmployedReasons.includes('Other reasons, please specify') && (
             <FloatingInput
               id="otherNonEmployedReason"
-              value={otherNonEmployedReason}
-              onChange={e => setOtherNonEmployedReason(e.target.value.trimStart())}
+              value={formData.otherNonEmployedReason}
+              onChange={e =>
+                setFormData(prev => ({ ...prev, otherNonEmployedReason: e.target.value.trimStart() }))
+              }
               label="Please specify"
               error={errors.otherNonEmployedReason}
             />

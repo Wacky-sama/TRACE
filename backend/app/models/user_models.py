@@ -24,6 +24,7 @@ class User(Base):
     firstname = Column(String, nullable=False)
     lastname = Column(String, nullable=False)
     middle_initial = Column(String(1))
+    name_extension = Column(String, nullable=True)
     course = Column(String)
     batch_year = Column(Integer)
     role = Column(Enum(UserRole), nullable=False)
@@ -37,5 +38,4 @@ class User(Base):
     present_address = Column(String, nullable=True)
     permanent_address = Column(String, nullable=True)
     contact_number = Column(String, nullable=True)
-    name_extension = Column(String, nullable=True)
     sex = Column(Enum(SexEnum), nullable=False) 

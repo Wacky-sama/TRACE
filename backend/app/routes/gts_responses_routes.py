@@ -15,30 +15,31 @@ router = APIRouter(
 @router.post("/register/alumni/{user_id}", response_model=GTSResponseOut)
 def create_gts_response(
     user_id: UUID,
-    request: GTSResponseCreate,
+    gts_data: GTSResponseCreate,
     db: Session = Depends(get_db)
 ):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    gts = GTSResponse(
+    gts_response = GTSResponse(
         user_id=user_id,
-        full_name=request.full_name,
+        full_name=f"{user.firstname} {user.middle_initial} {user.lastname} {user.name_extension}",
         contact_email=user.email,
         mobile=user.contact_number,
         sex=user.sex,
         birthday=user.birthday,
         permanent_address=user.permanent_address,
-        ever_employed=request.ever_employed,
-        is_employed=request.is_employed,
-        employment_status=request.employment_status,
-        place_of_work=request.place_of_work,
-        company_name=request.company_name,
-        company_address=request.company_address,
-        occupation=request.occupation,
+        ever_employed=gts_data.ever_employed,
+        is_employed=gts_data.is_employed,
+        employment_status=gts_data.employment_status,
+        place_of_work=gts_data.place_of_work,
+        company_name=gts_data.company_name,
+        company_address=gts_data.company_address,
+        occupation=gts_data.occupation,
     )
-    db.add(gts)
+    db.add(gts_response)
     db.commit()
-    db.refresh(gts)
-    return gts
+    db.refresh(gts_response)
+    
+    return gts_response

@@ -39,11 +39,11 @@ class AlumniRegister(BaseModel):
         description="Graduation year must be between 1900 and the current year"
     )
     name_extension: Optional[str] = None
-    birthday: Optional[date] = None
-    present_address: Optional[str] = None
-    permanent_address: Optional[str] = None
-    contact_number: Optional[str] = None
-    sex: Optional[SexEnum] = None
+    birthday: date
+    present_address: str
+    permanent_address: str
+    contact_number: str
+    sex: SexEnum
 
 # Admin-only user creation schema
 class AdminUserCreate(BaseModel):

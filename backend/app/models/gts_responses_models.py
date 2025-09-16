@@ -36,6 +36,7 @@ class GTSResponse(Base):
     # Employment info (initial + extended)
     ever_employed = Column(Boolean, nullable=True)
     is_employed = Column(Boolean, nullable=True)
+    non_employed_reasons = Column(ARRAY(Text), nullable=True)
     employment_status = Column(Text, nullable=True)
     occupation = Column(ARRAY(String), nullable=True)
     company_name = Column(Text, nullable=True)

@@ -32,6 +32,8 @@ function RegisterForm({ setIsRegistering }) {
     companyName: '',
     companyAddress: '',
     occupation: [],
+    nonEmployedReasons: [],
+    otherNonEmployedReason: '',
   });
 
   const [registerError, setRegisterError] = useState('');
@@ -56,7 +58,7 @@ function RegisterForm({ setIsRegistering }) {
         birthday: formData.birthday
             ? new Date(formData.birthday).toISOString().split('T')[0]
             : null,
-        sex: formData.sex.trim() || null,
+        sex: formData.sex.trim(),
         present_address: formData.presentAddress.trim(),
         permanent_address: formData.permanentAddress.trim(),
         contact_number: formData.contactNumber.trim(),
@@ -68,72 +70,44 @@ function RegisterForm({ setIsRegistering }) {
 
       const userResponse = await api.post('/users/register/alumni', userPayload);
       const newUserId = userResponse.data.id;
-      const fullName = [
-            formData.firstName?.trim(),
-            formData.middleInitial?.trim(),
-            formData.lastName?.trim(),
-            formData.nameExtension ? `, ${formData.nameExtension.trim()}` : null,
-          ]
-            .filter(Boolean)
-            .join(' ');
+      
 
       // PAYLOAD 2 - Create GTS Response
       const gtsResponsePayload = {
-        user_id: newUserId,
+       ever_employed: formData.employmentNow !== 'Never employed' 
+          ? formData.employmentNow === 'Yes' 
+          : false,
 
-        // Personal info from PersonalInfoForm
-        full_name: fullName,
-        contact_email: formData.email.trim(),
-        mobile: formData.contactNumber.trim(), 
-        sex: formData.sex?.trim(),
-        birthday: formData.birthday
-          ? new Date(formData.birthday).toISOString().split('T')[0]
-          : null,
-        
-        // Education info from personal form
-        degree: formData.course.trim(),
-        year_graduated: parseInt(formData.batchYear.trim()),
-        
-        // Employment info from EmploymentInfoForm
         is_employed: formData.employmentNow === 'Yes',
-        ever_employed: formData.employmentNow !== 'Never employed' ? (formData.employmentNow === 'Yes') : false,
-        
-        // If currently employed (employmentNow === 'Yes')
-        employment_status: formData.employmentNow === 'Yes' ? formData.employmentStatus : null,
-        place_of_work: formData.employmentNow === 'Yes' ? formData.placeOfWork : null,
-        company_name: formData.employmentNow === 'Yes' ? formData.companyName?.trim() : null,
-        company_address: formData.employmentNow === 'Yes' ? formData.companyAddress?.trim() : null,
-        occupation: formData.employmentNow === 'Yes' && finalOccupations.length 
-          ? finalOccupations.map(o => o.trim()) 
+
+        employment_status: formData.employmentStatus,
+
+        place_of_work: formData.employmentNow === 'Yes' 
+          ? formData.placeOfWork 
           : null,
-        
-        // Optional fields for registration - set to null (can be filled in full GTS later)
-        telephone: null,
-        specialization: null,
-        honors: null,
-        exams: null,
-        pursued_advance_degree: null,
-        pursued_advance_degree_reasons: null,
-        trainings: null,
-        job_sector: null,
-        first_job: null,
-        job_related_to_course: null,
-        job_start_date: null,
-        months_to_first_job: null,
-        job_find_methods: null,
-        job_reasons: null,
-        job_change_reasons: null,
-        job_level_first: null,
-        job_level_current: null,
-        first_job_salary: null,
-        curriculum_relevance_first_job: null,
-        curriculum_relevance_second_job: null,
-        useful_competencies: null,
-        curriculum_improvement_suggestions: null,
-        job_satisfaction: null,
-        job_satisfaction_reason: null,
-        desired_services: null,
-        job_problems: null,
+
+        company_name: formData.employmentNow === 'Yes' 
+          ? formData.companyName?.trim() 
+          : null,
+
+        company_address: formData.employmentNow === 'Yes' 
+          ? formData.companyAddress?.trim() 
+          : null,
+
+        occupation: formData.employmentNow === 'Yes' && finalOccupations.length 
+          ? finalOccupations.map(o => o.trim()).join(', ')
+          : null,
+
+        non_employed_reasons: formData.employmentNow === 'No'
+            ? [
+                ...formData.nonEmployedReasons.filter(r => r !== 'Other reasons, please specify'),
+                ...(formData.otherNonEmployedReason.trim()
+                  ? [formData.otherNonEmployedReason.trim()]
+                  : []),
+              ]
+            : null,
+
+        permanent_address: formData.permanentAddress.trim(),
       };
 
       await api.post(`/gts_responses/register/alumni/${newUserId}`, gtsResponsePayload);
