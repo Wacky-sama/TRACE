@@ -1,47 +1,63 @@
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
+from starlette.responses import JSONResponse
 from datetime import datetime
 from app.database import SessionLocal
-from app.models.user_models import User
+from app.models.user_models import User, UserRole
 from app.utils.security import decode_access_token
 import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class UpdateLastSeenMiddleware(BaseHTTPMiddleware):
+PUBLIC_ROUTES = [
+    "/users/login",
+    "/users/register",
+]
+
+class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        # Log every request to see if middleware is running
-        logger.info(f"Middleware processing: {request.method} {request.url}")
-        
+        path = request.url.path
+        logger.info(f"[{datetime.utcnow()}] Incoming: {request.method} {path}")
+
+        # Allow public routes without token
+        if any(path.startswith(route) for route in PUBLIC_ROUTES):
+            return await call_next(request)
+
         token = request.headers.get("Authorization")
-        logger.info(f"Authorization header: {token[:50] if token else 'None'}...")
-        
         if token and token.startswith("Bearer "):
             token = token[7:]
-            logger.info(f"Processing request with token: {token[:20]}...")
-            
             try:
                 payload = decode_access_token(token)
                 username = payload.get("sub")
-                logger.info(f"Decoded username: {username}")
-                
+                role = payload.get("role")
+                exp = payload.get("exp")
+
+                logger.info(f"Token OK: {username}, role={role}, exp={exp}")
+
                 db = SessionLocal()
-                user = db.query(User).filter(User.username == username).first()
-                
-                if user:
+                try:
+                    user = db.query(User).filter(User.username == username).first()
+                    if not user:
+                        return JSONResponse({"detail": "Invalid user"}, status_code=401)
+
+                    # Update last_seen
                     old_last_seen = user.last_seen
                     user.last_seen = datetime.utcnow()
                     db.commit()
-                    logger.info(f"Updated last_seen for {username} ({user.role.value}): " f"{old_last_seen} -> {user.last_seen}")
-                else:
-                    logger.warning(f"User not found: {username}")
-                    
-                db.close()
+                    logger.info(f"last_seen updated for {username}: {old_last_seen} -> {user.last_seen}")
+
+                    if path.startswith("/admin") and user.role != UserRole.admin:
+                        return JSONResponse({"detail": "Admins only"}, status_code=403)
+
+                finally:
+                    db.close()
+
             except Exception as e:
-                logger.error(f"Error in middleware: {str(e)}")
+                logger.error(f"Auth error: {str(e)}")
+                return JSONResponse({"detail": "Invalid or expired token"}, status_code=401)
+
         else:
-            logger.info("No valid authorization token found")
-            
-        response = await call_next(request)
-        return response
+            return JSONResponse({"detail": "Authorization required"}, status_code=401)
+
+        return await call_next(request)

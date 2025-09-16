@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 # Create new GTS response (used internally during registration)
-@router.post("/register/alumni/{user_id}", response_model=GTSResponseOut)
+@router.post("/register/alumni/{user_id}", tags=["public"], response_model=GTSResponseOut)
 def create_gts_response(
     user_id: UUID,
     gts_data: GTSResponseCreate,
@@ -41,5 +41,5 @@ def create_gts_response(
     db.add(gts_response)
     db.commit()
     db.refresh(gts_response)
-    
+
     return gts_response

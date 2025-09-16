@@ -1,8 +1,10 @@
 import os
 import jwt
 from dotenv import load_dotenv
-from passlib.hash import argon2
+from argon2 import PasswordHasher
 from datetime import datetime, timedelta
+
+ph = PasswordHasher()
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -10,10 +12,13 @@ ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60))
 
 def hash_password(password: str) -> str:
-    return argon2.hash(password)
+    return ph.hash(password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return argon2.verify(plain_password, hashed_password)
+    try:
+        return ph.verify(hashed_password, plain_password)
+    except Exception:
+        return False
 
 def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     to_encode = data.copy()

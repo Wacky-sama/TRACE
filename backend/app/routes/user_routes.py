@@ -135,7 +135,7 @@ def create_user_as_admin(
     return new_user
 
 # Public endpoint for alumni registration (requires admin approval)
-@router.post("/register/alumni", response_model=UserOut)
+@router.post("/register/alumni", tags=["public"], response_model=UserOut)
 def register_alumni(
     user: AlumniRegister,
     background_tasks: BackgroundTasks,
