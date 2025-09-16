@@ -13,8 +13,6 @@ class UserRole(str, enum.Enum):
 class SexEnum(str, enum.Enum):
     male = "Male"
     female = "Female"
-    other = "Other"
-    prefer_not_to_say = "Prefer not to say"
 
 class User(Base):
     __tablename__ = "users"
