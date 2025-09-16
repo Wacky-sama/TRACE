@@ -40,4 +40,4 @@ class User(Base):
     permanent_address = Column(String, nullable=True)
     contact_number = Column(String, nullable=True)
     name_extension = Column(String, nullable=True)
-    sex = Column(Enum(SexEnum), nullable=True) 
+    sex = Column(Enum(SexEnum), nullable=False) 

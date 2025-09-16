@@ -1,12 +1,14 @@
 aiosmtplib==4.0.1
+alembic==1.16.5
+argon2_cffi
 fastapi==0.115.12
 passlib==1.7.4
 pydantic==2.11.6
 pydantic_settings==2.9.1
+pydantic[email]
 PyJWT==2.10.1
 python-dotenv==1.1.0
 SQLAlchemy==2.0.41
 starlette
 psycopg2
-pydantic[email]
-argon2_cffi
+pipreqs
