@@ -47,18 +47,17 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
   const handleNext = () => {
     if (validate()) {
-      const trimmedData = {
-        ...formData,
-        email: formData.email.trim(),
-        registerIdentifier: formData.registerIdentifier.trim(),
-        lastName: formData.lastName.trim(),
-        firstName: formData.firstName.trim(),
-        middleInitial: formData.middleInitial?.trim() || "",
-        nameExtension: formData.nameExtension?.trim() || "",
-        presentAddress: formData.presentAddress.trim(),
-        permanentAddress: formData.permanentAddress?.trim(),
-      };
-     
+      setFormData(prev => ({
+        ...prev,
+        email: prev.email?.trim() || '',
+        registerIdentifier: prev.registerIdentifier?.trim() || '',
+        lastName: prev.lastName?.trim() || '',
+        firstName: prev.firstName?.trim() || '',
+        middleInitial: prev.middleInitial?.trim() || '',
+        nameExtension: prev.nameExtension?.trim() || '',
+        presentAddress: prev.presentAddress?.trim() || '',
+        permanentAddress: prev.permanentAddress?.trim() || '',
+      }));
       nextStep();
     }
   };
@@ -198,7 +197,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         onChange={e => setFormData({ ...formData, batchYear: e.target.value })}
         label="Batch Year"
         error={errors.batchYear}
-        options={Array.from({ length: new Date().getFullYear() - 1950 + 1 }, (_, i) => (1950 + i).toString())}
+        options={Array.from({ length: new Date().getFullYear() - 1950 + 1 }, (_, i) => (new Date().getFullYear() - + i).toString())}
       />
 
       <FloatingInput
