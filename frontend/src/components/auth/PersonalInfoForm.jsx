@@ -107,12 +107,20 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         error={errors.middleInitial}
       />
 
-      <FloatingInput
+      <FloatingSelect
         id="nameExtension"
         value={formData.nameExtension || ""}
         onChange={e => setFormData({ ...formData, nameExtension: e.target.value })}
         label="Name Extension (e.g., Jr., Sr., III)"
         error={errors.nameExtension}
+        options={[
+          "Jr.",
+          "Sr.",
+          "II",
+          "III",
+          "IV",
+          "V"
+        ]}
       />
 
       <div className="mb-4">
