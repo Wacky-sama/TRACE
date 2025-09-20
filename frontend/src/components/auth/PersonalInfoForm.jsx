@@ -112,6 +112,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         value={formData.nameExtension || ""}
         onChange={e => setFormData({ ...formData, nameExtension: e.target.value })}
         label="Name Extension (e.g., Jr., Sr., III)"
+        placeholder="None"
         error={errors.nameExtension}
         options={[
           "Jr.",
