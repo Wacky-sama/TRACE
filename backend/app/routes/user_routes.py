@@ -284,32 +284,31 @@ def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
         # Update user approval status
         user.is_approved = True
 
-        # Construct full name with name extension
-        full_name = f"{user.firstname} {user.middle_initial + '.' if user.middle_initial else ''} {user.lastname} {user.name_extension or ''}".strip()
+        # Find existing GTSResponse record
+        existing_gts = db.query(GTSResponse).filter(GTSResponse.user_id == user.id).first()
 
-        # Create a blank GTSResponse record so alumni can later update it
-        gts_response = GTSResponse(
-            user_id=user.id,
-            full_name=full_name,
-            permanent_address=user.permanent_address,
-            birthday=user.birthday,
-            degree=user.course,
-            year_graduated=None,
-            contact_email=user.email,
-            mobile=user.contact_number,
-            sex=user.sex,
-            ever_employed=None,         
-            is_employed=None,           
-            employment_status=None,     
-            company_name=None,          
-            place_of_work=None,         
-            company_address=None,       
-            occupation=None,                     
-        )
-        db.add(gts_response)
+        if existing_gts:
+            # Update the existing record with missing fields
+            full_name = f"{user.firstname} {user.middle_initial + '.' if user.middle_initial else ''} {user.lastname} {user.name_extension or ''}".strip()
+            existing_gts.full_name = full_name
+            existing_gts.degree = user.course
+            existing_gts.sex = user.sex
+            # Don't need to add anything - just update
+        else:
+            # Only create if no record exists (shouldn't happen in normal flow)
+            full_name = f"{user.firstname} {user.middle_initial + '.' if user.middle_initial else ''} {user.lastname} {user.name_extension or ''}".strip()
+            gts_response = GTSResponse(
+                user_id=user.id,
+                full_name=full_name,
+                permanent_address=user.permanent_address,
+                birthday=user.birthday,
+                degree=user.course,
+                # ... rest of your fields
+            )
+            db.add(gts_response)
         
-        # Single commit for both operations
-        db.commit()
+            # Single commit for both operations
+            db.commit()
         
     except SQLAlchemyError as e:
         db.rollback()

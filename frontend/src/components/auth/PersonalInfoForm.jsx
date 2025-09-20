@@ -58,9 +58,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         presentAddress: formData.presentAddress.trim(),
         permanentAddress: formData.permanentAddress?.trim(),
       };
-      trimmedData.full_name = `${trimmedData.firstName} ${trimmedData.middleInitial ? trimmedData.middleInitial + " " : ""}${trimmedData.lastName}${trimmedData.nameExtension ? ", " + trimmedData.nameExtension : ""}`;
-
-      setFormData(trimmedData);
+     
       nextStep();
     }
   };
