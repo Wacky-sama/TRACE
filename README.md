@@ -16,9 +16,9 @@
 ---
 
 ## Tech Stack  
-- **Frontend**: React (19.0.1) + Vite (v6.3.5) 
+- **Frontend**: React (19.1.0) + Vite (v6.3.5) 
 - **Backend**: Python (v3.12.3) + FastAPI (v0.115.12)  
-- **Database**: PostgreSQL (v16.9)
+- **Database**: PostgreSQL (v16.10)
 
 ---
 
