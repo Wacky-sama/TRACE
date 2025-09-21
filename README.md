@@ -34,7 +34,7 @@ sudo apt update
 sudo apt install nodejs npm -y
 ```
 
-## (Optional but recommended) Install Node Version Manager (NVM)
+### (Optional but recommended) Install Node Version Manager (NVM)
 This makes it easy to switch Node.js versions. 
 Visit [Download Node.js](https://nodejs.org/en/download) and follow the steps there.
 
@@ -76,7 +76,7 @@ GRANT ALL PRIVILEGES ON DATABASE trace_db TO trace_user;
 \q
 ```
 
-## (Optional) Install pgAdmin web
+### (Optional) Install pgAdmin web
 Install the public key for the repository:
 ```bash
 curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg
@@ -124,7 +124,7 @@ After that you can login at: **http://localhost/pgadmin4**
 ### Windows Setup
 For Windows user, make sure you have **Node.js (LTS)**, **Python 3**, and **PostgreSQL** installed.
 
-Install Node.js
+### Install Node.js
 1. Download from [Node.js](https://nodejs.org/en/download) official site.
 2. Run the installer (.msi) and follow the steps.
 3. Verify installation:
@@ -133,7 +133,7 @@ node -v
 npm -v
 ```
 
-Install Python 3
+### Install Python 3
 1. Download from [Python.org](https://www.python.org/downloads/)
 2. Run the installer and check the box that says "Add Python to PATH".
 3. Verify installation:
@@ -142,7 +142,7 @@ python --version
 pip --version
 ```
 
-Install PostgreSQL
+### Install PostgreSQL
 1. Download from [PostgreSQL.org](https://www.pgadmin.org/download/pgadmin-4-windows/)
 2. Run the installer (leave port 5432 unless you need custom).
 3. During install, note down the password for the default postgres user.
@@ -153,7 +153,7 @@ CREATE USER trace_user WITH PASSWORD 'yourpassword';
 GRANT ALL PRIVILEGES ON DATABASE trace_db TO trace_user;
 ```
 
-Create Virtual Environment
+### Create Virtual Environment
 ```bash
 # Navigate to the backend folder
 cd TRACE\backend
@@ -205,4 +205,4 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ---
 
 ## Developer
-Built with love by [**Tabugadir, Kenji "Brocks" I.**](https://www.facebook.com/Wackyfu/)
+Built with by [**Tabugadir, Kenji "Brocks" I.**](https://www.facebook.com/Wackyfu/)
