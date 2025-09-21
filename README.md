@@ -68,6 +68,9 @@ psql --version
 # Switch to postgres user
 sudo -u postgres psql
 
+# Create a password for postgres
+ALTER USER postgres WITH PASSWORD 'YourStrongPassword';
+
 # Inside psql shell:
 CREATE DATABASE trace_db;
 CREATE USER trace_user WITH PASSWORD 'yourpassword';
