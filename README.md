@@ -91,9 +91,9 @@ sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] h
 ```
 
 If you encounter and error like this:
-```bash
-E: The repository 'https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/xia pgadmin4 Release' does not have a Release file. N: Updating from such a repository can't be done securely, and is therefore disabled by default. N: See apt-secure(8) manpage for repository creation and user configuration details.
-```
+ E: The repository 'https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/xia pgadmin4 Release' does not have a Release file. 
+ N: Updating from such a repository can't be done securely, and is therefore disabled by default. 
+ N: See apt-secure(8) manpage for repository creation and user configuration details.
 
 Just edit the pgAdmin repo list file:
 ```bash
