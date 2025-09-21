@@ -90,7 +90,8 @@ Create the repository configuration file:
 sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list && apt update'
 ```
 
-If you encounter and error like this:
+If you encounter an error like this:
+
  E: The repository 'https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/xia pgadmin4 Release' does not have a Release file. 
  N: Updating from such a repository can't be done securely, and is therefore disabled by default. 
  N: See apt-secure(8) manpage for repository creation and user configuration details.
