@@ -42,8 +42,10 @@ Visit [Download Node.js](https://nodejs.org/en/download) and follow the steps th
 ```bash
 sudo apt update
 sudo apt install python3 python3-venv python3-pip -y
+```
 
-# Verify installations
+### Verify installations
+```bash
 node -v
 npm -v
 python3 --version
