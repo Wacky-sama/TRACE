@@ -211,4 +211,4 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ---
 
 ## Developer
-Built with by [**Tabugadir, Kenji "Brocks" I.**](https://www.facebook.com/Wackyfu/)
+Built by [**Tabugadir, Kenji "Brocks" I.**](https://www.facebook.com/Wackyfu/)
