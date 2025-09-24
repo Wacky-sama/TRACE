@@ -7,8 +7,9 @@ pydantic==2.11.6
 pydantic_settings==2.9.1
 pydantic[email]
 PyJWT==2.10.1
+psycopg2
+pipreqs
 python-dotenv==1.1.0
 SQLAlchemy==2.0.41
 starlette
-psycopg2
-pipreqs
+uvicorn
