@@ -64,6 +64,7 @@ psql --version
 ```
 
 ### Create Database and User
+**Note:** Skip this step if you are my Collaborator.
 ```bash
 # Switch to postgres user
 sudo -u postgres psql
