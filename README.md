@@ -162,21 +162,6 @@ CREATE USER trace_user WITH PASSWORD 'yourpassword';
 GRANT ALL PRIVILEGES ON DATABASE trace_db TO trace_user;
 ```
 
-### Create Virtual Environment
-```bash
-# Navigate to the backend folder
-cd TRACE\backend
-
-# Create virtual environment
-python -m venv venv
-
-# Activate it
-venv\Scripts\activate
-
-# Deactivate when done
-deactivate
-```
-
 ---
 
 ## Running the System (Development Stage)
