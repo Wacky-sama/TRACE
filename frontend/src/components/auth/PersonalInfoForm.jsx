@@ -126,7 +126,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         />
       </div>
 
-      {/* Birthday & Age */}
+      {/* Birthday & Age Section */}
       <div className="space-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div className="relative">
