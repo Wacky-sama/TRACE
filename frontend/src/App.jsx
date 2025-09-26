@@ -8,9 +8,15 @@ import AuthPage from './components/auth/AuthPage';
 import AdminDashboard from "./pages/Admin/AdminDashboard"
 import AdminUsers from './pages/Admin/AdminUsers';
 import AdminEvents from './pages/Admin/AdminEvents';
+import AdminAnalytics from './pages/Admin/AdminAnalytics';
+import AdminReports from './pages/Admin/AdminReports';
+import AdminNotifications from './pages/Admin/AdminNotifications';
+import AdminSettings from './pages/Admin/AdminSettings';
 import AdminLayout from "./pages/Admin/AdminLayout";
 import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
 import AlumniEvents from "./pages/Alumni/AlumniEvents";
+import AlumniNotifications from "./pages/Alumni/AlumniNotifications";
+import AlumniSettings from "./pages/Alumni/AlumniSettings";
 import AlumniLayout from "./pages/Alumni/AlumniLayout";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -102,6 +108,10 @@ function App() {
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="events" element={<AdminEvents />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="reports" element={<AdminReports />} />
+          <Route path="notifications" element={<AdminNotifications />} />
+          <Route path="settings" element={<AdminSettings />} />
         </Route>
 
         {/* Alumni routes */}
@@ -116,6 +126,8 @@ function App() {
           <Route index element={<Navigate to="/alumni/dashboard" replace />} />
           <Route path="dashboard" element={<AlumniDashboard />} />
           <Route path="events" element={<AlumniEvents />} />
+          <Route path="notifications" element={<AlumniNotifications />} />
+          <Route path="settings" element={<AlumniSettings />} />
         </Route>
 
         {/* Root redirect */}
