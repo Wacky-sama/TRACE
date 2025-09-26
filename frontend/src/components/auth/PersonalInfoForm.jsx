@@ -128,7 +128,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
       {/* Birthday & Age */}
       <div className="space-2">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div className="relative">
             <DatePicker
               maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
