@@ -2,7 +2,7 @@ import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserSlash, faUserMinus, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faUserSlash, faUserMinus, faUserCheck, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 const AdminUsers = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
@@ -131,7 +131,6 @@ const AdminUsers = () => {
           <th className="p-3">Sex</th>
           <th className="p-3">Present Address</th>
           <th className="p-3">Permanent Address</th>
-          
           <th className="p-3">Actions</th>
         </tr>
       </thead>
@@ -162,6 +161,7 @@ const AdminUsers = () => {
                     >
                       {actionLoadingId === user.id ? 'Approving...' : 'Approve'}
                     </button>
+
                     <button
                       disabled={actionLoadingId === user.id}
                       onClick={() => handleAction(user.id, 'decline')}
@@ -183,16 +183,28 @@ const AdminUsers = () => {
                       }`}>
                       {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserMinus} />}
                     </button>
-
-                    <button 
-                      title="Block" 
-                      disabled={actionLoadingId === user.id}
-                      onClick={() => handleBlock(user.id)}
-                      className={`text-blue-500 hover:text-blue-700 ${
-                        actionLoadingId === user.id ? "cursor-not-allowed opacity-50" : ""
-                      }`}>
-                      {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserSlash} />}
-                    </button>
+                    
+                    {user.is_blocked ? (
+                      <button 
+                        title="Block" 
+                        disabled={actionLoadingId === user.id}
+                        onClick={() => handleBlock(user.id)}
+                        className={`text-blue-500 hover:text-blue-700 ${
+                          actionLoadingId === user.id ? "cursor-not-allowed opacity-50" : ""
+                        }`}>
+                        {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserSlash} />}
+                      </button>
+                    ) : (
+                      <button 
+                        title="Unblock" 
+                        disabled={actionLoadingId === user.id}
+                        onClick={() => handleUnblock(user.id)}
+                        className={`text-green-500 hover:text-green-700 ${
+                          actionLoadingId === user.id ? "cursor-not-allowed opacity-50" : ""
+                        }`}>
+                        {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserCheck} />}
+                      </button>
+                    )}
                   </>
                 )}
               </td>

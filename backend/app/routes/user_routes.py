@@ -207,6 +207,7 @@ def get_registered_users(
 ):
     query = db.query(User).filter(
         User.is_approved == True,
+        User.is_active == True,
         User.deleted_at.is_(None)
     )
 
