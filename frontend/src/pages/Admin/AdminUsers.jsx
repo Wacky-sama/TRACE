@@ -34,10 +34,10 @@ const AdminUsers = () => {
     try {
       await api.patch(`/users/${userId}/${action}`);
       await fetchUsers();
-      toast.success(`User ${action}d successfully!`);
+      toast.success(`User  ${action}d successfully!`);
     } catch (error) {
       if (error.response?.status === 404) {
-        toast.error("User not found. It may have already been deleted.");
+        toast.error("User  not found. It may have already been deleted.");
         await fetchUsers();
       } else if (error.response?.status === 400) {
         toast.error(error.response.data.detail || "Bad request.");
@@ -58,10 +58,10 @@ const AdminUsers = () => {
     try {
       await api.delete(`/users/${userId}/delete`);
       await fetchUsers();
-      toast.success("User deleted successfully!");
+      toast.success("User  deleted successfully!");
     } catch (error) {
       if (error.response?.status === 404) {
-        toast.error("User not found. It may have already been deleted.");
+        toast.error("User  not found. It may have already been deleted.");
         await fetchUsers();
       } else {
         toast.error("Could not delete the user. Try again.");
@@ -82,10 +82,10 @@ const AdminUsers = () => {
       setApprovedUsers(prev => 
         prev.map(u => u.id === userId ? {...u, is_active: false} : u)
       );
-      toast.success("User blocked successfully!");
+      toast.success("User  blocked successfully!");
     } catch (error) {
       if (error.response?.status === 404) {
-        toast.error("User not found. It may have already been deleted.");
+        toast.error("User  not found. It may have already been deleted.");
         await fetchUsers();
       } else {
         toast.error("Could not block the user. Try again.");
@@ -106,10 +106,10 @@ const AdminUsers = () => {
       setApprovedUsers(prev =>
         prev.map(u => u.id === userId ? { ...u, is_active: true } : u)
       );
-      toast.success("User unblocked successfully!");
+      toast.success("User  unblocked successfully!");
     } catch (error) {
       if (error.response?.status === 404) {
-        toast.error("User not found. It may have already been deleted.");
+        toast.error("User  not found. It may have already been deleted.");
         await fetchUsers();
       } else {
         toast.error("Could not unblock the user. Try again.");
@@ -188,7 +188,7 @@ const AdminUsers = () => {
                       {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserMinus} />}
                     </button>
                     
-                    {user.is_active ? (
+                    {user.is_active !== false ? (
                       <button 
                         title="Block" 
                         disabled={actionLoadingId === user.id}
