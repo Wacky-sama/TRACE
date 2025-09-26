@@ -63,82 +63,91 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   };
 
   return (
-    <div className="space-y-3">
-      <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">
+    <div className="space-y-4">
+      <h2 className="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
         Personal Information
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <FloatingInput
-          id="email"
-          type="email"
-          value={formData.email}
-          onChange={e => setFormData({ ...formData, email: e.target.value })}
-          label="Email"
-          error={errors.email}
-        />
-        <FloatingInput
-          id="registerIdentifier"
-          value={formData.registerIdentifier}
-          onChange={e => setFormData({ ...formData, registerIdentifier: e.target.value })}
-          label="Username"
-          error={errors.registerIdentifier}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <FloatingInput
-          id="lastName"
-          value={formData.lastName}
-          onChange={e => setFormData({ ...formData, lastName: e.target.value })}
-          label="Last Name"
-          error={errors.lastName}
-        />
-        <FloatingInput
-          id="firstName"
-          value={formData.firstName}
-          onChange={e => setFormData({ ...formData, firstName: e.target.value })}
-          label="First Name"
-          error={errors.firstName}
-        />
-        <FloatingInput
-          id="middleInitial"
-          value={formData.middleInitial || ""}
-          onChange={e => setFormData({ ...formData, middleInitial: e.target.value })}
-          label="Middle Initial"
-          error={errors.middleInitial}
-        />
-      </div>
-
-      <FloatingSelect
-        id="nameExtension"
-        value={formData.nameExtension || ""}
-        onChange={e => setFormData({ ...formData, nameExtension: e.target.value })}
-        label="Name Extension (e.g., Jr., Sr., III)"
-        placeholder="None"
-        error={errors.nameExtension}
-        options={["Jr.", "Sr.", "II", "III", "IV", "V"]}
-      />
-
-      <div className="grid grid-cols-1">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Birthday</label>
-          <DatePicker
-            maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
-            minDate={new Date(1900, 0, 1)}
-            selected={formData.birthday ? new Date(formData.birthday) : null}
-            onChange={date => setFormData({ ...formData, birthday: date })}
-            dateFormat="MM/dd/yyyy"
-            placeholderText="Select your birthday"
-            className="w-full p-3 border border-gray-300 rounded-md text-sm"
-            showMonthDropdown
-            showYearDropdown
-            dropdownMode="select"
-            yearDropdownItemNumber={200}
-            scrollableYearDropdown
-            isClearable
+      {/* Account Info Section */}
+      <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <FloatingInput
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={e => setFormData({ ...formData, email: e.target.value })}
+            label="Email"
+            error={errors.email}
           />
-          {errors.birthday && <p className="text-red-500 text-xs">{errors.birthday}</p>}
+          <FloatingInput
+            id="registerIdentifier"
+            value={formData.registerIdentifier}
+            onChange={e => setFormData({ ...formData, registerIdentifier: e.target.value })}
+            label="Username"
+            error={errors.registerIdentifier}
+          />
         </div>
+      </div>
+
+      {/* Personal Details Section */}
+      <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <FloatingInput
+            id="lastName"
+            value={formData.lastName}
+            onChange={e => setFormData({ ...formData, lastName: e.target.value })}
+            label="Last Name"
+            error={errors.lastName}
+          />
+          <FloatingInput
+            id="firstName"
+            value={formData.firstName}
+            onChange={e => setFormData({ ...formData, firstName: e.target.value })}
+            label="First Name"
+            error={errors.firstName}
+          />
+          <FloatingInput
+            id="middleInitial"
+            value={formData.middleInitial || ""}
+            onChange={e => setFormData({ ...formData, middleInitial: e.target.value })}
+            label="Middle Initial"
+            error={errors.middleInitial}
+          />
+        </div>
+
+        <FloatingSelect
+          id="nameExtension"
+          value={formData.nameExtension || ""}
+          onChange={e => setFormData({ ...formData, nameExtension: e.target.value })}
+          label="Name Extension (e.g., Jr., Sr., III)"
+          placeholder="None"
+          error={errors.nameExtension}
+          options={["Jr.", "Sr.", "II", "III", "IV", "V"]}
+        />
+      </div>
+
+      {/* Birthday & Demographics Section */}
+      <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Birthday</label>
+            <DatePicker
+              maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
+              minDate={new Date(1900, 0, 1)}
+              selected={formData.birthday ? new Date(formData.birthday) : null}
+              onChange={date => setFormData({ ...formData, birthday: date })}
+              dateFormat="MM/dd/yyyy"
+              placeholderText="Select your birthday"
+              className="w-full p-3 border border-gray-300 rounded-md text-sm"
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              yearDropdownItemNumber={200}
+              scrollableYearDropdown
+              isClearable
+            />
+            {errors.birthday && <p className="text-red-500 text-xs mt-1">{errors.birthday}</p>}
+          </div>
 
           <FloatingInput 
             id="age" 
@@ -156,93 +165,104 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             error={errors.sex}
             options={["Male", "Female"]}
           />
-        
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        </div>
+      </div>
+
+      {/* Address Section */}
+      <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <FloatingInput
+            id="presentAddress"
+            value={formData.presentAddress}
+            onChange={e => setFormData({ ...formData, presentAddress: e.target.value })}
+            label="Present Address"
+            error={errors.presentAddress}
+          />
+          <FloatingInput
+            id="permanentAddress"
+            value={formData.permanentAddress}
+            onChange={e => setFormData({ ...formData, permanentAddress: e.target.value })}
+            label="Permanent Address"
+            error={errors.permanentAddress}
+          />
+        </div>
+
         <FloatingInput
-          id="presentAddress"
-          value={formData.presentAddress}
-          onChange={e => setFormData({ ...formData, presentAddress: e.target.value })}
-          label="Present Address"
-          error={errors.presentAddress}
-        />
-        <FloatingInput
-          id="permanentAddress"
-          value={formData.permanentAddress}
-          onChange={e => setFormData({ ...formData, permanentAddress: e.target.value })}
-          label="Permanent Address"
-          error={errors.permanentAddress}
+          id="contactNumber"
+          type="tel"
+          value={formData.contactNumber || ""}
+          onChange={e => setFormData({ ...formData, contactNumber: e.target.value })}
+          label="Contact Number"
+          error={errors.contactNumber}
         />
       </div>
 
-      <FloatingInput
-        id="contactNumber"
-        type="tel"
-        value={formData.contactNumber || ""}
-        onChange={e => setFormData({ ...formData, contactNumber: e.target.value })}
-        label="Contact Number"
-        error={errors.contactNumber}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <FloatingSelect
-          id="course"
-          value={formData.course}
-          onChange={e => setFormData({ ...formData, course: e.target.value })}
-          label="Course"
-          error={errors.course}
-          options={[
-            "BACHELOR OF SCIENCE IN AGRICULTURE",
-            "BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM",
-            "BACHELOR OF SCIENCE IN CRIMINOLOGY",
-            "BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT",
-            "BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY",
-            "BACHELOR OF ELEMENTARY EDUCATION",
-            "BACHELOR OF SECONDARY EDUCATION",
-          ]}
-        />
-        <FloatingSelect
-          id="batchYear"
-          value={formData.batchYear}
-          onChange={e => setFormData({ ...formData, batchYear: e.target.value })}
-          label="Batch Year"
-          error={errors.batchYear}
-          options={Array.from({ length: new Date().getFullYear() - 1950 + 1 }, (_, i) =>
-            (new Date().getFullYear() - i).toString()
-          )}
-        />
+      {/* Academic Info Section */}
+      <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <FloatingSelect
+            id="course"
+            value={formData.course}
+            onChange={e => setFormData({ ...formData, course: e.target.value })}
+            label="Course"
+            error={errors.course}
+            options={[
+              "BACHELOR OF SCIENCE IN AGRICULTURE",
+              "BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM",
+              "BACHELOR OF SCIENCE IN CRIMINOLOGY",
+              "BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT",
+              "BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY",
+              "BACHELOR OF ELEMENTARY EDUCATION",
+              "BACHELOR OF SECONDARY EDUCATION",
+            ]}
+          />
+          <FloatingSelect
+            id="batchYear"
+            value={formData.batchYear}
+            onChange={e => setFormData({ ...formData, batchYear: e.target.value })}
+            label="Batch Year"
+            error={errors.batchYear}
+            options={Array.from({ length: new Date().getFullYear() - 1950 + 1 }, (_, i) =>
+              (new Date().getFullYear() - i).toString()
+            )}
+          />
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <FloatingInput
-          id="registerPassword"
-          type={showPassword ? "text" : "password"}
-          value={formData.registerPassword}
-          onChange={e => setFormData({ ...formData, registerPassword: e.target.value })}
-          label="Password"
-          error={errors.registerPassword}
-        >
-          <span onClick={() => setShowPassword(!showPassword)} className="cursor-pointer">
-            <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
-          </span>
-        </FloatingInput>
+      {/* Password Section */}
+      <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <FloatingInput
+            id="registerPassword"
+            type={showPassword ? "text" : "password"}
+            value={formData.registerPassword}
+            onChange={e => setFormData({ ...formData, registerPassword: e.target.value })}
+            label="Password"
+            error={errors.registerPassword}
+          >
+            <span onClick={() => setShowPassword(!showPassword)} className="cursor-pointer">
+              <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+            </span>
+          </FloatingInput>
 
-        <FloatingInput
-          id="registerConfirmPassword"lovablllllll
-          type={showConfirmPassword ? "text" : "password"}
-          value={formData.registerConfirmPassword}
-          onChange={e => setFormData({ ...formData, registerConfirmPassword: e.target.value })}
-          label="Confirm Password"
-          error={errors.registerConfirmPassword}
-        >
-          <span onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="cursor-pointer">
-            <FontAwesomeIcon icon={showConfirmPassword ? faEye : faEyeSlash} />
-          </span>
-        </FloatingInput>
+          <FloatingInput
+            id="registerConfirmPassword"
+            type={showConfirmPassword ? "text" : "password"}
+            value={formData.registerConfirmPassword}
+            onChange={e => setFormData({ ...formData, registerConfirmPassword: e.target.value })}
+            label="Confirm Password"
+            error={errors.registerConfirmPassword}
+          >
+            <span onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="cursor-pointer">
+              <FontAwesomeIcon icon={showConfirmPassword ? faEye : faEyeSlash} />
+            </span>
+          </FloatingInput>
+        </div>
       </div>
 
       <button
         onClick={handleNext}
-        className="w-full bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 transition"
+        className="w-full bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 transition mt-6"
       >
         Next
       </button>
