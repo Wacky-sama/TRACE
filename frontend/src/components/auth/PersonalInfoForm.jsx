@@ -63,7 +63,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">
         Personal Information
       </h2>
@@ -120,7 +120,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         options={["Jr.", "Sr.", "II", "III", "IV", "V"]}
       />
 
-      <div className="grid grid-cols-1 md:">
+      <div className="grid grid-cols-1">
           <label className="block text-sm font-medium text-gray-700 mb-1">Birthday</label>
           <DatePicker
             maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
@@ -157,7 +157,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             options={["Male", "Female"]}
           />
         
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <FloatingInput
           id="presentAddress"
           value={formData.presentAddress}
@@ -183,7 +183,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         error={errors.contactNumber}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <FloatingSelect
           id="course"
           value={formData.course}
@@ -212,7 +212,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <FloatingInput
           id="registerPassword"
           type={showPassword ? "text" : "password"}
