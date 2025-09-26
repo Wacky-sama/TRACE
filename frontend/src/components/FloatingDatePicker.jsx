@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import { forwardRef } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -12,37 +12,31 @@ function FloatingDatePicker({
   maxDate = new Date(),
   ...props
 }) {
-  const [isFocused, setIsFocused] = useState(false);
+  const CustomInput = forwardRef(({ value: inputValue, onClick }, ref) => {
+    return (
+      <div className="relative w-full">
+        <input
+          id={id}
+          ref={ref}
+          value={inputValue || ""}
+          onClick={onClick}
+          readOnly    
+          placeholder=" " // This is the key! Non-empty placeholder for CSS selector
+          className="w-full p-3 pt-6 pl-3 border border-gray-300 rounded-md text-sm 
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 peer cursor-pointer bg-white"
+        />
 
-  const CustomInput = forwardRef(({ value: inputValue, onClick }, ref) => (
-    <div className="relative w-full">
-      <input
-        id={id}
-        ref={ref}
-        value={inputValue || ""}
-        onClick={onClick}
-        readOnly
-        placeholder=" "
-        onFocus={(e) => {
-          setIsFocused(true);
-          onClick?.(e);
-        }}
-        onBlur={() => setIsFocused(false)}
-        className="w-full p-3 pt-6 pl-3 border border-gray-300 rounded-md text-sm 
-                   focus:outline-none focus:ring-2 focus:ring-blue-500 peer cursor-pointer bg-white"
-      />
-
-      <label
-        htmlFor={id}
-        className={`absolute left-3 text-sm transition-all duration-200 transform origin-left
-            ${isFocused || inputValue
-            ? "top-1 translate-y-0 text-xs " + (isFocused ? "text-blue-500" : "text-gray-500")
-            : "top-1/2 -translate-y-1/2 text-gray-500"}`}
+        <label
+          htmlFor={id}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm transition-all duration-200 transform origin-left pointer-events-none
+            peer-focus:top-1 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-blue-500
+            peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-600"
         >
-            {label}
+          {label}
         </label>
-    </div>
-  ));
+      </div>
+    );
+  });
 
   return (
     <div className="mb-2">
@@ -63,7 +57,12 @@ function FloatingDatePicker({
       />
 
       <div className="h-5 mt-1">
-        {error && <p className="text-red-500 text-xs">{error}</p>}
+        {error && 
+            <p className="text-red-500 
+                        text-xs"
+                >
+                    {error}
+            </p>}
       </div>
     </div>
   );
