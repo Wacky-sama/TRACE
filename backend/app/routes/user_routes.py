@@ -308,7 +308,7 @@ def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
             db.add(gts_response)
         
             # Single commit for both operations
-            db.commit()
+        db.commit()
         
     except SQLAlchemyError as e:
         db.rollback()
