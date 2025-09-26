@@ -227,7 +227,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         </FloatingInput>
 
         <FloatingInput
-          id="registerConfirmPassword"
+          id="registerConfirmPassword"lovablllllll
           type={showConfirmPassword ? "text" : "password"}
           value={formData.registerConfirmPassword}
           onChange={e => setFormData({ ...formData, registerConfirmPassword: e.target.value })}
