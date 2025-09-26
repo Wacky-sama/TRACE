@@ -79,7 +79,9 @@ const AdminUsers = () => {
     setActionLoadingId(userId);
     try {
       await api.patch(`/users/${userId}/block`);
-      await fetchUsers();
+      setApprovedUsers(prev => 
+        prev.map(u => u.id === userId ? {...u, is_active: false} : u)
+      );
       toast.success("User blocked successfully!");
     } catch (error) {
       if (error.response?.status === 404) {
@@ -101,7 +103,9 @@ const AdminUsers = () => {
     setActionLoadingId(userId);
     try {
       await api.patch(`/users/${userId}/unblock`);
-      await fetchUsers();
+      setApprovedUsers(prev =>
+        prev.map(u => u.id === userId ? { ...u, is_active: true } : u)
+      );
       toast.success("User unblocked successfully!");
     } catch (error) {
       if (error.response?.status === 404) {
@@ -175,7 +179,7 @@ const AdminUsers = () => {
                 ) : (
                   <>
                     <button 
-                      title="Delete" 
+                      title="Soft Delete" 
                       disabled={actionLoadingId === user.id}
                       onClick={() => handleSoftDelete(user.id)}
                       className={`text-red-500 hover:text-red-700 ${
@@ -184,7 +188,7 @@ const AdminUsers = () => {
                       {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserMinus} />}
                     </button>
                     
-                    {user.is_blocked ? (
+                    {user.is_active ? (
                       <button 
                         title="Block" 
                         disabled={actionLoadingId === user.id}
