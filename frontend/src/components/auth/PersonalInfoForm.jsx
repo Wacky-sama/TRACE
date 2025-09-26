@@ -129,16 +129,15 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       {/* Birthday & Demographics Section */}
       <div className="space-y-2">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Birthday</label>
+          <div className="relative">
             <DatePicker
               maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
               minDate={new Date(1900, 0, 1)}
               selected={formData.birthday ? new Date(formData.birthday) : null}
               onChange={date => setFormData({ ...formData, birthday: date })}
               dateFormat="MM/dd/yyyy"
-              placeholderText="Select your birthday"
-              className="w-full h-12 p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholderText=" "
+              className="w-full h-14.5 px-3 pt-6 pb-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent peer"
               showMonthDropdown
               showYearDropdown
               dropdownMode="select"
@@ -146,6 +145,9 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
               scrollableYearDropdown
               isClearable
             />
+            <label className="absolute left-3 top-2 text-xs text-gray-500 transition-all duration-200">
+              Birthday
+            </label>
             {errors.birthday && <p className="text-red-500 text-xs mt-1">{errors.birthday}</p>}
           </div>
 
