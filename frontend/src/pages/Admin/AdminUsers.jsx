@@ -73,52 +73,54 @@ const AdminUsers = () => {
   };
 
   const handleBlock = async (userId) => {
-    if (!window.confirm("Are you sure you want to block this user?")) 
-      return;
+  if (!window.confirm("Are you sure you want to block this user?")) 
+    return;
 
-    setActionLoadingId(userId);
-    try {
-      await api.patch(`/users/${userId}/block`);
-      setApprovedUsers(prev => 
-        prev.map(u => u.id === userId ? {...u, is_active: false} : u)
-      );
-      toast.success("User blocked successfully!");
-    } catch (error) {
-      if (error.response?.status === 404) {
-        toast.error("User not found. It may have already been deleted.");
-        await fetchUsers();
-      } else {
-        toast.error("Could not block the user. Try again.");
-      }
-      console.error("Failed to block user:", error);
-    } finally {
-      setActionLoadingId(null);
+  setActionLoadingId(userId);
+  try {
+    await api.patch(`/users/${userId}/block`);
+    // Backend sets is_active = False when blocking
+    setApprovedUsers(prev => 
+      prev.map(u => u.id === userId ? {...u, is_active: false} : u)
+    );
+    toast.success("User blocked successfully!");
+  } catch (error) {
+    if (error.response?.status === 404) {
+      toast.error("User not found. It may have already been deleted.");
+      await fetchUsers();
+    } else {
+      toast.error("Could not block the user. Try again.");
     }
-  };
+    console.error("Failed to block user:", error);
+  } finally {
+    setActionLoadingId(null);
+  }
+};
 
-  const handleUnblock = async (userId) => {
-    if (!window.confirm("Are you sure you want to unblock this user?")) 
-      return;
+const handleUnblock = async (userId) => {
+  if (!window.confirm("Are you sure you want to unblock this user?")) 
+    return;
 
-    setActionLoadingId(userId);
-    try {
-      await api.patch(`/users/${userId}/unblock`);
-      setApprovedUsers(prev =>
-        prev.map(u => u.id === userId ? { ...u, is_active: true } : u)
-      );
-      toast.success("User unblocked successfully!");
-    } catch (error) {
-      if (error.response?.status === 404) {
-        toast.error("User not found. It may have already been deleted.");
-        await fetchUsers();
-      } else {
-        toast.error("Could not unblock the user. Try again.");
-      }
-      console.error("Failed to unblock user:", error);
-    } finally {
-      setActionLoadingId(null);
+  setActionLoadingId(userId);
+  try {
+    await api.patch(`/users/${userId}/unblock`);
+    // Backend sets is_active = True when unblocking
+    setApprovedUsers(prev =>
+      prev.map(u => u.id === userId ? { ...u, is_active: true } : u)
+    );
+    toast.success("User unblocked successfully!");
+  } catch (error) {
+    if (error.response?.status === 404) {
+      toast.error("User not found. It may have already been deleted.");
+      await fetchUsers();
+    } else {
+      toast.error("Could not unblock the user. Try again.");
     }
-  };
+    console.error("Failed to unblock user:", error);
+  } finally {
+    setActionLoadingId(null);
+  }
+};
 
   const renderTable = (users, showActions = false) => (
     <table className="min-w-full bg-white border rounded-lg shadow">
@@ -188,17 +190,7 @@ const AdminUsers = () => {
                       {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserMinus} />}
                     </button>
                     
-                    {user.is_active ? (
-                      <button 
-                        title="Block" 
-                        disabled={actionLoadingId === user.id}
-                        onClick={() => handleBlock(user.id)}
-                        className={`text-blue-500 hover:text-blue-700 ${
-                          actionLoadingId === user.id ? "cursor-not-allowed opacity-50" : ""
-                        }`}>
-                        {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserSlash} />}
-                      </button>
-                    ) : (
+                    {!user.is_active ? (
                       <button 
                         title="Unblock" 
                         disabled={actionLoadingId === user.id}
@@ -207,6 +199,16 @@ const AdminUsers = () => {
                           actionLoadingId === user.id ? "cursor-not-allowed opacity-50" : ""
                         }`}>
                         {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserCheck} />}
+                      </button>
+                    ) : (
+                      <button 
+                        title="Block" 
+                        disabled={actionLoadingId === user.id}
+                        onClick={() => handleBlock(user.id)}
+                        className={`text-blue-500 hover:text-blue-700 ${
+                          actionLoadingId === user.id ? "cursor-not-allowed opacity-50" : ""
+                        }`}>
+                        {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserSlash} />}
                       </button>
                     )}
                   </>
