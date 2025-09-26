@@ -63,13 +63,13 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-4">
       <h2 className="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
         Personal Information
       </h2>
 
       {/* Account Info Section */}
-      <div className="space-y-2">
+      <div className="space-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <FloatingInput
             id="email"
@@ -90,8 +90,8 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       </div>
 
       {/* Personal Details Section */}
-      <div className="space-y-2">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="space-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
           <FloatingInput
             id="lastName"
             value={formData.lastName}
@@ -127,7 +127,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       </div>
 
       {/* Birthday & Demographics Section */}
-      <div className="space-y-2">
+      <div className="space-2">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div className="relative">
             <DatePicker
@@ -171,7 +171,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       </div>
 
       {/* Address Section */}
-      <div className="space-y-2">
+      <div className="space-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <FloatingInput
             id="presentAddress"
@@ -200,7 +200,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       </div>
 
       {/* Academic Info Section */}
-      <div className="space-y-2">
+      <div className="space-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <FloatingSelect
             id="course"
@@ -232,7 +232,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       </div>
 
       {/* Password Section */}
-      <div className="space-y-2">
+      <div className="space-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <FloatingInput
             id="registerPassword"
