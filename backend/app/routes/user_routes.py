@@ -207,10 +207,10 @@ def get_registered_users(
 ):
     query = db.query(User).filter(
         User.is_approved == True,
-        User.is_active == True,
         User.deleted_at.is_(None)
     )
 
+    # Optional filters
     if role:
         try:
             role_enum = UserRole(role)
@@ -223,11 +223,12 @@ def get_registered_users(
     if batch_year:
         query = query.filter(User.batch_year == batch_year)
 
+    # Pagination
     total = query.count()
     pages = (total + limit - 1) // limit
-
     users = query.offset((page - 1) * limit).limit(limit).all()
 
+    # Determine online status (active in last 5 minutes)
     now = datetime.utcnow()
     five_minutes_ago = now - timedelta(minutes=5)
 
@@ -235,6 +236,7 @@ def get_registered_users(
     for user in users:
         user_data = UserProfileOut.from_orm(user).dict()
         user_data["is_online"] = user.last_seen and user.last_seen > five_minutes_ago
+        user_data["is_active"] = user.is_active
         users_out.append(user_data)
 
     return {
