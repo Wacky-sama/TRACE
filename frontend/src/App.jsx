@@ -77,7 +77,6 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Public routes */}
         <Route 
           path="/login" 
           element={
