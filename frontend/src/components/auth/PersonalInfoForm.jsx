@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import FloatingDatePicker from "../FloatingDatePicker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import FloatingInput from "../FloatingInput";
@@ -131,27 +130,15 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       {/* Birthday & Age Section */}
       <div className="space-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          <div className="relative">
-            <DatePicker
-              maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
-              minDate={new Date(1900, 0, 1)}
-              selected={formData.birthday ? new Date(formData.birthday) : null}
-              onChange={date => setFormData({ ...formData, birthday: date })}
-              dateFormat="MM/dd/yyyy"
-              // placeholderText="Birthday"
-              className="w-full h-14.5 px-3 pt-6 pb-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent peer"
-              showMonthDropdown
-              showYearDropdown
-              dropdownMode="select"
-              yearDropdownItemNumber={200}
-              scrollableYearDropdown
-              isClearable
-            />
-            <label className="absolute left-3 top-2 text-xs text-gray-500 transition-all duration-200">
-              Birthday
-            </label>
-            {errors.birthday && <p className="text-red-500 text-xs mt-1">{errors.birthday}</p>}
-          </div>
+          <FloatingDatePicker
+            id="birthday"
+            value={formData.birthday}
+            onChange={(date) => setFormData({ ...formData, birthday: date || null })}
+            label="Birthday"
+            error={errors.birthday}
+            maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
+            minDate={new Date(1900, 0, 1)}
+          />
 
           <FloatingInput 
             id="age" 
