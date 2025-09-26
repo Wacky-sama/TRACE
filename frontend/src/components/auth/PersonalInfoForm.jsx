@@ -138,7 +138,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
               onChange={date => setFormData({ ...formData, birthday: date })}
               dateFormat="MM/dd/yyyy"
               placeholderText="Select your birthday"
-              className="w-full p-3 border border-gray-300 rounded-md text-sm"
+              className="w-full h-12 p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               showMonthDropdown
               showYearDropdown
               dropdownMode="select"
