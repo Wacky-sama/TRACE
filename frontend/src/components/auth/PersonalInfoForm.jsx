@@ -126,9 +126,9 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         />
       </div>
 
-      {/* Birthday & Demographics Section */}
+      {/* Birthday & Age */}
       <div className="space-2">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
           <div className="relative">
             <DatePicker
               maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
@@ -136,7 +136,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
               selected={formData.birthday ? new Date(formData.birthday) : null}
               onChange={date => setFormData({ ...formData, birthday: date })}
               dateFormat="MM/dd/yyyy"
-              placeholderText=" "
+              // placeholderText="Birthday"
               className="w-full h-14.5 px-3 pt-6 pb-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent peer"
               showMonthDropdown
               showYearDropdown
@@ -158,7 +158,9 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             label="Age" 
             readOnly 
           />
-      
+        </div>
+      </div>
+
           <FloatingSelect
             id="sex"
             value={formData.sex || ""}
@@ -167,8 +169,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             error={errors.sex}
             options={["Male", "Female"]}
           />
-        </div>
-      </div>
 
       {/* Address Section */}
       <div className="space-2">
