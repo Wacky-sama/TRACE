@@ -79,6 +79,7 @@ const AdminUsers = () => {
     setActionLoadingId(userId);
     try {
       await api.patch(`/users/${userId}/block`);
+      // Backend sets is_active = False when blocking
       setApprovedUsers(prev => 
         prev.map(u => u.id === userId ? {...u, is_active: false} : u)
       );
@@ -103,6 +104,7 @@ const AdminUsers = () => {
     setActionLoadingId(userId);
     try {
       await api.patch(`/users/${userId}/unblock`);
+      // Backend sets is_active = True when unblocking
       setApprovedUsers(prev =>
         prev.map(u => u.id === userId ? { ...u, is_active: true } : u)
       );
@@ -188,17 +190,7 @@ const AdminUsers = () => {
                       {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserMinus} />}
                     </button>
                     
-                    {user.is_active ? (
-                      <button 
-                        title="Block" 
-                        disabled={actionLoadingId === user.id}
-                        onClick={() => handleBlock(user.id)}
-                        className={`text-blue-500 hover:text-blue-700 ${
-                          actionLoadingId === user.id ? "cursor-not-allowed opacity-50" : ""
-                        }`}>
-                        {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserSlash} />}
-                      </button>
-                    ) : (
+                    {!user.is_active ? (
                       <button 
                         title="Unblock" 
                         disabled={actionLoadingId === user.id}
@@ -207,6 +199,16 @@ const AdminUsers = () => {
                           actionLoadingId === user.id ? "cursor-not-allowed opacity-50" : ""
                         }`}>
                         {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserCheck} />}
+                      </button>
+                    ) : (
+                      <button 
+                        title="Block" 
+                        disabled={actionLoadingId === user.id}
+                        onClick={() => handleBlock(user.id)}
+                        className={`text-blue-500 hover:text-blue-700 ${
+                          actionLoadingId === user.id ? "cursor-not-allowed opacity-50" : ""
+                        }`}>
+                        {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserSlash} />}
                       </button>
                     )}
                   </>
