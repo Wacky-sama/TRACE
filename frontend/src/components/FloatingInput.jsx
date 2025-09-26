@@ -10,7 +10,7 @@ function FloatingInput({
   ...props 
 }) {
   return (
-    <div className="mb-4">
+    <div className="mb-2">
       <div className="relative">
         {/* Left Icon */}
         {icon && (
@@ -26,7 +26,7 @@ function FloatingInput({
           value={value}
           onChange={onChange}
           placeholder=" "
-          className={`w-full p-3 pt-6 ${icon ? "pl-10" : "pl-3"} ${children ? "pr-10" : ""} 
+          className={`w-full p-3 pt-6 ${icon ? "pl-10" : "pl-3"} ${children ? "pr-8" : ""} 
             border border-gray-300 rounded-md text-sm 
             focus:outline-none focus:ring-2 focus:ring-blue-500 peer`}
           {...props}
