@@ -37,7 +37,7 @@ const AdminUsers = () => {
       toast.success(`User ${action}d successfully!`);
     } catch (error) {
       if (error.response?.status === 404) {
-        toast.error("User not found. It may have already been deleted.");
+        toast.error("User  not found. It may have already been deleted.");
         await fetchUsers();
       } else if (error.response?.status === 400) {
         toast.error(error.response.data.detail || "Bad request.");
@@ -188,7 +188,7 @@ const AdminUsers = () => {
                       {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserMinus} />}
                     </button>
                     
-                    {user.is_active ? (
+                    {user.is_active !== false ? (
                       <button 
                         title="Block" 
                         disabled={actionLoadingId === user.id}
