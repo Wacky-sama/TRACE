@@ -39,8 +39,10 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
     if (!formData.batchYear) newErrors.batchYear = "Batch year required";
     if (!formData.registerPassword) newErrors.registerPassword = "Password required";
     if (!formData.registerConfirmPassword) newErrors.registerConfirmPassword = "Confirm Password required";
-    if (formData.registerPassword !== formData.registerConfirmPassword)
+    if (formData.registerPassword && formData.registerConfirmPassword && 
+      formData.registerPassword !== formData.registerConfirmPassword) {
       newErrors.registerConfirmPassword = "Passwords do not match";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -260,6 +262,20 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             </span>
           </FloatingInput>
         </div>
+
+        {/* Live feedback */}
+        {formData.registerPassword && formData.registerConfirmPassword && (
+          <p
+            className={`text-sm mt-1 ${
+              formData.registerPassword === formData.registerConfirmPassword
+               ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {formData.registerPassword === formData.registerConfirmPassword
+              ? "Passwords match" : "Passwords do not match"
+            }
+          </p>
+        )}
       </div>
 
       <button
