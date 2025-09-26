@@ -30,26 +30,92 @@ const AdminUsers = () => {
   }, []);
 
   const handleAction = async (userId, action) => {
-  setActionLoadingId(userId);
-  try {
-    await api.patch(`/users/${userId}/${action}`);
-    await fetchUsers();
-    toast.success(`User ${action}d successfully!`);
-  } catch (error) {
-    if (error.response?.status === 404) {
-      toast.error("User not found. It may have already been deleted.");
+    setActionLoadingId(userId);
+    try {
+      await api.patch(`/users/${userId}/${action}`);
       await fetchUsers();
-    } else if (error.response?.status === 400) {
-      toast.error(error.response.data.detail || "Bad request.");
-    } else {
-      toast.error(`Could not ${action} the user. Try again.`);
+      toast.success(`User ${action}d successfully!`);
+    } catch (error) {
+      if (error.response?.status === 404) {
+        toast.error("User not found. It may have already been deleted.");
+        await fetchUsers();
+      } else if (error.response?.status === 400) {
+        toast.error(error.response.data.detail || "Bad request.");
+      } else {
+        toast.error(`Could not ${action} the user. Try again.`);
+      }
+      console.error(`Failed to ${action} user:`, error);
+    } finally {
+      setActionLoadingId(null);
     }
-    console.error(`Failed to ${action} user:`, error);
-  } finally {
-    setActionLoadingId(null);
-  }
-};
+  };
   
+  const handleSoftDelete = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user? This action can be undone.")) 
+      return;
+
+    setActionLoadingId(userId);
+    try {
+      await api.delete(`/users/${userId}/delete`);
+      await fetchUsers();
+      toast.success("User deleted successfully!");
+    } catch (error) {
+      if (error.response?.status === 404) {
+        toast.error("User not found. It may have already been deleted.");
+        await fetchUsers();
+      } else {
+        toast.error("Could not delete the user. Try again.");
+      }
+      console.error("Failed to delete user:", error);
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const handleBlock = async (userId) => {
+    if (!window.confirm("Are you sure you want to block this user?")) 
+      return;
+
+    setActionLoadingId(userId);
+    try {
+      await api.patch(`/users/${userId}/block`);
+      await fetchUsers();
+      toast.success("User blocked successfully!");
+    } catch (error) {
+      if (error.response?.status === 404) {
+        toast.error("User not found. It may have already been deleted.");
+        await fetchUsers();
+      } else {
+        toast.error("Could not block the user. Try again.");
+      }
+      console.error("Failed to block user:", error);
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const handleUnblock = async (userId) => {
+    if (!window.confirm("Are you sure you want to unblock this user?")) 
+      return;
+
+    setActionLoadingId(userId);
+    try {
+      await api.patch(`/users/${userId}/unblock`);
+      await fetchUsers();
+      toast.success("User unblocked successfully!");
+    } catch (error) {
+      if (error.response?.status === 404) {
+        toast.error("User not found. It may have already been deleted.");
+        await fetchUsers();
+      } else {
+        toast.error("Could not unblock the user. Try again.");
+      }
+      console.error("Failed to unblock user:", error);
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
   const renderTable = (users, showActions = false) => (
     <table className="min-w-full bg-white border rounded-lg shadow">
       <thead className="bg-gray-100 text-left text-sm text-gray-700">
@@ -65,8 +131,7 @@ const AdminUsers = () => {
           <th className="p-3">Sex</th>
           <th className="p-3">Present Address</th>
           <th className="p-3">Permanent Address</th>
-          {/* <th className="p-3">Role</th> */}
-          {showActions ? <th className="p-3">Status</th> : <th className="p-3">Active</th>}
+          
           <th className="p-3">Actions</th>
         </tr>
       </thead>
@@ -85,11 +150,7 @@ const AdminUsers = () => {
               <td className="p-3">{user.sex}</td>
               <td className="p-3">{user.present_address || '-'}</td>
               <td className="p-3">{user.permanent_address || '-'}</td>
-              {/* <td className="p-3 capitalize">{user.role}</td> */}
-              <td className="p-3">
-                {showActions ? (user.is_approved ? 'Approved' : 'Pending') : <span className="text-green-600">Online</span>}
-              </td>
-              <td className="p-3 flex gap-2 items-center">
+              <td className="p-12 flex gap-2 items-center">
                 {showActions ? (
                   <>
                     <button
@@ -113,11 +174,24 @@ const AdminUsers = () => {
                   </>
                 ) : (
                   <>
-                    <button title="Delete" className="text-red-500 hover:text-red-700">
-                      <FontAwesomeIcon icon={faUserMinus} />
+                    <button 
+                      title="Delete" 
+                      disabled={actionLoadingId === user.id}
+                      onClick={() => handleSoftDelete(user.id)}
+                      className={`text-red-500 hover:text-red-700 ${
+                        actionLoadingId === user.id ? "cursor-not-allowed opacity-50" : ""
+                      }`}>
+                      {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserMinus} />}
                     </button>
-                    <button title="Block" className="text-blue-500 hover:text-blue-700">
-                      <FontAwesomeIcon icon={faUserSlash} />
+
+                    <button 
+                      title="Block" 
+                      disabled={actionLoadingId === user.id}
+                      onClick={() => handleBlock(user.id)}
+                      className={`text-blue-500 hover:text-blue-700 ${
+                        actionLoadingId === user.id ? "cursor-not-allowed opacity-50" : ""
+                      }`}>
+                      {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserSlash} />}
                     </button>
                   </>
                 )}
