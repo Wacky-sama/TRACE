@@ -2,31 +2,24 @@ import { clearAuthData } from '../../utils/storage';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouseUser, faUsers, faCalendar, faChartSimple, faFile, faBell, faRightFromBracket, faGear, faBars } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faHouseUser, faUsers, faCalendar, faChartSimple, 
+  faFile, faBell, faRightFromBracket, faGear, faBars 
+} from '@fortawesome/free-solid-svg-icons';
 
-const AdminSidebar = ({onPanelChange, user}) => {
+const AdminSidebar = ({ user }) => {
   const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
 
   const navigationItems = [
-    { icon: faHouseUser, label: 'Dashboard', panel: 'dashboard' },
-    { icon: faUsers, label: 'Users', panel: 'users' },
-    { icon: faCalendar, label: 'Events', panel: 'events'},
-    { icon: faChartSimple, label: 'Analytics', panel: 'analytics' },
-    { icon: faFile, label: 'Reports', panel: 'reports' },
-    { icon: faBell, label: 'Notifications', panel: 'notifications' },
-    { icon: faGear, label: 'Account Settings', panel: 'settings' }
+    { icon: faHouseUser, label: 'Dashboard', route: '/admin/dashboard' },
+    { icon: faUsers, label: 'Users', route: '/admin/users' },
+    { icon: faCalendar, label: 'Events', route: '/admin/events'},
+    { icon: faChartSimple, label: 'Analytics', route: '/admin/analytics' },
+    { icon: faFile, label: 'Reports', route: '/admin/reports' },
+    { icon: faBell, label: 'Notifications', route: '/admin/notifications' },
+    { icon: faGear, label: 'Account Settings', route: '/admin/settings' }
   ];
-
-  const panelToRoute = {
-    dashboard: '/admin/dashboard',
-    users: '/admin/users',
-    events: '/admin/events',
-    analytics: '/admin/analytics',
-    reports: '/admin/reports',
-    notifications: '/admin/notifications',
-    settings: '/admin/settings'
-  };
 
   const handleLogout = () => {
     clearAuthData();
@@ -36,24 +29,15 @@ const AdminSidebar = ({onPanelChange, user}) => {
   return (
     <div className={`bg-gray-800 text-white transition-[width] duration-300 ${isOpen ? 'w-60' : 'w-16'} min-h-screen shrink-0`}>
       <div className="flex items-center justify-between p-4 border-b border-gray-700">
-        <div className={`w-full ${!isOpen ? 'justify-center' : 'flex flex-col items-center gap-1'} `}>
-          {isOpen && user && (
-            <div className="text-center w-full">
-              <div className="font-semibold text-sm text-white">
-                {user.firstname}{" "}
-                {user.middle_initial ? `${user.middle_initial}. ` : ""}
-                {user.lastname}
-              </div>
-              <div className="text-xs text-gray-400 capitalize">
-                {user.role}
-              </div>
+        {isOpen && user && (
+          <div className="text-center w-full">
+            <div className="font-semibold text-sm text-white">
+              {user.firstname} {user.middle_initial ? `${user.middle_initial}. ` : ""}{user.lastname}
             </div>
-          )}
-        </div>
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="text-gray-300 hover:text-white transition-colors"
-        >
+            <div className="text-xs text-gray-400 capitalize">{user.role}</div>
+          </div>
+        )}
+        <button onClick={() => setIsOpen(!isOpen)} className="text-gray-300 hover:text-white">
           <FontAwesomeIcon icon={faBars} />
         </button>
       </div>
@@ -63,18 +47,10 @@ const AdminSidebar = ({onPanelChange, user}) => {
           {navigationItems.map((item) => (
             <li key={item.label}>
               <button
-                onClick={() => {
-                  onPanelChange(item.panel);
-                  if (panelToRoute[item.panel]) {
-                    navigate(panelToRoute[item.panel]);
-                  }
-                }}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors group"
+                onClick={() => navigate(item.route)}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white group"
               >
-                <FontAwesomeIcon 
-                  icon={item.icon} 
-                  className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" 
-                />
+                <FontAwesomeIcon icon={item.icon} className="w-5 h-5 text-gray-400 group-hover:text-white" />
                 {isOpen && <span className="font-medium">{item.label}</span>}
               </button>
             </li>
@@ -86,12 +62,9 @@ const AdminSidebar = ({onPanelChange, user}) => {
         <div className="px-3">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-red-600 hover:text-white transition-colors group"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-red-600 hover:text-white group"
           >
-            <FontAwesomeIcon 
-              icon={faRightFromBracket} 
-              className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" 
-            />
+            <FontAwesomeIcon icon={faRightFromBracket} className="w-5 h-5 text-gray-400 group-hover:text-white" />
             {isOpen && <span className="font-medium">Logout</span>}
           </button>
         </div>
