@@ -5,6 +5,10 @@ import { BarChart,Bar,XAxis,YAxis,Tooltip,ResponsiveContainer,CartesianGrid } fr
 import AdminUsers from './AdminUsers';
 import AdminEvents from './AdminEvents';
 import api from '../../services/api';
+import AdminAnalytics from './AdminAnalytics';
+import AdminReports from './AdminReports';
+import AdminNotifications from './AdminNotifications';
+import AdminSettings from './AdminSettings';
 
 const AdminDashboard = () => {
   const [userStats, setUserStats] = useState(null);
@@ -161,6 +165,14 @@ const AdminDashboard = () => {
         return <AdminUsers />;
       case 'events':
         return <AdminEvents />;
+      case 'analytics':
+        return <AdminAnalytics />
+      case 'reports':
+        return <AdminReports />
+      case 'notifications':
+        return <AdminNotifications />
+      case 'settings':
+        return <AdminSettings />
       case 'create-user':
         return <AdminCreateUser token={localStorage.getItem("token")}/>;
       case 'create-event':

@@ -51,6 +51,10 @@ const AlumniDashboard = () => {
         );
       case 'events':
         return <AlumniEvents />
+      case 'notifications':
+        return <AlumniNotifications />
+      case 'settings':
+        return <AlumniSettings />
       default:
         return <div className="p-6">Under development.</div>;
     }
