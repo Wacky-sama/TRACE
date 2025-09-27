@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { getToken, getRole, isApproved, clearAuthData } from './utils/storage';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { getUser } from "./utils/storage";
+import { getUser, setUser } from "./utils/storage";
 import { ToastContainer } from 'react-toastify';
+import api from './services/api';
 import 'react-toastify/dist/ReactToastify.css';
 import AuthPage from './components/auth/AuthPage';
+// Admin imports
 import AdminDashboard from "./pages/Admin/AdminDashboard"
 import AdminUsers from './pages/Admin/AdminUsers';
 import AdminEvents from './pages/Admin/AdminEvents';
@@ -13,6 +15,7 @@ import AdminReports from './pages/Admin/AdminReports';
 import AdminNotifications from './pages/Admin/AdminNotifications';
 import AdminSettings from './pages/Admin/AdminSettings';
 import AdminLayout from "./pages/Admin/AdminLayout";
+// Alumni imports
 import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
 import AlumniEvents from "./pages/Alumni/AlumniEvents";
 import AlumniNotifications from "./pages/Alumni/AlumniNotifications";
@@ -24,18 +27,15 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   const role = getRole();
   const is_approved = isApproved();
 
-  // No token = not authenticated
   if (!token) {
     return <Navigate to="/login" replace />;
   }
 
-  // Invalid role
   if (allowedRoles && !allowedRoles.includes(role)) {
-    clearAuthData(); // Clean up invalid auth
+    clearAuthData();
     return <Navigate to="/login" replace />;
   }
 
-  // Alumni not approved
   if (role === "alumni" && !is_approved) {
     return <Navigate to="/login" replace />;
   }
@@ -48,7 +48,6 @@ const PublicRoute = ({ children }) => {
   const role = getRole();
   const is_approved = isApproved();
 
-  // If authenticated with valid role, redirect to dashboard
   if (token && role === "admin") {
     return <Navigate to="/admin/dashboard" replace />;
   }
@@ -57,7 +56,6 @@ const PublicRoute = ({ children }) => {
     return <Navigate to="/alumni/dashboard" replace />;
   }
 
-  // If token exists but role is invalid, clean up
   if (token && !["admin", "alumni"].includes(role)) {
     clearAuthData();
   }
@@ -66,10 +64,30 @@ const PublicRoute = ({ children }) => {
 };
 
 function App() {
-  const [user, setUser] = useState(getUser());
+  const [user, setUserState] = useState(getUser());
 
   useEffect(() => {
-    const onStorage = () => setUser(getUser());
+    const token = getToken();
+    if (!token) 
+      return;
+
+    const fetchUser = async () => {
+      try {
+        const res = await api.get('/users/me');
+        setUser(res.data);
+        setUserState(res.data);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        clearAuthData();
+        setUserState(null);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    const onStorage = () => setUserState(getUser());
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
   }, []);
@@ -77,23 +95,6 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route 
-          path="/login" 
-          element={
-            <PublicRoute>
-              <AuthPage />
-            </PublicRoute>
-          } 
-        />
-        <Route 
-          path="/register" 
-          element={
-            <PublicRoute>
-              <AuthPage />
-            </PublicRoute>
-          } 
-        />
-
         {/* Admin routes */}
         <Route 
           path="/admin" 
@@ -129,23 +130,16 @@ function App() {
           <Route path="settings" element={<AlumniSettings />} />
         </Route>
 
-        {/* Root redirect */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        
-        {/* Catch all - redirect to login */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<PublicRoute><AuthPage /></PublicRoute>} />
+          <Route path="/register" element={<PublicRoute><AuthPage /></PublicRoute>} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
       
       <ToastContainer 
         position="top-right" 
         autoClose={3000} 
         pauseOnHover 
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        draggable
-        pauseOnFocusLoss
       />
     </Router>
   );
