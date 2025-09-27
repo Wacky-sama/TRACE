@@ -188,7 +188,7 @@ const AdminUsers = () => {
                       {actionLoadingId === user.id ? "..." : <FontAwesomeIcon icon={faUserMinus} />}
                     </button>
                     
-                    {user.is_active !== false ? (
+                    {user.is_active  ? (
                       <button 
                         title="Block" 
                         disabled={actionLoadingId === user.id}
