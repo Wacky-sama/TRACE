@@ -100,6 +100,7 @@ class UserProfileOut(BaseModel):
     batch_year: Optional[int]
     role: UserRole
     is_approved: bool
+    is_active: bool
     sex: Optional[SexEnum]
 
     class Config:
