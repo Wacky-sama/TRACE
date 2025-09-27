@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faUser, faLock } from '@fortawesome/free-solid-svg-icons';
 import { login, getProfile } from '../../services/auth';
 import { setAuthData, setUser } from '../../utils/storage';
+import { useUser } from '../../context/UserContext';
 import FloatingInput from '../FloatingInput';
 
 function LoginForm() {
@@ -12,6 +13,7 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [loginErrors, setLoginErrors] = useState({});
   const [loginError, setLoginError] = useState('');
+  const { setCurrentUser } = useUser();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -32,7 +34,8 @@ function LoginForm() {
 
       setAuthData({ token, role, is_approved });
       const userData = await getProfile();
-      setUser(userData); 
+      setUser(userData);
+      setCurrentUser(userData); 
 
       if (role === "admin") {
         navigate("/admin/dashboard", {replace: true});
