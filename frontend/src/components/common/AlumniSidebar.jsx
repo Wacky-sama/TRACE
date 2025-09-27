@@ -32,9 +32,9 @@ const AlumniSidebar = () => {
         {isOpen && currentUser && (
           <div className="text-center w-full">
             <div className="font-semibold text-sm text-white">
-              {currentUser.firstname}
-              {currentUser.middle_initial ? `${currentUser.middle_initial}. ` : ""}
-              {currentUser.lastname}
+              {currentUser.firstname} 
+              {currentUser.middle_initial ? `${currentUser.middle_initial}. ` : ""} 
+              {currentUser.lastname} 
             </div>
             <div className="text-xs text-gray-400 capitalize">
               {currentUser.role}
