@@ -7,6 +7,7 @@ import {
   faFile, faBell, faRightFromBracket, faGear, faBars 
 } from '@fortawesome/free-solid-svg-icons';
 import { useUser } from '../../context/UserContext';
+import { formatFullname } from '../../utils/format';
 
 const AdminSidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -35,12 +36,8 @@ const AdminSidebar = () => {
         {isOpen && currentUser && (
           <div className="text-center w-full">
             <div className="font-semibold text-sm text-white">
-              {currentUser.firstname} 
-              {currentUser.middle_initial ? `${currentUser.middle_initial}. ` : ""}
-              {currentUser.lastname}
-            </div>
-            <div className="text-xs text-gray-400 capitalize">
-              {currentUser.role}
+              <p className="font-semibold">{formatFullname(currentUser)}</p> 
+              <p className="text-sm text-gray-400 capitalize">{currentUser.role}</p>
             </div>
           </div>
         )}
