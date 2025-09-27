@@ -6,10 +6,12 @@ import {
   faHouseUser, faCalendar, faBell, 
   faRightFromBracket, faGear, faBars 
 } from '@fortawesome/free-solid-svg-icons';
+import { useUser } from '../../context/UserContext';
 
-const AlumniSidebar = ({ user }) => {
+const AlumniSidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
+  const { currentUser, setCurrentUser } = useUser();
 
   const navigationItems = [
     { icon: faHouseUser, label: 'Dashboard', route: '/alumni/dashboard' },
@@ -20,18 +22,23 @@ const AlumniSidebar = ({ user }) => {
 
   const handleLogout = () => {
     clearAuthData();
+    setCurrentUser(null);
     navigate('/login');
   };
 
   return (
     <div className={`bg-gray-800 text-white transition-[width] duration-300 ${isOpen ? 'w-60' : 'w-16'} min-h-screen shrink-0`}>
       <div className="flex items-center justify-between p-4 border-b border-gray-700">
-        {isOpen && user && (
+        {isOpen && currentUser && (
           <div className="text-center w-full">
             <div className="font-semibold text-sm text-white">
-              {user.firstname} {user.middle_initial ? `${user.middle_initial}. ` : ""}{user.lastname}
+              {currentUser.firstname}
+              {currentUser.middle_initial ? `${currentUser.middle_initial}. ` : ""}
+              {currentUser.lastname}
             </div>
-            <div className="text-xs text-gray-400 capitalize">{user.role}</div>
+            <div className="text-xs text-gray-400 capitalize">
+              {currentUser.role}
+            </div>
           </div>
         )}
         <button onClick={() => setIsOpen(!isOpen)} className="text-gray-300 hover:text-white">
