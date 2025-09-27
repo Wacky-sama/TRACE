@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import AlumniEvents from './AlumniEvents';
 import api from '../../services/api';
 
 const AlumniDashboard = () => {
@@ -37,24 +36,12 @@ const AlumniDashboard = () => {
       case 'dashboard':
         return (
           <>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Welcome, {currentUser?.firstname || 'Alumni'}!</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">Welcome, {currentUser?.firstname}!</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center">
-                <h3 className="text-lg font-semibold text-gray-800">Upcoming Events</h3>
-                <p className="text-sm text-gray-600 mt-2">{events.length} events available</p>
-                <button onClick={() => setActivePanel('events')} className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
-                  View Events
-                </button>
-              </div>
             </div>
           </>
         );
-      case 'events':
-        return <AlumniEvents />
-      case 'notifications':
-        return <AlumniNotifications />
-      case 'settings':
-        return <AlumniSettings />
       default:
         return <div className="p-6">Under development.</div>;
     }

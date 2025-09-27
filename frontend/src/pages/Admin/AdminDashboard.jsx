@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
 import AdminCreateUser from './AdminCreateUser';
 import AdminCreateEvent from './AdminCreateEvent';
-import { BarChart,Bar,XAxis,YAxis,Tooltip,ResponsiveContainer,CartesianGrid } from 'recharts';
-import AdminUsers from './AdminUsers';
-import AdminEvents from './AdminEvents';
+import { 
+  BarChart, Bar, XAxis, YAxis, Tooltip, 
+  ResponsiveContainer, CartesianGrid 
+} from 'recharts';
 import api from '../../services/api';
-import AdminAnalytics from './AdminAnalytics';
-import AdminReports from './AdminReports';
-import AdminNotifications from './AdminNotifications';
-import AdminSettings from './AdminSettings';
 
 const AdminDashboard = () => {
   const [userStats, setUserStats] = useState(null);
@@ -64,121 +61,109 @@ const AdminDashboard = () => {
     }
   };
 
-   const renderPanel = () => {
+  const renderPanel = () => {
     switch (activePanel) {
       case 'dashboard':
-         return (
-    <>
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
+        return (
+        <>
+          <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-8">Welcome, {currentUser?.firstname}!</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-sm font-medium text-gray-500">Total Users</h3>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {userStats !== null ? userStats.total_users : 'Loading...'}
+              </p>
+              <p className="text-xs text-green-600 mt-1">Live Data</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-sm font-medium text-gray-500">Active Users</h3>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {activeUsers !== null ? activeUsers : 'Loading...'}
+              </p>
+              <p className='text-xs text-green-600 mt-1'>Live Data</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-sm font-medium text-gray-500">Blocked Users</h3>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {blockedUsers !== null ? blockedUsers : 'Loading...'}
+              </p>
+              <p className='text-xs text-green-600 mt-1'>Live Data</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-sm font-medium text-gray-500">Archived Users</h3>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {archivedUsers !== null ? archivedUsers : 'Loading...'}
+              </p>
+              <p className='text-xs text-green-600 mt-1'>Live Data</p>
+            </div> 
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-sm font-medium text-gray-500">Total Users</h3>
-          <p className="text-3xl font-bold text-gray-900 mt-2">
-            {userStats !== null ? userStats.total_users : 'Loading...'}
-          </p>
-          <p className="text-xs text-green-600 mt-1">Live Data</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-sm font-medium text-gray-500">Active Users</h3>
-          <p className="text-3xl font-bold text-gray-900 mt-2">
-            {activeUsers !== null ? activeUsers : 'Loading...'}
-          </p>
-          <p className='text-xs text-green-600 mt-1'>Live Data</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-sm font-medium text-gray-500">Blocked Users</h3>
-          <p className="text-3xl font-bold text-gray-900 mt-2">
-            {blockedUsers !== null ? blockedUsers : 'Loading...'}
-          </p>
-          <p className='text-xs text-green-600 mt-1'>Live Data</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-sm font-medium text-gray-500">Archived Users</h3>
-          <p className="text-3xl font-bold text-gray-900 mt-2">
-            {archivedUsers !== null ? archivedUsers : 'Loading...'}
-          </p>
-          <p className='text-xs text-green-600 mt-1'>Live Data</p>
-        </div> 
-      </div>
+          <div className="bg-white p-6 rounded-lg shadow mb-8">
+            <h3 className="text-lg font-semibold mb-4">Users by Role</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="role" />
+                  <YAxis allowDecimals={false} />
+                  <Tooltip formatter={(value) => [value, 'Count']}/>
+                  <Bar dataKey="count" name="Count" fill="#2563EB" /> 
+                </BarChart>
+              </ResponsiveContainer>
+          </div>
 
-      <div className="bg-white p-6 rounded-lg shadow mb-8">
-        <h3 className="text-lg font-semibold mb-4">Users by Role</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="role" />
-              <YAxis allowDecimals={false} />
-              <Tooltip formatter={(value) => [value, 'Count']}/>
-              <Bar dataKey="count" name="Count" fill="#2563EB" /> 
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">New user registered</span>
+                  <span className="text-xs text-gray-500">2 min ago</span>
+                </div>
+              </div>
+            </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm">New user registered</span>
-              <span className="text-xs text-gray-500">2 min ago</span>
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+              <div className="space-y-2">
+                <button onClick={() => setActivePanel('create-user')} className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
+                  Create User
+                </button>
+                <button onClick={() => setActivePanel('create-event')} className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
+                  Create Event
+                </button>
+                <button className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
+                  Generate Report
+                </button>
+              </div>
+            </div>
+            <div className="lg:col-span-2 flex justify-center">
+              <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center w-full max-w-sm">
+                <h3 className="text-sm font-medium text-green-500">Online Users</h3>
+                {onlineUsers ? (
+                  <ul className="mt-2">
+                    {onlineUsers.map(user => (
+                      <li key={user.id} className="text-gray-800 text-sm">
+                        {user.firstname}{" "} 
+                        {user.middle_initial ? `${user.middle_initial}. ` : ""} 
+                        {user.lastname} - {formatRole(user.role)}
+                      </li>
+                    ))}
+                  </ul>
+                  ) : (
+                  <p className="text-sm text-gray-500 mt-2">Loading...</p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-          <div className="space-y-2">
-            <button onClick={() => setActivePanel('create-user')} className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
-              Create User
-            </button>
-            <button onClick={() => setActivePanel('create-event')} className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
-              Create Event
-            </button>
-            <button className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
-              Generate Report
-            </button>
-          </div>
-        </div>
-        <div className="lg:col-span-2 flex justify-center">
-          <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center w-full max-w-sm">
-            <h3 className="text-sm font-medium text-green-500">Online Users</h3>
-            {onlineUsers ? (
-              <ul className="mt-2">
-                {onlineUsers.map(user => (
-                  <li key={user.id} className="text-gray-800 text-sm">
-                    {user.firstname}{" "} 
-                    {user.middle_initial ? `${user.middle_initial}. ` : ""} 
-                    {user.lastname} - {formatRole(user.role)}
-                  </li>
-                ))}
-              </ul>
-              ) : (
-              <p className="text-sm text-gray-500 mt-2">Loading...</p>
-            )}
-          </div>
-        </div>
-      </div>
-    </>
-  );
-      case 'users':
-        return <AdminUsers />;
-      case 'events':
-        return <AdminEvents />;
-      case 'analytics':
-        return <AdminAnalytics />
-      case 'reports':
-        return <AdminReports />
-      case 'notifications':
-        return <AdminNotifications />
-      case 'settings':
-        return <AdminSettings />
-      case 'create-user':
-        return <AdminCreateUser token={localStorage.getItem("token")}/>;
-      case 'create-event':
-        return <AdminCreateEvent token={localStorage.getItem("token")}/>;
-      default:
-        return <div className="p-6">Under development.</div>;
+        </>
+      );
+        case 'create-user':
+          return <AdminCreateUser token={localStorage.getItem("token")}/>;
+        case 'create-event':
+          return <AdminCreateEvent token={localStorage.getItem("token")}/>;
+        default:
+          return <div className="p-6">Under development.</div>;
     }
   };
 
