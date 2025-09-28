@@ -177,7 +177,9 @@ npm install
 # Start the Vite development server
 npm run dev
 ```
-### Frontend runs at: http://localhost:5173/, http://your_ip_address:5173/
+### Frontend runs at: 
+http://localhost:5173/
+http://your_ip_address:5173/
 
 ### Backend (FastAPI)
 ```bash
