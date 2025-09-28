@@ -196,7 +196,9 @@ pip install -r requirements.txt
 # Run the FastAPI development server
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
-### Backend runs at: http://localhost:8000, http://your_ip_address:8000
+### Backend runs at: 
+- http://localhost:8000 
+- http://your_ip_address:8000
 
 ---
 
