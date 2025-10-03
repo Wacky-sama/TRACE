@@ -32,6 +32,7 @@ def create_gts_response(
         permanent_address=user.permanent_address,
         ever_employed=gts_data.ever_employed,
         is_employed=gts_data.is_employed,
+        non_employed_reasons=gts_data.non_employed_reasons,
         employment_status=gts_data.employment_status,
         place_of_work=gts_data.place_of_work,
         company_name=gts_data.company_name,
