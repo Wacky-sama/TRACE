@@ -27,7 +27,6 @@ class GTSResponseOut(BaseModel):
     mobile: str
     sex: SexEnum
     birthday: date
-
     ever_employed: Optional[bool]
     is_employed: Optional[bool]
     non_employed_reasons: Optional[List[str]]
