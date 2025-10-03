@@ -22,9 +22,18 @@ def create_gts_response(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    name_parts = [
+        user.firstname.strip() if user.firstname else "",
+        user.middlename.strip() if user.middlename else "",
+        user.lastname.strip() if user.lastname else "",
+        user.name_extension.strip() if user.name_extension else ""
+    ]
+    clean_parts = [part for part in name_parts if part]
+    full_name = " ".join(clean_parts)
+
     gts_response = GTSResponse(
         user_id=user_id,
-        full_name=f"{user.firstname} {user.middle_initial} {user.lastname} {user.name_extension}",
+        full_name=full_name,
         contact_email=user.email,
         mobile=user.contact_number,
         sex=user.sex,
