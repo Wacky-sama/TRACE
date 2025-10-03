@@ -17,7 +17,7 @@ class GTSResponseCreate(BaseModel):
     permanent_address: str
     company_name: Optional[str] = None
     company_address: Optional[str] = None
-    occupation: Optional[str] = None
+    occupation: Optional[List[str]] = None
 
 class GTSResponseOut(BaseModel):
     id: UUID
