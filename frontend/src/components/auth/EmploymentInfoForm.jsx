@@ -34,7 +34,7 @@ const OCCUPATION_OPTIONS = [
   "Trades and Related Workers",
   "Plant and Machine Operators and Assemblers",
   "Laborers and Unskilled Workers",
-  "Others",
+  "Others, please specify",
 ];
 
 function EmploymentInfoForm({
@@ -66,7 +66,7 @@ function EmploymentInfoForm({
         newErrors.companyAddress = "Company address required.";
       if (!formData.occupation.length)
         newErrors.occupation = "Select at least one occupation.";
-      if (formData.occupation.includes("Other") && !otherOccupation.trim()) {
+      if (formData.occupation.includes("Others, please specify") && !otherOccupation.trim()) {
         newErrors.otherOccupation = "Please specify your occupation.";
       }
     }
@@ -114,7 +114,7 @@ function EmploymentInfoForm({
       let updated;
       if (current.includes(option)) {
         updated = current.filter((o) => o !== option);
-        if (option === "Other") setOtherOccupation("");
+        if (option === "Others, please specify") setOtherOccupation("");
       } else {
         updated = [...current, option];
       }
@@ -126,7 +126,7 @@ function EmploymentInfoForm({
     if (!validate()) return;
 
     const finalOccupations = formData.occupation.map((o) =>
-      o === "Other" ? otherOccupation.trim() : o.trim()
+      o === "Others, please specify" ? otherOccupation.trim() : o.trim()
     );
 
     await handleRegister(finalOccupations);
@@ -267,7 +267,7 @@ function EmploymentInfoForm({
                 </label>
               ))}
             </div>
-            {formData.occupation.includes("Other") && (
+            {formData.occupation.includes("Others, please specify") && (
               <FloatingInput
                 id="otherOccupation"
                 value={otherOccupation}
