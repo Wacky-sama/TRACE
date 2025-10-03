@@ -1,6 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
+import { set } from "date-fns";
 
 const EMPLOYED_STATUSES = [
   "Regular or Permanent",
@@ -46,6 +49,8 @@ function EmploymentInfoForm({
   const [errors, setErrors] = useState({});
   const [otherOccupation, setOtherOccupation] = useState("");
   const nonEmployedReasons = formData.nonEmployedReasons || [];
+  const navigate = useNavigate();
+  const [submitting, setSubmitting] = useState(false);
 
   const validate = () => {
     const newErrors = {};
@@ -66,7 +71,10 @@ function EmploymentInfoForm({
         newErrors.companyAddress = "Company address required.";
       if (!formData.occupation.length)
         newErrors.occupation = "Select at least one occupation.";
-      if (formData.occupation.includes("Others, please specify") && !otherOccupation.trim()) {
+      if (
+        formData.occupation.includes("Others, please specify") &&
+        !otherOccupation.trim()
+      ) {
         newErrors.otherOccupation = "Please specify your occupation.";
       }
     }
@@ -129,7 +137,23 @@ function EmploymentInfoForm({
       o === "Others, please specify" ? otherOccupation.trim() : o.trim()
     );
 
-    await handleRegister(finalOccupations);
+    try {
+      await handleRegister(finalOccupations);
+
+      setFormData({});
+      setOtherOccupation("");
+
+      toast.success(
+        "Registration submitted successfully! Redirecting to login page..."
+      );
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (err) {
+      toast.error("Registration failed! Please try again.");
+      setSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -344,7 +368,7 @@ function EmploymentInfoForm({
           onClick={onSubmit}
           className="px-6 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
         >
-          Register
+          {submitting ? "Submitting..." : "Register"}
         </button>
       </div>
     </div>
