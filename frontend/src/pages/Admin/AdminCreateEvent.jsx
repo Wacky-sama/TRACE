@@ -15,11 +15,11 @@ const AdminCreateEvent = () => {
   const [loading, setLoading] = useState(false);
 
   const validate = () => {
-    const errs = {};
-    if (!form.title) errs.title = "Title is required";
-    if (!form.location) errs.location = "Location is required";
-    if (!form.event_date) errs.event_date = "Event date is required";
-    return errs;
+    const validateErrors = {};
+    if (!form.title) validateErrors.title = "Title is required";
+    if (!form.location) validateErrors.location = "Location is required";
+    if (!form.event_date) validateErrors.event_date = "Event date is required";
+    return validateErrors;
   };
 
   const handleChange = (e) => {
@@ -29,9 +29,9 @@ const AdminCreateEvent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
-    const errs = validate();
-    if (Object.keys(errs).length) {
-      setErrors(errs);
+    const submitErrors = validate();
+    if (Object.keys(submitErrors).length) {
+      setErrors(submitErrors);
       return;
     }
     setErrors({});

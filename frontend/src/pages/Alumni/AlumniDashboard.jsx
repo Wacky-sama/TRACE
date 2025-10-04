@@ -11,8 +11,8 @@ const AlumniDashboard = () => {
       try {
         const res = await api.get('/users/me');
         setCurrentUser(res.data);
-      } catch (err) {
-        console.error('Failed to fetch current user:', err);
+      } catch (error) {
+        console.error('Failed to fetch current user:', error);
       }
     };
     fetchCurrentUser();
@@ -23,8 +23,8 @@ const AlumniDashboard = () => {
       try {
         const res = await api.get('/events');
         setEvents(res.data);
-      } catch (err) {
-        console.error('Failed to fetch approved events:', err);
+      } catch (error) {
+        console.error('Failed to fetch approved events:', error);
       }
     };
 

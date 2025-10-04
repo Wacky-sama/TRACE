@@ -44,8 +44,8 @@ function LoginForm() {
       } else {
         setLoginError("Unauthorized access. Please contact the administrator.");
       }
-    } catch (err) {
-      setLoginError(err.response?.data?.detail ?? err.message);
+    } catch (error) {
+      setLoginError(error.response?.data?.detail ?? error.message);
     }
   };
 

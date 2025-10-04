@@ -158,7 +158,7 @@ function EmploymentInfoForm({
       setTimeout(() => {
         navigate("/login");
       }, 2000);
-    } catch (err) {
+    } catch (error) {
       toast.error("Registration failed! Please try again.");
       setSubmitting(false);
     }
