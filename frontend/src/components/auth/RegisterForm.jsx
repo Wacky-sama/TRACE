@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import PersonalInfoForm from "./PersonalInfoForm";
 import EmploymentInfoForm from "./EmploymentInfoForm";
 
-function RegisterForm({ setIsRegistering }) {
+function RegisterForm() {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
 
   const [formData, setFormData] = useState({
@@ -121,16 +123,16 @@ function RegisterForm({ setIsRegistering }) {
       setRegisterSuccess(
         "Registration submitted successfully! Please wait for approval."
       );
-      setTimeout(() => setIsRegistering(false), 3000);
-    } catch (err) {
-      if (err.response?.data) {
-        console.error("Server validation error:", err.response.data);
+      setTimeout(() => navigate('/login'), 3000);
+    } catch (error) {
+      if (error.response?.data) {
+        console.error("Server validation error:", error.response.data);
         setRegisterError(
-          `Registration failed! ${JSON.stringify(err.response.data, null, 2)}`
+          `Registration failed! ${JSON.stringify(error.response.data, null, 2)}`
         );
       } else {
         setRegisterError(
-          `Registration failed! ${err.message ?? "Please try again."}`
+          `Registration failed! ${error.message ?? "Please try again."}`
         );
       }
     }
