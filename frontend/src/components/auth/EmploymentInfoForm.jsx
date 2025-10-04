@@ -1,9 +1,8 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
-import { set } from "date-fns";
 
 const EMPLOYED_STATUSES = [
   "Regular or Permanent",
@@ -48,7 +47,7 @@ function EmploymentInfoForm({
 }) {
   const [errors, setErrors] = useState({});
   const [otherOccupation, setOtherOccupation] = useState("");
-  const nonEmployedReasons = formData.nonEmployedReasons || [];
+  const [otherNonEmployedReason, setOtherNonEmployedReason] = useState("");
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
 
@@ -133,14 +132,23 @@ function EmploymentInfoForm({
   const onSubmit = async () => {
     if (!validate()) return;
 
+    const finalNonEmployedReasons = formData.occupation.map((o) =>
+      o === "Other reasons, please specify" ? otherNonEmployedReason.trim() : o.trim()
+    );
+
     const finalOccupations = formData.occupation.map((o) =>
       o === "Others, please specify" ? otherOccupation.trim() : o.trim()
     );
 
     try {
-      await handleRegister(finalOccupations);
+      await handleRegister({
+        ...formData,
+        nonEmployedReasons: finalNonEmployedReasons,
+        occupation: finalOccupations
+      });
 
       setFormData({});
+      setOtherNonEmployedReason("");
       setOtherOccupation("");
 
       toast.success(
