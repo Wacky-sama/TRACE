@@ -21,7 +21,7 @@ function FloatingDatePicker({
           value={inputValue || ""}
           onClick={onClick}
           readOnly    
-          placeholder=" " // This is the key! Non-empty placeholder for CSS selector
+          placeholder=" "
           className="w-full p-3 pt-6 pl-3 border border-gray-300 rounded-md text-sm 
                      focus:outline-none focus:ring-2 focus:ring-blue-500 peer cursor-pointer bg-white"
         />
