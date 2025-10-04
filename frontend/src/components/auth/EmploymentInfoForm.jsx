@@ -130,7 +130,12 @@ function EmploymentInfoForm({
   };
 
   const onSubmit = async () => {
-    if (!validate()) return;
+    if (!validate()) {
+      toast.error("Please fix the errors in the form.");
+      return;
+    }
+
+    setSubmitting(true);
 
     const finalNonEmployedReasons = formData.nonEmployedReasons.map((r) =>
       r === "Other reasons, please specify"
@@ -139,9 +144,7 @@ function EmploymentInfoForm({
     );
 
     const finalOccupations = formData.occupation.map((o) =>
-      o === "Others, please specify" 
-      ? otherOccupation.trim() 
-      : o.trim()
+      o === "Others, please specify" ? otherOccupation.trim() : o.trim()
     );
 
     try {
@@ -159,8 +162,19 @@ function EmploymentInfoForm({
         navigate("/login");
       }, 2000);
     } catch (error) {
-      toast.error("Registration failed! Please try again.");
       setSubmitting(false);
+
+      if (error.message?.toLowerCase().includes("username")) {
+        toast.error(
+          "Username is already taken. Please go back and choose a different username."
+        );
+      } else if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(
+          "Registration failed! Please check your information and try again."
+        );
+      }
     }
   };
 
