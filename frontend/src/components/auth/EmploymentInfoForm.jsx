@@ -58,10 +58,9 @@ function EmploymentInfoForm({
       newErrors.employmentNow = "Please select an option.";
     }
 
-    // Employment is Yes
     if (formData.employmentNow === "Yes") {
       if (!formData.employmentStatus)
-        newErrors.employmentStatus = "Select your employment employmentStatus.";
+        newErrors.employmentStatus = "Select your employment status.";
       if (!formData.placeOfWork?.trim())
         newErrors.placeOfWork = "Place of work required.";
       if (!formData.companyName?.trim())
@@ -78,7 +77,6 @@ function EmploymentInfoForm({
       }
     }
 
-    // Employment is No
     if (formData.employmentNow === "No") {
       if (formData.nonEmployedReasons.length === 0) {
         newErrors.employmentStatus = "Select at least one reason.";
@@ -91,11 +89,10 @@ function EmploymentInfoForm({
       }
     }
 
-    // Employment is Never employed
     if (formData.employmentNow === "Never employed") {
       if (formData.employmentStatus !== "Never employed") {
         newErrors.employmentStatus =
-          "Invalid employmentStatus for never employed.";
+          "Invalid status for never employed.";
       }
     }
 
@@ -131,7 +128,7 @@ function EmploymentInfoForm({
 
   const onSubmit = async () => {
     if (!validate()) {
-      toast.error("Please fix the errors in the form.");
+      toast.error("Please fix the errors before submitting.");
       return;
     }
 
@@ -144,12 +141,15 @@ function EmploymentInfoForm({
     );
 
     const finalOccupations = formData.occupation.map((o) =>
-      o === "Others, please specify" ? otherOccupation.trim() : o.trim()
+      o === "Others, please specify" 
+      ? otherOccupation.trim() 
+      : o.trim()
     );
 
     try {
       await handleRegister(finalNonEmployedReasons, finalOccupations);
 
+      // Only proceed if registration was successful
       setFormData({});
       setOtherNonEmployedReason("");
       setOtherOccupation("");
@@ -162,18 +162,16 @@ function EmploymentInfoForm({
         navigate("/login");
       }, 2000);
     } catch (error) {
+      // Stay on the form and show the error
       setSubmitting(false);
-
+      
+      // Check if it's a username conflict error
       if (error.message?.toLowerCase().includes("username")) {
-        toast.error(
-          "Username is already taken. Please go back and choose a different username."
-        );
+        toast.error("Username is already taken. Please go back and choose a different username.");
       } else if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
-        toast.error(
-          "Registration failed! Please check your information and try again."
-        );
+        toast.error("Registration failed! Please check your information and try again.");
       }
     }
   };
@@ -296,10 +294,10 @@ function EmploymentInfoForm({
               {OCCUPATION_OPTIONS.map((opt) => (
                 <label
                   key={opt}
-                  className={`px-2 py-1 border rounded cursor-pointer ${
+                  className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
                     formData.occupation.includes(opt)
                       ? "bg-blue-600 text-white border-blue-600"
-                      : "bg-white text-gray-700"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
                   }`}
                 >
                   <input
@@ -338,10 +336,10 @@ function EmploymentInfoForm({
             {NON_EMPLOYED_REASONS.map((reason) => (
               <label
                 key={reason}
-                className={`px-2 py-1 border rounded cursor-pointer ${
+                className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
                   formData.nonEmployedReasons.includes(reason)
                     ? "bg-blue-600 text-white border-blue-600"
-                    : "bg-white text-gray-700"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
                 }`}
               >
                 <input
@@ -381,13 +379,15 @@ function EmploymentInfoForm({
       <div className="flex justify-between mt-4">
         <button
           onClick={prevStep}
-          className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+          disabled={submitting}
+          className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           Back
         </button>
         <button
           onClick={onSubmit}
-          className="px-6 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+          disabled={submitting}
+          className="px-6 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {submitting ? "Submitting..." : "Register"}
         </button>

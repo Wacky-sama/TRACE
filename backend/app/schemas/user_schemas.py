@@ -5,6 +5,13 @@ from uuid import UUID
 from datetime import datetime, date, timezone
 from app.schemas.gts_responses_schemas import GTSResponseOut
 
+class UsernameCheckRequest(BaseModel):
+    username: str
+
+class UsernameCheckResponse(BaseModel):
+    available: bool
+    message: str
+
 class UserLogin(BaseModel):
     identifier: str
     password: str

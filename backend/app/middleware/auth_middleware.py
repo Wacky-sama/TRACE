@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 PUBLIC_ROUTES = [
     "/users/login",
     "/users/register",
+    "/users/check-username",
     "/gts_responses/register",
 ]
 
