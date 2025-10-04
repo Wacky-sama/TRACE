@@ -325,7 +325,7 @@ function EmploymentInfoForm({
               <label
                 key={reason}
                 className={`px-2 py-1 border rounded cursor-pointer ${
-                  nonEmployedReasons.includes(reason)
+                  formData.nonEmployedReasons.includes(reason)
                     ? "bg-blue-600 text-white border-blue-600"
                     : "bg-white text-gray-700"
                 }`}
@@ -333,7 +333,7 @@ function EmploymentInfoForm({
                 <input
                   type="checkbox"
                   value={reason}
-                  checked={nonEmployedReasons.includes(reason)}
+                  checked={formData.nonEmployedReasons.includes(reason)}
                   onChange={() => handleNonEmployedReasonChange(reason)}
                   className="hidden"
                 />
@@ -342,7 +342,7 @@ function EmploymentInfoForm({
             ))}
           </div>
 
-          {nonEmployedReasons.includes("Other reasons, please specify") && (
+          {formData.nonEmployedReasons.includes("Other reasons, please specify") && (
             <FloatingInput
               id="otherNonEmployedReason"
               value={formData.otherNonEmployedReason}
