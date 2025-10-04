@@ -83,7 +83,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         Personal Information
       </h2>
 
-      {/* Account Info Section */}
       <div className="space-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <FloatingInput
@@ -97,17 +96,17 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             error={errors.email}
           />
           <UsernameInput
+            id="registerIdentifier"
             value={formData.registerIdentifier}
             onChange={(e) =>
               setFormData({ ...formData, registerIdentifier: e.target.value })
             }
-            label="Username"
             error={errors.registerIdentifier}
+            onAvailabilityChange={setUsernameAvailable}
           />
         </div>
       </div>
 
-      {/* Personal Details Section */}
       <div className="space-2">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
           <FloatingInput
@@ -152,7 +151,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         />
       </div>
 
-      {/* Birthday & Age Section */}
       <div className="space-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <FloatingDatePicker
@@ -188,7 +186,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         options={["Male", "Female"]}
       />
 
-      {/* Address Section */}
       <div className="space-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <FloatingInput
@@ -223,7 +220,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         />
       </div>
 
-      {/* Academic Info Section */}
       <div className="space-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <FloatingSelect
@@ -260,7 +256,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         </div>
       </div>
 
-      {/* Password Section */}
       <div className="space-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <FloatingInput
@@ -305,7 +300,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           </FloatingInput>
         </div>
 
-        {/* Live feedback */}
         {formData.registerPassword && formData.registerConfirmPassword && (
           <p
             className={`text-sm mt-1 ${
