@@ -132,19 +132,23 @@ function EmploymentInfoForm({
   const onSubmit = async () => {
     if (!validate()) return;
 
-    const finalNonEmployedReasons = formData.occupation.map((o) =>
-      o === "Other reasons, please specify" ? otherNonEmployedReason.trim() : o.trim()
+    const finalNonEmployedReasons = formData.nonEmployedReasons.map((r) =>
+      r === "Other reasons, please specify"
+        ? otherNonEmployedReason.trim()
+        : r.trim()
     );
 
     const finalOccupations = formData.occupation.map((o) =>
-      o === "Others, please specify" ? otherOccupation.trim() : o.trim()
+      o === "Others, please specify" 
+        ? otherOccupation.trim()
+        : o.trim()
     );
 
     try {
       await handleRegister({
         ...formData,
         nonEmployedReasons: finalNonEmployedReasons,
-        occupation: finalOccupations
+        occupation: finalOccupations,
       });
 
       setFormData({});
@@ -342,15 +346,14 @@ function EmploymentInfoForm({
             ))}
           </div>
 
-          {formData.nonEmployedReasons.includes("Other reasons, please specify") && (
+          {formData.nonEmployedReasons.includes(
+            "Other reasons, please specify"
+          ) && (
             <FloatingInput
               id="otherNonEmployedReason"
-              value={formData.otherNonEmployedReason}
+              value={otherNonEmployedReason}
               onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  otherNonEmployedReason: e.target.value.trimStart(),
-                }))
+                setOtherNonEmployedReason(e.target.value.trimStart())
               }
               label="Please specify"
               error={errors.otherNonEmployedReason}
