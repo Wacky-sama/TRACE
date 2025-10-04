@@ -9,7 +9,9 @@ from app.config import settings
 from app.database import get_db
 from app.models.user_models import User, UserRole
 from app.models.gts_responses_models import GTSResponse
-from app.schemas.user_schemas import (UserLogin,
+from app.schemas.user_schemas import (UsernameCheckRequest, 
+                                      UsernameCheckResponse,
+                                      UserLogin,
                                       AdminUserCreate, 
                                       AlumniRegister, 
                                       UserOut, 
@@ -25,6 +27,36 @@ router = APIRouter(
     prefix="/users", 
     tags=["Users"]
 )
+
+# Username check
+@router.post("/check-username", response_model=UsernameCheckResponse, tags=["public"])
+def check_username_availability(
+    request: UsernameCheckRequest,
+    db: Session = Depends(get_db)
+):
+    username = request.username.strip()
+
+    if len(username) < 3:
+        return UsernameCheckResponse(
+            available=False,
+            message="Username must be at least 3 characters"
+        )
+
+    existing_user = db.query(User).filter(
+        User.username.ilike(username),
+        User.deleted_at.is_(None)
+    ).first()
+        
+    if existing_user:
+        return UsernameCheckResponse(
+            available=False,
+            message="Username is already taken"
+        )
+    
+    return UsernameCheckResponse(
+        available=True,
+        message="Username is available"
+    )
 
 # Login with username or email; returns JWT token and user role
 @router.post("/login", response_model=TokenResponse)
