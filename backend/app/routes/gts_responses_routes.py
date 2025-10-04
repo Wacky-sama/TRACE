@@ -24,7 +24,7 @@ def create_gts_response(
 
     name_parts = [
         user.firstname.strip() if user.firstname else "",
-        user.middle_initial.strip() if user.middle_initial else "",
+        f"{user.middle_initial.strip()}." if user.middle_initial else "",
         user.lastname.strip() if user.lastname else "",
         user.name_extension.strip() if user.name_extension else ""
     ]
