@@ -42,7 +42,10 @@ function RegisterForm({ setIsRegistering }) {
   const nextStep = () => setStep(2);
   const prevStep = () => setStep(1);
 
-  async function handleRegister(finalOccupations = formData.occupation) {
+  async function handleRegister(
+    finalNonEmployedReasons = formData.nonEmployedReasons,
+    finalOccupations = formData.occupation
+  ) {
     setRegisterError("");
     setRegisterSuccess("");
 
@@ -65,7 +68,6 @@ function RegisterForm({ setIsRegistering }) {
         course: formData.course.trim(),
         batch_year: parseInt(formData.batchYear.trim()),
         password: formData.registerPassword,
-        role: "alumni",
       };
 
       const userResponse = await api.post(
@@ -99,20 +101,13 @@ function RegisterForm({ setIsRegistering }) {
             : null,
 
         occupation:
-          formData.employmentNow === "Yes" && finalOccupations.length
-            ? finalOccupations.map((o) => o.trim())
+          formData.employmentNow === "Yes" && finalOccupations?.length
+            ? finalOccupations
             : null,
 
         non_employed_reasons:
-          formData.employmentNow === "No"
-            ? [
-                ...formData.nonEmployedReasons.filter(
-                  (r) => r !== "Other reasons, please specify"
-                ),
-                ...(formData.otherNonEmployedReason.trim()
-                  ? [formData.otherNonEmployedReason.trim()]
-                  : []),
-              ]
+          formData.employmentNow === "No" && finalNonEmployedReasons?.length
+            ? finalNonEmployedReasons
             : null,
 
         permanent_address: formData.permanentAddress.trim(),

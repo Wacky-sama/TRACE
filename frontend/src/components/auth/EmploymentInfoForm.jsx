@@ -132,20 +132,20 @@ function EmploymentInfoForm({
   const onSubmit = async () => {
     if (!validate()) return;
 
-    const finalNonEmployedReasons = formData.occupation.map((o) =>
-      o === "Other reasons, please specify" ? otherNonEmployedReason.trim() : o.trim()
+    const finalNonEmployedReasons = formData.nonEmployedReasons.map((r) =>
+      r === "Other reasons, please specify"
+        ? otherNonEmployedReason.trim()
+        : r.trim()
     );
 
     const finalOccupations = formData.occupation.map((o) =>
-      o === "Others, please specify" ? otherOccupation.trim() : o.trim()
+      o === "Others, please specify" 
+      ? otherOccupation.trim() 
+      : o.trim()
     );
 
     try {
-      await handleRegister({
-        ...formData,
-        nonEmployedReasons: finalNonEmployedReasons,
-        occupation: finalOccupations
-      });
+      await handleRegister(finalNonEmployedReasons, finalOccupations);
 
       setFormData({});
       setOtherNonEmployedReason("");
@@ -325,7 +325,7 @@ function EmploymentInfoForm({
               <label
                 key={reason}
                 className={`px-2 py-1 border rounded cursor-pointer ${
-                  nonEmployedReasons.includes(reason)
+                  formData.nonEmployedReasons.includes(reason)
                     ? "bg-blue-600 text-white border-blue-600"
                     : "bg-white text-gray-700"
                 }`}
@@ -333,7 +333,7 @@ function EmploymentInfoForm({
                 <input
                   type="checkbox"
                   value={reason}
-                  checked={nonEmployedReasons.includes(reason)}
+                  checked={formData.nonEmployedReasons.includes(reason)}
                   onChange={() => handleNonEmployedReasonChange(reason)}
                   className="hidden"
                 />
@@ -342,15 +342,14 @@ function EmploymentInfoForm({
             ))}
           </div>
 
-          {nonEmployedReasons.includes("Other reasons, please specify") && (
+          {formData.nonEmployedReasons.includes(
+            "Other reasons, please specify"
+          ) && (
             <FloatingInput
               id="otherNonEmployedReason"
-              value={formData.otherNonEmployedReason}
+              value={otherNonEmployedReason}
               onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  otherNonEmployedReason: e.target.value.trimStart(),
-                }))
+                setOtherNonEmployedReason(e.target.value.trimStart())
               }
               label="Please specify"
               error={errors.otherNonEmployedReason}
