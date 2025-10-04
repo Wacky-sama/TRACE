@@ -22,18 +22,18 @@ const AdminCreateUser = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const validate = () => {
-    const errs = {};
-    if (!form.username) errs.username = "Username is required";
-    if (!form.email) errs.email = "Email is required";
-    if (!form.password) errs.password = "Password is required";
-    if (!form.confirmPassword) errs.confirmPassword = "Confirm password is required";
-    if (form.password !== form.confirmPassword) errs.confirmPassword = "Passwords do not match";
-    if (!form.lastname) errs.lastname = "Last name is required";
-    if (!form.firstname) errs.firstname = "First name is required";
+    const validateErrors = {};
+    if (!form.username) validateErrors.username = "Username is required";
+    if (!form.email) validateErrors.email = "Email is required";
+    if (!form.password) validateErrors.password = "Password is required";
+    if (!form.confirmPassword) validateErrors.confirmPassword = "Confirm password is required";
+    if (form.password !== form.confirmPassword) validateErrors.confirmPassword = "Passwords do not match";
+    if (!form.lastname) validateErrors.lastname = "Last name is required";
+    if (!form.firstname) validateErrors.firstname = "First name is required";
     if (form.role !== 'admin') {
-      errs.role = "Role must be admin";
+      validateErrors.role = "Role must be admin";
     }
-    return errs;
+    return validateErrors;
   };
 
   const handleChange = (e) => {
@@ -43,9 +43,9 @@ const AdminCreateUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
-    const errs = validate();
-    if (Object.keys(errs).length) {
-      setErrors(errs);
+    const submitErrors = validate();
+    if (Object.keys(submitErrors).length) {
+      setErrors(submitErrors);
       return;
     }
     setErrors({});

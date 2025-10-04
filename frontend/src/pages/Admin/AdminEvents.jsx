@@ -18,11 +18,11 @@ const AdminEvents = () => {
   const [editingEvent, setEditingEvent] = useState(null);
 
   const validate = () => {
-    const errs = {};
-    if (!editForm.title) errs.title = "Title is required";
-    if (!editForm.location) errs.location = "Location is required";
-    if (!editForm.event_date) errs.event_date = "Event date is required";
-    return errs;
+    const validateErrors = {};
+    if (!editForm.title) validateErrors.title = "Title is required";
+    if (!editForm.location) validateErrors.location = "Location is required";
+    if (!editForm.event_date) validateErrors.event_date = "Event date is required";
+    return validateErrors;
   };
 
   useEffect(() => {

@@ -10,8 +10,8 @@ const AlumniEvents = () => {
         try {
             const res = await api.get('/events');
             setEvents(res.data);
-        } catch (err) {
-            console.error('Failed to fetch events:', err);
+        } catch (error) {
+            console.error('Failed to fetch events:', error);
             alert('Backend might be on coffee break ☕');
         } finally {
             setLoading(false);
