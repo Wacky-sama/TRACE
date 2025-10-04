@@ -140,16 +140,12 @@ function EmploymentInfoForm({
 
     const finalOccupations = formData.occupation.map((o) =>
       o === "Others, please specify" 
-        ? otherOccupation.trim()
-        : o.trim()
+      ? otherOccupation.trim() 
+      : o.trim()
     );
 
     try {
-      await handleRegister({
-        ...formData,
-        nonEmployedReasons: finalNonEmployedReasons,
-        occupation: finalOccupations,
-      });
+      await handleRegister(finalNonEmployedReasons, finalOccupations);
 
       setFormData({});
       setOtherNonEmployedReason("");
