@@ -42,7 +42,10 @@ function RegisterForm({ setIsRegistering }) {
   const nextStep = () => setStep(2);
   const prevStep = () => setStep(1);
 
-  async function handleRegister(finalOccupations = formData.occupation, finalNonEmployedReasons = formData.nonEmployedReasons) {
+  async function handleRegister(
+    finalNonEmployedReasons = formData.nonEmployedReasons,
+    finalOccupations = formData.occupation
+  ) {
     setRegisterError("");
     setRegisterSuccess("");
 
@@ -99,13 +102,13 @@ function RegisterForm({ setIsRegistering }) {
             : null,
 
         occupation:
-          formData.employmentNow === "Yes" && finalOccupations.length
-            ? finalOccupations.map((o) => o.trim())
+          formData.employmentNow === "Yes" && finalOccupations?.length
+            ? finalOccupations
             : null,
 
         non_employed_reasons:
-          formData.employmentNow === "No" && finalNonEmployedReasons.length
-            ? finalNonEmployedReasons.map((r) => r.trim())
+          formData.employmentNow === "No" && finalNonEmployedReasons?.length
+            ? finalNonEmployedReasons
             : null,
 
         permanent_address: formData.permanentAddress.trim(),
