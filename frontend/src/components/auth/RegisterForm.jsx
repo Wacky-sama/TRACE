@@ -68,7 +68,6 @@ function RegisterForm({ setIsRegistering }) {
         course: formData.course.trim(),
         batch_year: parseInt(formData.batchYear.trim()),
         password: formData.registerPassword,
-        role: "alumni",
       };
 
       const userResponse = await api.post(
