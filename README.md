@@ -93,7 +93,7 @@ GRANT ALL PRIVILEGES ON DATABASE trace_db TO trace_user;
 \q
 ```
 
-### (Optional) Install pgAdmin web
+### Install pgAdmin web
 
 Install the public key for the repository:
 
@@ -176,7 +176,7 @@ pip --version
 
 ### Install PostgreSQL
 
-1. Download from [PostgreSQL.org](https://www.pgadmin.org/download/pgadmin-4-windows/)
+1. Download from [PostgreSQL.org](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 2. Run the installer (leave port 5432 unless you need custom).
 3. During install, note down the password for the default postgres user.
 4. Open SQL Shell (psql) and create the database and user:
