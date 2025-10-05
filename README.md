@@ -186,7 +186,7 @@ pip --version
 
 1. Download from [PostgreSQL.org](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 2. Run the installer (leave port 5432 unless you need custom).
-3. Select all the Components
+3. Select all the Components.
 4. During install, note down the password for the default postgres user.
 5. Open SQL Shell (psql) and create the database and user:
 
