@@ -184,6 +184,7 @@ pip --version
 
 ### Install PostgreSQL
 
+**Note:** Don't skip any installation.
 1. Download from [PostgreSQL.org](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 2. Run the installer (leave port 5432 unless you need custom).
 3. Select all the Components.
