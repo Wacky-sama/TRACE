@@ -192,6 +192,7 @@ pip --version
 5. During install, note down the password for the default postgres user.
 6. Open SQL Shell (psql) and create the database and user:
 
+**Note:** Skip this step if you are my Collaborator.
 ```bash
 CREATE DATABASE trace_db;
 CREATE USER trace_user WITH PASSWORD 'yourpassword';
