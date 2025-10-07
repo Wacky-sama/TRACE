@@ -1,50 +1,53 @@
-import { getToken } from '../../utils/storage';
-import { useState } from 'react';
-import api from '../../services/api';
+import { getToken } from "../../utils/storage";
+import { useState } from "react";
+import api from "../../services/api";
+import FloatingInput from "../../components/FloatingInput";
+import FloatingSelect from "../../components/FloatingSelect";
+import FloatingDatePicker from "../../components/FloatingDatePicker";
 
 const AdminCreateEvent = () => {
-  const [form, setForm] = useState({
-    title: '',
-    description: '',
-    location: '',
-    event_date: '',
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    location: "",
+    event_date: "",
   });
 
   const [errors, setErrors] = useState({});
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Validation function
   const validate = () => {
     const validateErrors = {};
-    if (!form.title) validateErrors.title = "Title is required";
-    if (!form.location) validateErrors.location = "Location is required";
-    if (!form.event_date) validateErrors.event_date = "Event date is required";
-    return validateErrors;
-  };
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    if (!formData.title.trim()) validateErrors.title = "Title is required";
+    if (!formData.location) validateErrors.location = "Location is required";
+    if (!formData.event_date) validateErrors.event_date = "Event date is required";
+    setErrors(validateErrors);
+    return Object.keys(validateErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage('');
-    const submitErrors = validate();
-    if (Object.keys(submitErrors).length) {
-      setErrors(submitErrors);
-      return;
-    }
-    setErrors({});
+    setMessage("");
+
+    if (!validate()) return;
+
     setLoading(true);
 
     try {
-      await api.post(
-        '/events',
-        form,
-        { headers: { Authorization: `Bearer ${getToken()}` } }
-    );
+      await api.post("/events", formData, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+
       setMessage("Event created successfully!");
-      setForm({ title: '', description: '', location: '', event_date: '' });
+      setFormData({
+        title: "",
+        description: "",
+        location: "",
+        event_date: "",
+      });
+      setErrors({});
     } catch (error) {
       setMessage(error.response?.data?.detail || "Failed to create event");
     } finally {
@@ -53,62 +56,111 @@ const AdminCreateEvent = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-xl mx-auto p-6 bg-white shadow-md rounded-lg space-y-4">
-      <h2 className="text-xl font-semibold mb-4">Create Event</h2>
+    <>
+      <div>
+        <p className="text-lg font-semibold mb-4">
+          On this page, you can create events that alumni can view and register for.
+        </p>
+        <p className="text-sm mb-6">
+          Note: Make sure to provide accurate details for your event.
+        </p>
+      </div>
 
-      <input
-        name="title"
-        value={form.title}
-        onChange={handleChange}
-        placeholder="Title"
-        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-      />
-      {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
+      <div className="space-4">
+        <form
+          onSubmit={handleSubmit}
+          className="max-w-xl mx-auto p-6 bg-white shadow-md rounded-lg"
+        >
+          <h2 className="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Create Event
+          </h2>
 
-      <textarea
-        name="description"
-        value={form.description}
-        onChange={handleChange}
-        placeholder="Description (optional)"
-        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-        rows={3}
-      />
+          <div className="space-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <FloatingInput
+                id="title"
+                label="Event Title"
+                value={formData.title}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
+                error={errors.title}
+              />
 
-      <select
-        name="location"
-        value={form.location}
-        onChange={handleChange}
-        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-      >
-        <option value="">Select a location</option>
-        <option value="GYM">GYM</option>
-        <option value="Conference Hall">Conference Hall</option>
-        <option value="Oval">Oval</option>
-        <option value="Admin Building">Admin Building</option>
-        <option value="Mabric Hall">Mabric Hall</option>
-      </select>
+              <FloatingSelect
+                id="location"
+                label="Location"
+                value={formData.location}
+                onChange={(e) =>
+                  setFormData({ ...formData, location: e.target.value })
+                }
+                error={errors.location}
+                options={[
+                  "GYM",
+                  "Conference Hall",
+                  "Oval",
+                  "Admin Building",
+                  "Mabric Hall",
+                ]}
+                placeholder="Select Location"
+              />
+            </div>
+          </div>
 
-      {errors.location && <p className="text-red-500 text-sm">{errors.location}</p>}
+          <div className="space-2">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Description (Optional)
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+              placeholder="Describe your event..."
+              rows={3}
+              className="w-full p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring focus:ring-blue-200"
+            />
+          </div>
 
-      <input
-        name="event_date"
-        type="date"
-        value={form.event_date}
-        onChange={handleChange}
-        className="w-full p-3 border border-gray-300 rounded-md text-sm"
-      />
-      {errors.event_date && <p className="text-red-500 text-sm">{errors.event_date}</p>}
+          <div className="mt-2">
+            <FloatingDatePicker
+              id="event_date" 
+              value={formData.event_date}
+              onChange={(date) =>
+                setFormData({ ...formData, event_date: date.target.value })
+              }
+              label="Event Date"
+              error={errors.event_date}
+            />
+          </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700"
-        disabled={loading}
-      >
-        {loading ? "Creating..." : "Create Event"}
-      </button>
+          <button
+            type="submit"
+            className="w-full mt-4 bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 transition"
+            disabled={loading}
+          >
+            {loading ? "Creating..." : "Create Event"}
+          </button>
 
-      {message && <p className="text-center text-sm text-green-600 mt-2">{message}</p>}
-    </form>
+          {message && (
+            <p
+              className={`text-center text-sm mt-2 ${
+                message.includes("successfully")
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {message}
+            </p>
+          )}
+        </form>
+      </div>
+    </>
   );
 };
 

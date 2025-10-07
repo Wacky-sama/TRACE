@@ -18,6 +18,7 @@ const AdminCreateUser = () => {
     middleInitial: "",
     nameExtension: "",
   });
+
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -91,6 +92,7 @@ const AdminCreateUser = () => {
           Note: You can only create one admin account.
         </p>
       </div>
+
       <div className="space-4">
         <form
           onSubmit={handleSubmit}
