@@ -38,6 +38,7 @@ class AlumniRegister(BaseModel):
     lastname: str
     firstname: str
     middle_initial: Optional[str] = None
+    name_extension: Optional[str] = None
     course: str
     batch_year: int = Field(
         ...,
@@ -45,7 +46,6 @@ class AlumniRegister(BaseModel):
         le=datetime.now(timezone.utc).year,
         description="Graduation year must be between 1900 and the current year"
     )
-    name_extension: Optional[str] = None
     birthday: date
     present_address: str
     permanent_address: str
@@ -60,7 +60,7 @@ class AdminUserCreate(BaseModel):
     lastname: str
     firstname: str
     middle_initial: Optional[str] = None
-    role: UserRole
+    name_extension: Optional[str] = None
 
 class UserOut(BaseModel):
     id: UUID

@@ -169,7 +169,7 @@ def create_user_as_admin(
 # Public endpoint for alumni registration (requires admin approval)
 @router.post("/register/alumni", tags=["public"], response_model=UserOut)
 def register_alumni(
-    user: AlumniRegister,
+    user_data: AlumniRegister,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ):
@@ -181,20 +181,20 @@ def register_alumni(
 
     try:
         new_user = User(
-            username=user.username,
-            email=user.email,
-            password_hash=hash_password(user.password),
-            lastname=user.lastname,
-            firstname=user.firstname,
-            middle_initial=user.middle_initial,
-            name_extension=user.name_extension,
-            birthday=user.birthday,
-            present_address=user.present_address,
-            permanent_address=user.permanent_address,
-            contact_number=user.contact_number,
-            course=user.course,
-            batch_year=user.batch_year,
-            sex=user.sex,
+            username=user_data.username,
+            email=user_data.email,
+            password_hash=hash_password(user_data.password),
+            lastname=user_data.lastname,
+            firstname=user_data.firstname,
+            middle_initial=user_data.middle_initial,
+            name_extension=user_data.name_extension,
+            birthday=user_data.birthday,
+            present_address=user_data.present_address,
+            permanent_address=user_data.permanent_address,
+            contact_number=user_data.contact_number,
+            course=user_data.course,
+            batch_year=user_data.batch_year,
+            sex=user_data.sex,
             role=UserRole.alumni,
             is_approved=False,
         )

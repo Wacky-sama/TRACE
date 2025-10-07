@@ -26,38 +26,40 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   }, [formData.birthday, setFormData]);
 
   const validate = () => {
-    const newErrors = {};
-    if (!formData.email?.trim()) newErrors.email = "Email is required";
+    const validateErrors = {};
+    if (!formData.email?.trim()) validateErrors.email = "Email is required";
     if (!formData.registerIdentifier?.trim())
-      newErrors.registerIdentifier = "Username required";
+      validateErrors.registerIdentifier = "Username is required";
     else if (usernameAvailable === false)
-      newErrors.registerIdentifier = "Username is already taken";
-    if (!formData.lastName?.trim()) newErrors.lastName = "Last name required";
+      validateErrors.registerIdentifier = "Username is already taken";
+    if (!formData.lastName?.trim())
+      validateErrors.lastName = "Last name is required";
     if (!formData.firstName?.trim())
-      newErrors.firstName = "First name required";
-    if (!formData.birthday) newErrors.birthday = "Birthday required";
-    if (!formData.sex) newErrors.sex = "Sex is required";
+      validateErrors.firstName = "First name is required";
+    if (!formData.birthday) validateErrors.birthday = "Birthday is required";
+    if (!formData.sex) validateErrors.sex = "Sex is required";
     if (!formData.presentAddress?.trim())
-      newErrors.presentAddress = "Present address required";
+      validateErrors.presentAddress = "Present address is required";
     if (!formData.permanentAddress?.trim())
-      newErrors.permanentAddress = "Permanent address required";
+      validateErrors.permanentAddress = "Permanent address is required";
     if (!formData.contactNumber?.trim())
-      newErrors.contactNumber = "Contact number required";
-    if (!formData.course) newErrors.course = "Course required";
-    if (!formData.batchYear) newErrors.batchYear = "Batch year required";
+      validateErrors.contactNumber = "Contact number is required";
+    if (!formData.course) validateErrors.course = "Course is required";
+    if (!formData.batchYear)
+      validateErrors.batchYear = "Batch year is required";
     if (!formData.registerPassword)
-      newErrors.registerPassword = "Password required";
+      validateErrors.registerPassword = "Password is required";
     if (!formData.registerConfirmPassword)
-      newErrors.registerConfirmPassword = "Confirm Password required";
+      validateErrors.registerConfirmPassword = "Confirm Password is required";
     if (
       formData.registerPassword &&
       formData.registerConfirmPassword &&
       formData.registerPassword !== formData.registerConfirmPassword
     ) {
-      newErrors.registerConfirmPassword = "Passwords do not match";
+      validateErrors.registerConfirmPassword = "Passwords do not match";
     }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setErrors(validateErrors);
+    return Object.keys(validateErrors).length === 0;
   };
 
   const handleNext = () => {
