@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import FloatingDatePicker from "../FloatingDatePicker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import FloatingDatePicker from "../FloatingDatePicker";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 import UsernameInput from "../UsernameInput";

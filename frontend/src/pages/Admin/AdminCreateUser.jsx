@@ -27,14 +27,12 @@ const AdminCreateUser = () => {
 
   const validate = () => {
     const validateErrors = {};
-    if (!formData.email) 
-      validateErrors.email = "Email is required";
+    if (!formData.email) validateErrors.email = "Email is required";
     if (!formData.registerIdentifier?.trim())
       validateErrors.registerIdentifier = "Username is required";
     else if (usernameAvailable === false)
       validateErrors.registerIdentifier = "Username is already taken";
-    if (!formData.lastName) 
-      validateErrors.lastName = "Last name is required";
+    if (!formData.lastName) validateErrors.lastName = "Last name is required";
     if (!formData.firstName)
       validateErrors.firstName = "First name is required";
     if (!formData.registerPassword)
