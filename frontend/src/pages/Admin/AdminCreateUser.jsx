@@ -18,6 +18,7 @@ const AdminCreateUser = () => {
     middleInitial: "",
     nameExtension: "",
   });
+
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -26,12 +27,14 @@ const AdminCreateUser = () => {
 
   const validate = () => {
     const validateErrors = {};
-    if (!formData.email) validateErrors.email = "Email is required";
+    if (!formData.email) 
+      validateErrors.email = "Email is required";
     if (!formData.registerIdentifier?.trim())
       validateErrors.registerIdentifier = "Username is required";
     else if (usernameAvailable === false)
       validateErrors.registerIdentifier = "Username is already taken";
-    if (!formData.lastName) validateErrors.lastName = "Last name is required";
+    if (!formData.lastName) 
+      validateErrors.lastName = "Last name is required";
     if (!formData.firstName)
       validateErrors.firstName = "First name is required";
     if (!formData.registerPassword)
@@ -91,6 +94,7 @@ const AdminCreateUser = () => {
           Note: You can only create one admin account.
         </p>
       </div>
+
       <div className="space-4">
         <form
           onSubmit={handleSubmit}

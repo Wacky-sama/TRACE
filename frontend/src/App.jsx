@@ -9,6 +9,8 @@ import AuthPage from './components/auth/AuthPage';
 // Admin imports
 import AdminDashboard from "./pages/Admin/AdminDashboard"
 import AdminUsers from './pages/Admin/AdminUsers';
+import AdminCreateUser from './pages/Admin/AdminCreateUser';
+import AdminCreateEvent from './pages/Admin/AdminCreateEvent';
 import AdminEvents from './pages/Admin/AdminEvents';
 import AdminAnalytics from './pages/Admin/AdminAnalytics';
 import AdminReports from './pages/Admin/AdminReports';
@@ -107,6 +109,8 @@ function App() {
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="users" element={<AdminUsers />} />
+          <Route path="create-user" element={<AdminCreateUser />} />
+          <Route path="create-event" element={<AdminCreateEvent />} />
           <Route path="events" element={<AdminEvents />} />
           <Route path="analytics" element={<AdminAnalytics />} />
           <Route path="reports" element={<AdminReports />} />

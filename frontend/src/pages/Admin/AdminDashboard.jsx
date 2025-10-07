@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import AdminCreateUser from './AdminCreateUser';
 import AdminCreateEvent from './AdminCreateEvent';
 import { 
@@ -15,6 +16,7 @@ const AdminDashboard = () => {
   const [onlineUsers, setOnlineUsers] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [activePanel, setActivePanel] = useState('dashboard');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserStats = async () => {
@@ -126,10 +128,10 @@ const AdminDashboard = () => {
             <div className="bg-white p-6 rounded-lg shadow">
               <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
               <div className="space-y-2">
-                <button onClick={() => setActivePanel('create-user')} className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
+                <button onClick={() => navigate('/admin/create-user')} className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
                   Create User
                 </button>
-                <button onClick={() => setActivePanel('create-event')} className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
+                <button onClick={() => navigate('/admin/create-event')} className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
                   Create Event
                 </button>
                 <button className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
