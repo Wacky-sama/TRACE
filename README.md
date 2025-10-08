@@ -152,19 +152,13 @@ sudo /usr/pgadmin4/bin/setup-web.sh
 
 For Windows user, make sure you have **Docker**, **Node.js (LTS)**, **Python 3**, and **PostgreSQL** installed.
 
-### Install Docker
-
-1. Download from [Docker Docs]( https://docs.docker.com/desktop/setup/install/windows-install/) official site.
-2. Download the filename "Docker Desktop for Windows - x86_64".
-3. After downloading, double-click it and on the Configuration, select "Use WSL 2 instead of Hyper-V (recommended)" then click "OK".
-4. After the installation is done, click "Close".
-5. Open Docker Desktop, Accept, Login using your GMAIL.
-
 ### Install Node.js
 
 1. Download from [Node.js](https://nodejs.org/en/download) official site.
-2. Run the installer (.msi) and follow the steps.
-3. Verify installation in:
+2. Install using Chocolatey with npm
+3. Follow the instructions.
+4. After installation is done, restart/re-open your terminal.
+5. Then verify installation in:
 
 ```bash
 node -v
@@ -185,6 +179,7 @@ pip --version
 ### Install PostgreSQL
 
 **Note:** Don't skip any installation.
+
 1. Download from [PostgreSQL.org](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 2. Run the installer (leave port 5432 unless you need custom).
 3. Select all the Components.
