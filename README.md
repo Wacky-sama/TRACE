@@ -109,7 +109,7 @@ sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] h
 
 If you encounter an error like this:
 
-E: The repository 'https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/xia pgadmin4 Release' does not have a Release file.
+E: The repository '<https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/xia> pgadmin4 Release' does not have a Release file.
 
 N: Updating from such a repository can't be done securely, and is therefore disabled by default.
 
@@ -146,7 +146,7 @@ Run initial setup:
 sudo /usr/pgadmin4/bin/setup-web.sh
 ```
 
-## After that you can login at: **http://localhost/pgadmin4**
+## After that you can login at: **<http://localhost/pgadmin4>**
 
 ### Windows Setup
 
@@ -182,16 +182,28 @@ pip --version
 
 1. Download from [PostgreSQL.org](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 2. Run the installer (leave port 5432 unless you need custom).
-3. Select all the Components.
-4. On the Stack Builder, select pgBouncer and Npgsql.
-5. During install, note down the password for the default postgres user.
-6. Open SQL Shell (psql) and create the database and user:
+3. Uncheck Stack Builder.
+4. During install, note down the password for the default postgres user.
+5. Open SQL Shell (psql) and create the database and user:
 
 **Note:** Skip this step if you are my Collaborator.
+
 ```bash
 CREATE DATABASE trace_db;
 CREATE USER trace_user WITH PASSWORD 'yourpassword';
 GRANT ALL PRIVILEGES ON DATABASE trace_db TO trace_user;
+```
+
+### Steps on how to restore the full_trace_backup
+
+Put the full_trace_backup on Downloads folder.
+
+```bash
+# Change directory 
+cd "Program Files\PostgreSQL\18\bin"
+
+psql -U postgres -f "C:\Users\username\Downloads\full_trace_backup_20250917_010857.sql"
+
 ```
 
 ---
@@ -213,9 +225,9 @@ npm install
 npm run dev
 ```
 
-### Frontend runs at:
+### Frontend runs at
 
-- http://localhost:5173/
+- <http://localhost:5173/>
 - http://your_ip_address:5173/
 
 ### Backend (FastAPI)
@@ -235,9 +247,9 @@ pip install -r requirements.txt
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### Backend runs at:
+### Backend runs at
 
-- http://localhost:8000
+- <http://localhost:8000>
 - http://your_ip_address:8000
 
 ### Windows
@@ -255,9 +267,9 @@ npm install
 npm run dev
 ```
 
-### Frontend runs at:
+### Frontend runs at
 
-- http://localhost:5173/
+- <http://localhost:5173/>
 - http://your_ip_address:5173/
 
 ### Backend (FastAPI)
@@ -277,11 +289,10 @@ pip install -r .\requirements.txt
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### Backend runs at:
+### Backend runs at
 
-- http://localhost:8000
+- <http://localhost:8000>
 - http://your_ip_address:8000
-
 
 ---
 
