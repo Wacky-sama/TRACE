@@ -184,11 +184,16 @@ pip --version
 2. Run the installer (leave port 5432 unless you need custom).
 3. Uncheck Stack Builder.
 4. During install, note down the password for the default postgres user.
-5. Open SQL Shell (psql) and create the database and user:
+5. Open CMD or PowerShell run it as Administrator and create the database and user:
 
 **Note:** Skip this step if you are my Collaborator.
 
 ```bash
+# Run:
+psql -U postgres -h localhost
+# Enter your PostgreSQL password (the one you set during installation).
+
+# Creating database
 CREATE DATABASE trace_db;
 CREATE USER trace_user WITH PASSWORD 'yourpassword';
 GRANT ALL PRIVILEGES ON DATABASE trace_db TO trace_user;
@@ -196,14 +201,17 @@ GRANT ALL PRIVILEGES ON DATABASE trace_db TO trace_user;
 
 ### Steps on how to restore the full_trace_backup
 
+**Note:** This is for my Collaborators.
+
 Put the full_trace_backup on Downloads folder.
+
+Open CMD or PowerShell:
 
 ```bash
 # Change directory 
 cd "Program Files\PostgreSQL\18\bin"
 
 psql -U postgres -f "C:\Users\username\Downloads\full_trace_backup_20250917_010857.sql"
-
 ```
 
 ---
