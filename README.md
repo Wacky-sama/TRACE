@@ -109,7 +109,7 @@ sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] h
 
 If you encounter an error like this:
 
-E: The repository 'https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/xia pgadmin4 Release' does not have a Release file.
+E: The repository '<https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/xia> pgadmin4 Release' does not have a Release file.
 
 N: Updating from such a repository can't be done securely, and is therefore disabled by default.
 
@@ -146,25 +146,19 @@ Run initial setup:
 sudo /usr/pgadmin4/bin/setup-web.sh
 ```
 
-## After that you can login at: **http://localhost/pgadmin4**
+## After that you can login at: **<http://localhost/pgadmin4>**
 
 ### Windows Setup
 
 For Windows user, make sure you have **Docker**, **Node.js (LTS)**, **Python 3**, and **PostgreSQL** installed.
 
-### Install Docker
-
-1. Download from [Docker Docs]( https://docs.docker.com/desktop/setup/install/windows-install/) official site.
-2. Download the filename "Docker Desktop for Windows - x86_64".
-3. After downloading, double-click it and on the Configuration, select "Use WSL 2 instead of Hyper-V (recommended)" then click "OK".
-4. After the installation is done, click "Close".
-5. Open Docker Desktop, Accept, Login using your GMAIL.
-
 ### Install Node.js
 
 1. Download from [Node.js](https://nodejs.org/en/download) official site.
-2. Run the installer (.msi) and follow the steps.
-3. Verify installation in:
+2. Install using Chocolatey with npm
+3. Follow the instructions.
+4. After installation is done, restart/re-open your terminal.
+5. Then verify installation in:
 
 ```bash
 node -v
@@ -185,23 +179,46 @@ pip --version
 ### Install PostgreSQL
 
 **Note:** Don't skip any installation.
+
 1. Download from [PostgreSQL.org](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 2. Run the installer (leave port 5432 unless you need custom).
-3. Select all the Components.
-4. On the Stack Builder, select pgBouncer and Npgsql.
-5. During install, note down the password for the default postgres user.
-6. Open SQL Shell (psql) and create the database and user:
+3. Uncheck Stack Builder.
+4. During install, note down the password for the default postgres user.
+5. Open CMD or PowerShell run it as Administrator and create the database and user:
 
 **Note:** Skip this step if you are my Collaborator.
+
 ```bash
+# Run:
+psql -U postgres -h localhost
+# Enter your PostgreSQL password (the one you set during installation).
+
+# Creating database
 CREATE DATABASE trace_db;
 CREATE USER trace_user WITH PASSWORD 'yourpassword';
 GRANT ALL PRIVILEGES ON DATABASE trace_db TO trace_user;
 ```
 
+### Steps on how to restore the full_trace_backup
+
+**Note:** This is for my Collaborators.
+
+Put the full_trace_backup on Downloads folder.
+
+Open CMD or PowerShell:
+
+```bash
+# Change directory 
+cd "Program Files\PostgreSQL\18\bin"
+
+psql -U postgres -f "C:\Users\username\Downloads\full_trace_backup_20250917_010857.sql"
+```
+
 ---
 
-## Running the System (Development Stage)
+## Running the System for Linux and Windows (Development Stage)
+
+### Linux
 
 ### Frontend (React + Vite)
 
@@ -216,9 +233,9 @@ npm install
 npm run dev
 ```
 
-### Frontend runs at:
+### Frontend runs at
 
-- http://localhost:5173/
+- <http://localhost:5173/>
 - http://your_ip_address:5173/
 
 ### Backend (FastAPI)
@@ -238,9 +255,51 @@ pip install -r requirements.txt
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### Backend runs at:
+### Backend runs at
 
-- http://localhost:8000
+- <http://localhost:8000>
+- http://your_ip_address:8000
+
+### Windows
+
+### Frontend (React + Vite)
+
+```bash
+# Navigate to the frontend directory
+cd .\frontend\
+
+# Install dependencies (only needed once)
+npm install
+
+# Start the Vite development server
+npm run dev
+```
+
+### Frontend runs at
+
+- <http://localhost:5173/>
+- http://your_ip_address:5173/
+
+### Backend (FastAPI)
+
+```bash
+# Navigate to the backend directory
+cd .\backend\
+
+# Create and activate a virtual environment (only needed once)
+python -m venv venv
+.\venv\Scripts\activate # deactivate with: deactivate
+
+# Install dependencies
+pip install -r .\requirements.txt
+
+# Run the FastAPI development server
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+### Backend runs at
+
+- <http://localhost:8000>
 - http://your_ip_address:8000
 
 ---
