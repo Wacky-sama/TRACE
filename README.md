@@ -93,6 +93,22 @@ GRANT ALL PRIVILEGES ON DATABASE trace_db TO trace_user;
 \q
 ```
 
+### Steps on how to restore the full_trace_backup
+
+**Note:** This is for my Collaborators.
+
+Put the full_trace_backup on TRACE folder.
+
+Open your Terminal:
+
+```bash
+# Command for backup including Database and Roles
+psql -U postgres -f /path/to/TRACE/full_trace_backup_20250917_010857.sql
+
+# Connect to trace_db using trace_admin
+psql -U trace_admin -d trace_db -h localhost -W
+```
+
 ### Install pgAdmin web
 
 Install the public key for the repository:
@@ -197,6 +213,8 @@ psql -U postgres -h localhost
 CREATE DATABASE trace_db;
 CREATE USER trace_user WITH PASSWORD 'yourpassword';
 GRANT ALL PRIVILEGES ON DATABASE trace_db TO trace_user;
+
+\q
 ```
 
 ### Steps on how to restore the full_trace_backup
@@ -211,7 +229,11 @@ Open CMD or PowerShell:
 # Change directory 
 cd "Program Files\PostgreSQL\18\bin"
 
+# Command for backup including Database and Roles
 psql -U postgres -f "C:\Users\username\Downloads\full_trace_backup_20250917_010857.sql"
+
+# Connect to trace_db using trace_admin
+psql -U trace_admin -d trace_db -h localhost -W
 ```
 
 ---
