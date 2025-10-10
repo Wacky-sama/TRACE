@@ -17,14 +17,14 @@ class EventAction(str, Enum):
 class EventCreate(BaseModel):
     title: str
     description: Optional[str] = None
-    location: Optional[str] = None
+    location: str
     event_date: date
 
 class EventOut(BaseModel):
     id: UUID
     title: str
     description: Optional[str] = None
-    location: Optional[str] = None
+    location: str
     event_date: date
     status: str
     created_by: UUID

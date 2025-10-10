@@ -3,7 +3,7 @@ import { useState } from "react";
 import api from "../../services/api";
 import FloatingInput from "../../components/FloatingInput";
 import FloatingSelect from "../../components/FloatingSelect";
-import FloatingDatePicker from "../../components/FloatingDatePicker";
+import AdminFloatingDatePicker from "../../components/AdminFloatingDatePicker";
 
 const AdminCreateEvent = () => {
   const [formData, setFormData] = useState({
@@ -17,12 +17,12 @@ const AdminCreateEvent = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Validation function
   const validate = () => {
     const validateErrors = {};
     if (!formData.title.trim()) validateErrors.title = "Title is required";
     if (!formData.location) validateErrors.location = "Location is required";
-    if (!formData.event_date) validateErrors.event_date = "Event date is required";
+    if (!formData.event_date)
+      validateErrors.event_date = "Event date is required";
     setErrors(validateErrors);
     return Object.keys(validateErrors).length === 0;
   };
@@ -36,9 +36,18 @@ const AdminCreateEvent = () => {
     setLoading(true);
 
     try {
-      await api.post("/events", formData, {
-        headers: { Authorization: `Bearer ${getToken()}` },
-      });
+      await api.post(
+        "/events/",
+        {
+          ...formData,
+          event_date: formData.event_date
+            ? formData.event_date.toISOString().split("T")[0] // Convert to YYYY-MM-DD
+            : "",
+        },
+        {
+          headers: { Authorization: `Bearer ${getToken()}` },
+        }
+      );
 
       setMessage("Event created successfully!");
       setFormData({
@@ -59,7 +68,8 @@ const AdminCreateEvent = () => {
     <>
       <div>
         <p className="text-lg font-semibold mb-4">
-          On this page, you can create events that alumni can view and register for.
+          On this page, you can create events that alumni can view and register
+          for.
         </p>
         <p className="text-sm mb-6">
           Note: Make sure to provide accurate details for your event.
@@ -128,11 +138,11 @@ const AdminCreateEvent = () => {
           </div>
 
           <div className="mt-2">
-            <FloatingDatePicker
-              id="event_date" 
+            <AdminFloatingDatePicker
+              id="event_date"
               value={formData.event_date}
               onChange={(date) =>
-                setFormData({ ...formData, event_date: date.target.value })
+                setFormData({ ...formData, event_date: date })
               }
               label="Event Date"
               error={errors.event_date}
