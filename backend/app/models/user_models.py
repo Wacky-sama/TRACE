@@ -4,7 +4,6 @@ from sqlalchemy import Column, String, Boolean, Enum, Integer, DateTime, Date
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from app.database import Base
-from datetime import datetime
 
 class UserRole(str, enum.Enum):
     admin = "admin"

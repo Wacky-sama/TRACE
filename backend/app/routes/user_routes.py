@@ -7,6 +7,7 @@ from starlette import status
 from typing import List, Optional
 from app.config import settings
 from app.database import get_db
+from app.models.activity_log_models import ActivityLog
 from app.models.user_models import User, UserRole
 from app.models.gts_responses_models import GTSResponse
 from app.schemas.user_schemas import (UsernameCheckRequest, 
@@ -19,6 +20,7 @@ from app.schemas.user_schemas import (UsernameCheckRequest,
                                       PaginatedUserResponse,
                                       TokenResponse, 
                                       UserProfileOut)
+from app.utils.auth import get_current_user
 from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
 from datetime import timedelta, datetime
@@ -86,24 +88,6 @@ def login(
         username=user.username,
         is_approved=user.is_approved
     )
-
-# Dependency to get the current user from JWT token
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
-
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
-    try:
-        payload = decode_access_token(token)
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
-    
-    username = payload.get("sub")
-    if not username:
-        raise HTTPException(status_code=401, detail="Invalid token payload")
-
-    user = db.query(User).filter(User.username == username).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
 
  # Admin-only route to create Admin accounts (limits: 2 Admins)
 @router.post("/admin/create-user", response_model=UserOut, status_code=201)
@@ -174,12 +158,13 @@ def register_alumni(
     db: Session = Depends(get_db)
 ):
     # Check for existing email/username
-    if db.query(User).filter(User.email == user.email, User.deleted_at.is_(None)).first():
+    if db.query(User).filter(User.email == user_data.email, User.deleted_at.is_(None)).first():
         raise HTTPException(status_code=400, detail="Email already registered")
-    if db.query(User).filter(User.username == user.username, User.deleted_at.is_(None)).first():
+    if db.query(User).filter(User.username == user_data.username, User.deleted_at.is_(None)).first():
         raise HTTPException(status_code=400, detail="Username already registered")
 
     try:
+        # Create and save new alumni user
         new_user = User(
             username=user_data.username,
             email=user_data.email,
@@ -199,8 +184,16 @@ def register_alumni(
             is_approved=False,
         )
         db.add(new_user)
+        db.flush()  # Flush to get new_user.id
+    
+        # Log the registration in ActivityLog
+        log = ActivityLog(
+            user_id=new_user.id,
+            action_type="register",
+            description=f"Alumni {new_user.firstname} {new_user.lastname} registered an account",
+        )
+        db.add(log)
         db.commit()
-        db.refresh(new_user)
 
     except SQLAlchemyError as e:
         db.rollback()
@@ -216,7 +209,7 @@ def register_alumni(
 
     Best regards,  
     TRACE Team
-     """
+    """
     background_tasks.add_task(send_email, to_email=new_user.email, subject=subject, body=body)
 
     return new_user

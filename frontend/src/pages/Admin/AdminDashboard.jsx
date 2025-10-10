@@ -18,6 +18,7 @@ const AdminDashboard = () => {
   const [archivedUsers, setArchivedUsers] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [recentActivity, setRecentActivity] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,6 +49,21 @@ const AdminDashboard = () => {
 
     fetchUserStats();
     const interval = setInterval(fetchUserStats, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const fetchRecentActivity = async () => {
+      try {
+        const res = await api.get("/activity/recent");
+        setRecentActivity(res.data);
+      } catch (err) {
+        console.error("Error fetching recent activity:", err);
+      }
+    };
+
+    fetchRecentActivity();
+    const interval = setInterval(fetchRecentActivity, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -138,10 +154,21 @@ const AdminDashboard = () => {
             <div className="bg-white p-6 rounded-lg shadow">
               <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">New user registered</span>
-                  <span className="text-xs text-gray-500">2 min ago</span>
-                </div>
+                {recentActivity.length > 0 ? (
+                  recentActivity.map((log) => (
+                    <div
+                      key={log.id}
+                      className="flex items-center justify-between"
+                    >
+                      <span className="text-sm">{log.description}</span>
+                      <span className="text-xs text-gray-500">
+                        {new Date(log.created_at).toLocaleString()}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">No recent activities.</p>
+                )}
               </div>
             </div>
 

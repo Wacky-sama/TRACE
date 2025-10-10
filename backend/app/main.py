@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.config import settings
 from app.database import Base, engine
-from app.routes import user_routes, event_routes, gts_responses_routes, event_attendance_routes
+from app.routes import activity_log_routes, event_attendance_routes, event_routes, gts_responses_routes, user_routes
 from app.middleware.auth_middleware import AuthMiddleware
 
 load_dotenv()
@@ -23,10 +23,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(user_routes.router)  # User routes
+app.include_router(activity_log_routes.router)  # Activity log routes
 app.include_router(event_routes.router) # Event routes
-app.include_router(gts_responses_routes.router) # GTS response routes
 app.include_router(event_attendance_routes.router) # Event attendance routes
+app.include_router(gts_responses_routes.router) # GTS response routes
+app.include_router(user_routes.router)  # User routes
 
 @app.get("/")
 def root():
