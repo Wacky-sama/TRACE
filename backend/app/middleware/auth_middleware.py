@@ -7,8 +7,13 @@ from app.models.user_models import User, UserRole
 from app.utils.security import decode_access_token
 import logging
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Configure logger
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+logger = logging.getLogger("auth_middleware")
 
 PUBLIC_ROUTES = [
     "/users/login",
@@ -20,46 +25,56 @@ PUBLIC_ROUTES = [
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         path = request.url.path
-        logger.info(f"[{datetime.utcnow()}] Incoming: {request.method} {path}")
+        method = request.method
 
-        # Allow public routes without token
+        # Skip authentication for public routes
         if any(path.startswith(route) for route in PUBLIC_ROUTES):
+            logger.debug(f"Public route accessed: {method} {path}")
             return await call_next(request)
 
         token = request.headers.get("Authorization")
-        if token and token.startswith("Bearer "):
-            token = token[7:]
-            try:
-                payload = decode_access_token(token)
-                username = payload.get("sub")
-                role = payload.get("role")
-                exp = payload.get("exp")
-
-                logger.info(f"Token OK: {username}, role={role}, exp={exp}")
-
-                db = SessionLocal()
-                try:
-                    user = db.query(User).filter(User.username == username).first()
-                    if not user:
-                        return JSONResponse({"detail": "Invalid user"}, status_code=401)
-
-                    # Update last_seen
-                    old_last_seen = user.last_seen
-                    user.last_seen = datetime.utcnow()
-                    db.commit()
-                    logger.info(f"last_seen updated for {username}: {old_last_seen} -> {user.last_seen}")
-
-                    if path.startswith("/admin") and user.role != UserRole.admin:
-                        return JSONResponse({"detail": "Admins only"}, status_code=403)
-
-                finally:
-                    db.close()
-
-            except Exception as e:
-                logger.error(f"Auth error: {str(e)}")
-                return JSONResponse({"detail": "Invalid or expired token"}, status_code=401)
-
-        else:
+        if not token or not token.startswith("Bearer "):
+            logger.warning(f"Unauthorized access attempt: {method} {path}")
             return JSONResponse({"detail": "Authorization required"}, status_code=401)
+
+        token = token[7:]
+        db = SessionLocal()
+
+        try:
+            payload = decode_access_token(token)
+            username = payload.get("sub")
+            role = payload.get("role", "unknown")
+            exp = payload.get("exp")
+
+            if not username:
+                raise ValueError("Missing username in token payload")
+
+            # Validate user existence
+            user = db.query(User).filter(User.username == username).first()
+            if not user:
+                logger.warning(f"Invalid user token: {username}")
+                return JSONResponse({"detail": "Invalid user"}, status_code=401)
+
+            # Role restriction check
+            if path.startswith("/admin") and user.role != UserRole.admin:
+                logger.warning(f"Unauthorized admin access: {username}")
+                return JSONResponse({"detail": "Admins only"}, status_code=403)
+
+            # Update last_seen only if >10s difference to reduce DB writes
+            now = datetime.utcnow()
+            if not user.last_seen or (now - user.last_seen).total_seconds() > 10:
+                old_seen = user.last_seen
+                user.last_seen = now
+                db.commit()
+                logger.debug(f"{username} last_seen updated ({old_seen} → {now})")
+
+            logger.info(f"{method} {path} | user={username} | role={role} | OK")
+
+        except Exception as e:
+            logger.error(f"Auth error for {method} {path}: {str(e)}")
+            return JSONResponse({"detail": "Invalid or expired token"}, status_code=401)
+
+        finally:
+            db.close()
 
         return await call_next(request)

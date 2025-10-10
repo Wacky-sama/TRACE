@@ -2,7 +2,12 @@ import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserSlash, faUserMinus, faUserCheck, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faUserSlash, 
+  faUserMinus, 
+  faUserCheck, 
+  faMagnifyingGlass 
+} from '@fortawesome/free-solid-svg-icons';
 
 const AdminUsers = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
