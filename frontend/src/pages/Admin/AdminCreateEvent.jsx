@@ -3,7 +3,7 @@ import { useState } from "react";
 import api from "../../services/api";
 import FloatingInput from "../../components/FloatingInput";
 import FloatingSelect from "../../components/FloatingSelect";
-import AdminFloatingDatePicker from "../../components/AdminFloatingDatePicker";
+import AdminFloatingDatePicker from "../../components/common/AdminFloatingDatePicker";
 
 const AdminCreateEvent = () => {
   const [formData, setFormData] = useState({
@@ -41,7 +41,7 @@ const AdminCreateEvent = () => {
         {
           ...formData,
           event_date: formData.event_date
-            ? formData.event_date.toISOString().split("T")[0] // Convert to YYYY-MM-DD
+            ? formData.event_date.toISOString().split("T")[0]
             : "",
         },
         {
