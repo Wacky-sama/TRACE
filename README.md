@@ -103,7 +103,7 @@ Open your Terminal:
 
 ```bash
 # Command for backup including Database and Roles
-psql -U postgres -f /path/to/TRACE/full_trace_backup_20250917_010857.sql
+sudo -u postgres psql -f /path/to/TRACE/full_trace_backup_20250917_010857.sql
 
 # Connect to trace_db using trace_admin
 psql -U trace_admin -d trace_db -h localhost -W
