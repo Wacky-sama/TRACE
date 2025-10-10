@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import FloatingDatePicker from "../FloatingDatePicker";
+import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 import UsernameInput from "../UsernameInput";
@@ -155,7 +155,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
       <div className="space-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          <FloatingDatePicker
+          <AlumniFloatingDatePicker
             id="birthday"
             value={formData.birthday}
             onChange={(date) =>
