@@ -80,7 +80,10 @@ def login(
         raise HTTPException(status_code=403, detail="Access Denied!")
 
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)  
-    token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+    token = create_access_token(
+        data={"sub": user.username, "role": user.role.value}, 
+        expires_delta=access_token_expires
+    )
 
     return TokenResponse(
         token=token,
