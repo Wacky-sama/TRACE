@@ -193,7 +193,7 @@ def register_alumni(
         log = ActivityLog(
             user_id=new_user.id,
             action_type="register",
-            description=f"Alumni {new_user.firstname} {new_user.lastname} registered an account",
+            description=f"Alumni - {new_user.firstname} {new_user.lastname} registered an account",
         )
         db.add(log)
         db.commit()
