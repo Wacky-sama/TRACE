@@ -1,6 +1,7 @@
 import uuid
 import enum
-from sqlalchemy import Column, String, Enum, ForeignKey, DateTime, JSON
+from sqlalchemy import Column, Enum, ForeignKey, DateTime, JSON
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.database import Base
@@ -17,11 +18,11 @@ class ActionType(str, enum.Enum):
 class ActivityLog(Base):
     __tablename__ = "activity_logs"
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()")
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     action_type = Column(Enum(ActionType, name="action_type_enum"), nullable=False)
-    description = Column(String, nullable=False)
-    target_user_id = Column(String, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    description = Column(JSON, nullable=False)
+    target_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     meta_data = Column(JSON, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
