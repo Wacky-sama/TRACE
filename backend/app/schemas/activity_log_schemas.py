@@ -7,7 +7,7 @@ class ActivityLogBase(BaseModel):
     action_type: str
     description: str
     target_user_id: Optional[UUID] = None
-    metadata: Optional[Any] = None
+    meta_data: Optional[Any] = None
 
 class ActivityLogCreate(ActivityLogBase):
     pass

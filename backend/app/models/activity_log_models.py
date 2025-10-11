@@ -1,8 +1,8 @@
+import uuid
 from sqlalchemy import Column, String, ForeignKey, Text, JSON, TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-import uuid
 from app.database import Base 
 
 class ActivityLog(Base):
@@ -16,5 +16,16 @@ class ActivityLog(Base):
     meta_data = Column(JSON)
     created_at = Column(TIMESTAMP, server_default=func.now())
 
-    user = relationship("User", foreign_keys=[user_id], backref="activity_logs")
-    target_user = relationship("User", foreign_keys=[target_user_id])
+    user = relationship(
+        "User",
+        back_populates="activity_logs",
+        foreign_keys=[user_id],
+        passive_deletes=True,
+    )
+
+    target_user = relationship(
+        "User",
+        back_populates="target_logs",
+        foreign_keys=[target_user_id],
+        passive_deletes=True,
+    )

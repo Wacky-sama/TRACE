@@ -3,6 +3,7 @@ import enum
 from sqlalchemy import Column, String, Boolean, Enum, Integer, DateTime, Date
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 from app.database import Base
 
 class UserRole(str, enum.Enum):
@@ -37,4 +38,20 @@ class User(Base):
     present_address = Column(String, nullable=True)
     permanent_address = Column(String, nullable=True)
     contact_number = Column(String, nullable=True)
-    sex = Column(Enum(SexEnum), nullable=False) 
+    sex = Column(Enum(SexEnum), nullable=False)
+
+    # Relationships
+    activity_logs = relationship(
+        "ActivityLog",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        foreign_keys="ActivityLog.user_id",
+    )
+
+    target_logs = relationship(
+        "ActivityLog",
+        back_populates="target_user",
+        foreign_keys="ActivityLog.target_user_id",
+        passive_deletes=True,
+    ) 
