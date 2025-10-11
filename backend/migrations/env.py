@@ -1,13 +1,10 @@
+import os
+import configparser
+import app.models
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 from app.database import Base
-import app.models.user_models as user_models
-import app.models.event_models
-import app.models.gts_responses_models
-import app.models.event_attendance_models
-import os
-import configparser
 from dotenv import load_dotenv
 from urllib.parse import quote_plus
 

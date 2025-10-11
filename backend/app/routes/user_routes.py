@@ -1,13 +1,13 @@
 from uuid import UUID
 from fastapi import APIRouter,  BackgroundTasks, Depends, HTTPException, Query
-from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from starlette import status
 from typing import List, Optional
 from app.config import settings
 from app.database import get_db
-from app.models.activity_log_models import ActivityLog
+from app.models.activity_log_models import ActivityLog, ActionType
 from app.models.user_models import User, UserRole
 from app.models.gts_responses_models import GTSResponse
 from app.schemas.user_schemas import (UsernameCheckRequest, 
@@ -20,6 +20,7 @@ from app.schemas.user_schemas import (UsernameCheckRequest,
                                       PaginatedUserResponse,
                                       TokenResponse, 
                                       UserProfileOut)
+from app.utils.activity_logger import log_activity
 from app.utils.auth import get_current_user
 from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
@@ -85,6 +86,13 @@ def login(
         expires_delta=access_token_expires
     )
 
+    log_activity(
+        db=db,
+        user_id=user.id,
+        action_type=ActionType.login,
+        description=f"{user.role.value.capitalize()} {user.firstname} {user.lastname} logged in"
+    )
+
     return TokenResponse(
         token=token,
         role=user.role,
@@ -128,6 +136,14 @@ def create_user_as_admin(
     db.commit()
     db.refresh(new_user)
 
+    log_activity(
+        db=db,
+        user_id=current_user.id,
+        action_type=ActionType.register,
+        description=f"Admin created account for {new_user.firstname} {new_user.lastname} ({new_user.role.value})",
+        target_user_id=new_user.id
+    )
+        
     role_display_name = {
         UserRole.admin: "Administrator",
     }
@@ -189,13 +205,13 @@ def register_alumni(
         db.add(new_user)
         db.flush()  # Flush to get new_user.id
     
-        # Log the registration in ActivityLog
-        log = ActivityLog(
+        # Log alumni self-registration
+        log_activity(
+            db=db,
             user_id=new_user.id,
-            action_type="register",
-            description=f"Alumni - {new_user.firstname} {new_user.lastname} registered an account",
+            action_type=ActionType.register,
+            description=f"Alumni {new_user.firstname} {new_user.lastname} registered an account"
         )
-        db.add(log)
         db.commit()
 
     except SQLAlchemyError as e:
@@ -283,7 +299,16 @@ def block_user(user_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     user.is_active = False
     db.commit() 
+    # Log blocking action
+    log_activity(
+        db=db,
+        user_id=str(user.id),
+        action_type=ActionType.update,
+        description=f"Blocked user {user.firstname} {user.lastname}",
+        target_user_id=str(user.id)
+    )
 
+    
 # Reactivate a previously blocked user
 @router.patch("/{user_id}/unblock", status_code=204)
 def unblock_user(user_id: str, db: Session = Depends(get_db)):
@@ -292,6 +317,13 @@ def unblock_user(user_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     user.is_active = True
     db.commit()
+    log_activity(
+        db=db,
+        user_id=str(user.id),
+        action_type=ActionType.update,
+        description=f"Unblocked user {user.firstname} {user.lastname}",
+        target_user_id=str(user.id)
+    )
 
 # Soft-delete user by setting deleted_at timestamp
 @router.delete("/{user_id}/delete", status_code=204)
@@ -301,10 +333,22 @@ def soft_delete_user(user_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     user.deleted_at = datetime.utcnow()
     db.commit()
-
+    log_activity(
+        db=db,
+        user_id=str(user.id),
+        action_type=ActionType.delete,
+        description=f"Soft deleted user {user.firstname} {user.lastname}",
+        target_user_id=str(user.id)
+    )
+    
 # Approve pending user (typically alumni registration)
 @router.patch("/{user_id}/approve", status_code=status.HTTP_204_NO_CONTENT)
-def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+def approve_user(
+    user_id: str,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     user = db.query(User).filter(User.id == UUID(user_id)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -312,41 +356,38 @@ def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
         raise HTTPException(status_code=400, detail="User already approved")
 
     try:
-        # Update user approval status
         user.is_approved = True
-
-        # Find existing GTSResponse record
         existing_gts = db.query(GTSResponse).filter(GTSResponse.user_id == user.id).first()
 
         if existing_gts:
-            # Update the existing record with missing fields
             full_name = f"{user.firstname} {user.middle_initial + '.' if user.middle_initial else ''} {user.lastname} {user.name_extension or ''}".strip()
             existing_gts.full_name = full_name
             existing_gts.degree = user.course
             existing_gts.sex = user.sex
-            # Don't need to add anything - just update
         else:
-            # Only create if no record exists (shouldn't happen in normal flow)
-            full_name = f"{user.firstname} {user.middle_initial + '.' if user.middle_initial else ''} {user.lastname} {user.name_extension or ''}".strip()
             gts_response = GTSResponse(
                 user_id=user.id,
-                full_name=full_name,
+                full_name=f"{user.firstname} {user.lastname}",
                 permanent_address=user.permanent_address,
                 birthday=user.birthday,
                 degree=user.course,
-                # ... rest of your fields
             )
             db.add(gts_response)
-        
-            # Single commit for both operations
+
         db.commit()
-        
+
+        log_activity(
+            db=db,
+            user_id=current_user.id,  # Admin performing approval
+            action_type=ActionType.approve,
+            description=f"Approved alumni account of {user.firstname} {user.lastname}",
+            target_user_id=user.id
+        )
+
     except SQLAlchemyError as e:
         db.rollback()
-        print(f"Error occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to approve user: {str(e)}")
 
-    # Send approval email
     subject = "Your Alumni Account Has Been Approved"
     body = f"""\
     Dear {user.lastname}, {user.firstname},
@@ -355,29 +396,27 @@ def approve_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
 
     You may now log in using your credentials to access the alumni dashboard.
 
-    If you have any questions, feel free to contact us.
-
     Best regards,  
     TRACE Team
     """
-
-    background_tasks.add_task(send_email, user.email, subject, body)
-
-    return 
+    background_tasks.add_task(send_email, user.email, subject, body) 
 
 # Decline pending user by deleting record (only if not yet approved)
 @router.patch("/{user_id}/decline", status_code=status.HTTP_204_NO_CONTENT)
-def decline_user(user_id: str, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+def decline_user(
+    user_id: str,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     if user.is_approved:
         raise HTTPException(status_code=400, detail="User already approved, can't decline")
 
-    # Delete associated GTSResponse record (if it exists)
     db.query(GTSResponse).filter(GTSResponse.user_id == user.id).delete()
 
-    # Send decline email
     subject = "Alumni Registration Status"
     body = f"""\
     Dear {user.firstname} {user.lastname},
@@ -389,13 +428,19 @@ def decline_user(user_id: str, background_tasks: BackgroundTasks, db: Session = 
     Sincerely,  
     Alumni Registration Team
     """
-
     background_tasks.add_task(send_email, user.email, subject, body)
 
     db.delete(user)
     db.commit()
 
-    return 
+    log_activity(
+        db=db,
+        user_id=current_user.id,  # Admin performing decline
+        action_type=ActionType.decline,
+        description=f"Declined alumni registration of {user.firstname} {user.lastname}",
+        target_user_id=user.id
+    )
+
 
 # Get total user count and counts per role
 @router.get("/stats")
