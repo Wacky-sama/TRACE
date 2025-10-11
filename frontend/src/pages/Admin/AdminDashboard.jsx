@@ -9,6 +9,16 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUserPlus,
+  faUserCheck,
+  faUserTimes,
+  faCalendarPlus,
+  faPen,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import { formatDistanceToNow } from "date-fns";
 import api from "../../services/api";
 
 const AdminDashboard = () => {
@@ -40,8 +50,6 @@ const AdminDashboard = () => {
         setArchivedUsers(archivedRes.data.archived_users);
         setOnlineUsers(onlineRes.data);
         setCurrentUser(meRes.data);
-
-        console.log("Online users:", onlineRes.data);
       } catch (error) {
         console.error("Error fetching user stats: ", error);
       }
@@ -82,54 +90,57 @@ const AdminDashboard = () => {
     }
   };
 
+  const getActivityIcon = (actionType, description) => {
+    if (actionType === "register") return { icon: faUserPlus, color: "text-blue-600 bg-blue-100" };
+    if (actionType === "approve") return { icon: faUserCheck, color: "text-green-600 bg-green-100" };
+    if (actionType === "decline") return { icon: faUserTimes, color: "text-red-600 bg-red-100" };
+    if (actionType === "create_event" || description.includes("Event"))
+      return { icon: faCalendarPlus, color: "text-indigo-600 bg-indigo-100" };
+    if (actionType === "update") return { icon: faPen, color: "text-yellow-600 bg-yellow-100" };
+    if (actionType === "delete") return { icon: faTrash, color: "text-gray-600 bg-gray-100" };
+    return { icon: faUserPlus, color: "text-blue-600 bg-blue-100" };
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">
+          {/* Header */}
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+          <h2 className="text-xl text-gray-700 mb-8">
             Welcome, {currentUser?.firstname}!
-          </h1>
+          </h2>
 
           {/* User Statistics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-sm font-medium text-gray-500">Total Users</h3>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {userStats ? userStats.total_users : "Loading..."}
-              </p>
-              <p className="text-xs text-green-600 mt-1">Live Data</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-sm font-medium text-gray-500">
-                Active Users
-              </h3>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {activeUsers ?? "Loading..."}
-              </p>
-              <p className="text-xs text-green-600 mt-1">Live Data</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-sm font-medium text-gray-500">
-                Blocked Users
-              </h3>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {blockedUsers ?? "Loading..."}
-              </p>
-              <p className="text-xs text-green-600 mt-1">Live Data</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-sm font-medium text-gray-500">
-                Archived Users
-              </h3>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {archivedUsers ?? "Loading..."}
-              </p>
-              <p className="text-xs text-green-600 mt-1">Live Data</p>
-            </div>
+            {[
+              {
+                title: "Total Users",
+                value: userStats?.total_users,
+              },
+              {
+                title: "Active Users",
+                value: activeUsers,
+              },
+              {
+                title: "Blocked Users",
+                value: blockedUsers,
+              },
+              {
+                title: "Archived Users",
+                value: archivedUsers,
+              },
+            ].map((card, i) => (
+              <div key={i} className="bg-white p-6 rounded-lg shadow">
+                <h3 className="text-sm font-medium text-gray-500">
+                  {card.title}
+                </h3>
+                <p className="text-3xl font-bold text-gray-900 mt-2">
+                  {card.value ?? "Loading..."}
+                </p>
+                <p className="text-xs text-green-600 mt-1">Live Data</p>
+              </div>
+            ))}
           </div>
 
           {/* Chart Section */}
@@ -149,29 +160,48 @@ const AdminDashboard = () => {
             </ResponsiveContainer>
           </div>
 
-          {/* Quick Actions and Online Users */}
+          {/* Recent Activity & Quick Actions */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow">
+            {/* Recent Activity */}
+            <div className="bg-white p-6 rounded-lg shadow max-h-96 overflow-y-auto">
               <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {recentActivity.length > 0 ? (
-                  recentActivity.map((log) => (
-                    <div
-                      key={log.id}
-                      className="flex items-center justify-between"
-                    >
-                      <span className="text-sm">{log.description}</span>
-                      <span className="text-xs text-gray-500">
-                        {new Date(log.created_at).toLocaleString()}
-                      </span>
-                    </div>
-                  ))
+                  recentActivity.map((log) => {
+                    const { icon, color } = getActivityIcon(
+                      log.action_type,
+                      log.description
+                    );
+                    return (
+                      <div
+                        key={log.id}
+                        className="flex items-start justify-between bg-gray-50 hover:bg-gray-100 p-3 rounded-lg transition-colors"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div
+                            className={`flex items-center justify-center w-8 h-8 rounded-full ${color}`}
+                          >
+                            <FontAwesomeIcon icon={icon} />
+                          </div>
+                          <span className="text-sm text-gray-800">
+                            {log.description}
+                          </span>
+                        </div>
+                        <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
+                          {formatDistanceToNow(new Date(log.created_at), {
+                            addSuffix: true,
+                          })}
+                        </span>
+                      </div>
+                    );
+                  })
                 ) : (
                   <p className="text-sm text-gray-500">No recent activities.</p>
                 )}
               </div>
             </div>
 
+            {/* Quick Actions */}
             <div className="bg-white p-6 rounded-lg shadow">
               <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
               <div className="space-y-2">
