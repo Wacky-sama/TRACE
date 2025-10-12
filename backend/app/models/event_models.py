@@ -19,5 +19,4 @@ class Event(Base):
     approved_at = Column(DateTime)
     remarks = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
-
     creator = relationship("User", foreign_keys=[created_by])
