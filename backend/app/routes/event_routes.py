@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, aliased
-from sqlalchemy import select
 from uuid import UUID
 from datetime import datetime
 from app.database import get_db

@@ -1,13 +1,12 @@
 from uuid import UUID
 from fastapi import APIRouter,  BackgroundTasks, Depends, HTTPException, Query
-from sqlalchemy import func
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from starlette import status
 from typing import List, Optional
 from app.config import settings
 from app.database import get_db
-from app.models.activity_logs_models import ActivityLog, ActionType
+from app.models.activity_logs_models import ActionType
 from app.models.users_models import User, UserRole
 from app.models.gts_responses_models import GTSResponse
 from app.schemas.user_schemas import (UsernameCheckRequest, 
