@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models.user_models import User
+from app.models.users_models import User
 from app.models.gts_responses_models import GTSResponse
 from app.schemas.gts_responses_schemas import GTSResponseCreate, GTSResponseOut
 from uuid import UUID

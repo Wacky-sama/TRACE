@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.models.activity_log_models import ActivityLog, ActionType
+from app.models.activity_logs_models import ActivityLog, ActionType
 from datetime import datetime
 
 def log_activity(

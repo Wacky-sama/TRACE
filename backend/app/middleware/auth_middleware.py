@@ -3,7 +3,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from datetime import datetime
 from app.database import SessionLocal
-from app.models.user_models import User, UserRole
+from app.models.users_models import User, UserRole
 from app.utils.security import decode_access_token
 import logging
 

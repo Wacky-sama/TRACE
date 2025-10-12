@@ -5,8 +5,8 @@ from uuid import UUID
 from datetime import datetime
 from app.database import get_db
 from app.routes.user_routes import get_current_user  
-from app.models.user_models import User  
-from app.models import event_models
+from app.models.users_models import User  
+from app.models import events_models
 from app.schemas import event_schemas
 from app.schemas.event_schemas import EventAction
 
@@ -21,7 +21,7 @@ def create_event(
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Only Admin can create events.")
 
-    new_event = event_models.Event(
+    new_event = events_models.Event(
         title=event_in.title,
         description=event_in.description,
         location=event_in.location,
@@ -38,9 +38,9 @@ def create_event(
 def get_events_by_status(db, status, skip=0, limit=100):
     creator = aliased(User)
     results = (
-        db.query(event_models.Event, creator.firstname, creator.lastname)
-        .join(creator, event_models.Event.created_by == creator.id)
-        .filter(event_models.Event.status == status)
+        db.query(events_models.Event, creator.firstname, creator.lastname)
+        .join(creator, events_models.Event.created_by == creator.id)
+        .filter(events_models.Event.status == status)
         .offset(skip)
         .limit(limit)
         .all()
@@ -69,7 +69,7 @@ def update_event_status(
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    event = db.query(event_models.Event).filter(event_models.Event.id == event_id).first()
+    event = db.query(events_models.Event).filter(events_models.Event.id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
@@ -91,7 +91,7 @@ def delete_event(
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    event = db.query(event_models.Event).filter(event_models.Event.id == event_id).first()
+    event = db.query(events_models.Event).filter(events_models.Event.id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
@@ -110,7 +110,7 @@ def update_event(
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    event = db.query(event_models.Event).filter(event_models.Event.id == event_id).first()
+    event = db.query(events_models.Event).filter(events_models.Event.id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
