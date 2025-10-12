@@ -91,10 +91,9 @@ CREATE ROLE trace_user WITH PASSWORD 'yourpassword';
 ALTER ROLE trace_user CREATEDB;
 ALTER DATABASE trace_db OWNER TO trace_user;
 GRANT ALL PRIVILEGES ON DATABASE trace_db TO trace_user;
-CREATE SCHEMA IF NOT EXISTS trace_user AUTHORIZATION trace_user;
+ALTER SCHEMA public OWNER TO trace_user;
+GRANT ALL ON SCHEMA public TO trace_user;
 ALTER ROLE trace_user SET search_path TO trace_user, public;
-GRANT ALL ON SCHEMA trace_user TO trace_user;
-GRANT USAGE ON SCHEMA public TO trace_user;
 
 # Creating extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
