@@ -370,12 +370,173 @@ pip --version
 psql -U postgres -h localhost
 # Enter your PostgreSQL password (the one you set during installation).
 
-# Creating database
+# Inside psql shell:
 CREATE DATABASE trace_db;
-CREATE USER trace_user WITH PASSWORD 'yourpassword';
+CREATE ROLE trace_user WITH PASSWORD 'yourpassword';
+ALTER ROLE trace_user CREATEDB;
+ALTER DATABASE trace_db OWNER TO trace_user;
 GRANT ALL PRIVILEGES ON DATABASE trace_db TO trace_user;
 
+# Creating extensions
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+# Creating data types
+CREATE TYPE sexenum AS ENUM ('male', 'female');
+CREATE TYPE userrole AS ENUM ('admin', 'alumni');
+CREATE TYPE actiontype AS ENUM ('register', 'approve', 'decline', 'delete', 'update', 'login', 'logout');;
+
 \q
+```
+
+### Create Table
+
+Inside trace_db:
+
+```bash
+# Create the activity_logs table
+CREATE TABLE activity_logs (
+    id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+    user_id uuid NOT NULL,
+    action_type actiontype NOT NULL,
+    description json NOT NULL,
+    target_user_id uuid,
+    meta_data json,
+    created_at timestamp without time zone NOT NULL DEFAULT now()
+);
+
+# Create the event_attendance table
+CREATE TABLE event_attendance (
+    id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+    event_id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    status varchar(10) DEFAULT 'registered',
+    registered_at timestamp without time zone DEFAULT now(),
+    attended_at timestamp without time zone
+);
+
+# Create the event table
+CREATE TABLE events (
+    id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+    title varchar NOT NULL,
+    description text,
+    location varchar,
+    event_date date NOT NULL,
+    created_by uuid NOT NULL,
+    status varchar(20) DEFAULT 'pending',
+    approved_by uuid,
+    approved_at timestamp without time zone,
+    remarks text,
+    created_at timestamp without time zone DEFAULT now()
+);
+
+# Create the gts_responses table
+CREATE TABLE gts_responses (
+    id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+    user_id uuid NOT NULL,
+    full_name text NOT NULL,
+    permanent_address text NOT NULL,
+    contact_email text NOT NULL,
+    telephone text,
+    mobile text NOT NULL,
+    civil_status text,
+    sex text NOT NULL,
+    birthday date NOT NULL,
+    degree text,
+    specialization text,
+    year_graduated integer,
+    honors text,
+    exams jsonb,
+    pursued_advance_degree boolean,
+    pursued_advance_degree_reasons text[],
+    trainings jsonb,
+    ever_employed boolean,
+    is_employed boolean,
+    non_employed_reasons text[],
+    employment_status text,
+    occupation varchar[],
+    company_name text,
+    company_address text,
+    job_sector text,
+    place_of_work text,
+    first_job boolean,
+    job_related_to_course boolean,
+    job_start_date date,
+    months_to_first_job integer,
+    job_find_methods text[],
+    job_reasons text[],
+    job_change_reasons text[],
+    job_level_first text,
+    job_level_current text,
+    first_job_salary numeric,
+    curriculum_relevance_first_job boolean,
+    curriculum_relevance_second_job boolean,
+    useful_competencies text[],
+    curriculum_improvement_suggestions text,
+    job_satisfaction text,
+    job_satisfaction_reason text,
+    desired_services text,
+    job_problems text,
+    submitted_at date DEFAULT now()
+);
+
+# Create the users table
+CREATE TABLE users ( 
+        id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+        username VARCHAR NOT NULL UNIQUE,
+        email VARCHAR NOT NULL UNIQUE,
+        password_hash VARCHAR NOT NULL,
+        lastname VARCHAR NOT NULL,
+        firstname VARCHAR NOT NULL,
+        middle_initial CHAR(1),
+        name_extension VARCHAR,
+        course VARCHAR,
+        batch_year INT,
+        role userrole NOT NULL,
+        is_active BOOLEAN DEFAULT TRUE,
+        deleted_at TIMESTAMP,
+        is_approved BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT now(),
+        updated_at TIMESTAMP DEFAULT now(),
+        last_seen TIMESTAMP,
+        birthday DATE,
+        present_address TEXT,
+        contact_number TEXT,
+        sex sexenum NOT NULL,
+        permanent_address VARCHAR
+);
+
+# Now alter each table for FK:
+# Activity Logs:
+ALTER TABLE activity_logs
+    ADD CONSTRAINT activity_logs_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE activity_logs
+    ADD CONSTRAINT activity_logs_target_user_id_fkey
+    FOREIGN KEY (target_user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+# Event Attendance:
+ALTER TABLE event_attendance
+    ADD CONSTRAINT event_attendance_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE event_attendance
+    ADD CONSTRAINT event_attendance_event_id_fkey
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE;
+
+# Events:
+ALTER TABLE events
+    ADD CONSTRAINT events_created_by_fkey
+    FOREIGN KEY (created_by) REFERENCES users(id);
+
+ALTER TABLE events
+    ADD CONSTRAINT events_approved_by_fkey
+    FOREIGN KEY (approved_by) REFERENCES users(id);
+
+# GTS Responses:
+ALTER TABLE gts_responses
+    ADD CONSTRAINT gts_responses_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 ```
 
 ### Steps on how to restore the full_trace_backup
