@@ -181,6 +181,7 @@ const AdminDashboard = () => {
             ))}
           </div>
 
+           {/* Pending Approvals Widget */}
           <div className="bg-white p-6 rounded-lg shadow mb-8">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold ">
