@@ -1,4 +1,5 @@
 import enum
+from sqlalchemy import func
 from sqlalchemy import Column, Enum, ForeignKey, DateTime, JSON
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
@@ -23,7 +24,7 @@ class ActivityLog(Base):
     description = Column(JSON, nullable=False)
     target_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     meta_data = Column(JSON, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     user = relationship("User", foreign_keys=[user_id], back_populates="activity_logs", lazy="joined")
     target_user = relationship("User", foreign_keys=[target_user_id], lazy="joined")
