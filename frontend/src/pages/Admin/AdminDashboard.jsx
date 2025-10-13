@@ -19,6 +19,7 @@ import {
   faCalendarPlus,
   faPen,
   faTrash,
+  faSpinner
 } from "@fortawesome/free-solid-svg-icons";
 import api from "../../services/api";
 
@@ -31,6 +32,8 @@ const AdminDashboard = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [recentActivity, setRecentActivity] = useState([]);
+  const [approvingUsers, setApprovingUsers] = useState(new Set());
+  const [decliningUsers, setDecliningUsers] = useState(new Set());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -88,21 +91,38 @@ const AdminDashboard = () => {
   }, []);
 
   const approveUser = async (userId) => {
+    setApprovingUsers((prev) => new Set([...prev, userId]));
     try {
       await api.post(`/users/${userId}/approve`);
       setPendingUsers((prev) => prev.filter((user) => user.id !== userId));
+      toast.success("User approved successfully!");
     } catch (error) {
       console.error("Error approving user:", error);
-      // Optionally, show a toast/error message to the user
+      toast.error("Failed to approve user. Please try again.");
+    } finally {
+      setApprovingUsers((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(userId);
+        return newSet;
+      });
     }
   };
+
   const declineUser = async (userId) => {
+    setDecliningUsers((prev) => new Set([...prev, userId]));
     try {
-      await api.post(`/users/${userId}/decline`); // Assuming /decline endpoint; adjust if it's /reject or similar
+      await api.post(`/users/${userId}/decline`);
       setPendingUsers((prev) => prev.filter((user) => user.id !== userId));
+      toast.success("User declined successfully!");
     } catch (error) {
       console.error("Error declining user:", error);
-      // Optionally, show a toast/error message to the user
+      toast.error("Failed to decline user. Please try again.");
+    } finally {
+      setDecliningUsers((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(userId);
+        return newSet;
+      });
     }
   };
 
@@ -138,7 +158,9 @@ const AdminDashboard = () => {
   };
 
   const topPendingUsers = pendingUsers.slice(0, 5);
-
+  const isApproving = (userId) => approvingUsers.has(userId);
+  const isDeclining = (userId) => decliningUsers.has(userId);
+  
   return (
     <div className="flex min-h-screen bg-gray-100">
       <main className="flex-1 p-6">
@@ -184,7 +206,7 @@ const AdminDashboard = () => {
            {/* Pending Approvals Widget */}
           <div className="bg-white p-6 rounded-lg shadow mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold ">
+              <h3 className="text-lg font-semibold">
                 Pending Alumni Approvals
               </h3>
               <span className="text-2xl font-bold text-orange-600">
@@ -215,15 +237,31 @@ const AdminDashboard = () => {
                       <div className="flex space-x-2 ml-4">
                         <button
                           onClick={() => approveUser(user.id)}
+                          disabled={isApproving(user.id) || isDeclining(user.id)}
                           className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700 transition-colors"
                         >
-                          Approve
+                          {isApproving(user.id) ? (
+                            <>
+                              <FontAwesomeIcon icon={faSpinner} spin size="xs" />
+                              <span>Approving...</span>
+                            </>
+                          ) : (
+                            <span>Approve</span>
+                          )}
                         </button>
                         <button
                           onClick={() => declineUser(user.id)}
+                          disabled={isApproving(user.id) || isDeclining(user.id)}
                           className="px-3 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700 transition-colors"
                         >
-                          Decline
+                        {isDeclining(user.id) ? (
+                          <>
+                            <FontAwesomeIcon icon={faSpinner} spin size="xs" />
+                            <span>Declining...</span>
+                          </>
+                        ) : (
+                          <span>Decline</span>
+                        )}
                         </button>
                       </div>
                     </div>
