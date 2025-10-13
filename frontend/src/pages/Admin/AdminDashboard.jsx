@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { parseISO, formatDistanceToNow } from "date-fns";
@@ -27,6 +28,7 @@ const AdminDashboard = () => {
   const [blockedUsers, setBlockedUsers] = useState(null);
   const [archivedUsers, setArchivedUsers] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState(null);
+  const [pendingUsers, setPendingUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [recentActivity, setRecentActivity] = useState([]);
   const navigate = useNavigate();
@@ -34,21 +36,30 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchUserStats = async () => {
       try {
-        const [statsRes, activeRes, blockedRes, archivedRes, onlineRes, meRes] =
-          await Promise.all([
-            api.get("/users/stats"),
-            api.get("/users/active"),
-            api.get("/users/blocked"),
-            api.get("/users/archived"),
-            api.get("/users/online"),
-            api.get("/users/me"),
-          ]);
+        const [
+          statsRes,
+          activeRes,
+          blockedRes,
+          archivedRes,
+          onlineRes,
+          pendingRes,
+          meRes,
+        ] = await Promise.all([
+          api.get("/users/stats"),
+          api.get("/users/active"),
+          api.get("/users/blocked"),
+          api.get("/users/archived"),
+          api.get("/users/online"),
+          api.get("/users/pending-alumni"),
+          api.get("/users/me"),
+        ]);
 
         setUserStats(statsRes.data);
         setActiveUsers(activeRes.data.active_users);
         setBlockedUsers(blockedRes.data.blocked_users);
         setArchivedUsers(archivedRes.data.archived_users);
         setOnlineUsers(onlineRes.data);
+        setPendingUsers(pendingRes.data || []);
         setCurrentUser(meRes.data);
       } catch (error) {
         console.error("Error fetching user stats: ", error);
@@ -76,6 +87,25 @@ const AdminDashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const approveUser = async (userId) => {
+    try {
+      await api.post(`/users/${userId}/approve`);
+      setPendingUsers((prev) => prev.filter((user) => user.id !== userId));
+    } catch (error) {
+      console.error("Error approving user:", error);
+      // Optionally, show a toast/error message to the user
+    }
+  };
+  const declineUser = async (userId) => {
+    try {
+      await api.post(`/users/${userId}/decline`); // Assuming /decline endpoint; adjust if it's /reject or similar
+      setPendingUsers((prev) => prev.filter((user) => user.id !== userId));
+    } catch (error) {
+      console.error("Error declining user:", error);
+      // Optionally, show a toast/error message to the user
+    }
+  };
+
   const chartData = userStats
     ? [{ role: "Alumni", count: userStats.alumni }]
     : [];
@@ -92,15 +122,22 @@ const AdminDashboard = () => {
   };
 
   const getActivityIcon = (actionType, description) => {
-    if (actionType === "register") return { icon: faUserPlus, color: "text-blue-600 bg-blue-100" };
-    if (actionType === "approve") return { icon: faUserCheck, color: "text-green-600 bg-green-100" };
-    if (actionType === "decline") return { icon: faUserTimes, color: "text-red-600 bg-red-100" };
+    if (actionType === "register")
+      return { icon: faUserPlus, color: "text-blue-600 bg-blue-100" };
+    if (actionType === "approve")
+      return { icon: faUserCheck, color: "text-green-600 bg-green-100" };
+    if (actionType === "decline")
+      return { icon: faUserTimes, color: "text-red-600 bg-red-100" };
     if (actionType === "create_event" || description.includes("Event"))
       return { icon: faCalendarPlus, color: "text-indigo-600 bg-indigo-100" };
-    if (actionType === "update") return { icon: faPen, color: "text-yellow-600 bg-yellow-100" };
-    if (actionType === "delete") return { icon: faTrash, color: "text-gray-600 bg-gray-100" };
+    if (actionType === "update")
+      return { icon: faPen, color: "text-yellow-600 bg-yellow-100" };
+    if (actionType === "delete")
+      return { icon: faTrash, color: "text-gray-600 bg-gray-100" };
     return { icon: faUserPlus, color: "text-blue-600 bg-blue-100" };
   };
+
+  const topPendingUsers = pendingUsers.slice(0, 5);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -142,6 +179,63 @@ const AdminDashboard = () => {
                 <p className="text-xs text-green-600 mt-1">Live Data</p>
               </div>
             ))}
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold ">
+                Pending Alumni Approvals
+              </h3>
+              <span className="text-2xl font-bold text-orange-600">
+                {pendingUsers.length}
+              </span>
+            </div>
+            {pendingUsers.length === 0 ? (
+              <p className="text-sm text-gray-500">No pending approvals.</p>
+            ) : (
+              <>
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {topPendingUsers.map((user) => (
+                    <div
+                      key={user.id}
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-900">
+                          {user.firstname} {user.lastname}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Registered{" "}
+                          {formatDistanceToNow(parseISO(user.created_at), {
+                            addSuffix: true,
+                          })}
+                        </p>
+                      </div>
+                      <div className="flex space-x-2 ml-4">
+                        <button
+                          onClick={() => approveUser(user.id)}
+                          className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700 transition-colors"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          onClick={() => declineUser(user.id)}
+                          className="px-3 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700 transition-colors"
+                        >
+                          Decline
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={() => navigate("/admin/users")}
+                  className="mt-4 w-full text-blue-600 hover:text-blue-800 hover:underline text-sm font-medium transition-colors"
+                >
+                  View All ({pendingUsers.length})
+                </button>
+              </>
+            )}
           </div>
 
           {/* Chart Section */}
@@ -190,7 +284,7 @@ const AdminDashboard = () => {
                         </div>
                         <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
                           {formatDistanceToNow(parseISO(log.created_at), {
-                            addSuffix: true
+                            addSuffix: true,
                           })}
                         </span>
                       </div>
