@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from datetime import datetime, timezone
 from typing import List
 from app.models.activity_logs_models import ActivityLog, ActionType
 from app.schemas.activity_log_schemas import ActivityLogResponse, ActivityLogCreate
@@ -28,6 +29,7 @@ def create_activity_log(
             description=log.description,
             target_user_id=log.target_user_id,
             meta_data=log.meta_data,
+            created_at=datetime.now(timezone.utc)
         )
         db.add(new_log)
         db.commit()

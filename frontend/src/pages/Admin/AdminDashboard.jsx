@@ -190,7 +190,7 @@ const AdminDashboard = () => {
                         </div>
                         <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
                           {formatDistanceToNow(parseISO(log.created_at), {
-                            addSuffix: true,
+                            addSuffix: true
                           })}
                         </span>
                       </div>
