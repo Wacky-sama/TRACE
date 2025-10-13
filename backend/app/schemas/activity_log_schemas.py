@@ -1,6 +1,6 @@
 from pydantic import BaseModel
-from typing import Optional, Any
-from datetime import datetime
+from typing import Any, Optional 
+from datetime import datetime, timezone
 from uuid import UUID
 
 class ActivityLogBase(BaseModel):
@@ -19,3 +19,6 @@ class ActivityLogResponse(ActivityLogBase):
 
     class Config:
         from_attributes = True
+        json_encoders = {
+            datetime: lambda v: v.astimezone(timezone.utc).isoformat()
+        }
