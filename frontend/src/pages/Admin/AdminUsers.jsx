@@ -19,8 +19,8 @@ const AdminUsers = () => {
   const fetchUsers = async () => {
     try {
       const [pendingRes, approvedRes] = await Promise.all([
-        api.get('/users/pending-alumni'),
-        api.get('/users/registered-users'),
+        api.get("/users/pending-alumni"),
+        api.get("/users/registered-users")
       ]);
       setPendingUsers(pendingRes.data);
       setApprovedUsers(approvedRes.data.users);
