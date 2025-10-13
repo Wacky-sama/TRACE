@@ -22,7 +22,7 @@ from app.schemas.users_schemas import (UsernameCheckRequest,
 from app.utils.activity_logger import log_activity
 from app.utils.auth import get_current_user
 from app.utils.email_sender import send_email
-from app.utils.security import hash_password, verify_password, create_access_token, decode_access_token
+from app.utils.security import hash_password, verify_password, create_access_token
 from datetime import timedelta, datetime
 
 router = APIRouter(
