@@ -36,6 +36,19 @@ const AdminDashboard = () => {
   const [decliningUsers, setDecliningUsers] = useState(new Set());
   const navigate = useNavigate();
 
+  // Helper function to safely format date (prevents parseISO crash)
+  const safeFormatDate = (dateString) => {
+    if (!dateString || typeof dateString !== 'string') {
+      return 'Recently'; // Fallback if missing/invalid
+    }
+    try {
+      return formatDistanceToNow(parseISO(dateString), { addSuffix: true });
+    } catch (error) {
+      console.warn('Invalid date format:', dateString, error);
+      return 'Unknown date';
+    }
+  };
+
   useEffect(() => {
     const fetchUserStats = async () => {
       try {
@@ -66,6 +79,7 @@ const AdminDashboard = () => {
         setCurrentUser(meRes.data);
       } catch (error) {
         console.error("Error fetching user stats: ", error);
+        toast.error("Failed to load dashboard data. Please refresh.");
       }
     };
 
@@ -79,7 +93,7 @@ const AdminDashboard = () => {
       try {
         const res = await api.get("/activity/recent");
         console.log("Recent activity raw:", res.data);
-        setRecentActivity(res.data);
+        setRecentActivity(res.data || []); // Ensure it's always an array
       } catch (err) {
         console.error("Error fetching recent activity:", err);
       }
@@ -93,7 +107,7 @@ const AdminDashboard = () => {
   const approveUser = async (userId) => {
     setApprovingUsers((prev) => new Set([...prev, userId]));
     try {
-      await api.post(`/users/${userId}/approve`);
+      await api.patch(`/users/${userId}/approve`);
       setPendingUsers((prev) => prev.filter((user) => user.id !== userId));
       toast.success("User approved successfully!");
     } catch (error) {
@@ -111,7 +125,7 @@ const AdminDashboard = () => {
   const declineUser = async (userId) => {
     setDecliningUsers((prev) => new Set([...prev, userId]));
     try {
-      await api.post(`/users/${userId}/decline`);
+      await api.patch(`/users/${userId}/decline`);
       setPendingUsers((prev) => prev.filter((user) => user.id !== userId));
       toast.success("User declined successfully!");
     } catch (error) {
@@ -127,7 +141,10 @@ const AdminDashboard = () => {
   };
 
   const chartData = userStats
-    ? [{ role: "Alumni", count: userStats.alumni }]
+    ? [
+        { role: "Admins", count: userStats.admins || 0 },
+        { role: "Alumni", count: userStats.alumni || 0 }
+      ]
     : [];
 
   const formatRole = (role) => {
@@ -203,7 +220,7 @@ const AdminDashboard = () => {
             ))}
           </div>
 
-           {/* Pending Approvals Widget */}
+          {/* Pending Approvals Widget */}
           <div className="bg-white p-6 rounded-lg shadow mb-8">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">
@@ -228,17 +245,14 @@ const AdminDashboard = () => {
                           {user.firstname} {user.lastname}
                         </p>
                         <p className="text-xs text-gray-500">
-                          Registered{" "}
-                          {formatDistanceToNow(parseISO(user.created_at), {
-                            addSuffix: true,
-                          })}
+                          Registered {safeFormatDate(user.created_at)} {/* Safe date parsing */}
                         </p>
                       </div>
                       <div className="flex space-x-2 ml-4">
                         <button
                           onClick={() => approveUser(user.id)}
                           disabled={isApproving(user.id) || isDeclining(user.id)}
-                          className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700 transition-colors"
+                          className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed transition-colors flex items-center space-x-1"
                         >
                           {isApproving(user.id) ? (
                             <>
@@ -252,16 +266,16 @@ const AdminDashboard = () => {
                         <button
                           onClick={() => declineUser(user.id)}
                           disabled={isApproving(user.id) || isDeclining(user.id)}
-                          className="px-3 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700 transition-colors"
+                          className="px-3 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed transition-colors flex items-center space-x-1"
                         >
-                        {isDeclining(user.id) ? (
-                          <>
-                            <FontAwesomeIcon icon={faSpinner} spin size="xs" />
-                            <span>Declining...</span>
-                          </>
-                        ) : (
-                          <span>Decline</span>
-                        )}
+                          {isDeclining(user.id) ? (
+                            <>
+                              <FontAwesomeIcon icon={faSpinner} spin size="xs" />
+                              <span>Declining...</span>
+                            </>
+                          ) : (
+                            <span>Decline</span>
+                          )}
                         </button>
                       </div>
                     </div>
@@ -318,13 +332,11 @@ const AdminDashboard = () => {
                             <FontAwesomeIcon icon={icon} />
                           </div>
                           <span className="text-sm text-gray-800">
-                            {log.description}
+                            {log.description || 'No description'} {/* Fallback for missing desc */}
                           </span>
                         </div>
                         <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
-                          {formatDistanceToNow(parseISO(log.created_at), {
-                            addSuffix: true,
-                          })}
+                          {safeFormatDate(log.created_at)} {/* Safe date parsing */}
                         </span>
                       </div>
                     );
@@ -351,7 +363,10 @@ const AdminDashboard = () => {
                 >
                   Create Event
                 </button>
-                <button className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors">
+                <button 
+                  onClick={() => navigate("/admin/reports")}
+                  className="w-full text-left text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors"
+                >
                   Generate Report
                 </button>
               </div>
@@ -367,9 +382,9 @@ const AdminDashboard = () => {
                   <ul className="mt-2">
                     {onlineUsers.map((user) => (
                       <li key={user.id} className="text-gray-800 text-sm">
-                        {user.firstname}{" "}
+                        {user.firstname || 'Unknown'}{" "} {/* Fallbacks for safety */}
                         {user.middle_initial ? `${user.middle_initial}. ` : ""}
-                        {user.lastname} - {formatRole(user.role)}
+                        {user.lastname || 'User'} - {formatRole(user.role || 'unknown')}
                       </li>
                     ))}
                   </ul>
