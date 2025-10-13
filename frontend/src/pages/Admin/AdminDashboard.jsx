@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { parseISO, formatDistanceToNow } from "date-fns";
 import {
   BarChart,
   Bar,
@@ -18,7 +19,6 @@ import {
   faPen,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { formatDistanceToNow } from "date-fns";
 import api from "../../services/api";
 
 const AdminDashboard = () => {
@@ -64,6 +64,7 @@ const AdminDashboard = () => {
     const fetchRecentActivity = async () => {
       try {
         const res = await api.get("/activity/recent");
+        console.log("Recent activity raw:", res.data);
         setRecentActivity(res.data);
       } catch (err) {
         console.error("Error fetching recent activity:", err);
@@ -188,7 +189,7 @@ const AdminDashboard = () => {
                           </span>
                         </div>
                         <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
-                          {formatDistanceToNow(new Date(log.created_at), {
+                          {formatDistanceToNow(parseISO(log.created_at), {
                             addSuffix: true,
                           })}
                         </span>

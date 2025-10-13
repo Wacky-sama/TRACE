@@ -52,4 +52,4 @@ def get_recent_activity_logs(
         .limit(limit)
         .all()
     )
-    return logs
+    return [ActivityLogResponse.from_orm(log) for log in logs]
