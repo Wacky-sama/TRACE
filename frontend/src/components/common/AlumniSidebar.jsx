@@ -37,7 +37,11 @@ const AlumniSidebar = () => {
         isOpen ? "w-60" : "w-16"
       } min-h-screen shrink-0`}
     >
-      <div className="flex items-center justify-between p-4 border-b border-gray-700">
+      <div
+        className={`flex items-center p-4 border-b border-gray-700 ${
+          isOpen ? "justify-between" : "justify-center"
+        }`}
+      >
         {isOpen && currentUser && (
           <div className="text-center w-full">
             <div className="font-semibold text-sm text-white">
