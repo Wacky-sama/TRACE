@@ -377,7 +377,7 @@ def approve_user(
 
         log_activity(
             db=db,
-            user_id=current_user.id,  # Admin performing approval
+            user_id=current_user.id,
             action_type=ActionType.approve,
             description=f"Approved alumni account of {user.firstname} {user.lastname}",
             target_user_id=user.id
@@ -408,14 +408,30 @@ def decline_user(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(User).filter(User.id == UUID(user_id)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     if user.is_approved:
         raise HTTPException(status_code=400, detail="User already approved, can't decline")
+    try:
+        db.query(GTSResponse).filter(GTSResponse.user_id == user.id).delete()
 
-    db.query(GTSResponse).filter(GTSResponse.user_id == user.id).delete()
-
+        log_activity(
+            db=db,
+            user_id=current_user.id, 
+            action_type=ActionType.decline,
+            description=f"Declined alumni registration of {user.firstname} {user.lastname}",
+            target_user_id=user.id,
+            meta_data=None
+        )
+        
+        db.delete(user)
+        db.commit()
+        
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to decline user: {str(e)}")
+        
     subject = "Alumni Registration Status"
     body = f"""\
     Dear {user.firstname} {user.lastname},
@@ -428,18 +444,6 @@ def decline_user(
     Alumni Registration Team
     """
     background_tasks.add_task(send_email, user.email, subject, body)
-
-    db.delete(user)
-    db.commit()
-
-    log_activity(
-        db=db,
-        user_id=current_user.id,  # Admin performing decline
-        action_type=ActionType.decline,
-        description=f"Declined alumni registration of {user.firstname} {user.lastname}",
-        target_user_id=user.id
-    )
-
 
 # Get total user count and counts per role
 @router.get("/stats")
