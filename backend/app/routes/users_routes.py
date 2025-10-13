@@ -9,7 +9,7 @@ from app.database import get_db
 from app.models.activity_logs_models import ActionType
 from app.models.users_models import User, UserRole
 from app.models.gts_responses_models import GTSResponse
-from app.schemas.user_schemas import (UsernameCheckRequest, 
+from app.schemas.users_schemas import (UsernameCheckRequest, 
                                       UsernameCheckResponse,
                                       UserLogin,
                                       AdminUserCreate, 

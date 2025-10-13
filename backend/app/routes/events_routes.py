@@ -3,17 +3,17 @@ from sqlalchemy.orm import Session, aliased
 from uuid import UUID
 from datetime import datetime
 from app.database import get_db
-from app.routes.user_routes import get_current_user  
+from app.routes.users_routes import get_current_user  
 from app.models.users_models import User  
 from app.models import events_models
-from app.schemas import event_schemas
-from app.schemas.event_schemas import EventAction
+from app.schemas import events_schemas
+from app.schemas.events_schemas import EventAction
 
 router = APIRouter(prefix="/events", tags=["Events"])
 
-@router.post("/", response_model=event_schemas.EventOut)
+@router.post("/", response_model=events_schemas.EventOut)
 def create_event(
-    event_in: event_schemas.EventCreate,
+    event_in: events_schemas.EventCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)  
 ):
@@ -46,13 +46,13 @@ def get_events_by_status(db, status, skip=0, limit=100):
     )
 
     return [
-        event_schemas.EventOut(
+        events_schemas.EventOut(
             **{**event.__dict__, "created_by_name": f"{firstname} {lastname}"}
         )
         for event, firstname, lastname in results
     ]
 
-@router.get("/", response_model=list[event_schemas.EventOut])
+@router.get("/", response_model=list[events_schemas.EventOut])
 def get_events(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user.role not in {"admin", "alumni"}:
         raise HTTPException(status_code=403, detail="Not authorized")
@@ -77,7 +77,7 @@ def update_event_status(
     db.refresh(event)
     return {
     "message": f"Event {action}d successfully",
-    "event": event_schemas.EventOut.from_orm(event)
+    "event": events_schemas.EventOut.from_orm(event)
 }
 
 
@@ -99,10 +99,10 @@ def delete_event(
     return {"message": "Event deleted successfully"}
 
 
-@router.put("/{event_id}", response_model=event_schemas.EventOut)
+@router.put("/{event_id}", response_model=events_schemas.EventOut)
 def update_event(
     event_id: UUID,
-    event_in: event_schemas.EventCreate,
+    event_in: events_schemas.EventCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):

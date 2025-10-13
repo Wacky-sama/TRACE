@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 from app.database import get_db
 from app.models import event_attendance_models
-from app.routes.user_routes import get_current_user
+from app.routes.users_routes import get_current_user
 from app.models.users_models import User
 from app.schemas.event_attendance_schemas import AttendanceOut
 

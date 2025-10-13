@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timezone
 from typing import List
 from app.models.activity_logs_models import ActivityLog, ActionType
-from app.schemas.activity_log_schemas import ActivityLogResponse, ActivityLogCreate
+from app.schemas.activity_logs_schemas import ActivityLogResponse, ActivityLogCreate
 from app.database import get_db
 from app.utils.auth import get_current_user
 
