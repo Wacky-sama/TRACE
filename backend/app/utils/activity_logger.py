@@ -8,25 +8,31 @@ def log_activity(
     action_type: ActionType,
     description: str,
     target_user_id: str = None,
-    meta_data: dict = None
+    meta_data: dict = None,
+    created_at: datetime = None
 ):
     """
     Creates a new activity log entry in the database.
     Automatically handles DB commit and rollback safety.
     """
-    try:
+    try: 
+        if created_at is None:
+            created_at = datetime.utcnow()
+        
         log_entry = ActivityLog(
             user_id=user_id,
             action_type=action_type,
             description=description,
             target_user_id=target_user_id,
             meta_data=meta_data,
-            created_at=datetime.utcnow()
+            created_at=created_at
         )
         db.add(log_entry)
         db.commit()
         db.refresh(log_entry)
+        
         return log_entry
+    
     except Exception as e:
         db.rollback()
         print(f"[ActivityLog Error] Failed to log activity: {e}")

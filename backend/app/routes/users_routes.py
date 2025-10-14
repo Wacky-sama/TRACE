@@ -23,7 +23,7 @@ from app.utils.activity_logger import log_activity
 from app.utils.auth import get_current_user
 from app.utils.email_sender import send_email
 from app.utils.security import hash_password, verify_password, create_access_token
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 
 router = APIRouter(
     prefix="/users", 
@@ -89,7 +89,8 @@ def login(
         db=db,
         user_id=user.id,
         action_type=ActionType.login,
-        description=f"{user.role.value.capitalize()} {user.firstname} {user.lastname} logged in"
+        description=f"{user.role.value.capitalize()} - {user.firstname} {user.lastname} logged in",
+        created_at=datetime.now(timezone.utc)
     )
 
     return TokenResponse(
@@ -134,15 +135,16 @@ def create_user_as_admin(
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-
-    log_activity(
-        db=db,
-        user_id=current_user.id,
-        action_type=ActionType.register,
-        description=f"Admin created account for {new_user.firstname} {new_user.lastname} ({new_user.role.value})",
-        target_user_id=new_user.id
-    )
-        
+    try:
+        log_activity(
+            db=db,
+            user_id=current_user.id,
+            action_type=ActionType.register,
+            description=f"Admin created account for {new_user.firstname} {new_user.lastname} ({new_user.role.value})",
+            target_user_id=new_user.id
+        )
+    except Exception as e:
+         print(f"Error logging activity: {e}")
     role_display_name = {
         UserRole.admin: "Administrator",
     }
