@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";  // Import useNavigate
 import { Button } from "@radix-ui/themes";
 import {
   GraduationCap,
@@ -11,6 +12,8 @@ import {
 import ThemeToggle from "../components/ThemeToggle";
 
 export default function LandingPage() {
+  const navigate = useNavigate();  // Hook to handle navigation
+
   const features = [
     {
       icon: <Calendar className="w-8 h-8 text-primary" />,
@@ -44,12 +47,21 @@ export default function LandingPage() {
     },
   ];
 
+  // Function to handle navigation to home (for logo click)
+  const goToHome = () => {
+    navigate("/");
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       {/* Sticky Navbar */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
         <div className="container flex items-center justify-between px-4 py-4 mx-auto">
-          <div className="flex items-center gap-2">
+          {/* Left side: Logo and text - Now clickable */}
+          <div 
+            className="flex items-center gap-2 cursor-pointer"  // Added cursor-pointer for UX
+            onClick={goToHome}  // Navigate to "/" on click
+          >
             <GraduationCap className="w-8 h-8 text-primary" />
             <div>
               <h1 className="text-xl font-bold text-foreground">TRACE</h1>
@@ -77,21 +89,20 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 mt-10">
-            <div className="flex flex-wrap justify-center gap-4 mt-10">
-              <Button
-                onClick={() => (window.location.href = "/auth")}
-                className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
-              >
-                Alumni Login
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => (window.location.href = "/admin")}
-                className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
-              >
-                Admin Portal
-              </Button>
-            </div>
+            <Button
+              onClick={() => navigate("/login?role=alumni")}  // Using imported navigate
+              className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
+            >
+              Alumni Login
+            </Button>
+            
+            <Button
+              variant="outline"
+              onClick={() => navigate("/login?role=admin")}  // Using imported navigate
+              className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
+            >
+              Admin Portal
+            </Button>
           </div>
         </div>
       </section>
