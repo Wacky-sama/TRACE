@@ -53,7 +53,9 @@ export default function LandingPage() {
             <GraduationCap className="w-8 h-8 text-primary" />
             <div>
               <h1 className="text-xl font-bold text-foreground">TRACE</h1>
-              <p className="text-xs text-muted-foreground">CSU Gonzaga Campus</p>
+              <p className="text-xs text-muted-foreground">
+                CSU Gonzaga Campus
+              </p>
             </div>
           </div>
           <ThemeToggle />
@@ -61,48 +63,66 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="container px-4 py-16 mx-auto md:py-24">
-        <div className="max-w-3xl mx-auto space-y-6 text-center">
-          <h2 className="text-4xl font-bold md:text-5xl text-foreground">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[hsl(var(--primary)/0.05)] to-[hsl(var(--background))]">
+        <div className="absolute inset-0 opacity-[0.03] bg-[url('/grid.svg')] bg-center"></div>
+
+        <div className="container relative z-10 flex flex-col items-center justify-center px-4 py-24 mx-auto text-center md:py-32">
+          <h2 className="text-4xl font-extrabold md:text-6xl text-[hsl(var(--foreground))] tracking-tight">
             Tracking Alumni for Centralized Events
           </h2>
-          <p className="text-lg text-muted-foreground">
-            Connect with Cagayan State University – Gonzaga Campus alumni community. 
-            Manage events, update profiles, and stay engaged with your alma mater.
+          <p className="max-w-2xl mt-6 text-lg text-[hsl(var(--muted-foreground))]">
+            Connect with Cagayan State University – Gonzaga Campus alumni
+            community. Manage events, update profiles, and stay engaged with
+            your alma mater.
           </p>
-        <div className="flex flex-wrap justify-center gap-4">
-          <Button variant="soft" onClick={() => (window.location.href = "/auth")}>
-            Alumni Login
-          </Button>
-          <Button variant="outline" onClick={() => (window.location.href = "/admin")}>
-            Admin Portal
-          </Button>
+
+          <div className="flex flex-wrap justify-center gap-4 mt-10">
+            <div className="flex flex-wrap justify-center gap-4 mt-10">
+              <Button
+                onClick={() => (window.location.href = "/auth")}
+                className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
+              >
+                Alumni Login
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => (window.location.href = "/admin")}
+                className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
+              >
+                Admin Portal
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-       <section className="container px-4 py-16 mx-auto bg-muted/30">
-        <h3 className="mb-12 text-3xl font-bold text-center text-foreground">
-          Platform Features
-        </h3>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="flex flex-col items-start p-6 transition-shadow border border-border rounded-2xl hover:shadow-md bg-card"
-            >
-              <div className="mb-4">{feature.icon}</div>
-              <h3 className="mb-2 text-xl font-semibold">{feature.title}</h3>
-              <p className="text-sm text-muted-foreground">{feature.description}</p>
-            </div>
-          ))}
+      <section className="py-20 bg-[hsl(var(--muted)/0.4)]">
+        <div className="container px-4 mx-auto">
+          <h3 className="mb-12 text-3xl font-bold text-center text-[hsl(var(--foreground))]">
+            Platform Features
+          </h3>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-start p-6 transition-all duration-200 border rounded-2xl border-[hsl(var(--border))] bg-[hsl(var(--card))] hover:-translate-y-1 hover:shadow-lg"
+              >
+                <div className="mb-4">{feature.icon}</div>
+                <h4 className="mb-2 text-xl font-semibold">{feature.title}</h4>
+                <p className="text-[hsl(var(--muted-foreground))]">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-6 mt-auto text-sm text-center border-t border-border text-muted-foreground bg-card/40 backdrop-blur-sm">
-        © {new Date().getFullYear()} TRACE — CSU Gonzaga Campus. All rights reserved.
+      <footer className="py-8 text-sm text-center border-t border-[hsl(var(--border))] bg-[hsl(var(--card))]/60 backdrop-blur-md text-[hsl(var(--muted-foreground))]">
+        © {new Date().getFullYear()} TRACE — CSU Gonzaga Campus. All rights
+        reserved.
       </footer>
     </div>
   );
