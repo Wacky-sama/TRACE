@@ -1,6 +1,7 @@
-import { forwardRef } from "react";
+import { forwardRef, useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import "../../styles/datepicker-dark.css";
 
 function AlumniFloatingDatePicker({
   id,
@@ -12,33 +13,35 @@ function AlumniFloatingDatePicker({
   maxDate = new Date(),
   ...props
 }) {
-  const CustomInput = forwardRef(({ value: inputValue, onClick }, ref) => {
-    return (
-      <div className="relative w-full">
-        <input
-          id={id}
-          ref={ref}
-          value={inputValue || ""}
-          onClick={onClick}
-          readOnly    
-          placeholder=" "
-          className="w-full p-3 pt-6 pl-3 text-sm text-gray-900 bg-white border border-gray-300 rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 peer dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-        />
+  const [isDark, setIsDark] = useState(false);
 
-        <label
-          htmlFor={id}
-          className="
-            absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm transition-all duration-200 transform origin-left pointer-events-none
-            peer-focus:top-1 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-blue-500
-            peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-600
-            dark:peer-[:not(:placeholder-shown)]:text-gray-300
-          "
-        >
-          {label}
-        </label>
-      </div>
-    );
-  });
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains("dark"));
+  }, []);
+
+  const CustomInput = forwardRef(({ value: inputValue, onClick }, ref) => (
+    <div className="relative w-full">
+      <input
+        id={id}
+        ref={ref}
+        value={inputValue || ""}
+        onClick={onClick}
+        readOnly
+        placeholder=" "
+        className={`w-full p-3 pt-6 pl-3 text-sm rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 peer border transition-colors duration-300
+          ${isDark ? "bg-gray-800 border-gray-600 text-white" : "bg-white border-gray-300 text-gray-900"}`}
+      />
+      <label
+        htmlFor={id}
+        className={`absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm transition-all duration-200 transform origin-left pointer-events-none
+          peer-focus:top-1 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-blue-500
+          peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs
+          ${isDark ? "peer-[:not(:placeholder-shown)]:text-gray-300" : "peer-[:not(:placeholder-shown)]:text-gray-600"}`}
+      >
+        {label}
+      </label>
+    </div>
+  ));
 
   return (
     <div className="mb-2">
@@ -55,13 +58,11 @@ function AlumniFloatingDatePicker({
         scrollableYearDropdown
         customInput={<CustomInput />}
         isClearable
-        className="dark:bg-gray-800 dark:text-white dark:border-gray-600" // optional if not using custom input
+        popperClassName={isDark ? "react-datepicker-dark" : ""}
         {...props}
       />
 
-      <div className="h-5 mt-1">
-        {error && <p className="text-xs text-red-500">{error}</p>}
-      </div>
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );
 }
