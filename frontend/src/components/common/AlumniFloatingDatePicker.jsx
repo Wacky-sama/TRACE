@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../styles/datepicker-dark.css";
 
-function FloatingDatePicker({
+function AlumniFloatingDatePicker({
   id,
   value,
   onChange,
@@ -67,4 +67,4 @@ function FloatingDatePicker({
   );
 }
 
-export default FloatingDatePicker;
+export default AlumniFloatingDatePicker;
