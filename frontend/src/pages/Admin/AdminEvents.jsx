@@ -96,10 +96,10 @@ const handleEditSubmit = async (e) => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">Events</h2>
+      <h2 className="mb-6 text-2xl font-bold">Events</h2>
       <div className="overflow-auto">
         <table className="min-w-full bg-white border rounded-lg shadow">
-          <thead className="bg-gray-100 text-left text-sm text-gray-700">
+          <thead className="text-sm text-left text-gray-700 bg-gray-100">
             <tr>
               <th className="p-3">Title</th>
               <th className="p-3">Location</th>
@@ -116,7 +116,7 @@ const handleEditSubmit = async (e) => {
                   <td className="p-3">{event.location}</td>
                   <td className="p-3">{event.description || '-'}</td>
                   <td className="p-3">{event.event_date}</td>
-                  <td className="p-3 flex gap-3">
+                  <td className="flex gap-3 p-3">
                     <button title="Edit" onClick={() => handleEdit(event)} className="text-yellow-500 hover:text-yellow-600">
                       <FontAwesomeIcon icon={faPenToSquare} size="lg" />
                     </button>
@@ -137,10 +137,10 @@ const handleEditSubmit = async (e) => {
         </table>
       </div>
       {editingEvent && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
     <form
       onSubmit={handleEditSubmit}
-      className="bg-white p-6 rounded-lg space-y-4 max-w-md w-full"
+      className="w-full max-w-md p-6 space-y-4 bg-white rounded-lg"
     >
       <h2 className="text-xl font-semibold">Edit Event</h2>
 
@@ -162,7 +162,7 @@ const handleEditSubmit = async (e) => {
         name="location"
         value={editForm.location}
         onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
-        className="w-full p-3 border border-gray-300 rounded-md text-sm"
+        className="w-full p-3 text-sm border border-gray-300 rounded-md"
       >
         <option value="">Select a location</option>
         <option value="GYM">GYM</option>
@@ -172,7 +172,7 @@ const handleEditSubmit = async (e) => {
         <option value="Mabric Hall">Mabric Hall</option>
       </select>
 
-      {errors.location && <p className="text-red-500 text-sm">{errors.location}</p>}
+      {errors.location && <p className="text-sm text-red-500">{errors.location}</p>}
 
       <input
         type="date"
@@ -192,7 +192,7 @@ const handleEditSubmit = async (e) => {
         </button>
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded"
+          className="px-4 py-2 text-white bg-blue-600 rounded"
         >
           Save
         </button>

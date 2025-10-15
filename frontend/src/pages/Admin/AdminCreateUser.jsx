@@ -9,15 +9,18 @@ import FloatingSelect from "../../components/FloatingSelect";
 
 // Dark mode hook
 function useDarkMode() {
-  const [isDark, setIsDark] = useState(
-    () => document.documentElement.classList.contains("dark")
+  const [isDark, setIsDark] = useState(() =>
+    document.documentElement.classList.contains("dark")
   );
 
   useEffect(() => {
     const observer = new MutationObserver(() => {
       setIsDark(document.documentElement.classList.contains("dark"));
     });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
     return () => observer.disconnect();
   }, []);
 
@@ -97,8 +100,12 @@ const AdminCreateUser = () => {
   };
 
   return (
-    <div className={`${isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"} min-h-screen p-6`}>
-      <div className="max-w-xl mx-auto">
+    <div
+      className={`${
+        isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
+      } min-h-screen p-6`}
+    >
+      <div>
         <p className="mb-4 text-lg font-semibold">
           On this page, Admin can create another admin account.
         </p>
@@ -108,9 +115,17 @@ const AdminCreateUser = () => {
 
         <form
           onSubmit={handleSubmit}
-          className={`${isDark ? "bg-gray-800" : "bg-white"} p-6 shadow-md rounded-lg`}
+          className={`${
+            isDark ? "bg-gray-800" : "bg-white"
+          } p-6 shadow-md rounded-lg`}
         >
-          <h2 className={`text-xl font-semibold border-b pb-2 mb-4 ${isDark ? "text-gray-100 border-gray-700" : "text-gray-800 border-gray-200"}`}>
+          <h2
+            className={`text-xl font-semibold border-b pb-2 mb-4 ${
+              isDark
+                ? "text-gray-100 border-gray-700"
+                : "text-gray-800 border-gray-200"
+            }`}
+          >
             Create User
           </h2>
 
@@ -119,7 +134,9 @@ const AdminCreateUser = () => {
               id="email"
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               label="Email"
               error={errors.email}
               darkMode={isDark}
@@ -141,7 +158,9 @@ const AdminCreateUser = () => {
             <FloatingInput
               id="lastName"
               value={formData.lastName}
-              onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, lastName: e.target.value })
+              }
               label="Last Name"
               error={errors.lastName}
               darkMode={isDark}
@@ -149,7 +168,9 @@ const AdminCreateUser = () => {
             <FloatingInput
               id="firstName"
               value={formData.firstName}
-              onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, firstName: e.target.value })
+              }
               label="First Name"
               error={errors.firstName}
               darkMode={isDark}
@@ -157,7 +178,9 @@ const AdminCreateUser = () => {
             <FloatingInput
               id="middleInitial"
               value={formData.middleInitial || ""}
-              onChange={(e) => setFormData({ ...formData, middleInitial: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, middleInitial: e.target.value })
+              }
               label="Middle Initial"
               error={errors.middleInitial}
               darkMode={isDark}
@@ -167,7 +190,9 @@ const AdminCreateUser = () => {
           <FloatingSelect
             id="nameExtension"
             value={formData.nameExtension || ""}
-            onChange={(e) => setFormData({ ...formData, nameExtension: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, nameExtension: e.target.value })
+            }
             label="Name Extension (e.g., Jr., Sr., III)"
             placeholder="None"
             error={errors.nameExtension}
@@ -180,7 +205,9 @@ const AdminCreateUser = () => {
               id="registerPassword"
               type={showPassword ? "text" : "password"}
               value={formData.registerPassword}
-              onChange={(e) => setFormData({ ...formData, registerPassword: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, registerPassword: e.target.value })
+              }
               label="Password"
               error={errors.registerPassword}
               darkMode={isDark}
@@ -198,7 +225,10 @@ const AdminCreateUser = () => {
               type={showConfirmPassword ? "text" : "password"}
               value={formData.registerConfirmPassword}
               onChange={(e) =>
-                setFormData({ ...formData, registerConfirmPassword: e.target.value })
+                setFormData({
+                  ...formData,
+                  registerConfirmPassword: e.target.value,
+                })
               }
               label="Confirm Password"
               error={errors.registerConfirmPassword}
@@ -208,13 +238,21 @@ const AdminCreateUser = () => {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="cursor-pointer"
               >
-                <FontAwesomeIcon icon={showConfirmPassword ? faEye : faEyeSlash} />
+                <FontAwesomeIcon
+                  icon={showConfirmPassword ? faEye : faEyeSlash}
+                />
               </span>
             </FloatingInput>
           </div>
 
           {formData.registerPassword && formData.registerConfirmPassword && (
-            <p className={`text-sm mt-1 ${formData.registerPassword === formData.registerConfirmPassword ? "text-green-600" : "text-red-600"}`}>
+            <p
+              className={`text-sm mt-1 ${
+                formData.registerPassword === formData.registerConfirmPassword
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
               {formData.registerPassword === formData.registerConfirmPassword
                 ? "Passwords match"
                 : "Passwords do not match"}
@@ -229,7 +267,11 @@ const AdminCreateUser = () => {
           </button>
 
           {message && (
-            <p className="mt-2 text-sm text-center text-green-600">{message}</p>
+            <p 
+            className="mt-2 text-sm text-center text-green-600"
+            >
+              {message}
+            </p>
           )}
         </form>
       </div>

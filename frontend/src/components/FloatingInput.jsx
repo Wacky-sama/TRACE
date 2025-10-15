@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useTheme } from "../hooks/useTheme"; // adjust the path if needed
 
 function FloatingInput({ 
   id, 
@@ -11,18 +11,8 @@ function FloatingInput({
   children, 
   ...props 
 }) {
-  const [isDark, setIsDark] = useState(
-    document.documentElement.classList.contains("dark")
-  );
-
-  // Listen for changes to dark mode dynamically
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    return () => observer.disconnect();
-  }, []);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   return (
     <div className="mb-2">

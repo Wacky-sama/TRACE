@@ -1,7 +1,8 @@
-import { forwardRef, useState, useEffect } from "react";
+import { forwardRef } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../styles/datepicker-dark.css";
+import { useTheme } from "../../hooks/useTheme"; // adjust path if needed
 
 function AlumniFloatingDatePicker({
   id,
@@ -13,11 +14,8 @@ function AlumniFloatingDatePicker({
   maxDate = new Date(),
   ...props
 }) {
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    setIsDark(document.documentElement.classList.contains("dark"));
-  }, []);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   const CustomInput = forwardRef(({ value: inputValue, onClick }, ref) => (
     <div className="relative w-full">
