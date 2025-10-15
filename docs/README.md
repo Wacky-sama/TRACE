@@ -1,16 +1,6 @@
 # TRACE System
 
-TRACE (Tracking Alumni Connection and Engagement) is a web-based platform designed to manage and connect alumni with their institution. It provides separate interfaces for alumni and administrators, featuring secure authentication and responsive UI with light and dark mode support.
-
----
-
-## 🖥️ Features
-
-- **Landing Page:** Modern, responsive design with Light and Dark mode.
-- **Authentication System:** Separate login and registration for Alumni and Admin users.
-- **Admin Dashboard:** Manage users, approvals, and events.
-- **Alumni Portal:** Profile management and alumni engagement tools.
-- **Dark Mode Support:** Seamless theme switching across pages.
+TRACE: Tracking Alumni for Centralized Events
 
 ---
 
@@ -43,3 +33,7 @@ TRACE (Tracking Alumni Connection and Engagement) is a web-based platform design
 
 **Dark Mode**
 ![Admin Auth Dark Mode](/docs/images/AdminAuthPageDark.png)
+
+---
+
+Author: **Wacky**
