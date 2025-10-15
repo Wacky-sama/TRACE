@@ -1,3 +1,5 @@
+import { useTheme } from "../hooks/useTheme"; // adjust the path if needed
+
 function FloatingInput({ 
   id, 
   type = "text", 
@@ -9,12 +11,15 @@ function FloatingInput({
   children, 
   ...props 
 }) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   return (
     <div className="mb-2">
       <div className="relative">
         {/* Left Icon */}
         {icon && (
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+          <span className="absolute z-10 text-gray-400 -translate-y-1/2 left-3 top-1/2">
             {icon}
           </span>
         )}
@@ -27,8 +32,8 @@ function FloatingInput({
           onChange={onChange}
           placeholder=" "
           className={`w-full p-3 pt-6 ${icon ? "pl-10" : "pl-3"} ${children ? "pr-8" : ""} 
-            border border-gray-300 rounded-md text-sm 
-            focus:outline-none focus:ring-2 focus:ring-blue-500 peer`}
+            border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 peer
+            ${isDark ? "bg-gray-800 text-white border-gray-600" : "bg-white text-gray-900 border-gray-300"}`}
           {...props}
         />
 
@@ -39,23 +44,22 @@ function FloatingInput({
             text-gray-500 text-sm transition-all duration-200 transform origin-left
             peer-focus:top-1 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-blue-500
             peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:translate-y-0 
-            peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-600`}
+            peer-[:not(:placeholder-shown)]:text-xs
+            ${isDark ? "text-gray-400 peer-focus:text-blue-400 peer-[:not(:placeholder-shown)]:text-gray-300" : "text-gray-500 peer-[:not(:placeholder-shown)]:text-gray-600"}`}
         >
           {label}
         </label>
 
         {/* Right Children (e.g. Eye toggle) */}
         {children && (
-          <div className="absolute inset-y-0 right-3 flex items-center">
+          <div className="absolute inset-y-0 flex items-center right-3">
             {children}
           </div>
         )}
       </div>
 
       {/* Error Message */}
-      <div className="h-5 mt-1">
-        {error && <p className="text-red-500 text-xs">{error}</p>}
-      </div>
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );
 }
