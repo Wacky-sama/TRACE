@@ -14,19 +14,24 @@
   color: #f9fafb;
 }
 
-/* Month and day names */
+/* Current month and day names */
 .react-datepicker-dark .react-datepicker__current-month,
 .react-datepicker-dark .react-datepicker__day-name {
   color: #f9fafb;
   background-color: #1f2937;
 }
 
-/* Month container */
-.react-datepicker-dark .react-datepicker__month {
+/* Month container (day grid wrapper) */
+.react-datepicker-dark .react-datepicker__month-container {
   background-color: #1f2937;
 }
 
-/* Days */
+/* Each week row */
+.react-datepicker-dark .react-datepicker__week {
+  background-color: #1f2937;
+}
+
+/* Individual days */
 .react-datepicker-dark .react-datepicker__day {
   color: #f9fafb;
   background-color: #1f2937;
