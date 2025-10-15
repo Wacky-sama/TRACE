@@ -1,11 +1,33 @@
 import { getToken } from "../../utils/storage";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../../services/api";
 import FloatingInput from "../../components/FloatingInput";
 import FloatingSelect from "../../components/FloatingSelect";
 import AdminFloatingDatePicker from "../../components/common/AdminFloatingDatePicker";
 
+// Dark mode hook
+function useDarkMode() {
+  const [isDark, setIsDark] = useState(() =>
+    document.documentElement.classList.contains("dark")
+  );
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  return isDark;
+}
+
 const AdminCreateEvent = () => {
+  const isDark = useDarkMode(); // <-- Call the hook here
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -65,13 +87,17 @@ const AdminCreateEvent = () => {
   };
 
   return (
-    <>
+    <div
+      className={`min-h-screen p-6 ${
+        isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
+      }`}
+    >
       <div>
-        <p className="text-lg font-semibold mb-4">
+        <p className="mb-4 text-lg font-semibold">
           On this page, you can create events that alumni can view and register
           for.
         </p>
-        <p className="text-sm mb-6">
+        <p className="mb-6 text-sm">
           Note: Make sure to provide accurate details for your event.
         </p>
       </div>
@@ -79,14 +105,20 @@ const AdminCreateEvent = () => {
       <div className="space-4">
         <form
           onSubmit={handleSubmit}
-          className="max-w-xl mx-auto p-6 bg-white shadow-md rounded-lg"
+          className={`max-w-xl p-6 mx-auto rounded-lg shadow-md ${
+            isDark ? "bg-gray-800" : "bg-white"
+          }`}
         >
-          <h2 className="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+          <h2
+            className={`pb-2 mb-4 text-xl font-semibold border-b ${
+              isDark ? "text-gray-100 border-gray-700" : "text-gray-800 border-gray-300"
+            }`}
+          >
             Create Event
           </h2>
 
           <div className="space-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               <FloatingInput
                 id="title"
                 label="Event Title"
@@ -95,6 +127,7 @@ const AdminCreateEvent = () => {
                   setFormData({ ...formData, title: e.target.value })
                 }
                 error={errors.title}
+                darkMode={isDark} // Pass dark mode prop if needed
               />
 
               <FloatingSelect
@@ -113,6 +146,7 @@ const AdminCreateEvent = () => {
                   "Mabric Hall",
                 ]}
                 placeholder="Select Location"
+                darkMode={isDark} // Pass dark mode prop if needed
               />
             </div>
           </div>
@@ -120,7 +154,9 @@ const AdminCreateEvent = () => {
           <div className="space-2">
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className={`block mb-1 text-sm font-medium ${
+                isDark ? "text-gray-200" : "text-gray-700"
+              }`}
             >
               Description (Optional)
             </label>
@@ -133,7 +169,11 @@ const AdminCreateEvent = () => {
               }
               placeholder="Describe your event..."
               rows={3}
-              className="w-full p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring focus:ring-blue-200"
+              className={`w-full p-3 text-sm border rounded-md focus:outline-none focus:ring ${
+                isDark
+                  ? "border-gray-600 bg-gray-700 text-gray-100 focus:ring-blue-500"
+                  : "border-gray-300 bg-white text-gray-900 focus:ring-blue-200"
+              }`}
             />
           </div>
 
@@ -146,12 +186,13 @@ const AdminCreateEvent = () => {
               }
               label="Event Date"
               error={errors.event_date}
+              darkMode={isDark} // If your datepicker supports dark mode
             />
           </div>
 
           <button
             type="submit"
-            className="w-full mt-4 bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 transition"
+            className="w-full py-3 mt-4 font-medium text-white transition bg-blue-600 rounded-md hover:bg-blue-700"
             disabled={loading}
           >
             {loading ? "Creating..." : "Create Event"}
@@ -170,7 +211,7 @@ const AdminCreateEvent = () => {
           )}
         </form>
       </div>
-    </>
+    </div>
   );
 };
 
