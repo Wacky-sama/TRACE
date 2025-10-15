@@ -4,6 +4,24 @@ html {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #111111;
+  }
+
+  .dark {
+    --background: #0a0a0a;
+    --foreground: #f5f5f5;
+  }
+
+  body {
+    @apply bg-[var(--background)] text-[var(--foreground)];
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
