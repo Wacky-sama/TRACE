@@ -6,87 +6,74 @@ html {
 
 @layer base {
   :root {
-    --background: #ffffff;
-    --foreground: #111111;
+    /* === LIGHT THEME === */
+    --background: 210 25% 98%;
+    --foreground: 220 25% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 25% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 25% 20%;
+
+    --primary: 217 85% 38%; /* CSU Blue */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 45 95% 55%; /* CSU Gold */
+    --secondary-foreground: 220 25% 15%;
+
+    --muted: 220 20% 94%;
+    --muted-foreground: 220 10% 40%;
+
+    --accent: 217 85% 92%;
+    --accent-foreground: 217 85% 35%;
+
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
+    --ring: 217 85% 38%;
   }
 
   .dark {
-    --background: #0a0a0a;
-    --foreground: #f5f5f5;
+    /* === DARK THEME === */
+    --background: 220 20% 10%;
+    --foreground: 0 0% 96%;
+
+    --card: 220 15% 15%;
+    --card-foreground: 0 0% 96%;
+
+    --popover: 220 15% 15%;
+    --popover-foreground: 0 0% 96%;
+
+    --primary: 217 85% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 45 90% 60%;
+    --secondary-foreground: 220 20% 10%;
+
+    --muted: 220 15% 20%;
+    --muted-foreground: 220 10% 65%;
+
+    --accent: 217 85% 20%;
+    --accent-foreground: 217 85% 60%;
+
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 0 0% 96%;
+
+    --border: 220 15% 25%;
+    --input: 220 15% 25%;
+    --ring: 217 85% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-[hsl(var(--border))];
   }
 
   body {
-    @apply bg-[var(--background)] text-[var(--foreground)];
-    transition: background-color 0.3s ease, color 0.3s ease;
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
   }
 }
-
-
-/* :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-} */
-
-/* a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-} */
-
-/* button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-} */
-
-/* @media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-} */
