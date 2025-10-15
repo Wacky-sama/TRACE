@@ -42,4 +42,4 @@ TRACE (Tracking Alumni Connection and Engagement) is a web-based platform design
 ![Admin Auth Light Mode](/docs/images/AdminAuthPageLight.png)
 
 **Dark Mode**
-![Admin Auth Dark Mode](/docs/images/dminAuthPageDark.png)
+![Admin Auth Dark Mode](/docs/images/AdminAuthPageDark.png)
