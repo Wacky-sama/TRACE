@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";  // Added useSearchParams
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@radix-ui/themes";
 import { GraduationCap } from "lucide-react";
@@ -9,10 +9,24 @@ import ThemeToggle from "../ThemeToggle";
 function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();  // Hook to read query parameters
   const isRegistering = location.pathname === "/register";
+  const role = searchParams.get("role") || "alumni";  // Default to "alumni" if not specified
 
   const goToLandingPage = () => {
     navigate("/");
+  };
+
+  // Determine the welcome message based on the role
+  const getWelcomeMessage = () => {
+    switch (role) {
+      case "alumni":
+        return "Welcome, Alumni!";
+      case "admin":
+        return "Welcome Back, Admin!";
+      default:
+        return "Welcome!";  // Fallback message
+    }
   };
 
   return (
@@ -23,7 +37,7 @@ function AuthPage() {
           <div 
             className="flex items-center gap-2 cursor-pointer" 
             onClick={goToLandingPage}
-        >
+          >
             <GraduationCap className="w-8 h-8 text-primary" />
             <div>
               <h1 className="text-xl font-bold text-foreground">TRACE</h1>
@@ -36,14 +50,14 @@ function AuthPage() {
           {/* Right side: Grouped buttons and ThemeToggle */}
           <div className="flex items-center gap-4">
             <Button
-              onClick={() => (window.location.href = "/auth")}
+              onClick={() => navigate("/login?role=alumni")}  
               className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
             >
               Alumni Login
             </Button>
             <Button
               variant="outline"
-              onClick={() => (window.location.href = "/admin")}
+              onClick={() => navigate("/login?role=admin")} 
               className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
             >
               Admin Portal
@@ -62,7 +76,7 @@ function AuthPage() {
                 className="w-32 h-auto mx-auto mb-4 md:w-48"
               />
               <h3 className="mb-2 text-xl font-semibold text-white">
-                Welcome, Alumni!
+                {getWelcomeMessage()}  {/* Dynamically render the message */}
               </h3>
               <p className="text-sm text-gray-200">
                 Track, Reconnect, and Connect with Excellence
