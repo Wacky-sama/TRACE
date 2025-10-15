@@ -5,6 +5,7 @@ import { getUser, setUser } from "./utils/storage";
 import { ToastContainer } from 'react-toastify';
 import api from './services/api';
 import 'react-toastify/dist/ReactToastify.css';
+import LandingPage from './pages/LandingPage';
 import AuthPage from './components/auth/AuthPage';
 // Admin imports
 import AdminDashboard from "./pages/Admin/AdminDashboard"
@@ -136,7 +137,7 @@ function App() {
 
           <Route path="/login" element={<PublicRoute><AuthPage /></PublicRoute>} />
           <Route path="/register" element={<PublicRoute><AuthPage /></PublicRoute>} />
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<PublicRoute><LandingPage /></PublicRoute>} />
           <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
       

@@ -81,12 +81,12 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
   return (
     <div className="space-4">
-      <h2 className="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+      <h2 className="pb-2 mb-4 text-xl font-semibold border-b ">
         Personal Information
       </h2>
 
       <div className="space-2">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <FloatingInput
             id="email"
             type="email"
@@ -110,7 +110,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       </div>
 
       <div className="space-2">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <FloatingInput
             id="lastName"
             value={formData.lastName}
@@ -154,7 +154,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       </div>
 
       <div className="space-2">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
           <AlumniFloatingDatePicker
             id="birthday"
             value={formData.birthday}
@@ -189,7 +189,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       />
 
       <div className="space-2">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <FloatingInput
             id="presentAddress"
             value={formData.presentAddress}
@@ -223,7 +223,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       </div>
 
       <div className="space-2">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <FloatingSelect
             id="course"
             value={formData.course}
@@ -259,7 +259,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       </div>
 
       <div className="space-2">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <FloatingInput
             id="registerPassword"
             type={showPassword ? "text" : "password"}
@@ -319,7 +319,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
       <button
         onClick={handleNext}
-        className="w-full bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 transition mt-6"
+        className="w-full py-3 mt-6 font-medium text-white transition bg-blue-600 rounded-md hover:bg-blue-700"
       >
         Next
       </button>

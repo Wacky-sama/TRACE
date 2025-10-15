@@ -9,25 +9,25 @@ function AuthPage() {
   const isRegistering = location.pathname === '/register';
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
-            <div className="bg-white shadow-lg rounded-xl overflow-hidden max-w-4xl w-full flex flex-col md:flex-row transform transition-transform duration-300 hover:-translate-y-2">
-                <div className="flex-1 bg-gray-800 flex items-center justify-center p-4 md:p-8">
+        <div className="flex items-center justify-center min-h-screen px-4 bg-[hsl(var(--background))]">
+            <div className="flex flex-col w-full max-w-4xl overflow-hidden transition-transform duration-300 transform bg-white shadow-lg rounded-xl md:flex-row hover:-translate-y-2">
+                <div className="flex items-center justify-center flex-1 p-4 bg-gray-800 md:p-8">
                     <div className="text-center">
                         <img 
                             src="/TRACE LOGO.png" 
                             alt="TRACE Logo" 
-                            className="w-32 md:w-48 h-auto mx-auto mb-4"
+                            className="w-32 h-auto mx-auto mb-4 md:w-48"
                         />
-                        <h3 className="text-white text-xl font-semibold mb-2">Welcome, Alumni!</h3>
-                        <p className="text-gray-200 text-sm">
+                        <h3 className="mb-2 text-xl font-semibold text-white">Welcome, Alumni!</h3>
+                        <p className="text-sm text-gray-200">
                             Track, Reconnect, and Connect with Excellence
                         </p>
                     </div>
                 </div>
 
-                <div className="flex-1 p-6 md:p-10">
-                    <div className="max-w-md w-full mx-auto text-center">
-                        <h2 className="text-2xl font-semibold mb-6">
+                <div className="flex-1 p-6 md:p-10 bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))]">
+                    <div className="w-full max-w-md mx-auto text-center">
+                        <h2 className="mb-6 text-2xl font-semibold">
                             {isRegistering ? "Register" : "Login"}
                         </h2>
                         <AnimatePresence mode="wait">
@@ -53,7 +53,7 @@ function AuthPage() {
                                 </motion.div>
                             )}
                         </AnimatePresence>
-                        <p className="text-sm text-gray-500 mb-4">
+                        <p className="mb-4 text-sm text-gray-500">
                             {isRegistering ? "Already have an account?" : "Don't have an account?"}{" "}
                             <button
                                 onClick={() => navigate(isRegistering ? "/login" : "/register")}
