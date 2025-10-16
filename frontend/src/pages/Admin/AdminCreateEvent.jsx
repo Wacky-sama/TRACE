@@ -1,5 +1,5 @@
-import { getToken } from "../../utils/storage";
 import { useState, useEffect } from "react";
+import { getToken } from "../../utils/storage";
 import api from "../../services/api";
 import FloatingInput from "../../components/FloatingInput";
 import FloatingSelect from "../../components/FloatingSelect";
