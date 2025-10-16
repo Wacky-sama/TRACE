@@ -155,7 +155,7 @@ const AdminCreateEvent = () => {
             onChange={(date) => setFormData({ ...formData, event_date: date })}
             label="Event Date"
             error={errors.event_date}
-            darkMode={isDark}  // Added to match pattern
+            darkMode={isDark} 
           />
 
           <button

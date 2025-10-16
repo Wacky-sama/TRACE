@@ -139,7 +139,6 @@ const AdminCreateUser = () => {
               }
               label="Email"
               error={errors.email}
-              darkMode={isDark}
             />
 
             <UsernameInput
@@ -150,7 +149,6 @@ const AdminCreateUser = () => {
               }
               error={errors.registerIdentifier}
               onAvailabilityChange={setUsernameAvailable}
-              darkMode={isDark}
             />
           </div>
 
@@ -163,7 +161,6 @@ const AdminCreateUser = () => {
               }
               label="Last Name"
               error={errors.lastName}
-              darkMode={isDark}
             />
             <FloatingInput
               id="firstName"
@@ -173,7 +170,6 @@ const AdminCreateUser = () => {
               }
               label="First Name"
               error={errors.firstName}
-              darkMode={isDark}
             />
             <FloatingInput
               id="middleInitial"
@@ -183,7 +179,6 @@ const AdminCreateUser = () => {
               }
               label="Middle Initial"
               error={errors.middleInitial}
-              darkMode={isDark}
             />
           </div>
 
@@ -197,7 +192,6 @@ const AdminCreateUser = () => {
             placeholder="None"
             error={errors.nameExtension}
             options={["Jr.", "Sr.", "II", "III", "IV", "V"]}
-            darkMode={isDark}
           />
 
           <div className="grid grid-cols-1 gap-3 mt-4 md:grid-cols-2">
@@ -232,7 +226,6 @@ const AdminCreateUser = () => {
               }
               label="Confirm Password"
               error={errors.registerConfirmPassword}
-              darkMode={isDark}
             >
               <span
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -267,11 +260,7 @@ const AdminCreateUser = () => {
           </button>
 
           {message && (
-            <p 
-            className="mt-2 text-sm text-center text-green-600"
-            >
-              {message}
-            </p>
+            <p className="mt-2 text-sm text-center text-green-600">{message}</p>
           )}
         </form>
       </div>

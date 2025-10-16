@@ -1,18 +1,19 @@
-import { useTheme } from "../hooks/useTheme"; // adjust the path if needed
+import { useTheme } from "../hooks/useTheme";
 
-function FloatingInput({ 
-  id, 
-  type = "text", 
-  value, 
-  onChange, 
-  label, 
-  error, 
-  icon, 
-  children, 
-  ...props 
+function FloatingInput({
+  id,
+  type = "text",
+  value,
+  onChange,
+  label,
+  error,
+  icon,
+  children,
+  darkMode,
+  ...props
 }) {
   const { theme } = useTheme();
-  const isDark = theme === "dark";
+  const isDark = darkMode ?? theme === "dark";
 
   return (
     <div className="mb-2">
@@ -31,21 +32,33 @@ function FloatingInput({
           value={value}
           onChange={onChange}
           placeholder=" "
-          className={`w-full p-3 pt-6 ${icon ? "pl-10" : "pl-3"} ${children ? "pr-8" : ""} 
+          className={`w-full p-3 pt-6 ${icon ? "pl-10" : "pl-3"} ${
+            children ? "pr-8" : ""
+          } 
             border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 peer
-            ${isDark ? "bg-gray-800 text-white border-gray-600" : "bg-white text-gray-900 border-gray-300"}`}
+            ${
+              isDark
+                ? "bg-gray-800 text-white border-gray-600"
+                : "bg-white text-gray-900 border-gray-300"
+            }`}
           {...props}
         />
 
         {/* Floating Label */}
         <label
           htmlFor={id}
-          className={`absolute ${icon ? "left-10" : "left-3"} top-1/2 -translate-y-1/2 
+          className={`absolute ${
+            icon ? "left-10" : "left-3"
+          } top-1/2 -translate-y-1/2 
             text-gray-500 text-sm transition-all duration-200 transform origin-left
             peer-focus:top-1 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-blue-500
             peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:translate-y-0 
             peer-[:not(:placeholder-shown)]:text-xs
-            ${isDark ? "text-gray-400 peer-focus:text-blue-400 peer-[:not(:placeholder-shown)]:text-gray-300" : "text-gray-500 peer-[:not(:placeholder-shown)]:text-gray-600"}`}
+            ${
+              isDark
+                ? "text-gray-400 peer-focus:text-blue-400 peer-[:not(:placeholder-shown)]:text-gray-300"
+                : "text-gray-500 peer-[:not(:placeholder-shown)]:text-gray-600"
+            }`}
         >
           {label}
         </label>
