@@ -35,6 +35,13 @@ function LoginForm({ expectedRole }) {
 
       if (role !== expectedRole) {
         toast.error(`Access denied: This login page is for ${expectedRole} only. Please use the appropriate portal.`);
+        setTimeout(() => {
+          if (role === "admin") {
+            navigate("/admin-login");
+          } else if (role === "alumni") {
+            navigate("/alumni-login");
+          }
+        }, 4000);
         return;
       }
 
@@ -44,9 +51,9 @@ function LoginForm({ expectedRole }) {
       setCurrentUser(userData); 
 
       if (role === "admin") {
-        navigate("/admin/dashboard", {replace: true});
+        navigate("/admin/dashboard");
       } else if (role === "alumni") {
-        navigate("/alumni/dashboard", {replace: true});
+        navigate("/alumni/dashboard");
       } else {
         setLoginError("Unauthorized access. Please contact the administrator.");
       }
