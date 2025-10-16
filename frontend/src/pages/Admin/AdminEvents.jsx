@@ -3,12 +3,29 @@ import { getToken } from "../../utils/storage";
 import api from "../../services/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { useTheme } from "../../context/ThemeProvider";
+
+function useDarkMode() {
+  const [isDark, setIsDark] = useState(() =>
+    document.documentElement.classList.contains("dark")
+  );
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  return isDark;
+}
 
 const AdminEvents = () => {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
-
+  const isDark = useDarkMode();
+  
   const [editForm, setEditForm] = useState({
     title: "",
     description: "",
@@ -101,11 +118,9 @@ const AdminEvents = () => {
 
   return (
     <div
-      className={`flex flex-col min-h-screen p-6 transition-colors duration-300 ${
-        isDark
-          ? "bg-[hsl(var(--background))] text-[hsl(var(--foreground))]"
-          : ""
-      }`}
+      className={`${
+        isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
+      } min-h-screen p-6`}
     >
       <h2 className="mb-6 text-2xl font-bold">Events</h2>
       <table
