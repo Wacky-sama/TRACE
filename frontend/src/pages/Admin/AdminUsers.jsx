@@ -8,7 +8,7 @@ import {
   faUserCheck,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
-import { useTheme } from "../../hooks/useTheme";
+import { useTheme } from "../../context/ThemeProvider";
 
 const AdminUsers = () => {
   const { theme } = useTheme();

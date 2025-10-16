@@ -3,7 +3,7 @@ import { getToken } from "../../utils/storage";
 import api from "../../services/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { useTheme } from "../../hooks/useTheme";
+import { useTheme } from "../../context/ThemeProvider";
 
 const AdminEvents = () => {
   const { theme } = useTheme();
