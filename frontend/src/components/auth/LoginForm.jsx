@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faUser, faLock } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
 import { login, getProfile } from '../../services/auth';
 import { setAuthData, setUser } from '../../utils/storage';
 import { useUser } from '../../context/UserContext';
 import FloatingInput from '../FloatingInput';
 
-function LoginForm() {
+function LoginForm({ expectedRole }) {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -32,6 +33,11 @@ function LoginForm() {
         return;
       }
 
+      if (role !== expectedRole) {
+        toast.error(`Access denied: This login page is for ${expectedRole} only. Please use the appropriate portal.`);
+        return;
+      }
+
       setAuthData({ token, role, is_approved });
       const userData = await getProfile();
       setUser(userData);
@@ -52,7 +58,7 @@ function LoginForm() {
   return (
     <>
         {loginError && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-4 text-sm">
+            <div className="px-4 py-3 mb-4 text-sm text-red-700 border border-red-200 rounded-md bg-red-50">
                 {loginError}
             </div>
         )}
@@ -77,7 +83,7 @@ function LoginForm() {
         >
 
             <span
-                className="cursor-pointer text-gray-500"
+                className="text-gray-500 cursor-pointer"
                 onClick={() => setShowPassword((prev) => !prev)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
                 role="button"
@@ -90,7 +96,7 @@ function LoginForm() {
 
       <button
         onClick={handleLogin}
-        className="w-full bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 transition-colors mb-4"
+        className="w-full py-3 mb-4 font-medium text-white transition-colors bg-blue-600 rounded-md hover:bg-blue-700"
       >
         Login
       </button>

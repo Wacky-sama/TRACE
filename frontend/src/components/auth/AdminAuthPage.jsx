@@ -1,14 +1,18 @@
+import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@radix-ui/themes";
+import { toast } from 'react-toastify';
 import { GraduationCap } from "lucide-react";
 import LoginForm from "./LoginForm";
 import ThemeToggle from "../ThemeToggle";
+import { getRole } from "../../utils/storage";
 
 function AdminAuthPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const role = searchParams.get("role") || "admin";
+  const storedRole = getRole();
 
   const goToLandingPage = () => {
     navigate("/");
@@ -24,6 +28,13 @@ function AdminAuthPage() {
         return "Welcome!";
     }
   };
+
+  useEffect(() => {
+    if (storedRole && storedRole === "alumni") {
+      toast.error("Access denied: Alumni should use the Alumni Portal.");
+      navigate("/alumni-login");
+    }
+  }, [storedRole, navigate]);
 
   return (
     <>
@@ -91,7 +102,7 @@ function AdminAuthPage() {
                   exit={{ opacity: 0, x: 50 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <LoginForm />
+                  <LoginForm expectedRole="admin"/>
                 </motion.div>
               </AnimatePresence>
 

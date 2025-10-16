@@ -1,10 +1,13 @@
+import { useEffect } from "react";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@radix-ui/themes";
+import { toast } from 'react-toastify';
 import { GraduationCap } from "lucide-react";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import ThemeToggle from "../ThemeToggle";
+import { getRole } from "../../utils/storage";
 
 function AlumniAuthPage() {
   const navigate = useNavigate();
@@ -12,6 +15,7 @@ function AlumniAuthPage() {
   const [searchParams] = useSearchParams();
   const isRegistering = location.pathname === "/alumni-register";
   const role = searchParams.get("role") || "alumni";
+  const storedRole = getRole();
 
   const goToLandingPage = () => {
     navigate("/");
@@ -28,13 +32,20 @@ function AlumniAuthPage() {
     }
   };
 
+  useEffect(() => {
+    if (storedRole && storedRole === "admin") {
+      toast.error("Access denied: Admins should use the Admin Portal.");
+      navigate("/admin-login");
+    }
+  }, [storedRole, navigate]);
+
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
         <div className="container flex items-center justify-between px-4 py-4 mx-auto">
           {/* Left side: Logo and text */}
-          <div 
-            className="flex items-center gap-2 cursor-pointer" 
+          <div
+            className="flex items-center gap-2 cursor-pointer"
             onClick={goToLandingPage}
           >
             <GraduationCap className="w-8 h-8 text-primary" />
@@ -107,7 +118,7 @@ function AlumniAuthPage() {
                     exit={{ opacity: 0, x: 50 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <LoginForm />
+                    <LoginForm expectedRole="alumni"/>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -117,7 +128,9 @@ function AlumniAuthPage() {
                   : "Don't have an account?"}{" "}
                 <button
                   onClick={() =>
-                    navigate(isRegistering ? "/alumni-login" : "/alumni-register")
+                    navigate(
+                      isRegistering ? "/alumni-login" : "/alumni-register"
+                    )
                   }
                   className="text-blue-600 hover:underline"
                 >
