@@ -1,4 +1,4 @@
-import { useTheme } from "../hooks/useTheme";
+import { useTheme } from "../context/ThemeProvider";
 
 function FloatingInput({
   id,
