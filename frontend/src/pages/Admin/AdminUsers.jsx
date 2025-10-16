@@ -244,7 +244,11 @@ const AdminUsers = () => {
           ))
         ) : (
           <tr>
-            <td colSpan="12" className="p-4 text-center text-gray-500">
+            <td colSpan="12" 
+            className={`p-4 text-center ${
+                isDark ? "text-gray-400" : "text-gray-500"
+              }`}
+            >
               No users found.
             </td>
           </tr>
@@ -257,9 +261,9 @@ const AdminUsers = () => {
 
   return (
     <div
-      className={`flex flex-col min-h-screen p-6 transition-colors duration-300 ${
-        isDark ? "bg-[hsl(var(--background))] text-[hsl(var(--foreground))]" : "bg-gray-50 text-gray-900"
-      }`}
+      className={`${
+        isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
+      } min-h-screen p-6`}
     >
       <h2 className="mb-4 text-2xl font-bold">Users</h2>
       <div className="flex items-center justify-end mb-4 space-x-2">

@@ -1,81 +1,49 @@
 import { useEffect, useState } from "react";
-import { getToken } from "../../utils/storage";
-import api from "../../services/api";
+import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
-
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return isDark;
-}
+import api from "../../services/api";
+import { getToken } from "../../utils/storage";
+import { useTheme } from "../../context/ThemeProvider";
 
 const AdminEvents = () => {
-  const isDark = useDarkMode();
-  
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [editingEvent, setEditingEvent] = useState(null);
   const [editForm, setEditForm] = useState({
     title: "",
     description: "",
     location: "",
     event_date: "",
   });
-
   const [errors, setErrors] = useState({});
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [editingEvent, setEditingEvent] = useState(null);
 
-  const validate = () => {
-    const validateErrors = {};
-    if (!editForm.title) validateErrors.title = "Title is required";
-    if (!editForm.location) validateErrors.location = "Location is required";
-    if (!editForm.event_date)
-      validateErrors.event_date = "Event date is required";
-    return validateErrors;
+  const fetchEvents = async () => {
+    try {
+      const res = await api.get("/events");
+      setEvents(res.data);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      toast.error("Failed to load events. Backend might be on a coffee break ☕");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const res = await api.get("/events");
-        setEvents(res.data);
-      } catch (error) {
-        console.error("Failed to fetch events", error);
-        alert("Backend might be on coffee break ☕");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchEvents();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this event?")) return;
-
-    try {
-      await api.delete(`/events/${id}`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
-      });
-      setEvents(events.filter((event) => event.id !== id));
-      alert("Event deleted successfully!");
-    } catch (error) {
-      console.error("Failed to delete event", error);
-      alert("Failed to delete event.");
-    }
+  const validate = () => {
+    const validationErrors = {};
+    if (!editForm.title) validationErrors.title = "Title is required";
+    if (!editForm.location) validationErrors.location = "Location is required";
+    if (!editForm.event_date)
+      validationErrors.event_date = "Event date is required";
+    return validationErrors;
   };
 
   const handleEdit = (eventData) => {
@@ -90,10 +58,9 @@ const AdminEvents = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-
-    const errs = validate();
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs);
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
@@ -101,18 +68,105 @@ const AdminEvents = () => {
       await api.put(`/events/${editingEvent.id}`, editForm, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
-      alert("Event updated successfully!");
+      toast.success("Event updated successfully!");
       setEditingEvent(null);
       setErrors({});
-      const res = await api.get("/events", {
-        headers: { Authorization: `Bearer ${getToken()}` },
-      });
-      setEvents(res.data);
+      await fetchEvents();
     } catch (error) {
-      console.error("Failed to update event", error);
-      alert("Failed to update event.");
+      console.error("Failed to update event:", error);
+      toast.error("Failed to update event.");
     }
   };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this event?")) return;
+
+    try {
+      await api.delete(`/events/${id}`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      setEvents(events.filter((event) => event.id !== id));
+      toast.success("Event deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete event:", error);
+      toast.error("Failed to delete event.");
+    }
+  };
+
+  const renderTable = (data) => (
+    <table
+      className={`min-w-full border rounded-lg shadow transition-colors duration-300 ${
+        isDark
+          ? "bg-gray-800 border-gray-700 text-gray-200"
+          : "bg-white border-gray-200 text-gray-900"
+      }`}
+    >
+      <thead
+        className={`${
+          isDark ? "bg-gray-700 text-gray-200" : "bg-gray-100 text-gray-700"
+        }`}
+      >
+        <tr>
+          {["Title", 
+          "Location", 
+          "Description", 
+          "Date", 
+          "Actions"
+        ].map(
+            (header) => (
+              <th key={header} className="p-3">
+                {header}
+              </th>
+            )
+          )}
+        </tr>
+      </thead>
+      <tbody className="text-sm">
+        {data.length ? (
+          data.map((event) => (
+            <tr
+              key={event.id}
+              className={`border-t ${
+                isDark ? "border-gray-700" : "border-gray-200"
+              }`}
+            >
+              <td className="p-3">{event.title}</td>
+              <td className="p-3">{event.location}</td>
+              <td className="p-3">{event.description || "-"}</td>
+              <td className="p-3">{event.event_date}</td>
+              <td className="flex gap-3 p-3">
+                <button
+                  title="Edit"
+                  onClick={() => handleEdit(event)}
+                  className="text-yellow-500 hover:text-yellow-600"
+                >
+                  <FontAwesomeIcon icon={faPenToSquare} size="lg" />
+                </button>
+                <button
+                  title="Delete"
+                  onClick={() => handleDelete(event.id)}
+                  className="text-red-500 hover:text-red-600"
+                >
+                  <FontAwesomeIcon icon={faTrash} size="lg" />
+                </button>
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td
+              colSpan="5"
+              className={`p-4 text-center ${
+                isDark ? "text-gray-400" : "text-gray-500"
+              }`}
+            >
+              No events found.
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  );
 
   if (loading) return <p className="p-4">Loading...</p>;
 
@@ -122,79 +176,16 @@ const AdminEvents = () => {
         isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
       } min-h-screen p-6`}
     >
-      <h2 className="mb-6 text-2xl font-bold">Events</h2>
-      <table
-        className={`min-w-full border rounded-lg shadow mb-0 ${
-          isDark
-            ? "bg-gray-800 border-gray-700 text-gray-200"
-            : "bg-white border-gray-200 text-gray-900"
-        }`}
-      >
-        <thead
-          className={`text-sm text-left ${
-            isDark ? "bg-gray-700 text-gray-200" : "bg-gray-100 text-gray-700"
-          }`}
-        >
-          <tr>
-            <th className="p-3">Title</th>
-            <th className="p-3">Location</th>
-            <th className="p-3">Description</th>
-            <th className="p-3">Date</th>
-            <th className="p-3">Actions</th>
-          </tr>
-        </thead>
-        <tbody className="text-sm">
-          {events.length ? (
-            events.map((event) => (
-              <tr
-                key={event.id}
-                className={`border-t ${
-                  isDark ? "border-gray-700" : "border-gray-200"
-                }`}
-              >
-                <td className="p-3">{event.title}</td>
-                <td className="p-3">{event.location}</td>
-                <td className="p-3">{event.description || "-"}</td>
-                <td className="p-3">{event.event_date}</td>
-                <td className="flex gap-3 p-3">
-                  <button
-                    title="Edit"
-                    onClick={() => handleEdit(event)}
-                    className="text-yellow-500 hover:text-yellow-600"
-                  >
-                    <FontAwesomeIcon icon={faPenToSquare} size="lg" />
-                  </button>
-                  <button
-                    title="Delete"
-                    onClick={() => handleDelete(event.id)}
-                    className="text-red-500 hover:text-red-600"
-                  >
-                    <FontAwesomeIcon icon={faTrash} size="lg" />
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td
-                colSpan="5"
-                className={`p-4 text-center ${
-                  isDark ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                No events found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-      <div className="mt-4 mb-6 border-t"></div>{" "}
-      {/* Added to mimic AdminUsers.jsx structure */}
+      <h2 className="mb-4 text-2xl font-bold">Events</h2>
+      {renderTable(events)}
+
+      <div className="mt-4 mb-6 border-t"></div>
+
       {editingEvent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <form
             onSubmit={handleEditSubmit}
-            className={`w-full max-w-md p-6 space-y-4 bg-white rounded-lg ${
+            className={`w-full max-w-md p-6 space-y-4 rounded-lg shadow-lg transition-colors ${
               isDark ? "bg-gray-800 text-gray-200" : "bg-white text-gray-900"
             }`}
           >
@@ -206,12 +197,16 @@ const AdminEvents = () => {
               onChange={(e) =>
                 setEditForm({ ...editForm, title: e.target.value })
               }
+              placeholder="Event Title"
               className={`w-full p-3 border rounded ${
                 isDark
                   ? "bg-gray-800 border-gray-700 text-gray-200"
                   : "bg-white border-gray-300 text-gray-900"
               }`}
             />
+            {errors.title && (
+              <p className="text-sm text-red-500">{errors.title}</p>
+            )}
 
             <textarea
               name="description"
@@ -219,6 +214,7 @@ const AdminEvents = () => {
               onChange={(e) =>
                 setEditForm({ ...editForm, description: e.target.value })
               }
+              placeholder="Description"
               className={`w-full p-3 border rounded ${
                 isDark
                   ? "bg-gray-800 border-gray-700 text-gray-200"
@@ -232,7 +228,7 @@ const AdminEvents = () => {
               onChange={(e) =>
                 setEditForm({ ...editForm, location: e.target.value })
               }
-              className={`w-full p-3 text-sm border rounded-md ${
+              className={`w-full p-3 border rounded ${
                 isDark
                   ? "bg-gray-800 border-gray-700 text-gray-200"
                   : "bg-white border-gray-300 text-gray-900"
@@ -245,15 +241,8 @@ const AdminEvents = () => {
               <option value="Admin Building">Admin Building</option>
               <option value="Mabric Hall">Mabric Hall</option>
             </select>
-
             {errors.location && (
-              <p
-                className={`text-sm ${
-                  isDark ? "text-red-400" : "text-red-500"
-                }`}
-              >
-                {errors.location}
-              </p>
+              <p className="text-sm text-red-500">{errors.location}</p>
             )}
 
             <input
@@ -269,6 +258,9 @@ const AdminEvents = () => {
                   : "bg-white border-gray-300 text-gray-900"
               }`}
             />
+            {errors.event_date && (
+              <p className="text-sm text-red-500">{errors.event_date}</p>
+            )}
 
             <div className="flex justify-end gap-2">
               <button
