@@ -12,8 +12,8 @@ import {
 import ThemeToggle from "../components/ThemeToggle";
 
 export default function LandingPage() {
-  const navigate = useNavigate();  // Hook to handle navigation
-
+  const navigate = useNavigate();
+  
   const features = [
     {
       icon: <Calendar className="w-8 h-8 text-primary" />,
@@ -47,7 +47,6 @@ export default function LandingPage() {
     },
   ];
 
-  // Function to handle navigation to home (for logo click)
   const goToHome = () => {
     navigate("/");
   };
@@ -59,8 +58,8 @@ export default function LandingPage() {
         <div className="container flex items-center justify-between px-4 py-4 mx-auto">
           {/* Left side: Logo and text - Now clickable */}
           <div 
-            className="flex items-center gap-2 cursor-pointer"  // Added cursor-pointer for UX
-            onClick={goToHome}  // Navigate to "/" on click
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={goToHome}
           >
             <GraduationCap className="w-8 h-8 text-primary" />
             <div>
@@ -90,7 +89,7 @@ export default function LandingPage() {
 
           <div className="flex flex-wrap justify-center gap-4 mt-10">
             <Button
-              onClick={() => navigate("/login?role=alumni")}  // Using imported navigate
+              onClick={() => navigate("/alumni-login")}  
               className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
             >
               Alumni Login
@@ -98,7 +97,7 @@ export default function LandingPage() {
             
             <Button
               variant="outline"
-              onClick={() => navigate("/login?role=admin")}  // Using imported navigate
+              onClick={() => navigate("/admin-login")} 
               className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
             >
               Admin Portal

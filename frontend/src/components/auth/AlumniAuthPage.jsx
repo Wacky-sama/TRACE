@@ -1,4 +1,4 @@
-import { useNavigate, useLocation, useSearchParams } from "react-router-dom";  // Added useSearchParams
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@radix-ui/themes";
 import { GraduationCap } from "lucide-react";
@@ -6,12 +6,12 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import ThemeToggle from "../ThemeToggle";
 
-function AuthPage() {
+function AlumniAuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams] = useSearchParams();  
-  const isRegistering = location.pathname === "/register";
-  const role = searchParams.get("role") || "alumni";  
+  const [searchParams] = useSearchParams();
+  const isRegistering = location.pathname === "/alumni-register";
+  const role = searchParams.get("role") || "alumni";
 
   const goToLandingPage = () => {
     navigate("/");
@@ -24,7 +24,7 @@ function AuthPage() {
       case "admin":
         return "Welcome Back, Admin!";
       default:
-        return "Welcome!"; 
+        return "Welcome!";
     }
   };
 
@@ -49,14 +49,14 @@ function AuthPage() {
           {/* Right side: Grouped buttons and ThemeToggle */}
           <div className="flex items-center gap-4">
             <Button
-              onClick={() => navigate("/login?role=alumni")}  
+              onClick={() => navigate("/alumni-login")}
               className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
             >
               Alumni Login
             </Button>
             <Button
               variant="outline"
-              onClick={() => navigate("/login?role=admin")} 
+              onClick={() => navigate("/admin-login")}
               className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
             >
               Admin Portal
@@ -75,7 +75,7 @@ function AuthPage() {
                 className="w-32 h-auto mx-auto mb-4 md:w-48"
               />
               <h3 className="mb-2 text-xl font-semibold text-white">
-                {getWelcomeMessage()}  {/* Dynamically render the message */}
+                {getWelcomeMessage()}
               </h3>
               <p className="text-sm text-gray-200">
                 Track, Reconnect, and Connect with Excellence
@@ -117,7 +117,7 @@ function AuthPage() {
                   : "Don't have an account?"}{" "}
                 <button
                   onClick={() =>
-                    navigate(isRegistering ? "/login" : "/register")
+                    navigate(isRegistering ? "/alumni-login" : "/alumni-register")
                   }
                   className="text-blue-600 hover:underline"
                 >
@@ -151,4 +151,4 @@ function AuthPage() {
   );
 }
 
-export default AuthPage;
+export default AlumniAuthPage;

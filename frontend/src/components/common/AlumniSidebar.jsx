@@ -28,7 +28,7 @@ const AlumniSidebar = () => {
   const handleLogout = () => {
     clearAuthData();
     setCurrentUser(null);
-    navigate("/login");
+    navigate("/alumni-login");
   };
 
   return (
@@ -43,8 +43,8 @@ const AlumniSidebar = () => {
         }`}
       >
         {isOpen && currentUser && (
-          <div className="text-center w-full">
-            <div className="font-semibold text-sm text-white">
+          <div className="w-full text-center">
+            <div className="text-sm font-semibold text-white">
               <p className="font-semibold">{formatFullname(currentUser)}</p>
               <p className="text-sm text-gray-400 capitalize">
                 {currentUser.role}
@@ -61,7 +61,7 @@ const AlumniSidebar = () => {
       </div>
 
       <nav className="mt-4">
-        <ul className="space-y-2 px-3">
+        <ul className="px-3 space-y-2">
           {navigationItems.map((item) => (
             <li key={item.label}>
               <NavLink
@@ -92,7 +92,7 @@ const AlumniSidebar = () => {
         <div className="px-3">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-red-600 hover:text-white group"
+            className="flex items-center w-full gap-3 px-3 py-2 text-gray-300 rounded-lg hover:bg-red-600 hover:text-white group"
           >
             <FontAwesomeIcon
               icon={faRightFromBracket}
