@@ -7,7 +7,6 @@ import UsernameInput from "../../components/UsernameInput";
 import FloatingInput from "../../components/FloatingInput";
 import FloatingSelect from "../../components/FloatingSelect";
 
-// Dark mode hook
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains("dark")

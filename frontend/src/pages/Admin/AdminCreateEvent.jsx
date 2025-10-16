@@ -5,7 +5,6 @@ import FloatingInput from "../../components/FloatingInput";
 import FloatingSelect from "../../components/FloatingSelect";
 import AdminFloatingDatePicker from "../../components/common/AdminFloatingDatePicker";
 
-// Dark mode hook
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains("dark")
