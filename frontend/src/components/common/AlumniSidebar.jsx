@@ -1,4 +1,4 @@
-import { clearAuthData } from "../../utils/storage";
+import { alumniLogout } from "../../utils/storage";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,7 +26,7 @@ const AlumniSidebar = () => {
   ];
 
   const handleLogout = () => {
-    clearAuthData();
+    alumniLogout();
     setCurrentUser(null);
     navigate("/alumni-login");
   };

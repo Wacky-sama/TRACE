@@ -1,4 +1,4 @@
-import { clearAuthData } from "../../utils/storage";
+import { adminLogout } from "../../utils/storage";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -53,7 +53,7 @@ const AdminSidebar = () => {
   ];
 
   const handleLogout = () => {
-    clearAuthData();
+    adminLogout();
     setCurrentUser(null);
     navigate("/admin-login");
   };
