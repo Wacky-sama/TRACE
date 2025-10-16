@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../styles/datepicker-dark.css";
-import { useTheme } from "../../hooks/useTheme"; // adjust path if needed
+import { useTheme } from "../../context/ThemeProvider";
 
 function AlumniFloatingDatePicker({
   id,
