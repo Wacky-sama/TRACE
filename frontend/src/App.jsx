@@ -105,7 +105,7 @@ function App() {
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={theme} // ✅ triggers fade on theme change
+        key={theme}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
