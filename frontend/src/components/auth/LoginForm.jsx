@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faUser, faLock } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import { login, getProfile } from '../../services/auth';
-import { setAuthData, setUser } from '../../utils/storage';
+import { setAuthData, setUser, clearAuthData } from '../../utils/storage';
 import { useUser } from '../../context/UserContext';
 import FloatingInput from '../FloatingInput';
 
@@ -35,7 +35,9 @@ function LoginForm({ expectedRole }) {
 
       if (role !== expectedRole) {
         toast.error(`Access denied: This login page is for ${expectedRole} only. Please use the appropriate portal.`);
+
         setTimeout(() => {
+          clearAuthData();
           if (role === "admin") {
             navigate("/admin-login");
           } else if (role === "alumni") {
@@ -57,7 +59,7 @@ function LoginForm({ expectedRole }) {
       } else {
         setLoginError("Unauthorized access. Please contact the administrator.");
       }
-    } catch (error) {
+    } catch (error) { 
       setLoginError(error.response?.data?.detail ?? error.message);
     }
   };
