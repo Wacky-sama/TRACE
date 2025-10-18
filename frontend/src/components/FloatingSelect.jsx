@@ -14,7 +14,7 @@ function FloatingSelect({
   const { theme } = useTheme();
   const isDark = darkMode ?? theme === "dark";
   return (
-    <div className="mb-2">
+    <div className="mb-4">
       <div className="relative">
         <select
           id={id}

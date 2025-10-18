@@ -16,7 +16,7 @@ function FloatingInput({
   const isDark = darkMode ?? theme === "dark";
 
   return (
-    <div className="mb-2">
+    <div className="mb-4">
       <div className="relative">
         {/* Left Icon */}
         {icon && (
