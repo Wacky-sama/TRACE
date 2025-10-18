@@ -23,7 +23,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import api from "../../services/api";
 
-// Hook to detect dark mode dynamically
 function useDarkMode() {
   const [isDark, setIsDark] = useState(
     () => document.documentElement.classList.contains("dark")
