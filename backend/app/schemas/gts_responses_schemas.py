@@ -19,6 +19,19 @@ class GTSResponseCreate(BaseModel):
     company_address: Optional[str] = None
     occupation: Optional[List[str]] = None
 
+class GTSResponseFullCreate(GTSResponseCreate):
+    degree: Optional[str]
+    specialization: Optional[str]
+    year_graduated: Optional[int]
+    honors: Optional[str]
+    pursued_advance_degree: Optional[bool]
+    pursued_advance_degree_reasons: Optional[List[str]]
+    trainings: Optional[List[dict]]
+    job_satisfaction: Optional[str]
+    job_satisfaction_reason: Optional[str]
+    desired_services: Optional[str]
+    job_problems: Optional[str]
+
 class GTSResponseOut(BaseModel):
     id: UUID
     user_id: UUID

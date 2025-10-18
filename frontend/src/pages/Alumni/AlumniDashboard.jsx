@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
 
-// Hook to detect dark mode dynamically
 function useDarkMode() {
   const [isDark, setIsDark] = useState(
     () => document.documentElement.classList.contains("dark")
@@ -74,7 +73,7 @@ const AlumniDashboard = () => {
                     {event.description || "No description"}
                   </p>
                   <p className={`text-xs ${isDark ? "text-gray-400" : "text-gray-500"}`}>
-                    Date: {event.date || "TBA"}
+                    Date: {event.event_date || "To Be Announce"}
                   </p>
                 </div>
               ))
