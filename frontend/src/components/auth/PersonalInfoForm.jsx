@@ -81,7 +81,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
   return (
     <div className="space-4">
-      <h2 className="pb-2 mb-4 text-xl font-semibold border-b ">
+      <h2 className="pb-2 mb-4 text-xl font-semibold border-b">
         Personal Information
       </h2>
 
