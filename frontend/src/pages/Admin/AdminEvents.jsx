@@ -21,20 +21,24 @@ const AdminEvents = () => {
   });
   const [errors, setErrors] = useState({});
 
-  const fetchEvents = async () => {
-    try {
-      const res = await api.get("/events");
-      setEvents(res.data);
-    } catch (error) {
-      console.error("Error fetching events:", error);
-      toast.error("Failed to load events. Backend might be on a coffee break ☕");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await api.get("/events");
+        setEvents(res.data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        toast.error(
+          "Failed to load events. Backend might be on a coffee break ☕"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchEvents();
+    const interval = setInterval(fetchEvents, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   const validate = () => {
@@ -107,12 +111,7 @@ const AdminEvents = () => {
         }`}
       >
         <tr>
-          {["Title", 
-          "Location", 
-          "Description", 
-          "Date", 
-          "Actions"
-        ].map(
+          {["Title", "Location", "Description", "Date", "Actions"].map(
             (header) => (
               <th key={header} className="p-3">
                 {header}
