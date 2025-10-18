@@ -205,7 +205,7 @@ const AdminDashboard = () => {
           <div className={`p-6 rounded-lg shadow mb-8 transition-colors ${isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"}`}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Pending Alumni Approvals</h3>
-              <span className="text-2xl font-bold text-orange-600">{pendingUsers.length}</span>
+              <span className="text-2xl font-bold text-green-600">{pendingUsers.length}</span>
             </div>
             {pendingUsers.length === 0 ? (
               <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>No pending approvals.</p>
