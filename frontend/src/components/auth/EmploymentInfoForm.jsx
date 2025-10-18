@@ -39,6 +39,25 @@ const OCCUPATION_OPTIONS = [
   "Others, please specify",
 ];
 
+function useDarkMode() {
+  const [isDark, setIsDark] = useState(() =>
+    document.documentElement.classList.contains("dark")
+  );
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  return isDark;
+}
+
 function EmploymentInfoForm({
   formData,
   setFormData,
@@ -50,6 +69,7 @@ function EmploymentInfoForm({
   const [otherNonEmployedReason, setOtherNonEmployedReason] = useState("");
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
+  const isDark = useDarkMode();
 
   const validate = () => {
     const newErrors = {};
@@ -214,11 +234,11 @@ function EmploymentInfoForm({
   }, [formData.employmentNow, setFormData]);
 
   return (
-    <div>
-      <h2 className="mb-2 text-lg font-semibold">Employment Information</h2>
+    <div className={`${isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"} p-6 rounded-lg shadow-md`}>
+      <h2 className="pb-2 mb-4 text-xl font-semibold border-b">Employment Information</h2>
 
       <div className="mb-4">
-        <label className="block mb-2 text-sm font-medium text-gray-700">
+        <label className={`block mb-2 text-sm font-medium ${ isDark ? "text-gray-200" : "text-gray-700"}`}>
           Are you presently employed?
         </label>
         <div className="flex flex-col gap-2">
@@ -234,7 +254,7 @@ function EmploymentInfoForm({
                 }
                 className="w-4 h-4"
               />
-              <span className="text-sm text-gray-700">{opt}</span>
+              <span className={`text-sm ${isDark ? "text-gray-200" : "text-gray-700"}`}>{opt}</span>
             </label>
           ))}
         </div>
@@ -254,6 +274,7 @@ function EmploymentInfoForm({
             label="Employment Status"
             error={errors.employmentStatus}
             options={EMPLOYED_STATUSES}
+            darkMode={isDark}
           />
           <FloatingSelect
             id="placeOfWork"
@@ -264,6 +285,7 @@ function EmploymentInfoForm({
             label="Place of Work"
             error={errors.placeOfWork}
             options={["Local", "Abroad"]}
+            darkMode={isDark}
           />
           <FloatingInput
             id="companyName"
@@ -273,6 +295,7 @@ function EmploymentInfoForm({
             }
             label="Company Name"
             error={errors.companyName}
+            darkMode={isDark}
           />
           <FloatingInput
             id="companyAddress"
@@ -282,10 +305,11 @@ function EmploymentInfoForm({
             }
             label="Company Address"
             error={errors.companyAddress}
+            darkMode={isDark}
           />
 
           <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium text-gray-700">
+            <label className={`block mb-2 text-sm font-medium ${isDark ? "text-gray-200" : "text-gray-700"}`}>
               Occupation(s)
             </label>
             <div className="flex flex-wrap gap-2">
@@ -295,6 +319,8 @@ function EmploymentInfoForm({
                   className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
                     formData.occupation.includes(opt)
                       ? "bg-blue-600 text-white border-blue-600"
+                      : isDark
+                      ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
                       : "bg-white text-gray-700 hover:bg-gray-50"
                   }`}
                 >
@@ -316,6 +342,7 @@ function EmploymentInfoForm({
                 onChange={(e) => setOtherOccupation(e.target.value.trimStart())}
                 label="Please specify your occupation"
                 error={errors.otherOccupation}
+                darkMode={isDark}
               />
             )}
             {errors.occupation && (
@@ -327,7 +354,7 @@ function EmploymentInfoForm({
 
       {formData.employmentNow === "No" && (
         <div className="mb-4">
-          <label className="block mb-2 text-sm font-medium text-gray-700">
+          <label className={`block mb-2 text-sm font-medium ${isDark ? "text-gray-200" : "text-gray-700"}`}>
             Why? (You may select multiple answers)
           </label>
           <div className="flex flex-wrap gap-2">
@@ -337,6 +364,8 @@ function EmploymentInfoForm({
                 className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
                   formData.nonEmployedReasons.includes(reason)
                     ? "bg-blue-600 text-white border-blue-600"
+                    : isDark
+                    ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
                     : "bg-white text-gray-700 hover:bg-gray-50"
                 }`}
               >
@@ -363,6 +392,7 @@ function EmploymentInfoForm({
               }
               label="Please specify"
               error={errors.otherNonEmployedReason}
+              darkMode={isDark}
             />
           )}
 
@@ -378,7 +408,9 @@ function EmploymentInfoForm({
         <button
           onClick={prevStep}
           disabled={submitting}
-          className="px-4 py-2 transition-colors bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+          className={`px-4 py-2 transition-colors rounded disabled:opacity-50 disabled:cursor-not-allowed 
+            ${isDark ? "bg-gray-600 text-gray-100 hover:bg-gray-400" : "bg-gray-300 text-gray-800 hover:bg-gray-800"
+          }`}
         >
           Back
         </button>
