@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.activity_logs_models import ActivityLog, ActionType
-from datetime import datetime
+from app.models.users_models import User
+from datetime import datetime, timezone
 
 def log_activity(
     db: Session,
@@ -14,11 +15,21 @@ def log_activity(
     """
     Creates a new activity log entry in the database.
     Automatically handles DB commit and rollback safety.
+    
+    Automatically filters out activity logs for unapproved alumni users,
+    except for specific actions (register, login, update before approval).
     """
     try: 
         if created_at is None:
-            created_at = datetime.utcnow()
+            created_at = datetime.now(timezone.utc)
         
+        user = db.query(User).filter(User.id == user_id).first()
+        
+        if user and user.role.value == "alumni" and not user.is_approved:
+            allowed_actions = {ActionType.register, ActionType.login, ActionType.update}
+            if action_type not in allowed_actions:
+                return None
+                
         log_entry = ActivityLog(
             user_id=user_id,
             action_type=action_type,

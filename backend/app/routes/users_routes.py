@@ -92,7 +92,7 @@ def login(
         description=f"{user.role.value.capitalize()} - {user.firstname} {user.lastname} logged in",
         created_at=datetime.now(timezone.utc)
     )
-
+    
     return TokenResponse(
         token=token,
         role=user.role,
