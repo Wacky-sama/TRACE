@@ -149,7 +149,6 @@ function EmploymentInfoForm({
     try {
       await handleRegister(finalNonEmployedReasons, finalOccupations);
 
-      // Only proceed if registration was successful
       setFormData({});
       setOtherNonEmployedReason("");
       setOtherOccupation("");
@@ -162,10 +161,9 @@ function EmploymentInfoForm({
         navigate("/login");
       }, 2000);
     } catch (error) {
-      // Stay on the form and show the error
-      setSubmitting(false);
       
-      // Check if it's a username conflict error
+      setSubmitting(false);
+    
       if (error.message?.toLowerCase().includes("username")) {
         toast.error("Username is already taken. Please go back and choose a different username.");
       } else if (error.response?.data?.message) {
@@ -217,10 +215,10 @@ function EmploymentInfoForm({
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-2">Employment Information</h2>
+      <h2 className="mb-2 text-lg font-semibold">Employment Information</h2>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block mb-2 text-sm font-medium text-gray-700">
           Are you presently employed?
         </label>
         <div className="flex flex-col gap-2">
@@ -234,14 +232,14 @@ function EmploymentInfoForm({
                 onChange={(e) =>
                   setFormData({ ...formData, employmentNow: e.target.value })
                 }
-                className="h-4 w-4"
+                className="w-4 h-4"
               />
               <span className="text-sm text-gray-700">{opt}</span>
             </label>
           ))}
         </div>
         {errors.employmentNow && (
-          <p className="text-red-500 text-xs mt-1">{errors.employmentNow}</p>
+          <p className="mt-1 text-xs text-red-500">{errors.employmentNow}</p>
         )}
       </div>
 
@@ -287,7 +285,7 @@ function EmploymentInfoForm({
           />
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block mb-2 text-sm font-medium text-gray-700">
               Occupation(s)
             </label>
             <div className="flex flex-wrap gap-2">
@@ -321,7 +319,7 @@ function EmploymentInfoForm({
               />
             )}
             {errors.occupation && (
-              <p className="text-red-500 text-xs mt-1">{errors.occupation}</p>
+              <p className="mt-1 text-xs text-red-500">{errors.occupation}</p>
             )}
           </div>
         </>
@@ -329,7 +327,7 @@ function EmploymentInfoForm({
 
       {formData.employmentNow === "No" && (
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block mb-2 text-sm font-medium text-gray-700">
             Why? (You may select multiple answers)
           </label>
           <div className="flex flex-wrap gap-2">
@@ -369,7 +367,7 @@ function EmploymentInfoForm({
           )}
 
           {errors.employmentStatus && (
-            <p className="text-red-500 text-xs mt-1">
+            <p className="mt-1 text-xs text-red-500">
               {errors.employmentStatus}
             </p>
           )}
@@ -380,14 +378,14 @@ function EmploymentInfoForm({
         <button
           onClick={prevStep}
           disabled={submitting}
-          className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="px-4 py-2 transition-colors bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Back
         </button>
         <button
           onClick={onSubmit}
           disabled={submitting}
-          className="px-6 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="px-6 py-2 text-white transition-colors bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {submitting ? "Submitting..." : "Register"}
         </button>
