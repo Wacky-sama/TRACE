@@ -409,7 +409,7 @@ function EmploymentInfoForm({
           onClick={prevStep}
           disabled={submitting}
           className={`px-4 py-2 transition-colors rounded disabled:opacity-50 disabled:cursor-not-allowed 
-            ${isDark ? "bg-gray-600 text-gray-100 hover:bg-gray-400" : "bg-gray-300 text-gray-800 hover:bg-gray-800"
+            ${isDark ? "bg-gray-600 text-gray-100 hover:bg-gray-400" : "bg-gray-300 text-gray-800 hover:bg-gray-400"
           }`}
         >
           Back
