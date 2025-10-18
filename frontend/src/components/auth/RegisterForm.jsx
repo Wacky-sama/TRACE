@@ -123,7 +123,7 @@ function RegisterForm() {
       setRegisterSuccess(
         "Registration submitted successfully! Please wait for approval."
       );
-      setTimeout(() => navigate('/login'), 3000);
+      setTimeout(() => navigate('/alumni-login'), 3000);
     } catch (error) {
       if (error.response?.data) {
         console.error("Server validation error:", error.response.data);
@@ -141,12 +141,12 @@ function RegisterForm() {
   return (
     <div>
       {registerError && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-4 text-sm">
+        <div className="px-4 py-3 mb-4 text-sm text-red-700 border border-red-200 rounded-md bg-red-50">
           {registerError}
         </div>
       )}
       {registerSuccess && (
-        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md mb-4 text-sm">
+        <div className="px-4 py-3 mb-4 text-sm text-green-700 border border-green-200 rounded-md bg-green-50">
           {registerSuccess}
         </div>
       )}
