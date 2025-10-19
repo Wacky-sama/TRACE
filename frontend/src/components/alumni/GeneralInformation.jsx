@@ -49,8 +49,9 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
           <option value="">Select status</option>
           <option value="Single">Single</option>
           <option value="Married">Married</option>
-          <option value="Widowed">Widowed</option>
-          <option value="Separated">Separated</option>
+          <option value="Separated">Separated/Divorced</option>
+          <option value="Widowed">Widow or Widower</option>
+          <option value="Widowed">Single Parent</option>
         </select>
       </div>
 
