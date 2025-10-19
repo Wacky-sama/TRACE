@@ -13,9 +13,10 @@ const AlumniGTSForm = () => {
 
   useEffect(() => {
     const fetchGTSData = async () => {
+      if (!userId) return;
       try {
         const token = getToken();
-        const response = await api.get(`/gts_responses/${user_id}`, {
+        const response = await api.get(`/gts_responses/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setGtsData(response.data);
@@ -27,7 +28,7 @@ const AlumniGTSForm = () => {
     };
 
     fetchGTSData();
-  }, [user]);
+  }, [userId]);
 
   const handleUpdate = async (updatedFields) => {
     try {
@@ -57,7 +58,6 @@ const AlumniGTSForm = () => {
       {/* Each section gets the current data and update handler */}
       <GeneralInformation gtsData={gtsData} onUpdate={handleUpdate} />
       <EmploymentData gtsData={gtsData} onUpdate={handleUpdate} />
-
       {/* Add more sections as needed */}
     </div>
   );
