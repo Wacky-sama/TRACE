@@ -3,9 +3,9 @@ from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
 from app.models.users_models import User
-from app.models.gts_responses_models import GTSResponse
+from app.models.gts_responses_models import GTSResponses
 from app.utils.auth import get_current_user
-from app.schemas.gts_responses_schemas import GTSResponseCreate, GTSResponseOut
+from app.schemas.gts_responses_schemas import GTSResponsesCreate, GTSResponsesOut, GTSResponsesPersonalUpdate
 from uuid import UUID
 
 router = APIRouter(
@@ -14,18 +14,18 @@ router = APIRouter(
 )
 
 # View all responses (admin only)
-@router.get("/", response_model=List[GTSResponseOut])
+@router.get("/", response_model=List[GTSResponsesOut])
 def get_all_responses(
     db: Session = Depends(get_db)
 ):
-    return db.query(GTSResponse).all()
+    return db.query(GTSResponses).all()
 
 
 # Create new GTS response (used internally during registration)
-@router.post("/register/alumni/{user_id}", tags=["public"], response_model=GTSResponseOut)
+@router.post("/register/alumni/{user_id}", tags=["public"], response_model=GTSResponsesOut)
 def create_initial_gts_response(
     user_id: UUID,
-    gts_data: GTSResponseCreate,
+    gts_data: GTSResponsesCreate,
     db: Session = Depends(get_db)
 ):
     user = db.query(User).filter(User.id == user_id).first()
@@ -41,7 +41,7 @@ def create_initial_gts_response(
     clean_parts = [part for part in name_parts if part]
     full_name = " ".join(clean_parts)
 
-    gts_responses = GTSResponse(
+    gts_responses = GTSResponses(
         user_id=user_id,
         full_name=full_name,
         contact_email=user.email,
@@ -65,25 +65,28 @@ def create_initial_gts_response(
     return gts_responses
 
 # Alumni see their own GTS response
-@router.get("/me", response_model=GTSResponseOut)
+@router.get("/me", response_model=GTSResponsesOut)
 def get_my_gts_response(
     current_user: User = Depends(get_current_user), 
     db: Session = Depends(get_db)
 ):
-    gts_responses = db.query(GTSResponse).filter(GTSResponse.user_id == current_user.id).first()
+    gts_responses = db.query(GTSResponses).filter(GTSResponses.user_id == current_user.id).first()
     if not gts_responses:
         raise HTTPException(status_code=404, detail="No GTS response found")
     return gts_responses
 
-# Updates
-@router.put("/{gts_id}", response_model=GTSResponseOut)
+# Update Personal Info
+@router.put("/{gts_id}/personal", response_model=GTSResponsesOut)
 def update_gts_response(
     gts_id: UUID, 
-    updated_data: GTSResponseCreate, 
+    updated_data: GTSResponsesPersonalUpdate, 
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    gts = db.query(GTSResponse).filter(GTSResponse.id == gts_id, GTSResponse.user_id == current_user.id).first()
+    gts = db.query(GTSResponses).filter(
+        GTSResponses.id == gts_id, 
+        GTSResponses.user_id == current_user.id
+    ).first()
     if not gts:
         raise HTTPException(status_code=404, detail="GTS Response not found")
     
