@@ -5,7 +5,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.database import Base
 
-class GTSResponse(Base):
+class GTSResponses(Base):
     __tablename__ = "gts_responses"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
