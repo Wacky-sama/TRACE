@@ -19,38 +19,38 @@ class GTSResponsesCreate(BaseModel):
     company_address: Optional[str] = None
     occupation: Optional[List[str]] = None
 
-class GTSResponsesFullCreate(GTSResponsesCreate):
-    degree: Optional[str]
-    specialization: Optional[str]
-    year_graduated: Optional[int]
-    honors: Optional[str]
-    pursued_advance_degree: Optional[bool]
-    pursued_advance_degree_reasons: Optional[List[str]]
-    trainings: Optional[List[dict]]
-    job_satisfaction: Optional[str]
-    job_satisfaction_reason: Optional[str]
-    desired_services: Optional[str]
-    job_problems: Optional[str]
+# class GTSResponsesFullCreate(GTSResponsesCreate):
+#     degree: Optional[str]
+#     specialization: Optional[str]
+#     year_graduated: Optional[int]
+#     honors: Optional[str]
+#     pursued_advance_degree: Optional[bool]
+#     pursued_advance_degree_reasons: Optional[List[str]]
+#     trainings: Optional[List[dict]]
+#     job_satisfaction: Optional[str]
+#     job_satisfaction_reason: Optional[str]
+#     desired_services: Optional[str]
+#     job_problems: Optional[str]
 
-# GENERAL INFORMATION Update
+# A. GENERAL INFORMATION Update
 class GTSResponsesPersonalUpdate(BaseModel):
     civil_status: Optional[str] = None
 
-# EDUCATIONAL BACKGROUND 
+# B. EDUCATIONAL BACKGROUND 
 
-#  TRAINING(S) ADVANCE STUDIES ATTENTED AFTER COLLEGE(optional)
+# C. TRAINING(S) ADVANCE STUDIES ATTENTED AFTER COLLEGE(optional)
 
-# EMPLOYMENT DATA
+# D. EMPLOYMENT DATA Update
 class GTSResponsesEmploymentUpdate(BaseModel):
-    ever_employed: Optional[bool]
-    is_employed: Optional[bool]
-    non_employed_reasons: Optional[str]
+    ever_employed: Optional[bool] = None
+    is_employed: Optional[bool] = None
+    non_employed_reasons: Optional[List[str]] = None
     employment_status: Optional[str]
-    occupation: Optional[str]
-    company_name: Optional[str]
-    company_address: Optional[str]
-    job_sector: Optional[str]
-    place_of_work: Optional[str]
+    occupation: Optional[List[str]] = None
+    company_name: Optional[str] = None
+    company_address: Optional[str] = None
+    job_sector: Optional[str] = None
+    place_of_work: Optional[str] = None
 
     class Config:
         from_attributes = True

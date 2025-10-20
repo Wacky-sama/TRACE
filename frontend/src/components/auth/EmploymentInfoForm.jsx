@@ -310,7 +310,7 @@ function EmploymentInfoForm({
 
           <div className="mb-4">
             <label className={`block mb-2 text-sm font-medium ${isDark ? "text-gray-200" : "text-gray-700"}`}>
-              Occupation(s)
+              Present occupation: (you may have multiple answers)
             </label>
             <div className="flex flex-wrap gap-2">
               {OCCUPATION_OPTIONS.map((opt) => (
