@@ -17,7 +17,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
     company_name: gtsData.company_name || "",
     company_address: gtsData.company_address || "",
     job_sector: gtsData.job_sector || "",
-    place_of_work: gtsData.place_of_work || ""
+    place_of_work: gtsData.place_of_work || "",
   });
 
   const [saving, setSaving] = useState(false);
@@ -63,6 +63,33 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
       </h2>
 
       <div className="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
+        <div>
+          <FloatingSelect
+            id="ever_employed"
+            label="Are you presently employed?"
+            value={formData.ever_employed ? "Yes" : "No"}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                ever_employed: e.target.value === "Yes",
+              }))
+            }
+            options={["Yes", "No", "Never Employed"]}
+          />
+        </div>
+
+        {!formData.is_employed && (
+          <div>
+            <FloatingInput
+              id="non_employed_reasons"
+              type="text"
+              label="If not employed, specify reason"
+              value={formData.non_employed_reasons}
+              onChange={handleChange}
+            />
+          </div>
+        )}
+
         <div>
           <FloatingSelect
             id="employment_status"
@@ -135,33 +162,6 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
             options={["Local", "Abroad"]}
           />
         </div>
-
-        <div>
-          <FloatingSelect
-            id="ever_employed"
-            label="Are you presently employed?"
-            value={formData.ever_employed ? "Yes" : "No"}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                ever_employed: e.target.value === "Yes",
-              }))
-            }
-            options={["Yes", "No", "Never Employed"]}
-          />
-        </div>
-
-        {!formData.is_employed && (
-          <div>
-            <FloatingInput
-              id="non_employed_reasons"
-              type="text"
-              label="If not employed, specify reason"
-              value={formData.non_employed_reasons}
-              onChange={handleChange}
-            />
-          </div>
-        )}
       </div>
 
       {/* Save Button */}
