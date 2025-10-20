@@ -70,12 +70,30 @@ def get_my_gts_response(
     current_user: User = Depends(get_current_user), 
     db: Session = Depends(get_db)
 ):
-    gts_responses = db.query(GTSResponses).filter(
-        GTSResponses.user_id == current_user.id
-    ).first()
+    gts_responses = db.query(GTSResponses).filter(GTSResponses.user_id == current_user.id).first()
     if not gts_responses:
         raise HTTPException(status_code=404, detail="No GTS response found")
-    return gts_responses
+    
+    # Parse array strings to lists
+    data = gts_responses.__dict__.copy()
+    
+    # Helper to parse PostgreSQL array string
+    def parse_pg_array(value):
+        if isinstance(value, str) and value.startswith('{') and value.endswith('}'):
+            inner = value[1:-1]
+            if '","' in inner:  # Quoted items with commas
+                items = inner.split('","')
+                items[0] = items[0].lstrip('"')
+                items[-1] = items[-1].rstrip('"')
+                return [i.strip() for i in items if i.strip()]
+            else:  # Simple unquoted
+                return [i.strip().strip('"') for i in inner.split(',') if i.strip()]
+        return value if isinstance(value, list) else (value or [])
+    
+    data['occupation'] = parse_pg_array(gts_responses.occupation)
+    data['non_employed_reasons'] = parse_pg_array(gts_responses.non_employed_reasons)
+    
+    return GTSResponsesOut(**data)
 
 # A. Update Personal Info
 @router.put("/{gts_id}/personal", response_model=GTSResponsesOut)
