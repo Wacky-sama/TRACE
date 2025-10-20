@@ -15,24 +15,24 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
     mobile: gtsData.mobile || "",
     civil_status: gtsData.civil_status || "",
     sex: gtsData.sex || "",
-    birthday: gtsData.birthday || "",
+    birthday: gtsData.birthday || ""
   });
 
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(null);
 
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+  
   const handleSave = async () => {
     setSaving(true);
     const result = await onUpdate(formData);
     setSaving(false);
     setSaveSuccess(result.success);
     setMessage(result.success ? "Saved successfully!" : "Update failed.");
-  };
-
-  const handleChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
   return (
