@@ -70,7 +70,9 @@ def get_my_gts_response(
     current_user: User = Depends(get_current_user), 
     db: Session = Depends(get_db)
 ):
-    gts_responses = db.query(GTSResponses).filter(GTSResponses.user_id == current_user.id).first()
+    gts_responses = db.query(GTSResponses).filter(
+        GTSResponses.user_id == current_user.id
+    ).first()
     if not gts_responses:
         raise HTTPException(status_code=404, detail="No GTS response found")
     return gts_responses
@@ -97,6 +99,10 @@ def update_gts_response(
     db.commit()
     db.refresh(gts)
     return gts
+
+# B. 
+
+# C.
 
 # D. Update Employment Info
 @router.put("/{gts_id}/employment", response_model=GTSResponsesOut)

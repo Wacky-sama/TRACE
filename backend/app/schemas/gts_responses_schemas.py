@@ -1,5 +1,5 @@
 import enum
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from typing import Optional, List
 from uuid import UUID
 from datetime import date
@@ -18,19 +18,6 @@ class GTSResponsesCreate(BaseModel):
     company_name: Optional[str] = None
     company_address: Optional[str] = None
     occupation: Optional[List[str]] = None
-
-# class GTSResponsesFullCreate(GTSResponsesCreate):
-#     degree: Optional[str]
-#     specialization: Optional[str]
-#     year_graduated: Optional[int]
-#     honors: Optional[str]
-#     pursued_advance_degree: Optional[bool]
-#     pursued_advance_degree_reasons: Optional[List[str]]
-#     trainings: Optional[List[dict]]
-#     job_satisfaction: Optional[str]
-#     job_satisfaction_reason: Optional[str]
-#     desired_services: Optional[str]
-#     job_problems: Optional[str]
 
 # A. GENERAL INFORMATION Update
 class GTSResponsesPersonalUpdate(BaseModel):
@@ -67,9 +54,9 @@ class GTSResponsesOut(BaseModel):
     birthday: date
     ever_employed: Optional[bool]
     is_employed: Optional[bool]
-    non_employed_reasons: Optional[List[str]]
+    non_employed_reasons: Optional[List[str]] = None
     employment_status: Optional[str]
-    occupation: Optional[List[str]]
+    occupation: Optional[List[str]] = None
     company_name: Optional[str]
     company_address: Optional[str]
     job_sector: Optional[str]
@@ -77,3 +64,15 @@ class GTSResponsesOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+    @validator('occupation', 'non_employed_reasons', pre=True, always=True, each_item=False)
+    def parse_array_strings(cls, v):
+        if isinstance(v, str) and v.startswith('{') and v.endswith('}'):
+            items = []
+            for item in v[1:-1].split(','):  
+                item = item.strip()
+                if item.startswith('"') and item.endswith('"'):
+                    item = item[1:-1]  
+                items.append(item)
+            return [i for i in items if i]  
+        return v if isinstance(v, list) else (v or [])

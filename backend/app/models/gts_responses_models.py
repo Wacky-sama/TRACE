@@ -43,8 +43,6 @@ class GTSResponses(Base):
     company_address = Column(Text, nullable=True)
     job_sector = Column(Text, nullable=True)
     place_of_work = Column(Text, nullable=True)
-
-    # Job details
     first_job = Column(Boolean, nullable=True)
     job_related_to_course = Column(Boolean, nullable=True)
     job_start_date = Column(Date, nullable=True)
@@ -55,8 +53,6 @@ class GTSResponses(Base):
     job_level_first = Column(Text, nullable=True)
     job_level_current = Column(Text, nullable=True)
     first_job_salary = Column(Numeric, nullable=True)
-
-    # Curriculum relevance
     curriculum_relevance_first_job = Column(Boolean, nullable=True)
     curriculum_relevance_second_job = Column(Boolean, nullable=True)
     useful_competencies = Column(ARRAY(Text), nullable=True)

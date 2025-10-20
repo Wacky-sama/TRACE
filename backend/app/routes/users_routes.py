@@ -358,7 +358,7 @@ def approve_user(
 
     try:
         user.is_approved = True
-        existing_gts = db.query(GTSResponse).filter(GTSResponse.user_id == user.id).first()
+        existing_gts = db.query(GTSResponses).filter(GTSResponses.user_id == user.id).first()
 
         if existing_gts:
             full_name = f"{user.firstname} {user.middle_initial + '.' if user.middle_initial else ''} {user.lastname} {user.name_extension or ''}".strip()
@@ -366,7 +366,7 @@ def approve_user(
             existing_gts.degree = user.course
             existing_gts.sex = user.sex
         else:
-            gts_response = GTSResponse(
+            gts_response = GTSResponses(
                 user_id=user.id,
                 full_name=f"{user.firstname} {user.lastname}",
                 permanent_address=user.permanent_address,
@@ -416,7 +416,7 @@ def decline_user(
     if user.is_approved:
         raise HTTPException(status_code=400, detail="User already approved, can't decline")
     try:
-        db.query(GTSResponse).filter(GTSResponse.user_id == user.id).delete()
+        db.query(GTSResponses).filter(GTSResponses.user_id == user.id).delete()
 
         log_activity(
             db=db,

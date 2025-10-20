@@ -43,11 +43,13 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  const initialEmploymentNow = gtsData.ever_employed === false && gtsData.employment_status === "Never Employed"
-    ? "Never Employed"
-    : gtsData.ever_employed
-    ? "Yes"
-    : "No";
+  const initialEmploymentNow =
+    gtsData.ever_employed === false &&
+    gtsData.employment_status === "Never Employed"
+      ? "Never Employed"
+      : gtsData.ever_employed
+      ? "Yes"
+      : "No";
 
   const [formData, setFormData] = useState({
     employmentNow: initialEmploymentNow,
@@ -75,7 +77,11 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
       ever_employed: value === "Yes",
       is_employed: value === "Yes",
       ...(value === "No" && {
-        employment_status: NON_EMPLOYED_STATUSES.includes(prev.employment_status) ? prev.employment_status : "",
+        employment_status: NON_EMPLOYED_STATUSES.includes(
+          prev.employment_status
+        )
+          ? prev.employment_status
+          : "",
         place_of_work: "",
         company_name: "",
         company_address: "",
@@ -100,7 +106,8 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
       let updated = [...prev.non_employed_reasons];
       if (updated.includes(reason)) {
         updated = updated.filter((r) => r !== reason);
-        if (reason === "Other reasons, please specify") setOtherNonEmployedReason("");
+        if (reason === "Other reasons, please specify")
+          setOtherNonEmployedReason("");
       } else {
         updated.push(reason);
       }
@@ -130,12 +137,20 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
     }
 
     if (formData.employmentNow === "Yes") {
-      if (!formData.employment_status) newErrors.employment_status = "Select your employment status.";
-      if (!formData.place_of_work?.trim()) newErrors.place_of_work = "Place of work required.";
-      if (!formData.company_name?.trim()) newErrors.company_name = "Company name required.";
-      if (!formData.company_address?.trim()) newErrors.company_address = "Company address required.";
-      if (!formData.occupation.length) newErrors.occupation = "Select at least one occupation.";
-      if (formData.occupation.includes("Others, please specify") && !otherOccupation.trim()) {
+      if (!formData.employment_status)
+        newErrors.employment_status = "Select your employment status.";
+      if (!formData.place_of_work?.trim())
+        newErrors.place_of_work = "Place of work required.";
+      if (!formData.company_name?.trim())
+        newErrors.company_name = "Company name required.";
+      if (!formData.company_address?.trim())
+        newErrors.company_address = "Company address required.";
+      if (!formData.occupation.length)
+        newErrors.occupation = "Select at least one occupation.";
+      if (
+        formData.occupation.includes("Others, please specify") &&
+        !otherOccupation.trim()
+      ) {
         newErrors.otherOccupation = "Please specify your occupation.";
       }
     }
@@ -144,7 +159,12 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
       if (formData.non_employed_reasons.length === 0) {
         newErrors.non_employed_reasons = "Select at least one reason.";
       }
-      if (formData.non_employed_reasons.includes("Other reasons, please specify") && !otherNonEmployedReason.trim()) {
+      if (
+        formData.non_employed_reasons.includes(
+          "Other reasons, please specify"
+        ) &&
+        !otherNonEmployedReason.trim()
+      ) {
         newErrors.otherNonEmployedReason = "Please specify your reason.";
       }
     }
@@ -179,7 +199,11 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
     const result = await onUpdate("employment", updatedFields);
     setSaving(false);
     setSaveSuccess(result.success);
-    setMessage(result.success ? "Saved successfully!" : `Update failed: ${result.message}`);
+    setMessage(
+      result.success
+        ? "Saved successfully!"
+        : `Update failed: ${result.message}`
+    );
     if (!result.success) toast.error(`Update failed: ${result.message}`);
   };
 
@@ -188,7 +212,10 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
       const updated = { ...prev };
 
       if (prev.employmentNow === "Yes") {
-        if (NON_EMPLOYED_STATUSES.includes(prev.employment_status) || prev.employment_status === "Never Employed") {
+        if (
+          NON_EMPLOYED_STATUSES.includes(prev.employment_status) ||
+          prev.employment_status === "Never Employed"
+        ) {
           updated.employment_status = "";
         }
       }
@@ -198,7 +225,11 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
         updated.company_name = "";
         updated.company_address = "";
         updated.occupation = [];
-        updated.employment_status = NON_EMPLOYED_STATUSES.includes(prev.employment_status) ? prev.employment_status : "";
+        updated.employment_status = NON_EMPLOYED_STATUSES.includes(
+          prev.employment_status
+        )
+          ? prev.employment_status
+          : "";
       }
 
       if (prev.employmentNow === "Never Employed") {
@@ -229,7 +260,11 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
       </h2>
 
       <div className="mb-4">
-        <label className={`block mb-2 text-sm font-medium ${isDark ? "text-gray-200" : "text-gray-700"}`}>
+        <label
+          className={`block mb-2 text-sm font-medium ${
+            isDark ? "text-gray-200" : "text-gray-700"
+          }`}
+        >
           Are you presently employed?
         </label>
         <div className="flex flex-col gap-2">
@@ -243,11 +278,19 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
                 onChange={(e) => handleEmploymentNowChange(e.target.value)}
                 className="w-4 h-4"
               />
-              <span className={`text-sm ${isDark ? "text-gray-200" : "text-gray-700"}`}>{opt}</span>
+              <span
+                className={`text-sm ${
+                  isDark ? "text-gray-200" : "text-gray-700"
+                }`}
+              >
+                {opt}
+              </span>
             </label>
           ))}
         </div>
-        {errors.employmentNow && <p className="mt-1 text-xs text-red-500">{errors.employmentNow}</p>}
+        {errors.employmentNow && (
+          <p className="mt-1 text-xs text-red-500">{errors.employmentNow}</p>
+        )}
       </div>
 
       {formData.employmentNow === "Yes" && (
@@ -255,7 +298,9 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
           <FloatingSelect
             id="employment_status"
             value={formData.employment_status}
-            onChange={(e) => setFormData({ ...formData, employment_status: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, employment_status: e.target.value })
+            }
             label="Employment Status"
             error={errors.employment_status}
             options={EMPLOYED_STATUSES}
@@ -263,7 +308,9 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
           <FloatingSelect
             id="place_of_work"
             value={formData.place_of_work}
-            onChange={(e) => setFormData({ ...formData, place_of_work: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, place_of_work: e.target.value })
+            }
             label="Place of Work"
             error={errors.place_of_work}
             options={["Local", "Abroad"]}
@@ -271,20 +318,28 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
           <FloatingInput
             id="company_name"
             value={formData.company_name}
-            onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, company_name: e.target.value })
+            }
             label="Company Name"
             error={errors.company_name}
           />
           <FloatingInput
             id="company_address"
             value={formData.company_address}
-            onChange={(e) => setFormData({ ...formData, company_address: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, company_address: e.target.value })
+            }
             label="Company Address"
             error={errors.company_address}
           />
 
           <div className="mb-4">
-            <label className={`block mb-2 text-sm font-medium ${isDark ? "text-gray-200" : "text-gray-700"}`}>
+            <label
+              className={`block mb-2 text-sm font-medium ${
+                isDark ? "text-gray-200" : "text-gray-700"
+              }`}
+            >
               Present occupation: (you may have multiple answers)
             </label>
             <div className="flex flex-wrap gap-2">
@@ -319,14 +374,20 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
                 error={errors.otherOccupation}
               />
             )}
-            {errors.occupation && <p className="mt-1 text-xs text-red-500">{errors.occupation}</p>}
+            {errors.occupation && (
+              <p className="mt-1 text-xs text-red-500">{errors.occupation}</p>
+            )}
           </div>
         </>
       )}
 
       {formData.employmentNow === "No" && (
         <div className="mb-4">
-          <label className={`block mb-2 text-sm font-medium ${isDark ? "text-gray-200" : "text-gray-700"}`}>
+          <label
+            className={`block mb-2 text-sm font-medium ${
+              isDark ? "text-gray-200" : "text-gray-700"
+            }`}
+          >
             Why? (You may select multiple answers)
           </label>
           <div className="flex flex-wrap gap-2">
@@ -353,17 +414,25 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
             ))}
           </div>
 
-          {formData.non_employed_reasons.includes("Other reasons, please specify") && (
+          {formData.non_employed_reasons.includes(
+            "Other reasons, please specify"
+          ) && (
             <FloatingInput
               id="otherNonEmployedReason"
               value={otherNonEmployedReason}
-              onChange={(e) => setOtherNonEmployedReason(e.target.value.trimStart())}
+              onChange={(e) =>
+                setOtherNonEmployedReason(e.target.value.trimStart())
+              }
               label="Please specify"
               error={errors.otherNonEmployedReason}
             />
           )}
 
-          {errors.non_employed_reasons && <p className="mt-1 text-xs text-red-500">{errors.non_employed_reasons}</p>}
+          {errors.non_employed_reasons && (
+            <p className="mt-1 text-xs text-red-500">
+              {errors.non_employed_reasons}
+            </p>
+          )}
         </div>
       )}
 
