@@ -8,7 +8,7 @@ class SexEnum(str, enum.Enum):
     male = "Male"
     female = "Female"
 
-class GTSResponseCreate(BaseModel):
+class GTSResponsesCreate(BaseModel):
     ever_employed: bool
     is_employed: Optional[bool] = None
     non_employed_reasons: Optional[List[str]] = None
@@ -19,7 +19,7 @@ class GTSResponseCreate(BaseModel):
     company_address: Optional[str] = None
     occupation: Optional[List[str]] = None
 
-class GTSResponseFullCreate(GTSResponseCreate):
+class GTSResponsesFullCreate(GTSResponsesCreate):
     degree: Optional[str]
     specialization: Optional[str]
     year_graduated: Optional[int]
@@ -32,7 +32,17 @@ class GTSResponseFullCreate(GTSResponseCreate):
     desired_services: Optional[str]
     job_problems: Optional[str]
 
-class GTSResponseOut(BaseModel):
+# GENERAL INFORMATION Update
+class GTSResponsesPersonalUpdate(BaseModel):
+    civil_status: Optional[str] = None
+
+# EDUCATIONAL BACKGROUND 
+
+#  TRAINING(S) ADVANCE STUDIES ATTENTED AFTER COLLEGE(optional)
+
+# EMPLOYMENT DATA
+
+class GTSResponsesOut(BaseModel):
     id: UUID
     user_id: UUID
     full_name: str

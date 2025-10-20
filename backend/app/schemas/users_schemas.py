@@ -3,7 +3,7 @@ from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
 from uuid import UUID
 from datetime import datetime, date, timezone
-from app.schemas.gts_responses_schemas import GTSResponseOut
+from app.schemas.gts_responses_schemas import GTSResponsesOut
 
 class UsernameCheckRequest(BaseModel):
     username: str
@@ -86,7 +86,7 @@ class UserOut(BaseModel):
         from_attributes = True
 
 class UserWithGTSResponseOut(UserOut):
-    latest_gts: Optional[GTSResponseOut] = None
+    latest_gts: Optional[GTSResponsesOut] = None
 
     class Config:
         from_attributes = True
