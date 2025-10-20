@@ -15,9 +15,8 @@ const AlumniGTSForm = () => {
     const fetchGTSData = async () => {
       if (!userId) return;
       try {
-        const token = getToken();
-        const response = await api.get(`/gts_responses/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
+        const response = await api.get("/gts_responses/me", {
+          headers: { Authorization: `Bearer ${getToken()}` },
         });
         setGtsData(response.data);
       } catch (error) {
@@ -32,12 +31,11 @@ const AlumniGTSForm = () => {
 
   const handleUpdate = async (updatedFields) => {
     try {
-      const token = getToken();
       const response = await api.put(
-        `/gts_responses/${userId}`,
+        `/gts_responses/${gtsData.id}`,
         updatedFields,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${getToken()}` },
         }
       );
       setGtsData(response.data);
