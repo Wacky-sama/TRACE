@@ -24,7 +24,7 @@ const NON_EMPLOYED_REASONS = [
   "Other reasons, please specify",
 ];
 
-const EMPLOYMENT_NOW_OPTIONS = ["Yes", "No", "Never employed"];
+const EMPLOYMENT_NOW_OPTIONS = ["Yes", "No", "Never Employed"];
 
 const OCCUPATION_OPTIONS = [
   "Officials of Government and Special-Interest Organizations, Corporate Executives, Managers, Managing Proprietors and Supervisors",
@@ -109,10 +109,10 @@ function EmploymentInfoForm({
       }
     }
 
-    if (formData.employmentNow === "Never employed") {
-      if (formData.employmentStatus !== "Never employed") {
+    if (formData.employmentNow === "Never Employed") {
+      if (formData.employmentStatus !== "Never Employed") {
         newErrors.employmentStatus =
-          "Invalid status for never employed.";
+          "Invalid status for Never Employed.";
       }
     }
 
@@ -178,7 +178,7 @@ function EmploymentInfoForm({
       );
 
       setTimeout(() => {
-        navigate("/login");
+        navigate("/alumni-login");
       }, 2000);
     } catch (error) {
       
@@ -201,7 +201,7 @@ function EmploymentInfoForm({
       if (prev.employmentNow === "Yes") {
         if (
           NON_EMPLOYED_STATUSES.includes(prev.employmentStatus) ||
-          prev.employmentStatus === "Never employed"
+          prev.employmentStatus === "Never Employed"
         ) {
           updated.employmentStatus = "";
         }
@@ -219,8 +219,8 @@ function EmploymentInfoForm({
           : "";
       }
 
-      if (prev.employmentNow === "Never employed") {
-        updated.employmentStatus = "Never employed";
+      if (prev.employmentNow === "Never Employed") {
+        updated.employmentStatus = "Never Employed";
         updated.placeOfWork = "";
         updated.companyName = "";
         updated.companyAddress = "";
