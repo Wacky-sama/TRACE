@@ -20,11 +20,13 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
 
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [saveSuccess, setSaveSuccess] = useState(null);
 
   const handleSave = async () => {
     setSaving(true);
     const result = await onUpdate(formData);
     setSaving(false);
+    setSaveSuccess(result.success);
     setMessage(result.success ? "Saved successfully!" : "Update failed.");
   };
 
@@ -136,7 +138,7 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
       {message && (
         <p
           className={`mt-2 text-sm ${
-            result?.success
+           saveSuccess
               ? isDark
                 ? "text-green-400"
                 : "text-green-600"

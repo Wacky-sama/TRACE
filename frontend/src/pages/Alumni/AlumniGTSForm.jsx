@@ -32,7 +32,7 @@ const AlumniGTSForm = () => {
   const handleUpdate = async (updatedFields) => {
     try {
       const response = await api.put(
-        `/gts_responses/${gtsData.id}`,
+        `/gts_responses/${gtsData.id}/personal`,
         updatedFields,
         {
           headers: { Authorization: `Bearer ${getToken()}` },
