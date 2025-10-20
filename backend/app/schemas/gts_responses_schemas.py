@@ -41,6 +41,18 @@ class GTSResponsesPersonalUpdate(BaseModel):
 #  TRAINING(S) ADVANCE STUDIES ATTENTED AFTER COLLEGE(optional)
 
 # EMPLOYMENT DATA
+class GTSResponsesEmploymentUpdate(BaseModel):
+    ever_employed: Optional[bool]
+    is_employed: Optional[bool]
+    non_employed_reasons: Optional[str]
+    employment_status: Optional[str]
+    place_of_work: Optional[str]
+    company_name: Optional[str]
+    company_address: Optional[str]
+    occupation: Optional[str]
+
+    class Config:
+        from_attributes = True
 
 class GTSResponsesOut(BaseModel):
     id: UUID
@@ -48,6 +60,7 @@ class GTSResponsesOut(BaseModel):
     full_name: str
     contact_email: str
     mobile: str
+    civil_status: Optional[str]
     sex: SexEnum
     birthday: date
     ever_employed: Optional[bool]

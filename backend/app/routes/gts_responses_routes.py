@@ -5,7 +5,7 @@ from app.database import get_db
 from app.models.users_models import User
 from app.models.gts_responses_models import GTSResponses
 from app.utils.auth import get_current_user
-from app.schemas.gts_responses_schemas import GTSResponsesCreate, GTSResponsesOut, GTSResponsesPersonalUpdate
+from app.schemas.gts_responses_schemas import GTSResponsesCreate, GTSResponsesOut, GTSResponsesPersonalUpdate, GTSResponsesEmploymentUpdate
 from uuid import UUID
 
 router = APIRouter(
@@ -75,7 +75,7 @@ def get_my_gts_response(
         raise HTTPException(status_code=404, detail="No GTS response found")
     return gts_responses
 
-# Update Personal Info
+# A. Update Personal Info
 @router.put("/{gts_id}/personal", response_model=GTSResponsesOut)
 def update_gts_response(
     gts_id: UUID, 
@@ -87,6 +87,7 @@ def update_gts_response(
         GTSResponses.id == gts_id, 
         GTSResponses.user_id == current_user.id
     ).first()
+    
     if not gts:
         raise HTTPException(status_code=404, detail="GTS Response not found")
     
@@ -97,3 +98,25 @@ def update_gts_response(
     db.refresh(gts)
     return gts
 
+# D. Update Employment Info
+@router.put("/{gts_id}/employment", response_model=GTSResponsesOut)
+def update_employment_info(
+    gts_id: UUID,
+    updated_data: GTSResponsesEmploymentUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    gts = db.query(GTSResponses).filter(
+        GTSResponses.id == gts_id,
+        GTSResponses.user_id == current_user.id
+    ).first()
+    
+    if not gts:
+        raise HTTPException(status_code=404, detail="GTS Response not found")
+    
+    for key, value in updated_data.dict(exclude_unset=True).items():
+        setattr(gts, key, value)
+        
+    db.commit()
+    db.refresh(gts)
+    return gts
