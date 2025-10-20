@@ -46,10 +46,11 @@ class GTSResponsesEmploymentUpdate(BaseModel):
     is_employed: Optional[bool]
     non_employed_reasons: Optional[str]
     employment_status: Optional[str]
-    place_of_work: Optional[str]
+    occupation: Optional[str]
     company_name: Optional[str]
     company_address: Optional[str]
-    occupation: Optional[str]
+    job_sector: Optional[str]
+    place_of_work: Optional[str]
 
     class Config:
         from_attributes = True
@@ -58,6 +59,7 @@ class GTSResponsesOut(BaseModel):
     id: UUID
     user_id: UUID
     full_name: str
+    permanent_address: Optional[str] = None
     contact_email: str
     mobile: str
     civil_status: Optional[str]
@@ -67,11 +69,11 @@ class GTSResponsesOut(BaseModel):
     is_employed: Optional[bool]
     non_employed_reasons: Optional[List[str]]
     employment_status: Optional[str]
-    place_of_work: Optional[str]
-    permanent_address: Optional[str] = None
+    occupation: Optional[List[str]]
     company_name: Optional[str]
     company_address: Optional[str]
-    occupation: Optional[List[str]]
+    job_sector: Optional[str]
+    place_of_work: Optional[str]
 
     class Config:
         from_attributes = True
