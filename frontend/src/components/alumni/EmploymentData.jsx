@@ -212,6 +212,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
       const updated = { ...prev };
 
       if (prev.employmentNow === "Yes") {
+        updated.non_employed_reasons = [];
         if (
           NON_EMPLOYED_STATUSES.includes(prev.employment_status) ||
           prev.employment_status === "Never Employed"

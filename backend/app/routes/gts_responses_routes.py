@@ -13,13 +13,28 @@ router = APIRouter(
     tags=["GTS Responses"]
 )
 
+def parse_pg_array(value):
+    if isinstance(value, str) and value.startswith('{') and value.endswith('}'):
+        inner = value[1:-1]
+        if '","' in inner:  
+            items = inner.split('","')
+            items[0] = items[0].lstrip('"')
+            items[-1] = items[-1].rstrip('"')
+            return [i.strip() for i in items if i.strip()]
+        else: 
+            return [i.strip().strip('"') for i in inner.split(',') if i.strip()]
+    return value if isinstance(value, list) else (value or [])
+
 # View all responses (admin only)
 @router.get("/", response_model=List[GTSResponsesOut])
 def get_all_responses(
     db: Session = Depends(get_db)
 ):
-    return db.query(GTSResponses).all()
-
+    responses = db.query(GTSResponses).all()
+    for resp in responses:
+        resp.occupation = parse_pg_array(resp.occupation)
+        resp.non_employed_reasons = parse_pg_array(resp.non_employed_reasons)
+    return responses
 
 # Create new GTS response (used internally during registration)
 @router.post("/register/alumni/{user_id}", tags=["public"], response_model=GTSResponsesOut)
@@ -61,7 +76,10 @@ def create_initial_gts_response(
     db.add(gts_responses)
     db.commit()
     db.refresh(gts_responses)
-
+    
+    gts_responses.occupation = parse_pg_array(gts_responses.occupation)
+    gts_responses.non_employed_reasons = parse_pg_array(gts_responses.non_employed_reasons)
+    
     return gts_responses
 
 # Alumni see their own GTS response
@@ -73,27 +91,11 @@ def get_my_gts_response(
     gts_responses = db.query(GTSResponses).filter(GTSResponses.user_id == current_user.id).first()
     if not gts_responses:
         raise HTTPException(status_code=404, detail="No GTS response found")
+
+    gts_responses.occupation = parse_pg_array(gts_responses.occupation)
+    gts_responses.non_employed_reasons = parse_pg_array(gts_responses.non_employed_reasons)
     
-    # Parse array strings to lists
-    data = gts_responses.__dict__.copy()
-    
-    # Helper to parse PostgreSQL array string
-    def parse_pg_array(value):
-        if isinstance(value, str) and value.startswith('{') and value.endswith('}'):
-            inner = value[1:-1]
-            if '","' in inner:  # Quoted items with commas
-                items = inner.split('","')
-                items[0] = items[0].lstrip('"')
-                items[-1] = items[-1].rstrip('"')
-                return [i.strip() for i in items if i.strip()]
-            else:  # Simple unquoted
-                return [i.strip().strip('"') for i in inner.split(',') if i.strip()]
-        return value if isinstance(value, list) else (value or [])
-    
-    data['occupation'] = parse_pg_array(gts_responses.occupation)
-    data['non_employed_reasons'] = parse_pg_array(gts_responses.non_employed_reasons)
-    
-    return GTSResponsesOut(**data)
+    return gts_responses
 
 # A. Update Personal Info
 @router.put("/{gts_id}/personal", response_model=GTSResponsesOut)
@@ -116,11 +118,11 @@ def update_gts_response(
         
     db.commit()
     db.refresh(gts)
+    
+    gts.occupation = parse_pg_array(gts.occupation)
+    gts.non_employed_reasons = parse_pg_array(gts.non_employed_reasons)
+    
     return gts
-
-# B. 
-
-# C.
 
 # D. Update Employment Info
 @router.put("/{gts_id}/employment", response_model=GTSResponsesOut)
@@ -143,4 +145,8 @@ def update_employment_info(
         
     db.commit()
     db.refresh(gts)
+    
+    gts.occupation = parse_pg_array(gts.occupation)
+    gts.non_employed_reasons = parse_pg_array(gts.non_employed_reasons)
+    
     return gts
