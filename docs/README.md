@@ -41,10 +41,10 @@ TRACE: Tracking Alumni for Centralized Events
 Personal Information
 
 **Light Mode**
-![Personal Information](/docs/images/AlumniPersonalLight.png)
+![Personal Information](/docs/images/AlumniPersonalInfoLight.png)
 
 **Dark Mode**
-![Personal Information](/docs/images/AlumniPersonalDark.png)
+![Personal Information](/docs/images/AlumniPersonalInfoDark.png)
 
 Employment Information
 
