@@ -248,14 +248,14 @@ function EmploymentInfoForm({
         onChange={(e) =>
           setFormData({ ...formData, employmentNow: e.target.value })
         }
-        options={EMPLOYMENT_NOW_OPTIONS} // ✅ includes Yes, No, Never Employed
+        options={EMPLOYMENT_NOW_OPTIONS} // includes Yes, No, Never Employed
         error={errors.employmentNow}
         darkMode={isDark}
       />
 
       {/* Smooth Transition Section */}
       <AnimatePresence mode="wait">
-        {/* ✅ If “Yes” */}
+        {/* If “Yes” */}
         {formData.employmentNow === "Yes" && (
           <motion.div
             key="employment-yes"
@@ -392,7 +392,7 @@ function EmploymentInfoForm({
           </motion.div>
         )}
 
-        {/* ✅ If “No” */}
+        {/* If “No” */}
         {formData.employmentNow === "No" && (
           <motion.div
             key="employment-no"
