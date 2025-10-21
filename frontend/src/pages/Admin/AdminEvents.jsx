@@ -113,7 +113,7 @@ const AdminEvents = () => {
         <tr>
           {["Title", "Location", "Description", "Date", "Actions"].map(
             (header) => (
-              <th key={header} className="p-3">
+              <th key={header} className="p-3 text-left align-middle">
                 {header}
               </th>
             )
@@ -141,6 +141,7 @@ const AdminEvents = () => {
                 >
                   <FontAwesomeIcon icon={faPenToSquare} size="lg" />
                 </button>
+
                 <button
                   title="Delete"
                   onClick={() => handleDelete(event.id)}
