@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@radix-ui/themes";
 import { toast } from "react-toastify";
 import { GraduationCap } from "lucide-react";
+import Developers from "../Developers";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import ThemeToggle from "../ThemeToggle";
@@ -150,28 +151,7 @@ function AlumniAuthPage() {
 
               <p className="mt-6 text-sm text-gray-500">
                 Developed by:
-                <br />
-                Balgos, Wendel B.
-                <br />
-                Salviejo, Victor Louis R.
-                <br />
-                <a
-                  href="https://mail.google.com/mail/?view=cm&fs=1&to=tagubaphilipjoshuav@gmail.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  Taguba, Philip Joshua V.
-                </a>
-                <br />
-                <a
-                  href="https://mail.google.com/mail/?view=cm&fs=1&to=tabugadirkenjibrocks@gmail.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  Tabugadir, Kenji "Brocks" I.
-                </a>
+                <Developers />
               </p>
             </div>
           </div>
