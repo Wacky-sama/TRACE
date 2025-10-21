@@ -111,8 +111,7 @@ function EmploymentInfoForm({
 
     if (formData.employmentNow === "Never Employed") {
       if (formData.employmentStatus !== "Never Employed") {
-        newErrors.employmentStatus =
-          "Invalid status for Never Employed.";
+        newErrors.employmentStatus = "Invalid status for Never Employed.";
       }
     }
 
@@ -161,9 +160,7 @@ function EmploymentInfoForm({
     );
 
     const finalOccupations = formData.occupation.map((o) =>
-      o === "Others, please specify" 
-      ? otherOccupation.trim() 
-      : o.trim()
+      o === "Others, please specify" ? otherOccupation.trim() : o.trim()
     );
 
     try {
@@ -181,15 +178,18 @@ function EmploymentInfoForm({
         navigate("/alumni-login");
       }, 2000);
     } catch (error) {
-      
       setSubmitting(false);
-    
+
       if (error.message?.toLowerCase().includes("username")) {
-        toast.error("Username is already taken. Please go back and choose a different username.");
+        toast.error(
+          "Username is already taken. Please go back and choose a different username."
+        );
       } else if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
-        toast.error("Registration failed! Please check your information and try again.");
+        toast.error(
+          "Registration failed! Please check your information and try again."
+        );
       }
     }
   };
@@ -234,11 +234,21 @@ function EmploymentInfoForm({
   }, [formData.employmentNow, setFormData]);
 
   return (
-    <div className={`${isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"} p-6 rounded-lg shadow-md`}>
-      <h2 className="pb-2 mb-4 text-xl font-semibold border-b">Employment Information</h2>
+    <div
+      className={`${
+        isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
+      } p-6 rounded-lg shadow-md`}
+    >
+      <h2 className="pb-2 mb-4 text-xl font-semibold border-b">
+        Employment Information
+      </h2>
 
       <div className="mb-4">
-        <label className={`block mb-2 text-sm font-medium ${ isDark ? "text-gray-200" : "text-gray-700"}`}>
+        <label
+          className={`block mb-2 text-sm font-medium ${
+            isDark ? "text-gray-200" : "text-gray-700"
+          }`}
+        >
           Are you presently employed?
         </label>
         <div className="flex flex-col gap-2">
@@ -254,7 +264,13 @@ function EmploymentInfoForm({
                 }
                 className="w-4 h-4"
               />
-              <span className={`text-sm ${isDark ? "text-gray-200" : "text-gray-700"}`}>{opt}</span>
+              <span
+                className={`text-sm ${
+                  isDark ? "text-gray-200" : "text-gray-700"
+                }`}
+              >
+                {opt}
+              </span>
             </label>
           ))}
         </div>
@@ -265,51 +281,77 @@ function EmploymentInfoForm({
 
       {formData.employmentNow === "Yes" && (
         <>
-          <FloatingSelect
-            id="employmentStatus"
-            label="Employment Status"
-            value={formData.employmentStatus}
-            onChange={(e) =>
-              setFormData({ ...formData, employmentStatus: e.target.value })
-            }
-            error={errors.employmentStatus}
-            options={EMPLOYED_STATUSES}
-            darkMode={isDark}
-          />
-          <FloatingSelect
-            id="placeOfWork"
-            label="Place of Work"
-            value={formData.placeOfWork}
-            onChange={(e) =>
-              setFormData({ ...formData, placeOfWork: e.target.value })
-            }
-            error={errors.placeOfWork}
-            options={["Local", "Abroad"]}
-            darkMode={isDark}
-          />
-          <FloatingInput
-            id="companyName"
-            label="Company Name"
-            value={formData.companyName}
-            onChange={(e) =>
-              setFormData({ ...formData, companyName: e.target.value })
-            }
-            error={errors.companyName}
-            darkMode={isDark}
-          />
-          <FloatingInput
-            id="companyAddress"
-            label="Company Address"
-            value={formData.companyAddress}
-            onChange={(e) =>
-              setFormData({ ...formData, companyAddress: e.target.value })
-            }
-            error={errors.companyAddress}
-            darkMode={isDark}
-          />
+          {/* Employment Details Group */}
+          <div
+            className={`p-4 mb-4 rounded-lg ${
+              isDark ? "bg-gray-800" : "bg-gray-50"
+            }`}
+          >
+            <h3
+              className={`mb-2 text-sm font-semibold ${
+                isDark ? "text-gray-100" : "text-gray-800"
+              }`}
+            >
+              Employment Details
+            </h3>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <FloatingSelect
+                id="employmentStatus"
+                label="Employment Status"
+                value={formData.employmentStatus}
+                onChange={(e) =>
+                  setFormData({ ...formData, employmentStatus: e.target.value })
+                }
+                error={errors.employmentStatus}
+                options={EMPLOYED_STATUSES}
+                darkMode={isDark}
+              />
+
+              <FloatingSelect
+                id="placeOfWork"
+                label="Place of Work"
+                value={formData.placeOfWork}
+                onChange={(e) =>
+                  setFormData({ ...formData, placeOfWork: e.target.value })
+                }
+                error={errors.placeOfWork}
+                options={["Local", "Abroad"]}
+                darkMode={isDark}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2">
+              <FloatingInput
+                id="companyName"
+                label="Company Name"
+                value={formData.companyName}
+                onChange={(e) =>
+                  setFormData({ ...formData, companyName: e.target.value })
+                }
+                error={errors.companyName}
+                darkMode={isDark}
+              />
+
+              <FloatingInput
+                id="companyAddress"
+                label="Company Address"
+                value={formData.companyAddress}
+                onChange={(e) =>
+                  setFormData({ ...formData, companyAddress: e.target.value })
+                }
+                error={errors.companyAddress}
+                darkMode={isDark}
+              />
+            </div>
+          </div>
 
           <div className="mb-4">
-            <label className={`block mb-2 text-sm font-medium ${isDark ? "text-gray-200" : "text-gray-700"}`}>
+            <label
+              className={`block mb-2 text-sm font-medium ${
+                isDark ? "text-gray-200" : "text-gray-700"
+              }`}
+            >
               Present occupation: (you may have multiple answers)
             </label>
             <div className="flex flex-wrap gap-2">
@@ -354,7 +396,11 @@ function EmploymentInfoForm({
 
       {formData.employmentNow === "No" && (
         <div className="mb-4">
-          <label className={`block mb-2 text-sm font-medium ${isDark ? "text-gray-200" : "text-gray-700"}`}>
+          <label
+            className={`block mb-2 text-sm font-medium ${
+              isDark ? "text-gray-200" : "text-gray-700"
+            }`}
+          >
             Why? (You may select multiple answers)
           </label>
           <div className="flex flex-wrap gap-2">
@@ -409,8 +455,11 @@ function EmploymentInfoForm({
           onClick={prevStep}
           disabled={submitting}
           className={`px-4 py-2 transition-colors rounded disabled:opacity-50 disabled:cursor-not-allowed 
-            ${isDark ? "bg-gray-600 text-gray-100 hover:bg-gray-400" : "bg-gray-300 text-gray-800 hover:bg-gray-400"
-          }`}
+            ${
+              isDark
+                ? "bg-gray-600 text-gray-100 hover:bg-gray-400"
+                : "bg-gray-300 text-gray-800 hover:bg-gray-400"
+            }`}
         >
           Back
         </button>
