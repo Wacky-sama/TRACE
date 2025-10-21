@@ -38,6 +38,16 @@ TRACE: Tracking Alumni for Centralized Events
 
 ### Alumni Registration
 
+Personal Information
+
+**Light Mode**
+![Personal Information](/docs/images/AlumniPersonalLight.png)
+
+**Dark Mode**
+![Personal Information](/docs/images/AlumniPersonalDark.png)
+
+Employment Information
+
 **Light Mode**
 ![Employment Status](/docs/images/AlumniEmploymentLight.png)
 
