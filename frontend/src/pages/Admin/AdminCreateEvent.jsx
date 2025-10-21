@@ -40,6 +40,7 @@ const AdminCreateEvent = () => {
 
   const validate = () => {
     const validateErrors = {};
+    
     if (!formData.title.trim()) validateErrors.title = "Title is required";
     if (!formData.location) validateErrors.location = "Location is required";
     if (!formData.event_date) validateErrors.event_date = "Event date is required";
@@ -117,7 +118,9 @@ const AdminCreateEvent = () => {
               id="location"
               label="Location"
               value={formData.location}
-              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              onChange={(e) => 
+                setFormData({ ...formData, location: e.target.value })
+              }
               options={["GYM", "Conference Hall", "Oval", "Admin Building", "Mabric Hall"]}
               placeholder="Select Location"
               error={errors.location}
@@ -150,9 +153,11 @@ const AdminCreateEvent = () => {
 
           <AdminFloatingDatePicker
             id="event_date"
-            value={formData.event_date}
-            onChange={(date) => setFormData({ ...formData, event_date: date })}
             label="Event Date"
+            value={formData.event_date}
+            onChange={(date) => 
+              setFormData({ ...formData, event_date: date })
+            }
             error={errors.event_date}
             darkMode={isDark} 
           />
