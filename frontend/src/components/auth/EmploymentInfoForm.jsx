@@ -267,43 +267,43 @@ function EmploymentInfoForm({
         <>
           <FloatingSelect
             id="employmentStatus"
+            label="Employment Status"
             value={formData.employmentStatus}
             onChange={(e) =>
               setFormData({ ...formData, employmentStatus: e.target.value })
             }
-            label="Employment Status"
             error={errors.employmentStatus}
             options={EMPLOYED_STATUSES}
             darkMode={isDark}
           />
           <FloatingSelect
             id="placeOfWork"
+            label="Place of Work"
             value={formData.placeOfWork}
             onChange={(e) =>
               setFormData({ ...formData, placeOfWork: e.target.value })
             }
-            label="Place of Work"
             error={errors.placeOfWork}
             options={["Local", "Abroad"]}
             darkMode={isDark}
           />
           <FloatingInput
             id="companyName"
+            label="Company Name"
             value={formData.companyName}
             onChange={(e) =>
               setFormData({ ...formData, companyName: e.target.value })
             }
-            label="Company Name"
             error={errors.companyName}
             darkMode={isDark}
           />
           <FloatingInput
             id="companyAddress"
+            label="Company Address"
             value={formData.companyAddress}
             onChange={(e) =>
               setFormData({ ...formData, companyAddress: e.target.value })
             }
-            label="Company Address"
             error={errors.companyAddress}
             darkMode={isDark}
           />
@@ -338,9 +338,9 @@ function EmploymentInfoForm({
             {formData.occupation.includes("Others, please specify") && (
               <FloatingInput
                 id="otherOccupation"
+                label="Please specify your occupation"
                 value={otherOccupation}
                 onChange={(e) => setOtherOccupation(e.target.value.trimStart())}
-                label="Please specify your occupation"
                 error={errors.otherOccupation}
                 darkMode={isDark}
               />
@@ -386,11 +386,11 @@ function EmploymentInfoForm({
           ) && (
             <FloatingInput
               id="otherNonEmployedReason"
+              label="Please specify"
               value={otherNonEmployedReason}
               onChange={(e) =>
                 setOtherNonEmployedReason(e.target.value.trimStart())
               }
-              label="Please specify"
               error={errors.otherNonEmployedReason}
               darkMode={isDark}
             />
