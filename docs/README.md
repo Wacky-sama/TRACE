@@ -90,4 +90,6 @@ TRACE: Tracking Alumni for Centralized Events
 **Dark Mode**
 ![View Events](/docs/images/AdminViewEventsDark.png)
 
+---
+
 Author: **Wacky**
