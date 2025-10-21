@@ -74,4 +74,20 @@ TRACE: Tracking Alumni for Centralized Events
 
 ---
 
+### Admin View Users
+
+**Light Mode**
+![View Users](/docs/images/AdminViewUsersLight.png)
+
+**Dark Mode**
+![View Users](/docs/images/AdminViewUsersDark.png)
+
+### Admin View Events
+
+**Light Mode**
+![View Events](/docs/images/AdminViewEventsLight.png)
+
+**Dark Mode**
+![View Events](/docs/images/AdminViewEventsDark.png)
+
 Author: **Wacky**
