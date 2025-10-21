@@ -149,10 +149,10 @@ function AlumniAuthPage() {
                 </button>
               </p>
 
-              <p className="mt-6 text-sm text-gray-500">
+              <div className="mt-6 text-sm text-gray-500">
                 Developed by:
                 <Developers />
-              </p>
+              </div>
             </div>
           </div>
         </div>
