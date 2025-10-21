@@ -1,14 +1,15 @@
 import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@radix-ui/themes";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { GraduationCap } from "lucide-react";
 import LoginForm from "./LoginForm";
 import ThemeToggle from "../ThemeToggle";
 import { getRole } from "../../utils/storage";
 
 function AdminAuthPage() {
+  const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const role = searchParams.get("role") || "admin";
@@ -58,17 +59,26 @@ function AdminAuthPage() {
           <div className="flex items-center gap-4">
             <Button
               onClick={() => navigate("/alumni-login")}
-              className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
+              className={`px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full ${
+                location.pathname === "/alumni-login"
+                  ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
+                  : "border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
+              }`}
             >
               Alumni Login
             </Button>
+
             <Button
-              variant="outline"
               onClick={() => navigate("/admin-login")}
-              className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
+              className={`px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full ${
+                location.pathname === "/admin-login"
+                  ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
+                  : "border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
+              }`}
             >
               Admin Portal
             </Button>
+
             <ThemeToggle />
           </div>
         </div>
@@ -102,7 +112,7 @@ function AdminAuthPage() {
                   exit={{ opacity: 0, x: 50 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <LoginForm expectedRole="admin"/>
+                  <LoginForm expectedRole="admin" />
                 </motion.div>
               </AnimatePresence>
 
