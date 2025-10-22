@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import api from "../../services/api";
 import { getToken, getUser } from "../../utils/storage";
 import GeneralInformation from "../../components/alumni/GeneralInformation";
+import EducationalBackground from "../../components/alumni/EducationalBackground";
 import EmploymentData from "../../components/alumni/EmploymentData";
 
 const AlumniGTSForm = () => {
@@ -52,11 +53,9 @@ const AlumniGTSForm = () => {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold">Graduate Tracer Survey Form</h1>
-
-      {/* Each section gets the current data and update handler */}
       <GeneralInformation gtsData={gtsData} onUpdate={handleUpdate} />  
+      <EducationalBackground gtsData={gtsData} onUpdate={handleUpdate} />
       <EmploymentData gtsData={gtsData} onUpdate={handleUpdate} />
-      {/* Add more sections as needed */}
     </div>
   );
 };

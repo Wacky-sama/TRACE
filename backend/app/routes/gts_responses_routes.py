@@ -5,7 +5,10 @@ from app.database import get_db
 from app.models.users_models import User
 from app.models.gts_responses_models import GTSResponses
 from app.utils.auth import get_current_user
-from app.schemas.gts_responses_schemas import GTSResponsesCreate, GTSResponsesOut, GTSResponsesPersonalUpdate, GTSResponsesEmploymentUpdate
+from app.schemas.gts_responses_schemas import (
+    GTSResponsesCreate, GTSResponsesOut, 
+    GTSResponsesPersonalUpdate, GTSResponsesEducationalUpdate,
+    GTSResponsesEmploymentUpdate)
 from uuid import UUID
 
 router = APIRouter(
@@ -123,6 +126,36 @@ def update_gts_response(
     gts.non_employed_reasons = parse_pg_array(gts.non_employed_reasons)
     
     return gts
+
+# B. Update Educational Background
+@router.put("/{gts_id}/educational", response_model=GTSResponsesOut)
+def update_educational_info(
+    gts_id: UUID,
+    updated_data: GTSResponsesEducationalUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    gts = db.query(GTSResponses).filter(
+        GTSResponses.id == gts_id,
+        GTSResponses.user_id == current_user.id
+    ).first()
+    
+    if not gts:
+        raise HTTPException(status_code=404, detail="GTS Response not found")
+    
+    for key, value in updated_data.dict(exclude_unset=True).items():
+        setattr(gts, key, value)
+        
+    db.commit()
+    db.refresh(gts)
+    
+    gts.occupation = parse_pg_array(gts.occupation)
+    gts.non_employed_reasons = parse_pg_array(gts.non_employed_reasons)
+    gts.pursued_advance_degree_reasons = parse_pg_array(gts.pursued_advance_degree_reasons)
+    
+    return gts
+
+# C. Update Training(s) Advance Studies Attended After College
 
 # D. Update Employment Info
 @router.put("/{gts_id}/employment", response_model=GTSResponsesOut)

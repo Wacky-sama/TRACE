@@ -468,39 +468,17 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
         Employment Information
       </h2>
 
-      <div className="mb-4">
-        <label
-          className={`block mb-2 text-sm font-medium ${
-            isDark ? "text-gray-200" : "text-gray-700"
-          }`}
-        >
-          Are you presently employed?
-        </label>
-        <div className="flex flex-col gap-2">
-          {EMPLOYMENT_NOW_OPTIONS.map((opt) => (
-            <label key={opt} className="inline-flex items-center gap-2">
-              <input
-                type="radio"
-                name="employmentNow"
-                value={opt}
-                checked={formData.employmentNow === opt}
-                onChange={(e) => handleEmploymentNowChange(e.target.value)}
-                className="w-4 h-4"
-              />
-              <span
-                className={`text-sm ${
-                  isDark ? "text-gray-200" : "text-gray-700"
-                }`}
-              >
-                {opt}
-              </span>
-            </label>
-          ))}
-        </div>
-        {errors.employmentNow && (
-          <p className="mt-1 text-xs text-red-500">{errors.employmentNow}</p>
-        )}
-      </div>
+      <FloatingSelect
+        id="employmentNow"
+        label="Are you currently employed?"
+        value={formData.employmentNow}
+        onChange={(e) =>
+          setFormData({ ...formData, employmentNow: e.target.value })
+        }
+        options={EMPLOYMENT_NOW_OPTIONS}
+        error={errors.employmentNow}
+        darkMode={isDark}
+      />
 
       {formData.employmentNow === "Yes" && (
         <>

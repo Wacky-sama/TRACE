@@ -1,6 +1,6 @@
 import enum
 from pydantic import BaseModel, validator
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from uuid import UUID
 from datetime import date
 
@@ -24,8 +24,23 @@ class GTSResponsesPersonalUpdate(BaseModel):
     civil_status: Optional[str] = None
 
 # B. EDUCATIONAL BACKGROUND 
-
+class GTSResponsesEducationalUpdate(BaseModel):
+    degree: Optional[str] = None
+    specialization: Optional[str] = None
+    year_graduated: Optional[int] = None
+    honors: Optional[str] = None
+    exams: Optional[Dict[str, Any]] = None
+    pursued_advance_degree: Optional[bool] = None
+    pursued_advance_degree_reasons: Optional[List[str]] = None
+    @validator('year_graduated')
+    def validate_year_graduated(cls, v):
+        if v is not None and (v < 1900 or v > 2100):
+            raise ValueError('Year graduated must be between 1900 and 2100')
+        return v
+    class Config:
+        from_attributes = True
 # C. TRAINING(S) ADVANCE STUDIES ATTENTED AFTER COLLEGE(optional)
+
 
 # D. EMPLOYMENT DATA Update
 class GTSResponsesEmploymentUpdate(BaseModel):
@@ -57,7 +72,7 @@ class GTSResponsesEmploymentUpdate(BaseModel):
         from_attributes = True
 
 class GTSResponsesOut(BaseModel):
-    # Basic info 
+    # SECTION A: GENERAL INFORMATION 
     id: UUID
     user_id: UUID
     full_name: str
@@ -68,7 +83,18 @@ class GTSResponsesOut(BaseModel):
     sex: SexEnum
     birthday: date
     
-    # Employment info (initial + extended)
+    # SECTION B: EDUCATIONAL BACKGROUND
+    degree: Optional[str] = None
+    specialization: Optional[str] = None
+    year_graduated: Optional[int] = None
+    honors: Optional[str] = None
+    exams: Optional[Dict[str, Any]] = None
+    pursued_advance_degree: Optional[bool] = None
+    pursued_advance_degree_reasons: Optional[List[str]] = None
+    
+    # SECTION C: TRAINING(S) ADVANCE STUDIES ATTENTED AFTER COLLEGE(optional)
+    
+    # SECTION D: EMPLOYMENT DATA
     ever_employed: Optional[bool]
     is_employed: Optional[bool]
     non_employed_reasons: Optional[List[str]] = None
@@ -92,6 +118,12 @@ class GTSResponsesOut(BaseModel):
     curriculum_relevance_second_job: Optional[bool] = None
     useful_competencies: Optional[List[str]] = None
     curriculum_improvement_suggestions: Optional[str] = None
+    
+    # SECTION E: JOB SATISFACTION
+    
+    # SECTION F: SERVICES FROM CSU
+    
+    # SECTION G: PROBLEMS, ISSUES AND CONCERNS
     
     class Config:
         from_attributes = True

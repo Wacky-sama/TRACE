@@ -11,7 +11,7 @@ class GTSResponses(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"))
 
-    # Basic info
+    # SECTION A: GENERAL INFORMATION
     full_name = Column(Text, nullable=False)
     permanent_address = Column(Text, nullable=False)
     contact_email = Column(Text, nullable=False)
@@ -21,19 +21,19 @@ class GTSResponses(Base):
     sex = Column(Text, nullable=False)
     birthday = Column(Date, nullable=False)
 
-    # Academic info
+    # SECTION B: EDUCATIONAL BACKGROUND
     degree = Column(Text, nullable=True)
     specialization = Column(Text, nullable=True)
     year_graduated = Column(Integer, nullable=True)
     honors = Column(Text, nullable=True)
     exams = Column(JSONB, nullable=True)
-
-    # Graduate studies / training
     pursued_advance_degree = Column(Boolean, nullable=True)
     pursued_advance_degree_reasons = Column(ARRAY(Text), nullable=True)
+    
+    # SECTION C: TRAINING(S) ADVANCE STUDIES ATTENTED AFTER COLLEGE(optional)
     trainings = Column(JSONB, nullable=True)
 
-    # Employment info (initial + extended)
+    # SECTION D: EMPLOYMENT DATA
     ever_employed = Column(Boolean, nullable=True)
     is_employed = Column(Boolean, nullable=True)
     non_employed_reasons = Column(ARRAY(Text), nullable=True)
@@ -58,10 +58,14 @@ class GTSResponses(Base):
     useful_competencies = Column(ARRAY(Text), nullable=True)
     curriculum_improvement_suggestions = Column(Text, nullable=True)
 
-    # Job satisfaction / problems
+    # SECTION E: JOB SATISFACTION
     job_satisfaction = Column(Text, nullable=True)
     job_satisfaction_reason = Column(Text, nullable=True)
+    
+    # SECTION F: SERVICES FROM CSU
     desired_services = Column(Text, nullable=True)
+    
+    # SECTION G: PROBLEMS, ISSUES AND CONCERNS
     job_problems = Column(Text, nullable=True)
 
     # Metadata
