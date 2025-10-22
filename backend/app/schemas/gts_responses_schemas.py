@@ -40,7 +40,18 @@ class GTSResponsesEducationalUpdate(BaseModel):
     class Config:
         from_attributes = True
 # C. TRAINING(S) ADVANCE STUDIES ATTENTED AFTER COLLEGE(optional)
+class TrainingItem(BaseModel):
+    title: str
+    duration: Optional[str] = None
+    credits_earned: Optional[str] = None
+    institution: Optional[str] = None
 
+
+class GTSResponsesTrainingUpdate(BaseModel):
+    trainings: Optional[List[TrainingItem]] = None
+
+    class Config:
+        from_attributes = True
 
 # D. EMPLOYMENT DATA Update
 class GTSResponsesEmploymentUpdate(BaseModel):
@@ -71,6 +82,26 @@ class GTSResponsesEmploymentUpdate(BaseModel):
     class Config:
         from_attributes = True
 
+# E. JOB SATISFACTION Update
+class GTSResponsesJobSatisfactionUpdate(BaseModel):
+    job_satisfaction: Optional[str] = None
+    job_satisfaction_reason: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+# F. SERVICES FROM CSU Update
+class GTSResponsesServicesUpdate(BaseModel):
+    desired_services: Optional[str] = None
+    class Config:
+        from_attributes = True
+
+# G. PROBLEMS, ISSUES AND CONCERNS Update
+class GTSResponsesProblemsUpdate(BaseModel):
+    job_problems: Optional[str] = None
+    class Config:
+        from_attributes = True
+
 class GTSResponsesOut(BaseModel):
     # SECTION A: GENERAL INFORMATION 
     id: UUID
@@ -93,6 +124,7 @@ class GTSResponsesOut(BaseModel):
     pursued_advance_degree_reasons: Optional[List[str]] = None
     
     # SECTION C: TRAINING(S) ADVANCE STUDIES ATTENTED AFTER COLLEGE(optional)
+    trainings: Optional[List[Dict[str, Any]]] = None
     
     # SECTION D: EMPLOYMENT DATA
     ever_employed: Optional[bool]
@@ -120,10 +152,15 @@ class GTSResponsesOut(BaseModel):
     curriculum_improvement_suggestions: Optional[str] = None
     
     # SECTION E: JOB SATISFACTION
-    
+    job_satisfaction: Optional[str] = None
+    job_satisfaction_reason: Optional[str] = None
+
     # SECTION F: SERVICES FROM CSU
-    
+    desired_services: Optional[str] = None
+
     # SECTION G: PROBLEMS, ISSUES AND CONCERNS
+    job_problems: Optional[str] = None
+
     
     class Config:
         from_attributes = True

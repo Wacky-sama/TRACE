@@ -8,7 +8,9 @@ from app.utils.auth import get_current_user
 from app.schemas.gts_responses_schemas import (
     GTSResponsesCreate, GTSResponsesOut, 
     GTSResponsesPersonalUpdate, GTSResponsesEducationalUpdate,
-    GTSResponsesEmploymentUpdate)
+    GTSResponsesTrainingUpdate, GTSResponsesEmploymentUpdate,
+    GTSResponsesJobSatisfactionUpdate, GTSResponsesServicesUpdate, 
+    GTSResponsesProblemsUpdate)
 from uuid import UUID
 
 router = APIRouter(
@@ -156,6 +158,32 @@ def update_educational_info(
     return gts
 
 # C. Update Training(s) Advance Studies Attended After College
+@router.put("/{gts_id}/trainings", response_model=GTSResponsesOut)
+def update_trainings_info(
+    gts_id: UUID,
+    updated_data: GTSResponsesTrainingUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    gts = db.query(GTSResponses).filter(
+        GTSResponses.id == gts_id,
+        GTSResponses.user_id == current_user.id
+    ).first()
+    
+    if not gts:
+        raise HTTPException(status_code=404, detail="GTS Response not found")
+
+    for key, value in updated_data.dict(exclude_unset=True).items():
+        setattr(gts, key, value)
+    
+    db.commit()
+    db.refresh(gts)
+    
+    # Parse other arrays for consistency
+    gts.occupation = parse_pg_array(gts.occupation)
+    gts.non_employed_reasons = parse_pg_array(gts.non_employed_reasons)
+
+    return gts
 
 # D. Update Employment Info
 @router.put("/{gts_id}/employment", response_model=GTSResponsesOut)
@@ -182,4 +210,73 @@ def update_employment_info(
     gts.occupation = parse_pg_array(gts.occupation)
     gts.non_employed_reasons = parse_pg_array(gts.non_employed_reasons)
     
+    return gts
+
+# E. Update Job Satisfaction
+@router.put("/{gts_id}/job-satisfaction", response_model=GTSResponsesOut)
+def update_job_satisfaction(
+    gts_id: UUID,
+    updated_data: GTSResponsesJobSatisfactionUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    gts = db.query(GTSResponses).filter(
+        GTSResponses.id == gts_id,
+        GTSResponses.user_id == current_user.id
+    ).first()
+
+    if not gts:
+        raise HTTPException(status_code=404, detail="GTS Response not found")
+
+    for key, value in updated_data.dict(exclude_unset=True).items():
+        setattr(gts, key, value)
+
+    db.commit()
+    db.refresh(gts)
+    return gts
+
+# F. Update Services from CSU
+@router.put("/{gts_id}/services", response_model=GTSResponsesOut)
+def update_services_from_csu(
+    gts_id: UUID,
+    updated_data: GTSResponsesServicesUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    gts = db.query(GTSResponses).filter(
+        GTSResponses.id == gts_id,
+        GTSResponses.user_id == current_user.id
+    ).first()
+
+    if not gts:
+        raise HTTPException(status_code=404, detail="GTS Response not found")
+
+    for key, value in updated_data.dict(exclude_unset=True).items():
+        setattr(gts, key, value)
+
+    db.commit()
+    db.refresh(gts)
+    return gts
+
+# G. Update Problems, Issues and Concerns
+@router.put("/{gts_id}/problems", response_model=GTSResponsesOut)
+def update_problems_issues(
+    gts_id: UUID,
+    updated_data: GTSResponsesProblemsUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    gts = db.query(GTSResponses).filter(
+        GTSResponses.id == gts_id,
+        GTSResponses.user_id == current_user.id
+    ).first()
+
+    if not gts:
+        raise HTTPException(status_code=404, detail="GTS Response not found")
+
+    for key, value in updated_data.dict(exclude_unset=True).items():
+        setattr(gts, key, value)
+
+    db.commit()
+    db.refresh(gts)
     return gts

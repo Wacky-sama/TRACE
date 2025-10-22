@@ -5,11 +5,11 @@ import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 
 const CIVIL_STATUSES_OPTIONS = [
-  "Single", 
-  "Married", 
-  "Separated/Divorced", 
-  "Widow or Widower", 
-  "Single Parent"
+  "Single",
+  "Married",
+  "Separated/Divorced",
+  "Widow or Widower",
+  "Single Parent",
 ];
 
 const GeneralInformation = ({ gtsData, onUpdate }) => {
@@ -23,7 +23,7 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
     mobile: gtsData.mobile || "",
     civil_status: gtsData.civil_status || "",
     sex: gtsData.sex || "",
-    birthday: gtsData.birthday || ""
+    birthday: gtsData.birthday || "",
   });
 
   const [saving, setSaving] = useState(false);
@@ -34,22 +34,24 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
-  
+
   const handleSave = async () => {
     setSaving(true);
-    
-    const result = await onUpdate('personal', formData);
+
+    const result = await onUpdate("personal", formData);
     setSaving(false);
     setSaveSuccess(result.success);
     setMessage(result.success ? "Saved successfully!" : "Update failed.");
   };
 
   return (
-    <div  className={`p-4 rounded-lg shadow transition-colors duration-300 ${
+    <div
+      className={`p-4 rounded-lg shadow transition-colors duration-300 ${
         isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
       }`}
     >
-      <h2 className={`mb-4 text-xl font-semibold ${
+      <h2
+        className={`mb-4 text-xl font-semibold ${
           isDark ? "text-gray-100" : "text-gray-800"
         }`}
       >
@@ -110,12 +112,7 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
         </div>
 
         <div>
-          <FloatingInput
-            id="sex"
-            value={formData.sex}
-            label="Sex"
-            readOnly
-          />
+          <FloatingInput id="sex" value={formData.sex} label="Sex" readOnly />
         </div>
 
         <div>
@@ -128,24 +125,26 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
         </div>
       </div>
 
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        className={`px-4 py-2 rounded-md transition-colors ${
-          saving
-            ? "opacity-70 cursor-not-allowed"
-            : isDark
-            ? "bg-blue-600 hover:bg-blue-500 text-white"
-            : "bg-blue-600 hover:bg-blue-700 text-white"
-        }`}
-      >
-        {saving ? "Saving..." : "Save"}
-      </button>
+      <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-end">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className={`px-4 py-2 rounded-md transition-colors ${
+            saving
+              ? "opacity-70 cursor-not-allowed"
+              : isDark
+              ? "bg-blue-600 hover:bg-blue-500 text-white"
+              : "bg-blue-600 hover:bg-blue-700 text-white"
+          }`}
+        >
+          {saving ? "Saving..." : "Save"}
+        </button>
+      </div>
 
       {message && (
         <p
           className={`mt-2 text-sm ${
-           saveSuccess
+            saveSuccess
               ? isDark
                 ? "text-green-400"
                 : "text-green-600"

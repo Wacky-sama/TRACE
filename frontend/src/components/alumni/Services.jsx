@@ -1,18 +1,14 @@
-// E. JOB SATISFACTION
+// F. SERVICES FROM CSU
 import { useState } from "react";
 import { useTheme } from "../../context/ThemeProvider";
 import FloatingInput from "../FloatingInput";
-import FloatingSelect from "../FloatingSelect";
 
-const SATISFACTION_LEVELS = ["Very High", "High", "Moderate", "Low", "Very Low"];
-
-const JobSatisfaction = ({ gtsData, onUpdate }) => {
+const Services = ({ gtsData, onUpdate }) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
   const [formData, setFormData] = useState({
-    job_satisfaction: gtsData.job_satisfaction || "",
-    job_satisfaction_reason: gtsData.job_satisfaction_reason || "",
+    desired_services: gtsData.desired_services || "",
   });
 
   const [saving, setSaving] = useState(false);
@@ -24,14 +20,9 @@ const JobSatisfaction = ({ gtsData, onUpdate }) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSelectChange = (value) => {
-    setFormData((prev) => ({ ...prev, job_satisfaction: value }));
-  };
-
   const handleSave = async () => {
     setSaving(true);
-
-    const result = await onUpdate("job-satisfaction", formData);
+    const result = await onUpdate("services", formData);
     setSaving(false);
     setSaveSuccess(result.success);
     setMessage(result.success ? "Saved successfully!" : "Update failed.");
@@ -48,30 +39,16 @@ const JobSatisfaction = ({ gtsData, onUpdate }) => {
           isDark ? "text-gray-100" : "text-gray-800"
         }`}
       >
-        Job Satisfaction
+        Services from CSU
       </h2>
 
-      <div className="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
-        <div>
-          <FloatingSelect
-            id="job_satisfaction"
-            value={formData.job_satisfaction}
-            label="How would you rate your overall job satisfaction?"
-            onChange={handleSelectChange}
-            options={SATISFACTION_LEVELS}
-          />
-        </div>
-
-        <div>
-          <FloatingInput
-            id="job_satisfaction_reason"
-            type="text"
-            label="Why? (Reason for your answer)"
-            value={formData.job_satisfaction_reason}
-            onChange={handleChange}
-          />
-        </div>
-      </div>
+      <FloatingInput
+        id="desired_services"
+        type="text"
+        label="List down services you want to avail from the university"
+        value={formData.desired_services}
+        onChange={handleChange}
+      />
 
       <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-end">
         <button
@@ -108,4 +85,4 @@ const JobSatisfaction = ({ gtsData, onUpdate }) => {
   );
 };
 
-export default JobSatisfaction;
+export default Services;

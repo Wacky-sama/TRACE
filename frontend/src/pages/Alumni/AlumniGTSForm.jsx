@@ -4,7 +4,11 @@ import api from "../../services/api";
 import { getToken, getUser } from "../../utils/storage";
 import GeneralInformation from "../../components/alumni/GeneralInformation";
 import EducationalBackground from "../../components/alumni/EducationalBackground";
+import TrainingsAndStudies from "../../components/alumni/TrainingsAndStudies";
 import EmploymentData from "../../components/alumni/EmploymentData";
+import JobSatisfaction from "../../components/alumni/JobSatisfaction";
+import Services from "../../components/alumni/Services";
+import ProblemsIssuesAndConcerns from "../../components/alumni/ProblemsIssuesAndConcerns";
 
 const AlumniGTSForm = () => {
   const [gtsData, setGtsData] = useState(null);
@@ -55,7 +59,11 @@ const AlumniGTSForm = () => {
       <h1 className="text-2xl font-semibold">Graduate Tracer Survey Form</h1>
       <GeneralInformation gtsData={gtsData} onUpdate={handleUpdate} />  
       <EducationalBackground gtsData={gtsData} onUpdate={handleUpdate} />
+      <TrainingsAndStudies gtsData={gtsData} onUpdate={handleUpdate} />
       <EmploymentData gtsData={gtsData} onUpdate={handleUpdate} />
+      <JobSatisfaction gtsData={gtsData} onUpdate={handleUpdate} />
+      <Services gtsData={gtsData} onUpdate={handleUpdate} />
+      <ProblemsIssuesAndConcerns gtsData={gtsData} onUpdate={handleUpdate} />
     </div>
   );
 };

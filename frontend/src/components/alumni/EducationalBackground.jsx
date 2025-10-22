@@ -301,19 +301,21 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
         </div>
       )}
 
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        className={`px-4 py-2 rounded-md transition-colors ${
-          saving
-            ? "opacity-70 cursor-not-allowed"
-            : isDark
-            ? "bg-blue-600 hover:bg-blue-500 text-white"
-            : "bg-blue-600 hover:bg-blue-700 text-white"
-        }`}
-      >
-        {saving ? "Saving..." : "Save"}
-      </button>
+       <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-end">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className={`px-4 py-2 rounded-md transition-colors ${
+            saving
+              ? "opacity-70 cursor-not-allowed"
+              : isDark
+              ? "bg-blue-600 hover:bg-blue-500 text-white"
+              : "bg-blue-600 hover:bg-blue-700 text-white"
+          }`}
+        >
+          {saving ? "Saving..." : "Save"}
+        </button>
+      </div>
 
       {message && (
         <p
