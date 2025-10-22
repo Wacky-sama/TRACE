@@ -29,6 +29,11 @@ const NON_EMPLOYED_REASONS = [
   "Other reasons, please specify",
 ];
 
+const PLACE_OF_WORK_OPTIONS = [
+  "Local", 
+  "Abroad"
+];
+
 const EMPLOYMENT_NOW_OPTIONS = [
   "Yes", 
   "No", 
@@ -248,7 +253,6 @@ function EmploymentInfoForm({
         isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
       } p-6 rounded-lg shadow-md transition-all duration-500`}
     >
-      {/* Employment Now Selection */}
       <FloatingSelect
         id="employmentNow"
         label="Are you currently employed?"
@@ -256,12 +260,11 @@ function EmploymentInfoForm({
         onChange={(e) =>
           setFormData({ ...formData, employmentNow: e.target.value })
         }
-        options={EMPLOYMENT_NOW_OPTIONS} // includes Yes, No, Never Employed
+        options={EMPLOYMENT_NOW_OPTIONS}
         error={errors.employmentNow}
         darkMode={isDark}
       />
 
-      {/* Smooth Transition Section */}
       <AnimatePresence mode="wait">
         {/* If “Yes” */}
         {formData.employmentNow === "Yes" && (
@@ -323,7 +326,7 @@ function EmploymentInfoForm({
                     setFormData({ ...formData, placeOfWork: e.target.value })
                   }
                   error={errors.placeOfWork}
-                  options={["Local", "Abroad"]}
+                  options={PLACE_OF_WORK_OPTIONS}
                   darkMode={isDark}
                 />
               </div>
