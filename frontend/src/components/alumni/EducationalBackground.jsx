@@ -189,12 +189,21 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
                     placeholder="e.g., Licensure Exam"
                   />
                 </td>
-                <td className="border border-gray-300">
-                  <AlumniFloatingDatePicker
-                    value={exam.date}
-                    onChange={(date) => handleExamChange(index, "date", date)}
-                  />
+                <td className="p-2 text-center align-middle border border-gray-300">
+                  <div className="flex justify-center">
+                    <div className="w-30">
+                      <AlumniFloatingDatePicker
+                        id={`exam_date_${index}`}
+                        label="Date Taken"
+                        value={exam.date ? exam.date : ""}
+                        onChange={(date) =>
+                          handleExamChange(index, "date", date)
+                        }
+                      />
+                    </div>
+                  </div>
                 </td>
+
                 <td className="p-2 border border-gray-300">
                   <input
                     type="text"
