@@ -51,7 +51,7 @@ const AlumniGTSForm = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Graduate Tracer Study Form</h1>
+      <h1 className="text-2xl font-semibold">Graduate Tracer Survey Form</h1>
 
       {/* Each section gets the current data and update handler */}
       <GeneralInformation gtsData={gtsData} onUpdate={handleUpdate} />
