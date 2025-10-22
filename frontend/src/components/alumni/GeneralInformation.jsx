@@ -4,6 +4,14 @@ import { useTheme } from "../../context/ThemeProvider";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 
+const CIVIL_STATUSES_OPTIONS = [
+  "Single", 
+  "Married", 
+  "Separated/Divorced", 
+  "Widow or Widower", 
+  "Single Parent"
+];
+
 const GeneralInformation = ({ gtsData, onUpdate }) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
@@ -95,7 +103,7 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
             value={formData.civil_status}
             label="Civil Status"
             onChange={handleChange}
-            options={["Single", "Married", "Separated/Divorced", "Widow or Widower", "Single Parent"]}
+            options={CIVIL_STATUSES_OPTIONS}
           >
           </FloatingSelect>
         </div>
