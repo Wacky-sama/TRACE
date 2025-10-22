@@ -104,8 +104,7 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
             label="Civil Status"
             onChange={handleChange}
             options={CIVIL_STATUSES_OPTIONS}
-          >
-          </FloatingSelect>
+          />
         </div>
 
         <div>
@@ -114,8 +113,7 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
             value={formData.sex}
             label="Sex"
             readOnly
-          >
-          </FloatingInput>
+          />
         </div>
 
         <div>
