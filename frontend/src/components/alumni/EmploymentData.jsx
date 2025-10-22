@@ -743,7 +743,9 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
                 </label>
               ))}
             </div>
-            {formData.job_reasons.includes("Other reason(s), please specify") && (
+            {formData.job_reasons.includes(
+              "Other reason(s), please specify"
+            ) && (
               <FloatingInput
                 id="otherJobReason"
                 value={otherJobReason}
@@ -776,12 +778,18 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
                     type="checkbox"
                     value={reason}
                     checked={formData.job_change_reasons.includes(reason)}
-                    onChange={() => handleArrayChange("job_change_reasons", reason, setOtherJobChangeReason)}
+                    onChange={() =>
+                      handleArrayChange(
+                        "job_change_reasons",
+                        reason,
+                        setOtherJobChangeReason
+                      )
+                    }
                     className="hidden"
                   />
                   {reason}
                 </label>
-                ))}
+              ))}
             </div>
             {formData.job_change_reasons.includes(
               "Other reason(s), please specify"
@@ -805,7 +813,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
             label="Job Level Position - First Job"
             options={JOB_LEVEL_OPTIONS_FIRST}
           />
-          
+
           <FloatingSelect
             id="job_level_current"
             value={formData.job_level_current || ""}
@@ -852,46 +860,65 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
             options={["Yes", "No"]}
           />
 
-          <div className="flex flex-wrap gap-2">
-            {USEFUL_COMPETENCIES.map((competency) => (
-              <label
-                key={competency}
-                className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
-                  formData.useful_competencies.includes(competency)
-                    ? "bg-blue-600 text-white border-blue-600"
-                    : isDark
-                    ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  value={competency}
-                  checked={formData.useful_competencies.includes(competency)}
-                  onChange={() =>
-                    handleArrayChange(
-                      "useful_competencies",
-                      competency,
-                      setOtherUsefulCompetency
-                    )
+          {(formData.curriculum_relevance_first_job === true ||
+            formData.curriculum_relevance_second_job === true) && (
+            <>
+              <div className="mb-4">
+                <label
+                  className={`block mb-2 text-sm font-medium ${
+                    isDark ? "text-gray-200" : "text-gray-700"
+                  }`}
+                >
+                  If yes, what competencies learned in college did you find very
+                  useful in your job? (You may select multiple answers)
+                </label>
+
+                <div className="flex flex-wrap gap-2">
+                  {USEFUL_COMPETENCIES.map((competency) => (
+                    <label
+                      key={competency}
+                      className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
+                        formData.useful_competencies.includes(competency)
+                          ? "bg-blue-600 text-white border-blue-600"
+                          : isDark
+                          ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                          : "bg-white text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        value={competency}
+                        checked={formData.useful_competencies.includes(
+                          competency
+                        )}
+                        onChange={() =>
+                          handleArrayChange(
+                            "useful_competencies",
+                            competency,
+                            setOtherUsefulCompetency
+                          )
+                        }
+                        className="hidden"
+                      />
+                      {competency}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {formData.useful_competencies.includes(
+                "Other skills, please specify"
+              ) && (
+                <FloatingInput
+                  id="otherUsefulCompetency"
+                  value={otherUsefulCompetency}
+                  onChange={(e) =>
+                    setOtherUsefulCompetency(e.target.value.trimStart())
                   }
-                  className="hidden"
+                  label="Please specify"
                 />
-                {competency}
-              </label>
-            ))}
-          </div>
-          {formData.useful_competencies.includes(
-            "Other skills, please specify"
-          ) && (
-            <FloatingInput
-              id="otherUsefulCompetency"
-              value={otherUsefulCompetency}
-              onChange={(e) =>
-                setOtherUsefulCompetency(e.target.value.trimStart())
-              }
-              label="Please specify"
-            />
+              )}
+            </>
           )}
 
           <FloatingInput
@@ -960,7 +987,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
         </div>
       )}
 
-       <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-end">
+      <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-end">
         <button
           onClick={handleSave}
           disabled={saving}
