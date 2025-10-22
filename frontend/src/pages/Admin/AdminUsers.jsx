@@ -159,7 +159,7 @@ const AdminUsers = () => {
             "Permanent Address",
             "Actions",
           ].map((header) => (
-            <th key={header} className="p-3">
+            <th key={header} className="p-3 text-left align-middle">
               {header}
             </th>
           ))}

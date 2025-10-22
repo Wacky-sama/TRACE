@@ -45,7 +45,9 @@ const AlumniEvents = () => {
           className={`mt-4 mb-6 border-t ${
             isDark ? "border-gray-700" : "border-gray-300"
           }`}
-        ></div>
+        >
+          
+        </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {events.length > 0 ? (
             events.map((event) => (

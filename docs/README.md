@@ -36,4 +36,60 @@ TRACE: Tracking Alumni for Centralized Events
 
 ---
 
+### Alumni Registration
+
+**Personal Information**
+
+**Light Mode**
+![Personal Information](/docs/images/AlumniPersonalInfoLight.png)
+
+**Dark Mode**
+![Personal Information](/docs/images/AlumniPersonalInfoDark.png)
+
+**Employment Information**
+
+**Light Mode**
+![Employment Status](/docs/images/AlumniEmploymentLight.png)
+
+**Dark Mode**
+![Employment Status](/docs/images/AlumniEmploymentDark.png)
+
+**Light Mode**
+![Employment Status - Yes](/docs/images/AlumniEmployedYesLight.png)
+
+**Dark Mode**
+![Employment Status - Yes](/docs/images/AlumniEmployedYesDark.png)
+
+**Light Mode**
+![Employment Status - No](/docs/images/AlumniEmployedNoLight.png)
+
+**Dark Mode**
+![Employment Status - No](/docs/images/AlumniEmployedNoDark.png)
+
+**Light Mode**
+![Employment Status - Never](/docs/images/AlumniEmployedNeverLight.png)
+
+**Dark Mode**
+![Employment Status - Never](/docs/images/AlumniEmployedNeverDark.png)
+
+---
+
+### Admin View Users
+
+**Light Mode**
+![View Users](/docs/images/AdminViewUsersLight.png)
+
+**Dark Mode**
+![View Users](/docs/images/AdminViewUsersDark.png)
+
+### Admin View Events
+
+**Light Mode**
+![View Events](/docs/images/AdminViewEventsLight.png)
+
+**Dark Mode**
+![View Events](/docs/images/AdminViewEventsDark.png)
+
+---
+
 Author: **Wacky**

@@ -1,20 +1,30 @@
 import { useState, useEffect } from "react";
-import { useTheme } from "../../context/ThemeProvider";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import { useTheme } from "../../context/ThemeProvider";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
+import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";
 
-const EMPLOYMENT_NOW_OPTIONS = ["Yes", "No", "Never Employed"];
+const EMPLOYMENT_NOW_OPTIONS = [
+  "Yes", 
+  "No", 
+  "Never Employed"
+];
 
 const EMPLOYED_STATUSES = [
   "Regular or Permanent",
   "Contractual",
   "Temporary",
   "Self-employed / Freelance",
-  "Casual",
+  "Casual"
 ];
 
-const NON_EMPLOYED_STATUSES = ["Unemployed", "Retired", "Looking for Work"];
+const NON_EMPLOYED_STATUSES = [
+  "Unemployed", 
+  "Retired", 
+  "Looking for Work"
+];
 
 const NON_EMPLOYED_REASONS = [
   "Advance or further study",
@@ -23,7 +33,7 @@ const NON_EMPLOYED_REASONS = [
   "Lack of work experience",
   "No job opportunity",
   "Did not look for a job",
-  "Other reasons, please specify",
+  "Other reasons, please specify"
 ];
 
 const OCCUPATION_OPTIONS = [
@@ -36,7 +46,86 @@ const OCCUPATION_OPTIONS = [
   "Trades and Related Workers",
   "Plant and Machine Operators and Assemblers",
   "Laborers and Unskilled Workers",
+  "Others, please specify"
+];
+
+const JOB_SECTORS = [
+  "Agriculture, Hunting and Forestry",
+  "Fishing",
+  "Mining and Quarrying",
+  "Manufacturing",
+  "Electricity, Gas and Water Supply",
+  "Construction",
+  "Wholesale and Retail Trade, repair of motor vehicles, motorcycles and personal and household goods",
+  "Hotels and Restaurants",
+  "Transport Storage and Communication",
+  "Financial Intermediation",
+  "Real State, Renting and Business Activities",
+  "Public Administration and Defense; Compulsory Social Security",
+  "Education",
+  "Health and Social Work",
+  "Other community, Social and Personal Service Activities",
+  "Private Households with Employed Persons",
+  "Self employed",
+  "Others, please specify"
+];
+
+const PLACE_OF_WORK_OPTIONS = [
+  "Local", 
+  "Abroad"
+];
+
+const JOB_FIND_METHODS = [
+  "Response to an advertisement",
+  "As walk-in applicant",
+  "Recommended by someone",
+  "Information from friends",
+  "Arranged by school's job placement officer",
+  "Family business",
+  "Job Fair or PESO",
   "Others, please specify",
+];
+
+const JOB_REASONS = [
+  "High salaries and benefits",
+  "Career challenge",
+  "Related to special skill",
+  "Related to course or program of study",
+  "Proximity to residence",
+  "Peer influence",
+  "Family influence",
+  "Other reason(s), please specify",
+];
+
+const JOB_CHANGE_REASONS = [
+  "Higher salaries and benefits",
+  "Career Change",
+  "Related to special skills",
+  "Proximity to residence",
+  "Other reason(s), please specify",
+];
+
+const JOB_LEVEL_OPTIONS_FIRST = [
+  "Rank or Clerical",
+  "Professional, Technical or Supervisory",
+  "Managerial or Executive",
+  "Self-employed",
+];
+
+const JOB_LEVEL_OPTIONS_CURRENT = [
+  "Rank or Clerical",
+  "Professional, Technical or Supervisory",
+  "Managerial or Executive",
+  "Self-employed",
+];
+
+const USEFUL_COMPETENCIES = [
+  "Communication skills",
+  "Human Relations skills",
+  "Entrepreneurial skills",
+  "Problem-solving skills",
+  "Critical Thinking skills",
+  "Other skills, please specify",
 ];
 
 const EmploymentData = ({ gtsData, onUpdate }) => {
@@ -60,7 +149,25 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
     occupation: gtsData.occupation || [],
     company_name: gtsData.company_name || "",
     company_address: gtsData.company_address || "",
+    job_sector: gtsData.job_sector || "",
     place_of_work: gtsData.place_of_work || "",
+    first_job: gtsData.first_job || false,
+    job_related_to_course: gtsData.job_related_to_course || false,
+    job_start_date: gtsData.job_start_date || "",
+    months_to_first_job: gtsData.months_to_first_job || "",
+    job_find_methods: gtsData.job_find_methods || [],
+    job_reasons: gtsData.job_reasons || [],
+    job_change_reasons: gtsData.job_change_reasons || [],
+    job_level_first: gtsData.job_level_first || "",
+    job_level_current: gtsData.job_level_current || "",
+    first_job_salary: gtsData.first_job_salary || "",
+    curriculum_relevance_first_job:
+      gtsData.curriculum_relevance_first_job || false,
+    curriculum_relevance_second_job:
+      gtsData.curriculum_relevance_second_job || false,
+    useful_competencies: gtsData.useful_competencies || [],
+    curriculum_improvement_suggestions:
+      gtsData.curriculum_improvement_suggestions || "",
   });
 
   const [otherOccupation, setOtherOccupation] = useState("");
@@ -334,7 +441,21 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
             label="Company Address"
             error={errors.company_address}
           />
-
+          <FloatingSelect
+            id="job_sector"
+            value={formData.job_sector || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, job_sector: e.target.value })
+            }
+            label="Job Sector"
+            options={[
+              "Government",
+              "Private",
+              "Non-Government Organization (NGO)",
+              "Self-Employed",
+              "Others",
+            ]}
+          />
           <div className="mb-4">
             <label
               className={`block mb-2 text-sm font-medium ${
@@ -381,7 +502,228 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
           </div>
         </>
       )}
+      <FloatingSelect
+        id="job_level_current"
+        value={formData.job_level_current || ""}
+        onChange={(e) =>
+          setFormData({ ...formData, job_level_current: e.target.value })
+        }
+        label="Current Job Level"
+        options={[
+          "Rank and File",
+          "Supervisory",
+          "Managerial",
+          "Executive",
+          "Owner",
+        ]}
+      />
 
+      <FloatingSelect
+        id="job_level_first"
+        value={formData.job_level_first || ""}
+        onChange={(e) =>
+          setFormData({ ...formData, job_level_first: e.target.value })
+        }
+        label="First Job Level Position"
+        options={[
+          "Rank or Clerical",
+          "Professional, Technical or Supervisory",
+          "Managerial or Executive",
+          "Self-employed"
+        ]}
+      />
+
+      <div className="flex gap-4">
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={formData.first_job || false}
+            onChange={(e) =>
+              setFormData({ ...formData, first_job: e.target.checked })
+            }
+          />
+          First Job
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={formData.job_related_to_course || false}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                job_related_to_course: e.target.checked,
+              })
+            }
+          />
+          Job related to your course
+        </label>
+      </div>
+
+      <AlumniFloatingDatePicker
+        id="job_start_date"
+        type="date"
+        label="Job Start Date"
+        value={formData.job_start_date || ""}
+        onChange={(e) =>
+          setFormData({ ...formData, job_start_date: e.target.value })
+        }
+      />
+
+      <FloatingInput
+        id="months_to_first_job"
+        type="number"
+        value={formData.months_to_first_job || ""}
+        onChange={(e) =>
+          setFormData({ ...formData, months_to_first_job: e.target.value })
+        }
+        label="Months to Land First Job"
+      />
+
+      <FloatingInput
+        id="first_job_salary"
+        type="number"
+        value={formData.first_job_salary || ""}
+        onChange={(e) =>
+          setFormData({ ...formData, first_job_salary: e.target.value })
+        }
+        label="First Job Salary (₱)"
+      />
+
+      <div className="flex gap-4">
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={formData.curriculum_relevance_first_job || false}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                curriculum_relevance_first_job: e.target.checked,
+              })
+            }
+          />
+          Curriculum relevant to first job
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={formData.curriculum_relevance_second_job || false}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                curriculum_relevance_second_job: e.target.checked,
+              })
+            }
+          />
+          Curriculum relevant to second job
+        </label>
+      </div>
+
+      <FloatingSelect
+        id="job_find_methods"
+        multiple
+        value={formData.job_find_methods || []}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            job_find_methods: Array.from(
+              e.target.selectedOptions,
+              (opt) => opt.value
+            ),
+          })
+        }
+        label="How did you find your job? (multiple)"
+        options={[
+          "Recommendation",
+          "Job Fair",
+          "Online Application",
+          "Walk-in",
+          "School Referral",
+          "Other",
+        ]}
+      />
+
+      <FloatingSelect
+        id="job_reasons"
+        multiple
+        value={formData.job_reasons || []}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            job_reasons: Array.from(
+              e.target.selectedOptions,
+              (opt) => opt.value
+            ),
+          })
+        }
+        label="Reasons for choosing this job (multiple)"
+        options={[
+          "Salary",
+          "Interest",
+          "Career Growth",
+          "Family Influence",
+          "Course Related",
+          "Other",
+        ]}
+      />
+
+      <FloatingSelect
+        id="job_change_reasons"
+        multiple
+        value={formData.job_change_reasons || []}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            job_change_reasons: Array.from(
+              e.target.selectedOptions,
+              (opt) => opt.value
+            ),
+          })
+        }
+        label="Reasons for changing job (multiple)"
+        options={[
+          "Higher Salary",
+          "Career Change",
+          "Location",
+          "Personal Reasons",
+          "Better Opportunity",
+        ]}
+      />
+
+      <FloatingSelect
+        id="useful_competencies"
+        multiple
+        value={formData.useful_competencies || []}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            useful_competencies: Array.from(
+              e.target.selectedOptions,
+              (opt) => opt.value
+            ),
+          })
+        }
+        label="Useful Competencies (multiple)"
+        options={[
+          "Communication Skills",
+          "Problem Solving",
+          "Leadership",
+          "Technical Knowledge",
+          "Teamwork",
+          "Adaptability",
+        ]}
+      />
+
+      <FloatingInput
+        id="curriculum_improvement_suggestions"
+        value={formData.curriculum_improvement_suggestions || ""}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            curriculum_improvement_suggestions: e.target.value,
+          })
+        }
+        label="Suggestions for Curriculum Improvement"
+      />
       {formData.employmentNow === "No" && (
         <div className="mb-4">
           <label
