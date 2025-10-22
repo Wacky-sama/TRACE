@@ -54,7 +54,7 @@ const AlumniGTSForm = () => {
       <h1 className="text-2xl font-semibold">Graduate Tracer Survey Form</h1>
 
       {/* Each section gets the current data and update handler */}
-      <GeneralInformation gtsData={gtsData} onUpdate={handleUpdate} />
+      <GeneralInformation gtsData={gtsData} onUpdate={handleUpdate} />  
       <EmploymentData gtsData={gtsData} onUpdate={handleUpdate} />
       {/* Add more sections as needed */}
     </div>
