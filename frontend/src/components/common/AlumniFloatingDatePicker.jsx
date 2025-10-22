@@ -12,6 +12,7 @@ function AlumniFloatingDatePicker({
   error,
   minDate = new Date(1900, 0, 1),
   maxDate = new Date(),
+  yearOnly = false,
   ...props
 }) {
   const { theme } = useTheme();
@@ -44,22 +45,22 @@ function AlumniFloatingDatePicker({
   return (
     <div className="mb-2">
       <DatePicker
-        selected={value instanceof Date ? value : null}
+        selected={value ? new Date(value) : null}
         onChange={onChange}
         minDate={minDate}
         maxDate={maxDate}
-        dateFormat="MM/dd/yyyy"
-        showMonthDropdown
+        dateFormat={yearOnly ? "yyyy" : "MM/dd/yyyy"}
+        showYearPicker={yearOnly}
+        showMonthDropdown={!yearOnly}
         showYearDropdown
         dropdownMode="select"
-        yearDropdownItemNumber={200}
+        yearDropdownItemNumber={120}
         scrollableYearDropdown
         customInput={<CustomInput />}
-        isClearable
+        isClearable={!yearOnly}
         popperClassName={isDark ? "react-datepicker-dark" : ""}
         {...props}
       />
-
       {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );

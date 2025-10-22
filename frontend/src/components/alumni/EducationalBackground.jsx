@@ -35,7 +35,8 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
     honors: gtsData.honors || "",
     exams: Array.isArray(gtsData.exams) ? gtsData.exams : [],
     pursued_advance_degree: gtsData.pursued_advance_degree || false,
-    pursued_advance_degree_reasons: gtsData.pursued_advance_degree_reasons || [],
+    pursued_advance_degree_reasons:
+      gtsData.pursued_advance_degree_reasons || [],
   });
 
   const [otherReason, setOtherReason] = useState("");
@@ -136,15 +137,19 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
             value={formData.specialization}
             onChange={handleChange}
           />
-          <FloatingInput
+          <AlumniFloatingDatePicker
             id="year_graduated"
-            type="number"
             label="Year Graduated"
-            value={formData.year_graduated}
-            onChange={handleChange}
-            min="1900"
-            max="2100"
+            value={
+              formData.year_graduated ? `${formData.year_graduated}-01-01` : ""
+            }
+            onChange={(date) => {
+              const year = date ? new Date(date).getFullYear() : "";
+              setFormData((prev) => ({ ...prev, year_graduated: year }));
+            }}
+            yearOnly
           />
+
           <FloatingInput
             id="honors"
             type="text"
