@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { motion } from "framer-motion";
+import { fillOffset, motion } from "framer-motion";
 import { useTheme } from "../../context/ThemeProvider";
+import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
-import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";
 
 const EMPLOYMENT_NOW_OPTIONS = [
   "Yes", 
@@ -33,7 +33,7 @@ const NON_EMPLOYED_REASONS = [
   "Lack of work experience",
   "No job opportunity",
   "Did not look for a job",
-  "Other reasons, please specify"
+  "Other reason(s), please specify"
 ];
 
 const OCCUPATION_OPTIONS = [
@@ -172,6 +172,12 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
 
   const [otherOccupation, setOtherOccupation] = useState("");
   const [otherNonEmployedReason, setOtherNonEmployedReason] = useState("");
+  const [otherJobSector, setOtherJobSector] = useState("");
+  const [otherJobFindMethod, setOtherJobFindMethod] = useState("");
+  const [otherJobReason, setOtherJobReason] = useState("");
+  const [otherJobChangeReason, setOtherJobChangeReason] = useState("");
+  const [otherUsefulCompetency, setOtherUsefulCompetency] = useState("");
+
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(null);
@@ -193,6 +199,21 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
         company_name: "",
         company_address: "",
         occupation: [],
+        job_sector: "",
+        first_job: false,
+        job_related_to_course: false,
+        job_start_date: "",
+        months_to_first_job: "",
+        job_find_methods: [],
+        job_reasons: [],
+        job_change_reasons: [],
+        job_level_first: "",
+        job_level_current: "",
+        first_job_salary: "",
+        curriculum_relevance_first_job: false,
+        curriculum_relevance_second_job: false,
+        useful_competencies: [],
+        curriculum_improvement_suggestions: ""
       }),
       ...(value === "Never Employed" && {
         employment_status: "Never Employed",
@@ -200,11 +221,31 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
         company_name: "",
         company_address: "",
         occupation: [],
+        job_sector: "",
         non_employed_reasons: [],
+        first_job: false,
+        job_related_to_course: false,
+        job_start_date: "",
+        months_to_first_job: "",
+        job_find_methods: [],
+        job_reasons: [],
+        job_change_reasons: [],
+        job_level_first: "",
+        job_level_current: "",
+        first_job_salary: "",
+        curriculum_relevance_first_job: false,
+        curriculum_relevance_second_job: false,
+        useful_competencies: [],
+        curriculum_improvement_suggestions: ""
       }),
     }));
     setOtherOccupation("");
     setOtherNonEmployedReason("");
+    setOtherJobSector("");
+    setOtherJobFindMethod("");
+    setOtherJobReason("");
+    setOtherJobChangeReason("");
+    setOtherUsefulCompetency("");
     setErrors({});
   };
 
@@ -213,7 +254,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
       let updated = [...prev.non_employed_reasons];
       if (updated.includes(reason)) {
         updated = updated.filter((r) => r !== reason);
-        if (reason === "Other reasons, please specify")
+        if (reason === "Other reason(s), please specify")
           setOtherNonEmployedReason("");
       } else {
         updated.push(reason);
@@ -233,6 +274,39 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
         updated = [...current, option];
       }
       return { ...prev, occupation: updated };
+    });
+  };
+
+  const handleJobSectorChange = (option) => {
+    setFormData((prev) => {
+      let updated = prev.job_sector;
+      if (updated === option) {
+        updated = "";
+        if (option === "Others, please specify") 
+          setOtherJobSector("");
+      } else {
+        updated = option;
+        if (option !== "Others, please specify")
+          setOtherJobSector("");
+      }
+      return { ...prev, job_sector: updated };
+    });
+  };
+
+  const handleArrayChange = (field, option, otherSetter) => {
+    setFormData((prev) => {
+      const current = prev[field];
+      let updated;
+      if (current.includes(option)) {
+        updated = current.filter((o) => o !== option);
+        if (option === "Others, please specify" || 
+          option === "Other reason(s), please specify" ||
+          option === "Other skills, please specify")
+            otherSetter("");
+      } else {
+        updated = [ ...current, option ];
+      }
+      return { ...prev,[field]: updated };
     });
   };
 
@@ -260,20 +334,19 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
       ) {
         newErrors.otherOccupation = "Please specify your occupation.";
       }
+      if (!formData.job_sector?.trim()) 
+        newErrors.job_sector = "Job sector required.";
+      if (formData.job_sector === "Others, please specify" && 
+        !otherJobSector.trim()) 
+        newErrors.otherJobSector = "Please specify your job sector.";
     }
 
     if (formData.employmentNow === "No") {
-      if (formData.non_employed_reasons.length === 0) {
+      if (formData.non_employed_reasons.length === 0) 
         newErrors.non_employed_reasons = "Select at least one reason.";
-      }
-      if (
-        formData.non_employed_reasons.includes(
-          "Other reasons, please specify"
-        ) &&
-        !otherNonEmployedReason.trim()
-      ) {
+      if (formData.non_employed_reasons.includes("Other reason(s), please specify") && 
+        !otherNonEmployedReason.trim()) 
         newErrors.otherNonEmployedReason = "Please specify your reason.";
-      }
     }
 
     setErrors(newErrors);
@@ -288,42 +361,40 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
 
     setSaving(true);
 
-    const finalNonEmployedReasons = formData.non_employed_reasons.map((r) =>
-      r === "Other reasons, please specify" ? otherNonEmployedReason.trim() : r
-    );
-    const finalOccupations = formData.occupation.map((o) =>
-      o === "Others, please specify" ? otherOccupation.trim() : o
-    );
+     const processArrayWithOther = (array, otherValue, otherKey) => {
+      return array.map((item) => {
+        if (item === otherKey) return otherValue.trim();
+        return item;
+      });
+    };
 
-    const updatedFields = {
+     const updatedFields = {
       ...formData,
       ever_employed: formData.employmentNow === "Yes",
       is_employed: formData.employmentNow === "Yes",
-      non_employed_reasons: finalNonEmployedReasons,
-      occupation: finalOccupations,
+      non_employed_reasons: processArrayWithOther(formData.non_employed_reasons, otherNonEmployedReason, "Other reason(s), please specify"),
+      occupation: processArrayWithOther(formData.occupation, otherOccupation, "Others, pls specify"),
+      job_sector: formData.job_sector === "Others, please specify" ? otherJobSector.trim() : formData.job_sector,
+      job_find_methods: processArrayWithOther(formData.job_find_methods, otherJobFindMethod, "Others, please specify"),
+      job_reasons: processArrayWithOther(formData.job_reasons, otherJobReason, "Other reason(s), please specify"),
+      job_change_reasons: processArrayWithOther(formData.job_change_reasons, otherJobChangeReason, "Other reason (s), please specify"),
+      useful_competencies: processArrayWithOther(formData.useful_competencies, otherUsefulCompetency, "Other skills, please specify"),
     };
 
     const result = await onUpdate("employment", updatedFields);
     setSaving(false);
     setSaveSuccess(result.success);
-    setMessage(
-      result.success
-        ? "Saved successfully!"
-        : `Update failed: ${result.message}`
-    );
+    setMessage(result.success ? "Saved successfully!" : `Update failed: ${result.message}`);
     if (!result.success) toast.error(`Update failed: ${result.message}`);
   };
 
   useEffect(() => {
     setFormData((prev) => {
       const updated = { ...prev };
-
       if (prev.employmentNow === "Yes") {
         updated.non_employed_reasons = [];
-        if (
-          NON_EMPLOYED_STATUSES.includes(prev.employment_status) ||
-          prev.employment_status === "Never Employed"
-        ) {
+        if (NON_EMPLOYED_STATUSES.includes(prev.employment_status) || 
+          prev.employment_status === "Never Employed") {
           updated.employment_status = "";
         }
       }
@@ -333,11 +404,9 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
         updated.company_name = "";
         updated.company_address = "";
         updated.occupation = [];
-        updated.employment_status = NON_EMPLOYED_STATUSES.includes(
-          prev.employment_status
-        )
-          ? prev.employment_status
-          : "";
+        updated.job_sector = "";
+        updated.employment_status = NON_EMPLOYED_STATUSES.includes(prev.employment_status)
+         ? prev.employment_status : "";
       }
 
       if (prev.employmentNow === "Never Employed") {
@@ -346,6 +415,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
         updated.company_name = "";
         updated.company_address = "";
         updated.occupation = [];
+        updated.job_sector = "";
       }
 
       return updated;
@@ -397,7 +467,9 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
           ))}
         </div>
         {errors.employmentNow && (
-          <p className="mt-1 text-xs text-red-500">{errors.employmentNow}</p>
+          <p className="mt-1 text-xs text-red-500">
+            {errors.employmentNow}
+          </p>
         )}
       </div>
 
@@ -441,21 +513,53 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
             label="Company Address"
             error={errors.company_address}
           />
-          <FloatingSelect
-            id="job_sector"
-            value={formData.job_sector || ""}
-            onChange={(e) =>
-              setFormData({ ...formData, job_sector: e.target.value })
-            }
-            label="Job Sector"
-            options={[
-              "Government",
-              "Private",
-              "Non-Government Organization (NGO)",
-              "Self-Employed",
-              "Others",
-            ]}
-          />
+          <div className="mb-4">
+            <label
+              className={`block mb-2 text-sm font-medium ${
+                isDark ? "text-gray-200" : "text-gray-700"
+              }`}
+            >
+              Major line of business of the company you are  presently employed in.
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {JOB_SECTORS.map((sector) => (
+                <label
+                  key={sector}
+                  className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
+                    formData.job_sector === sector
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : isDark
+                      ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <FloatingInput
+                    id="job_sector"
+                    type="radio"
+                    value={sector}
+                    checked={formData.job_sector === sector}
+                    onChange={() => handleJobSectorChange(sector)}
+                    className="hidden"
+                  />
+                  {sector}
+                </label>
+              ))}
+            </div>
+            {formData.job_sector === "Others, please specify" && (
+              <FloatingInput
+                id="otherJobSector"
+                value={otherJobSector}
+                onChange={(e) => otherJobSector(e.target.value.trimStart())}
+                label="Please specify your job sector"
+                error={errors.otherJobSector}
+              />
+            )}
+            {errors.job_sector && (
+              <p className="mt-1 text-xs text-red-500">
+                {errors.job_sector}
+              </p>
+            )}
+          </div>
           <div className="mb-4">
             <label
               className={`block mb-2 text-sm font-medium ${
@@ -485,9 +589,9 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
                   />
                   {opt}
                 </label>
-              ))}
+                 ))}
             </div>
-            {formData.occupation.includes("Others, please specify") && (
+            {formData.occupation.includes("Others, pls specify") && (
               <FloatingInput
                 id="otherOccupation"
                 value={otherOccupation}
@@ -500,230 +604,237 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               <p className="mt-1 text-xs text-red-500">{errors.occupation}</p>
             )}
           </div>
+          <div className="flex gap-4 mb-4">
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={formData.first_job || false}
+                onChange={(e) =>
+                  setFormData({ ...formData, first_job: e.target.checked })
+                }
+              />
+              Is this your first job after college?
+            </label>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={formData.job_related_to_course || false}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    job_related_to_course: e.target.checked,
+                  })
+                }
+              />
+              Is your first job related to the course you took up in college?
+            </label>
+          </div>
+          <AlumniFloatingDatePicker
+            id="job_start_date"
+            type="date"
+            label="Date of first employment: mm/dd/year"
+            value={formData.job_start_date || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, job_start_date: e.target.value })
+            }
+          />
+          <FloatingInput
+            id="months_to_first_job"
+            type="number"
+            value={formData.months_to_first_job || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, months_to_first_job: e.target.value })
+            }
+            label="How long did it take you to land your first job? (in months)"
+          />
+          <div className="mb-4">
+            <label
+              className={`block mb-2 text-sm font-medium ${
+                isDark ? "text-gray-200" : "text-gray-700"
+              }`}
+            >
+              How did you find your first job? (You may select multiple answers)
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {JOB_FIND_METHODS.map((method) => (
+                <label
+                  key={method}
+                  className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
+                    formData.job_find_methods.includes(method)
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : isDark
+                      ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    value={method}
+                    checked={formData.job_find_methods.includes(method)}
+                    onChange={() => handleArrayChange("job_find_methods", method, setOtherJobFindMethod)}
+                    className="hidden"
+                  />
+                  {method}
+                </label>
+                ))}
+            </div>
+             {formData.job_find_methods.includes("Others, please specify") && (
+              <FloatingInput
+                id="otherJobFindMethod"
+                value={otherJobFindMethod}
+                onChange={(e) => setOtherJobFindMethod(e.target.value.trimStart())}
+                label="Please specify"
+              />
+            )}
+          </div>
+          <div className="mb-4">
+             <label
+              className={`block mb-2 text-sm font-medium ${
+                isDark ? "text-gray-200" : "text-gray-700"
+              }`}
+            >
+              What are the reason(s) for landing on the job? (You may select multiple answers)
+            </label>
+             <div className="flex flex-wrap gap-2">
+              {JOB_REASONS.map((reason) => (
+                <label
+                  key={reason}
+                  className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
+                    formData.job_reasons.includes(reason)
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : isDark
+                      ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    value={reason}
+                    checked={formData.job_reasons.includes(reason)}
+                    onChange={() => handleArrayChange("job_reasons", reason, setOtherJobReason)}
+                    className="hidden"
+                  />
+                  {reason}
+                </label>
+              ))}
+             </div>
+             {formData.job_change_reasons.includes("Other reason (s), please specify") && (
+              <FloatingInput
+                id="otherJobChangeReason"
+                value={otherJobChangeReason}
+                onChange={(e) => setOtherJobChangeReason(e.target.value.trimStart())}
+                label="Please specify"
+              />
+            )}
+          </div>
+           <FloatingSelect
+            id="job_level_first"
+            value={formData.job_level_first || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, job_level_first: e.target.value })
+            }
+            label="Job Level Position - First Job"
+            options={JOB_LEVEL_OPTIONS_FIRST}
+          />
+          <FloatingSelect
+            id="job_level_current"
+            value={formData.job_level_current || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, job_level_current: e.target.value })
+            }
+            label="Job Level Position - Current Job"
+            options={JOB_LEVEL_OPTIONS_CURRENT}
+          />
+          <FloatingInput
+            id="first_job_salary"
+            type="number"
+            value={formData.first_job_salary || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, first_job_salary: e.target.value })
+            }
+            label="What are your initial gross monthly earning in your first job after college? (PhP)"
+          />
+          <div className="flex gap-4 mb-4">
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={formData.curriculum_relevance_first_job || false}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    curriculum_relevance_first_job: e.target.checked,
+                  })
+                }
+              />
+              Was the curriculum you had in college relevant to your first job?
+            </label>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={formData.curriculum_relevance_second_job || false}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    curriculum_relevance_second_job: e.target.checked,
+                  })
+                }
+              />
+              Was the curriculum you had in college related to your second job (if any)?
+            </label>
+          </div>
+           <div className="mb-4">
+            <label
+              className={`block mb-2 text-sm font-medium ${
+                isDark ? "text-gray-200" : "text-gray-700"
+              }`}
+            >
+              If yes, what competencies learned in college did you find very useful in your job? (You may select multiple answers)
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {USEFUL_COMPETENCIES.map((competency) => (
+                <label
+                  key={competency}
+                  className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
+                    formData.useful_competencies.includes(competency)
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : isDark
+                      ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    value={competency}
+                    checked={formData.useful_competencies.includes(competency)}
+                    onChange={() => handleArrayChange("useful_competencies", competency, setOtherUsefulCompetency)}
+                    className="hidden"
+                  />
+                  {competency}
+                </label>
+              ))}
+            </div>
+            {formData.useful_competencies.includes("Other skills, please specify") && (
+              <FloatingInput
+                id="otherUsefulCompetency"
+                value={otherUsefulCompetency}
+                onChange={(e) => setOtherUsefulCompetency(e.target.value.trimStart())}
+                label="Please specify"
+              />
+            )}
+           </div>
+           <FloatingInput
+            id="curriculum_improvement_suggestions"
+            value={formData.curriculum_improvement_suggestions || ""}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                curriculum_improvement_suggestions: e.target.value,
+              })
+            }
+            label="List down suggestions to further improve your course curriculum"
+          />
         </>
       )}
-      <FloatingSelect
-        id="job_level_current"
-        value={formData.job_level_current || ""}
-        onChange={(e) =>
-          setFormData({ ...formData, job_level_current: e.target.value })
-        }
-        label="Current Job Level"
-        options={[
-          "Rank and File",
-          "Supervisory",
-          "Managerial",
-          "Executive",
-          "Owner",
-        ]}
-      />
-
-      <FloatingSelect
-        id="job_level_first"
-        value={formData.job_level_first || ""}
-        onChange={(e) =>
-          setFormData({ ...formData, job_level_first: e.target.value })
-        }
-        label="First Job Level Position"
-        options={[
-          "Rank or Clerical",
-          "Professional, Technical or Supervisory",
-          "Managerial or Executive",
-          "Self-employed"
-        ]}
-      />
-
-      <div className="flex gap-4">
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={formData.first_job || false}
-            onChange={(e) =>
-              setFormData({ ...formData, first_job: e.target.checked })
-            }
-          />
-          First Job
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={formData.job_related_to_course || false}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                job_related_to_course: e.target.checked,
-              })
-            }
-          />
-          Job related to your course
-        </label>
-      </div>
-
-      <AlumniFloatingDatePicker
-        id="job_start_date"
-        type="date"
-        label="Job Start Date"
-        value={formData.job_start_date || ""}
-        onChange={(e) =>
-          setFormData({ ...formData, job_start_date: e.target.value })
-        }
-      />
-
-      <FloatingInput
-        id="months_to_first_job"
-        type="number"
-        value={formData.months_to_first_job || ""}
-        onChange={(e) =>
-          setFormData({ ...formData, months_to_first_job: e.target.value })
-        }
-        label="Months to Land First Job"
-      />
-
-      <FloatingInput
-        id="first_job_salary"
-        type="number"
-        value={formData.first_job_salary || ""}
-        onChange={(e) =>
-          setFormData({ ...formData, first_job_salary: e.target.value })
-        }
-        label="First Job Salary (₱)"
-      />
-
-      <div className="flex gap-4">
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={formData.curriculum_relevance_first_job || false}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                curriculum_relevance_first_job: e.target.checked,
-              })
-            }
-          />
-          Curriculum relevant to first job
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={formData.curriculum_relevance_second_job || false}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                curriculum_relevance_second_job: e.target.checked,
-              })
-            }
-          />
-          Curriculum relevant to second job
-        </label>
-      </div>
-
-      <FloatingSelect
-        id="job_find_methods"
-        multiple
-        value={formData.job_find_methods || []}
-        onChange={(e) =>
-          setFormData({
-            ...formData,
-            job_find_methods: Array.from(
-              e.target.selectedOptions,
-              (opt) => opt.value
-            ),
-          })
-        }
-        label="How did you find your job? (multiple)"
-        options={[
-          "Recommendation",
-          "Job Fair",
-          "Online Application",
-          "Walk-in",
-          "School Referral",
-          "Other",
-        ]}
-      />
-
-      <FloatingSelect
-        id="job_reasons"
-        multiple
-        value={formData.job_reasons || []}
-        onChange={(e) =>
-          setFormData({
-            ...formData,
-            job_reasons: Array.from(
-              e.target.selectedOptions,
-              (opt) => opt.value
-            ),
-          })
-        }
-        label="Reasons for choosing this job (multiple)"
-        options={[
-          "Salary",
-          "Interest",
-          "Career Growth",
-          "Family Influence",
-          "Course Related",
-          "Other",
-        ]}
-      />
-
-      <FloatingSelect
-        id="job_change_reasons"
-        multiple
-        value={formData.job_change_reasons || []}
-        onChange={(e) =>
-          setFormData({
-            ...formData,
-            job_change_reasons: Array.from(
-              e.target.selectedOptions,
-              (opt) => opt.value
-            ),
-          })
-        }
-        label="Reasons for changing job (multiple)"
-        options={[
-          "Higher Salary",
-          "Career Change",
-          "Location",
-          "Personal Reasons",
-          "Better Opportunity",
-        ]}
-      />
-
-      <FloatingSelect
-        id="useful_competencies"
-        multiple
-        value={formData.useful_competencies || []}
-        onChange={(e) =>
-          setFormData({
-            ...formData,
-            useful_competencies: Array.from(
-              e.target.selectedOptions,
-              (opt) => opt.value
-            ),
-          })
-        }
-        label="Useful Competencies (multiple)"
-        options={[
-          "Communication Skills",
-          "Problem Solving",
-          "Leadership",
-          "Technical Knowledge",
-          "Teamwork",
-          "Adaptability",
-        ]}
-      />
-
-      <FloatingInput
-        id="curriculum_improvement_suggestions"
-        value={formData.curriculum_improvement_suggestions || ""}
-        onChange={(e) =>
-          setFormData({
-            ...formData,
-            curriculum_improvement_suggestions: e.target.value,
-          })
-        }
-        label="Suggestions for Curriculum Improvement"
-      />
       {formData.employmentNow === "No" && (
         <div className="mb-4">
           <label
@@ -756,9 +867,8 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               </label>
             ))}
           </div>
-
           {formData.non_employed_reasons.includes(
-            "Other reasons, please specify"
+            "Other reason(s), please specify"
           ) && (
             <FloatingInput
               id="otherNonEmployedReason"
@@ -770,7 +880,6 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               error={errors.otherNonEmployedReason}
             />
           )}
-
           {errors.non_employed_reasons && (
             <p className="mt-1 text-xs text-red-500">
               {errors.non_employed_reasons}
