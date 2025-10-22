@@ -137,18 +137,24 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
             value={formData.specialization}
             onChange={handleChange}
           />
-          <AlumniFloatingDatePicker
-            id="year_graduated"
-            label="Year Graduated"
-            value={
-              formData.year_graduated ? `${formData.year_graduated}-01-01` : ""
-            }
-            onChange={(date) => {
-              const year = date ? new Date(date).getFullYear() : "";
-              setFormData((prev) => ({ ...prev, year_graduated: year }));
-            }}
-            yearOnly
-          />
+
+          <div className="w-full">
+            <AlumniFloatingDatePicker
+              id="year_graduated"
+              label="Year Graduated"
+              value={
+                formData.year_graduated
+                  ? `${formData.year_graduated}-01-01`
+                  : ""
+              }
+              onChange={(date) => {
+                const year = date ? new Date(date).getFullYear() : "";
+                setFormData((prev) => ({ ...prev, year_graduated: year }));
+              }}
+              yearOnly
+              className="w-full"
+            />
+          </div>
 
           <FloatingInput
             id="honors"

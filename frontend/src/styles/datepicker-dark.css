@@ -69,3 +69,9 @@
   background-color: #1f2937;
   color: #f9fafb;
 }
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+  width: 100% !important;
+  display: block !important;
+}
