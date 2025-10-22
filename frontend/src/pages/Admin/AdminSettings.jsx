@@ -100,4 +100,6 @@ const AdminSettings = () => {
   };
 
   const handleDeleteAccount = async () => {
-    if (window.confirm("Are you sure you want to delete your account?;
+    if (window.confirm("Are you sure you want to delete your account?"));
+  };
+}
