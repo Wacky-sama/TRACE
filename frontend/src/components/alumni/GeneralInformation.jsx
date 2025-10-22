@@ -126,7 +126,6 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
         </div>
       </div>
 
-      {/* Save Button */}
       <button
         onClick={handleSave}
         disabled={saving}
@@ -141,7 +140,6 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
         {saving ? "Saving..." : "Save"}
       </button>
 
-      {/* Message */}
       {message && (
         <p
           className={`mt-2 text-sm ${
