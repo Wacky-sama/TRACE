@@ -12,3 +12,4 @@ venv.bak/
 requirements.txt.bak
 venv
 generate_admin_hash.py
+.vs/

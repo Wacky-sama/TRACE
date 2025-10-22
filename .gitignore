@@ -14,3 +14,5 @@ logs/
 
 # Environment files (for safety)
 .env
+
+.vs/
