@@ -38,11 +38,26 @@ class GTSResponsesEmploymentUpdate(BaseModel):
     company_address: Optional[str] = None
     job_sector: Optional[str] = None
     place_of_work: Optional[str] = None
-
+    first_job: Optional[bool] = None
+    job_related_to_course: Optional[bool] = None
+    job_start_date: Optional[date] = None
+    months_to_first_job: Optional[int] = None
+    job_find_methods: Optional[List[str]] = None
+    job_reasons: Optional[List[str]] = None
+    job_change_reasons: Optional[List[str]] = None
+    job_level_first: Optional[str] = None
+    job_level_current: Optional[str] = None
+    first_job_salary: Optional[float] = None
+    curriculum_relevance_first_job: Optional[bool] = None
+    curriculum_relevance_second_job: Optional[bool] = None
+    useful_competencies: Optional[List[str]] = None
+    curriculum_improvement_suggestions: Optional[str] = None
+    
     class Config:
         from_attributes = True
 
 class GTSResponsesOut(BaseModel):
+    # Basic info 
     id: UUID
     user_id: UUID
     full_name: str
@@ -52,6 +67,8 @@ class GTSResponsesOut(BaseModel):
     civil_status: Optional[str]
     sex: SexEnum
     birthday: date
+    
+    # Employment info (initial + extended)
     ever_employed: Optional[bool]
     is_employed: Optional[bool]
     non_employed_reasons: Optional[List[str]] = None
@@ -61,12 +78,32 @@ class GTSResponsesOut(BaseModel):
     company_address: Optional[str]
     job_sector: Optional[str]
     place_of_work: Optional[str]
-
+    first_job: Optional[bool] = None
+    job_related_to_course: Optional[bool] = None
+    job_start_date: Optional[date] = None
+    months_to_first_job: Optional[int] = None
+    job_find_methods: Optional[List[str]] = None
+    job_reasons: Optional[List[str]] = None
+    job_change_reasons: Optional[List[str]] = None
+    job_level_first: Optional[str] = None
+    job_level_current: Optional[str] = None
+    first_job_salary: Optional[float] = None
+    curriculum_relevance_first_job: Optional[bool] = None
+    curriculum_relevance_second_job: Optional[bool] = None
+    useful_competencies: Optional[List[str]] = None
+    curriculum_improvement_suggestions: Optional[str] = None
+    
     class Config:
         from_attributes = True
 
-    @validator('occupation', 'non_employed_reasons', pre=True, always=True, each_item=False)
+    @validator('occupation', 'non_employed_reasons', 'job_find_methods', 
+               'job_reasons', 'job_change_reasons', 'useful_competencies', 
+                pre=True, always=True, each_item=False)
     def parse_array_strings(cls, v):
+        """
+        Parses PostgreSQL array strings (e.g. '{item1, item2}') into Python lists.
+        This ensures proper handling when SQLAlchemy returns text-formatted arrays.
+        """
         if isinstance(v, str) and v.startswith('{') and v.endswith('}'):
             items = []
             for item in v[1:-1].split(','):  
