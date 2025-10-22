@@ -52,7 +52,9 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
       <h2 className={`mb-4 text-xl font-semibold ${
           isDark ? "text-gray-100" : "text-gray-800"
         }`}
-      >General Information</h2>
+      >
+        General Information
+      </h2>
 
       <div className="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
         <div>
