@@ -765,8 +765,48 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
                 </label>
               ))}
             </div>
+            {formData.job_reasons.includes("Other reason(s), please specify") && (
+              <FloatingInput
+                id="otherJobReason"
+                value={otherJobReason}
+                onChange={(e) => setOtherJobReason(e.target.value.trimStart())}
+                label="Please specify"
+              />
+            )}
+          </div>
+          <div className="mb-4">
+            <label
+              className={`block mb-2 text-sm font-medium ${
+                isDark ? "text-gray-200" : "text-gray-700"
+              }`}
+            >
+              If you change job, why? (You may select multiple answers)
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {JOB_CHANGE_REASONS.map((reason) => (
+                <label
+                  key={reason}
+                  className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
+                    formData.job_change_reasons.includes(reason)
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : isDark
+                      ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    value={reason}
+                    checked={formData.job_change_reasons.includes(reason)}
+                    onChange={() => handleArrayChange("job_change_reasons", reason, setOtherJobChangeReason)}
+                    className="hidden"
+                  />
+                  {reason}
+                </label>
+                ))}
+            </div>
             {formData.job_change_reasons.includes(
-              "Other reason (s), please specify"
+              "Other reason(s), please specify"
             ) && (
               <FloatingInput
                 id="otherJobChangeReason"
