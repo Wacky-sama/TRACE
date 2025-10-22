@@ -103,3 +103,5 @@ const AdminSettings = () => {
     if (window.confirm("Are you sure you want to delete your account?"));
   };
 }
+
+export default AdminSettings;
