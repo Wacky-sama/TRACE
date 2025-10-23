@@ -417,11 +417,13 @@ def approve_user(
             existing_gts.full_name = full_name
             existing_gts.degree = user.course
             existing_gts.sex = user.sex
+            existing_gts.present_address = user.present_address
         else:
             gts_response = GTSResponses(
                 user_id=user.id,
                 full_name=f"{user.firstname} {user.lastname}",
                 permanent_address=user.permanent_address,
+                present_address=user.present_address,
                 birthday=user.birthday,
                 degree=user.course,
             )

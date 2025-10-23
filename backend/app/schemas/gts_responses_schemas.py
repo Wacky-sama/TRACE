@@ -15,6 +15,7 @@ class GTSResponsesCreate(BaseModel):
     employment_status: str
     place_of_work: Optional[str] = None
     permanent_address: str
+    present_address: str
     company_name: Optional[str] = None
     company_address: Optional[str] = None
     occupation: Optional[List[str]] = None
@@ -22,6 +23,7 @@ class GTSResponsesCreate(BaseModel):
 # A. GENERAL INFORMATION Update
 class GTSResponsesPersonalUpdate(BaseModel):
     civil_status: Optional[str] = None
+    present_address: Optional[str] = None
 
 # B. EDUCATIONAL BACKGROUND 
 class GTSResponsesEducationalUpdate(BaseModel):
@@ -108,6 +110,7 @@ class GTSResponsesOut(BaseModel):
     user_id: UUID
     full_name: str
     permanent_address: Optional[str] = None
+    present_address: Optional[str] = None
     contact_email: str
     mobile: str
     civil_status: Optional[str]
