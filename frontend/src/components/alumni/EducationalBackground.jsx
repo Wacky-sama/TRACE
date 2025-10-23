@@ -129,6 +129,7 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
             label="Degree"
             value={formData.degree}
             onChange={handleChange}
+            readOnly
           />
           <FloatingInput
             id="specialization"
