@@ -8,6 +8,7 @@ import {
   getPasswordStrength,
   getPasswordStrengthMessage,
 } from "../../utils/passwordUtils";
+import phProvincesCities from "../../data/phProvincesCities.json";
 import PhoneInput from "../PhoneInput";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
@@ -24,6 +25,9 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [emailAvailable, setEmailAvailable] = useState(null);
   const [usernameAvailable, setUsernameAvailable] = useState(null);
+  const provinces = Object.keys(phProvincesCities);
+  const municipalities =
+    phProvincesCities[formData.province] || [];
 
   useEffect(() => {
     if (formData.registerPassword) {
@@ -72,6 +76,24 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
     if (!formData.birthday) validateErrors.birthday = "Birthday is required";
 
     if (!formData.sex) validateErrors.sex = "Sex is required";
+
+    if (!formData.presentProvince)
+      validateErrors.presentProvince = "Present province is required";
+    if (!formData.presentMunicipality)
+      validateErrors.presentMunicipality =
+        "Present city/municipality is required";
+    if (!formData.presentBarangayStreet?.trim())
+      validateErrors.presentBarangayStreet =
+        "Present barangay/street is required";
+
+    if (!formData.permanentProvince)
+      validateErrors.permanentProvince = "Permanent province is required";
+    if (!formData.permanentMunicipality)
+      validateErrors.permanentMunicipality =
+        "Permanent city/municipality is required";
+    if (!formData.permanentBarangayStreet?.trim())
+      validateErrors.permanentBarangayStreet =
+        "Permanent barangay/street is required";
 
     if (!formData.presentAddress?.trim())
       validateErrors.presentAddress = "Present address is required";
@@ -258,24 +280,103 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       />
 
       <div className="space-2">
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        {/* PRESENT ADDRESS */}
+        <div>
+          <h3 className="mb-1 font-medium text-md">Present Address</h3>
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+            <FloatingSelect
+              id="presentProvince"
+              label="Province"
+              value={formData.presentProvince}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  presentProvince: e.target.value,
+                  presentMunicipality: "",
+                })
+              }
+              options={Object.keys(phProvincesCities)}
+              error={errors.presentProvince}
+            />
+            <FloatingSelect
+              id="presentMunicipality"
+              label="City / Municipality"
+              value={formData.presentMunicipality}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  presentMunicipality: e.target.value,
+                })
+              }
+              options={
+                formData.presentProvince
+                  ? phProvincesCities[formData.presentProvince]
+                  : []
+              }
+              error={errors.presentMunicipality}
+            />
+          </div>
           <FloatingInput
-            id="presentAddress"
-            value={formData.presentAddress}
+            id="presentBarangayStreet"
+            label="Barangay / Street / House No."
+            value={formData.presentBarangayStreet}
             onChange={(e) =>
-              setFormData({ ...formData, presentAddress: e.target.value })
+              setFormData({
+                ...formData,
+                presentBarangayStreet: e.target.value,
+              })
             }
-            label="Present Address"
-            error={errors.presentAddress}
+            error={errors.presentBarangayStreet}
           />
+        </div>
+
+        {/* PERMANENT ADDRESS */}
+        <div>
+          <h3 className="mb-1 font-medium text-md">Permanent Address</h3>
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+            <FloatingSelect
+              id="permanentProvince"
+              label="Province"
+              value={formData.permanentProvince}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  permanentProvince: e.target.value,
+                  permanentMunicipality: "",
+                })
+              }
+              options={Object.keys(phProvincesCities)}
+              error={errors.permanentProvince}
+            />
+            <FloatingSelect
+              id="permanentMunicipality"
+              label="City / Municipality"
+              value={formData.permanentMunicipality}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  permanentMunicipality: e.target.value,
+                })
+              }
+              options={
+                formData.permanentProvince
+                  ? phProvincesCities[formData.permanentProvince]
+                  : []
+              }
+              error={errors.permanentMunicipality}
+            />
+          </div>
           <FloatingInput
-            id="permanentAddress"
-            value={formData.permanentAddress}
+            id="permanentBarangayStreet"
+            label="Barangay / Street / House No."
+            value={formData.permanentBarangayStreet}
             onChange={(e) =>
-              setFormData({ ...formData, permanentAddress: e.target.value })
+              setFormData({
+                ...formData,
+                permanentBarangayStreet: e.target.value,
+              })
             }
-            label="Permanent Address"
-            error={errors.permanentAddress}
+            error={errors.permanentBarangayStreet}
           />
         </div>
 

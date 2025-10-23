@@ -19,6 +19,12 @@ function RegisterForm() {
     birthday: null,
     age: "",
     sex: "",
+    presentProvince: "",
+    presentMunicipality: "",
+    presentBarangayStreet: "",
+    permanentProvince: "",
+    permanentMunicipality: "",
+    permanentBarangayStreet: "",
     presentAddress: "",
     permanentAddress: "",
     contactNumber: "",
@@ -52,6 +58,11 @@ function RegisterForm() {
     setRegisterSuccess("");
 
     try {
+      const presentFullAddress = `${formData.presentBarangayStreet}, 
+      ${formData.presentMunicipality}, ${formData.presentProvince}`;
+      const permanentFullAddress = `${formData.permanentBarangayStreet}, 
+      ${formData.permanentMunicipality}, ${formData.permanentProvince}`;
+
       // PAYLOAD 1 - Create User
       const userPayload = {
         email: formData.email.trim(),
@@ -64,8 +75,8 @@ function RegisterForm() {
           ? new Date(formData.birthday).toISOString().split("T")[0]
           : null,
         sex: formData.sex.trim(),
-        present_address: formData.presentAddress.trim(),
-        permanent_address: formData.permanentAddress.trim(),
+        present_address: presentFullAddress,
+        permanent_address: permanentFullAddress,
         contact_number: formData.contactNumber.trim(),
         course: formData.course.trim(),
         batch_year: parseInt(formData.batchYear.trim()),
@@ -113,6 +124,7 @@ function RegisterForm() {
             : null,
 
         permanent_address: formData.permanentAddress.trim(),
+        present_address: formData.presentAddress.trim()
       };
 
       await api.post(

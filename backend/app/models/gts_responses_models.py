@@ -14,7 +14,7 @@ class GTSResponses(Base):
     # SECTION A: GENERAL INFORMATION
     full_name = Column(Text, nullable=False)
     permanent_address = Column(Text, nullable=False)
-    present_address = Column(Text, nullable=True)
+    present_address = Column(Text, nullable=False)
     contact_email = Column(Text, nullable=False)
     telephone = Column(Text, nullable=True)
     mobile = Column(Text, nullable=False)
