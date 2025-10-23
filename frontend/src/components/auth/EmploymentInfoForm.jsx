@@ -253,6 +253,9 @@ function EmploymentInfoForm({
         isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
       } p-6 rounded-lg shadow-md transition-all duration-500`}
     >
+      <h2 className="pb-2 mb-4 text-xl font-semibold border-b">
+        Employment Information
+      </h2>
       <FloatingSelect
         id="employmentNow"
         label="Are you currently employed?"
