@@ -29,6 +29,11 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
     }
   }, [formData.birthday, setFormData]);
 
+  const capitalizeFirstLetter = (str) => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
+
   const validate = () => {
     const validateErrors = {};
 
@@ -91,11 +96,11 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
     if (validate()) {
       setFormData((prev) => ({
         ...prev,
-        email: prev.email?.trim() || "",
-        registerIdentifier: prev.registerIdentifier?.trim() || "",
-        lastName: prev.lastName?.trim() || "",
-        firstName: prev.firstName?.trim() || "",
-        middleInitial: prev.middleInitial?.trim() || "",
+        email: prev.email?.trim().toLowerCase() || "",
+        registerIdentifier: prev.registerIdentifier?.trim().toLowerCase() || "",
+        lastName: capitalizeFirstLetter(prev.lastName?.trim()),
+        firstName: capitalizeFirstLetter(prev.firstName?.trim()),
+        middleInitial: capitalizeFirstLetter(prev.middleInitial?.trim()),
         nameExtension: prev.nameExtension?.trim() || "",
         presentAddress: prev.presentAddress?.trim() || "",
         permanentAddress: prev.permanentAddress?.trim() || "",
@@ -116,7 +121,10 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             id="email"
             value={formData.email}
             onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
+              setFormData({
+                ...formData,
+                email: e.target.value.toLowerCase(),
+              })
             }
             label="Email"
             error={errors.email}
@@ -126,7 +134,10 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             id="registerIdentifier"
             value={formData.registerIdentifier}
             onChange={(e) =>
-              setFormData({ ...formData, registerIdentifier: e.target.value })
+              setFormData({
+                ...formData,
+                registerIdentifier: e.target.value.toLowerCase(),
+              })
             }
             error={errors.registerIdentifier}
             onAvailabilityChange={setUsernameAvailable}
@@ -140,7 +151,10 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             id="lastName"
             value={formData.lastName}
             onChange={(e) =>
-              setFormData({ ...formData, lastName: e.target.value })
+              setFormData({
+                ...formData,
+                lastName: capitalizeFirstLetter(e.target.value),
+              })
             }
             label="Last Name"
             error={errors.lastName}
@@ -149,7 +163,10 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             id="firstName"
             value={formData.firstName}
             onChange={(e) =>
-              setFormData({ ...formData, firstName: e.target.value })
+              setFormData({
+                ...formData,
+                firstName: capitalizeFirstLetter(e.target.value),
+              })
             }
             label="First Name"
             error={errors.firstName}
@@ -158,7 +175,10 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             id="middleInitial"
             value={formData.middleInitial || ""}
             onChange={(e) =>
-              setFormData({ ...formData, middleInitial: e.target.value })
+              setFormData({
+                ...formData,
+                middleInitial: capitalizeFirstLetter(e.target.value),
+              })
             }
             label="Middle Initial"
             error={errors.middleInitial}
@@ -193,7 +213,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             }
             minDate={new Date(1900, 0, 1)}
           />
-
           <FloatingInput
             id="age"
             type="number"
@@ -244,7 +263,9 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           label="Contact Number"
           error={errors.contactNumber}
           defaultCountry="ph"
-          onError={(error) => setErrors((prev) => ({ ...prev,contactNumber: error }))}
+          onError={(error) =>
+            setErrors((prev) => ({ ...prev, contactNumber: error }))
+          }
         />
       </div>
 
