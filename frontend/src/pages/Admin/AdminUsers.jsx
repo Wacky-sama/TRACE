@@ -28,8 +28,8 @@ const AdminUsers = () => {
       ]);
       setPendingUsers(pendingRes.data);
       setApprovedUsers(approvedRes.data.users);
-    } catch (error) {
-      console.error("Error fetching users:", error);
+    } catch {
+      toast.error("Error fetching users:", error);
       toast.error("Failed to load users. Backend is probably on a nap break.");
     }
   };
@@ -53,7 +53,7 @@ const AdminUsers = () => {
       } else {
         toast.error(`Could not ${action} the user. Try again.`);
       }
-      console.error(`Failed to ${action} user:`, error);
+      toast.error(`Failed to ${action} user:`, error);
     } finally {
       setActionLoadingId(null);
     }
@@ -79,7 +79,7 @@ const AdminUsers = () => {
       } else {
         toast.error("Could not delete the user. Try again.");
       }
-      console.error("Failed to delete user:", error);
+      toast.error("Failed to delete user:", error);
     } finally {
       setActionLoadingId(null);
     }
@@ -102,7 +102,7 @@ const AdminUsers = () => {
       } else {
         toast.error("Could not block the user. Try again.");
       }
-      console.error("Failed to block user:", error);
+      toast.error("Failed to block user:", error);
     } finally {
       setActionLoadingId(null);
     }
@@ -125,7 +125,7 @@ const AdminUsers = () => {
       } else {
         toast.error("Could not unblock the user. Try again.");
       }
-      console.error("Failed to unblock user:", error);
+      toast.error("Failed to unblock user:", error);
     } finally {
       setActionLoadingId(null);
     }
@@ -244,8 +244,9 @@ const AdminUsers = () => {
           ))
         ) : (
           <tr>
-            <td colSpan="12" 
-            className={`p-4 text-center ${
+            <td
+              colSpan="12"
+              className={`p-4 text-center ${
                 isDark ? "text-gray-400" : "text-gray-500"
               }`}
             >
@@ -287,7 +288,15 @@ const AdminUsers = () => {
       <h3 className="mb-4 text-xl font-bold">Pending Alumni Approvals</h3>
       {renderTable(pendingUsers, true)}
       <h3 className="mt-6 mb-4 text-xl font-bold">Registered Users</h3>
-      {renderTable(approvedUsers.filter((u) => ["alumni"].includes(u.role)))}
+      {renderTable(
+        approvedUsers
+          .filter((u) => ["alumni"].includes(u.role))
+          .filter((u) =>
+            `${u.firstname} ${u.lastname} ${u.username}`
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          )
+      )}
     </div>
   );
 };
