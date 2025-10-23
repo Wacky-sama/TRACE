@@ -268,6 +268,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             label="Present Address"
             error={errors.presentAddress}
           />
+          
           <FloatingInput
             id="permanentAddress"
             value={formData.permanentAddress}
