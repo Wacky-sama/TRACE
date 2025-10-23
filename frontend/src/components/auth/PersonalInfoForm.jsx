@@ -30,6 +30,8 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   const validate = () => {
     const validateErrors = {};
     if (!formData.email?.trim()) validateErrors.email = "Email is required";
+     else if (emailAvailable === false)
+      validateErrors.email = "Email is already taken";
     if (!formData.registerIdentifier?.trim())
       validateErrors.registerIdentifier = "Username is required";
     else if (usernameAvailable === false)
