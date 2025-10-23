@@ -1,6 +1,7 @@
 // A. GENERAL INFORMATION
 import { useState } from "react";
 import { useTheme } from "../../context/ThemeProvider";
+import { isValidPhoneNumber } from "libphonenumber-js";
 import PhoneInput from "../PhoneInput";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
@@ -18,13 +19,14 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
   const isDark = theme === "dark";
 
   const [formData, setFormData] = useState({
-    full_name: gtsData.full_name,
-    permanent_address: gtsData.permanent_address,
-    contact_email: gtsData.contact_email,
-    mobile: gtsData.mobile,
+    full_name: gtsData.full_name || "",
+    permanent_address: gtsData.permanent_address || "",
+    present_address: gtsData.present_address || "",
+    contact_email: gtsData.contact_email || "",
+    mobile: gtsData.mobile || "",
     civil_status: gtsData.civil_status || "",
-    sex: gtsData.sex,
-    birthday: gtsData.birthday
+    sex: gtsData.sex || "",
+    birthday: gtsData.birthday || ""
   });
 
   const [errors, setErrors] = useState({});
@@ -101,6 +103,15 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
           />
         </div>
 
+        <div>
+          <FloatingInput
+            id="present_address"
+            type="text"
+            label="Present Address"
+            value={formData.present_address}
+            onChange={handleChange}
+          />
+        </div>
 
         <div className="mb-4">
           <FloatingSelect

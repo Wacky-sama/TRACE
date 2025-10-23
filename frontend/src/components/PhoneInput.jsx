@@ -16,31 +16,41 @@ function PhoneInput({
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
+  // Normalize number before validating (remove spaces)
   const handleBlur = () => {
-    if (value && !isValidPhoneNumber(value)) {
-      onError && onError("Please enter a valid phone number (e.g., +63 912 345 6789)");
+    const normalizedValue = value?.replace(/\s+/g, "") || "";
+
+    if (normalizedValue && !isValidPhoneNumber(normalizedValue)) {
+      onError?.("Please enter a valid phone number (e.g., +63 912 345 6789)");
     } else {
-      onError && onError("");
+      onError?.("");
     }
   };
 
+  // Include `id` when triggering onChange
   const handleChange = (phone) => {
-    onChange({ target: { value: phone } });
+    onChange({ target: { id, value: phone } });
   };
 
+  const hasValue = value && value.trim() !== "";
+
   return (
-    <div className="mb-4">
-      {/* Standard Label */}
+    <div className="relative mb-4">
+      {/* Floating Label */}
       <label
         htmlFor={id}
-        className={`block text-sm font-medium mb-1 ${
-          isDark ? "text-gray-300" : "text-gray-700"
-        }`}
+        className={`absolute left-3 px-1 transition-all duration-200 pointer-events-none 
+        ${
+          hasValue
+            ? "text-xs -top-2.5 text-blue-600"
+            : "top-3 text-sm"
+        } 
+        ${isDark ? "bg-gray-800 text-gray-400" : "bg-white text-gray-500"}`}
       >
         {label}
       </label>
 
-      {/* Wrapped IntlPhoneInput */}
+      {/* Phone Input */}
       <IntlPhoneInput
         id={id}
         value={value}
