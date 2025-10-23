@@ -1,3 +1,4 @@
+import re
 from uuid import UUID
 from fastapi import APIRouter,  BackgroundTasks, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
@@ -9,7 +10,9 @@ from app.database import get_db
 from app.models.activity_logs_models import ActionType
 from app.models.users_models import User, UserRole
 from app.models.gts_responses_models import GTSResponses
-from app.schemas.users_schemas import (UsernameCheckRequest, 
+from app.schemas.users_schemas import (EmailCheckRequest,
+                                      EmailCheckResponse,
+                                      UsernameCheckRequest, 
                                       UsernameCheckResponse,
                                       UserLogin,
                                       AdminUserCreate, 
@@ -29,6 +32,37 @@ router = APIRouter(
     prefix="/users", 
     tags=["Users"]
 )
+
+# Email check
+@router.post("/check-email", response_model=EmailCheckResponse, tags=["public"])
+def check_email_availability(
+    request: EmailCheckRequest,
+    db: Session = Depends(get_db)
+):
+    email = request.email.strip().lower()
+    
+    email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    if not re.match(email_regex, email):
+        return EmailCheckResponse(
+            available=False,
+            message="Invalid Email Format"
+        )
+        
+    existing_user = db.query(User).filter(
+        User.email.ilike(email),
+        User.deleted_at.is_(None)
+    ).first()
+        
+    if existing_user:
+        return EmailCheckResponse(
+            available=False,
+            message="Email is already taken"
+        )
+            
+    return EmailCheckResponse(
+        available=True,
+        message="Email is available"
+    )
 
 # Username check
 @router.post("/check-username", response_model=UsernameCheckResponse, tags=["public"])
@@ -204,7 +238,7 @@ def register_alumni(
             is_approved=False,
         )
         db.add(new_user)
-        db.flush()  # Flush to get new_user.id
+        db.flush()
     
         # Log alumni self-registration
         log_activity(
@@ -292,7 +326,7 @@ def get_registered_users(
         "pages": pages
     }
 
-#  Set user as inactive (block); user must not be archived
+# Set user as inactive (block); user must not be archived
 @router.patch("/{user_id}/block", status_code=204)
 def block_user(user_id: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
@@ -305,11 +339,10 @@ def block_user(user_id: str, db: Session = Depends(get_db)):
         db=db,
         user_id=str(user.id),
         action_type=ActionType.update,
-        description=f"Blocked user {user.firstname} {user.lastname}",
+        description=f"Blocked user - {user.firstname} {user.lastname}",
         target_user_id=str(user.id)
     )
-
-    
+ 
 # Reactivate a previously blocked user
 @router.patch("/{user_id}/unblock", status_code=204)
 def unblock_user(user_id: str, db: Session = Depends(get_db)):
@@ -322,13 +355,13 @@ def unblock_user(user_id: str, db: Session = Depends(get_db)):
         db=db,
         user_id=str(user.id),
         action_type=ActionType.update,
-        description=f"Unblocked user {user.firstname} {user.lastname}",
+        description=f"Unblocked user - {user.firstname} {user.lastname}",
         target_user_id=str(user.id)
     )
 
-# Soft-delete user by setting deleted_at timestamp
-@router.delete("/{user_id}/delete", status_code=204)
-def soft_delete_user(user_id: str, db: Session = Depends(get_db)):
+# Archive user by setting deleted_at timestamp
+@router.delete("/{user_id}/archive", status_code=204)
+def archive_user(user_id: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user or user.deleted_at:
         raise HTTPException(status_code=404, detail="User not found")
@@ -338,10 +371,29 @@ def soft_delete_user(user_id: str, db: Session = Depends(get_db)):
         db=db,
         user_id=str(user.id),
         action_type=ActionType.delete,
-        description=f"Soft deleted user {user.firstname} {user.lastname}",
+        description=f"Archived user - {user.firstname} {user.lastname}",
         target_user_id=str(user.id)
     )
     
+# Unarchive a user by unsetting deleted_at
+@router.patch("/{user_id}/unarchive", status_code=204)
+def unarchive_user(user_id: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if not user.deleted_at:
+        raise HTTPException(status_code=400, detail="User is not archived")
+    user.deleted_at = None  # Unset the timestamp
+    db.commit()
+    # Log unarchiving action
+    log_activity(
+        db=db,
+        user_id=str(user.id),
+        action_type=ActionType.update,
+        description=f"Unarchived user - {user.firstname} {user.lastname}",
+        target_user_id=str(user.id)
+    )    
+
 # Approve pending user (typically alumni registration)
 @router.patch("/{user_id}/approve", status_code=status.HTTP_204_NO_CONTENT)
 def approve_user(
@@ -473,9 +525,51 @@ def get_blocked_users(db: Session = Depends(get_db)):
 
 # Count soft-deleted users (i.e., users with a non-null deleted_at)
 @router.get("/archived")
-def get_archived_users(db: Session = Depends(get_db)):
+def get_archived_count(db: Session = Depends(get_db)):
     archived_users = db.query(User).filter(User.deleted_at.isnot(None)).count()
     return {"archived_users": archived_users}
+
+# List archived users (soft-deleted) with optional filters (role, course, batch year)
+@router.get("/archived-users", response_model=PaginatedUserResponse)
+def get_archived_users(
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100),
+    role: Optional[str] = None,
+    course: Optional[str] = None,
+    batch_year: Optional[int] = None,
+    db: Session = Depends(get_db)
+):
+    query = db.query(User).filter(User.deleted_at.isnot(None))
+
+    if role:
+        try:
+            role_enum = UserRole(role)
+            query = query.filter(User.role == role_enum)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid role")
+
+    if course:
+        query = query.filter(User.course == course)
+    if batch_year:
+        query = query.filter(User.batch_year == batch_year)
+
+    total = query.count()
+    pages = (total + limit - 1) // limit
+    users = query.offset((page - 1) * limit).limit(limit).all()
+
+    users_out = []
+    for user in users:
+        user_data = UserProfileOut.from_orm(user).dict()
+        user_data["is_active"] = user.is_active
+        users_out.append(user_data)
+
+    return {
+        "users": users_out,
+        "total": total,
+        "page": page,
+        "limit": limit,
+        "pages": pages
+    }
 
 # Get users active in the last 5 minutes, not blocked or archived, with valid roles
 @router.get("/online", response_model=List[UserOut])

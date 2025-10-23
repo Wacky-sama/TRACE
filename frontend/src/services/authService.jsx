@@ -21,6 +21,23 @@ export const checkUsernameAvailability = async (username) => {
   }
 };
 
+/**
+ * Check if an email is available for registration
+ * @param {string} email - The email to check
+ * @returns {Promise<{available: boolean, message: string}>}
+ */
+export const checkEmailAvailability = async (email) => {
+  try {
+    const response = await publicApi.post("/users/check-email", {
+      email: email.trim(),
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error checking email:", error);
+    throw error;
+  }
+};
+
 // You can add other public auth-related functions here later
 // export const login = async (credentials) => { ... }
 // export const register = async (userData) => { ... }

@@ -18,6 +18,7 @@ logger = logging.getLogger("auth_middleware")
 PUBLIC_ROUTES = [
     "/users/login",
     "/users/register",
+    "/users/check-email",
     "/users/check-username",
     "/gts_responses/register",
 ]

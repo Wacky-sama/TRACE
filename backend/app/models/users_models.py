@@ -37,7 +37,7 @@ class User(Base):
     birthday = Column(Date, nullable=True)
     present_address = Column(String, nullable=True)
     permanent_address = Column(String, nullable=True)
-    contact_number = Column(String, nullable=True)
+    contact_number = Column(String, nullable=True) # To be change to int
     sex = Column(Enum(SexEnum), nullable=False)
 
     # Relationships

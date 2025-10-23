@@ -70,7 +70,7 @@ TRACE: Tracking Alumni for Centralized Events
 ![Employment Status - Never](/docs/images/AlumniEmployedNeverLight.png)
 
 **Dark Mode**
-![Employment Status - Never](/docs/images/AlumniEmployedNeverDark.png)
+![Employment Status - Never](/docs/images/AlumniEmploymentInfoNeverDark.png)
 
 ---
 
