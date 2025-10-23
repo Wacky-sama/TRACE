@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { isValidPhoneNumber } from "libphonenumber-js";
 import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";
+import PhoneInput from "../PhoneInput";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 import EmailInput from "../EmailInput";
@@ -29,30 +31,50 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
   const validate = () => {
     const validateErrors = {};
+
     if (!formData.email?.trim()) validateErrors.email = "Email is required";
+    else if (emailAvailable === false)
+      validateErrors.email = "Email is already taken";
+
     if (!formData.registerIdentifier?.trim())
       validateErrors.registerIdentifier = "Username is required";
     else if (usernameAvailable === false)
       validateErrors.registerIdentifier = "Username is already taken";
+
     if (!formData.lastName?.trim())
       validateErrors.lastName = "Last name is required";
+
     if (!formData.firstName?.trim())
       validateErrors.firstName = "First name is required";
+
     if (!formData.birthday) validateErrors.birthday = "Birthday is required";
+
     if (!formData.sex) validateErrors.sex = "Sex is required";
+
     if (!formData.presentAddress?.trim())
       validateErrors.presentAddress = "Present address is required";
+
     if (!formData.permanentAddress?.trim())
       validateErrors.permanentAddress = "Permanent address is required";
-    if (!formData.contactNumber?.trim())
+
+    if (!formData.contactNumber?.trim()) {
       validateErrors.contactNumber = "Contact number is required";
+    } else if (!isValidPhoneNumber(formData.contactNumber)) {
+      validateErrors.contactNumber =
+        "Please enter a valid phone number (e.g., +63 912 345 6789)";
+    }
+
     if (!formData.course) validateErrors.course = "Course is required";
+
     if (!formData.batchYear)
       validateErrors.batchYear = "Batch year is required";
+
     if (!formData.registerPassword)
       validateErrors.registerPassword = "Password is required";
+
     if (!formData.registerConfirmPassword)
       validateErrors.registerConfirmPassword = "Confirm Password is required";
+
     if (
       formData.registerPassword &&
       formData.registerConfirmPassword &&
@@ -60,6 +82,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
     ) {
       validateErrors.registerConfirmPassword = "Passwords do not match";
     }
+
     setErrors(validateErrors);
     return Object.keys(validateErrors).length === 0;
   };
@@ -212,15 +235,16 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           />
         </div>
 
-        <FloatingInput
+        <PhoneInput
           id="contactNumber"
-          type="tel"
           value={formData.contactNumber || ""}
           onChange={(e) =>
             setFormData({ ...formData, contactNumber: e.target.value })
           }
           label="Contact Number"
           error={errors.contactNumber}
+          defaultCountry="ph"
+          onError={(error) => setErrors((prev) => ({ ...prev,contactNumber: error }))}
         />
       </div>
 
