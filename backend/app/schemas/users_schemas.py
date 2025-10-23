@@ -107,6 +107,7 @@ class UserProfileOut(BaseModel):
     batch_year: Optional[int]
     role: UserRole
     is_approved: bool
+    deleted_at: Optional[datetime] = None
     is_active: bool
     sex: Optional[SexEnum]
 

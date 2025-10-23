@@ -6,7 +6,8 @@ import {
   faUserSlash,
   faUserMinus,
   faUserCheck,
-  faMagnifyingGlass,
+  faRefresh,
+  faMagnifyingGlass
 } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "../../context/ThemeProvider";
 
@@ -16,20 +17,23 @@ const AdminUsers = () => {
 
   const [pendingUsers, setPendingUsers] = useState([]);
   const [approvedUsers, setApprovedUsers] = useState([]);
+  const [archivedUsers, setArchivedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   const fetchUsers = async () => {
     try {
-      const [pendingRes, approvedRes] = await Promise.all([
+      const [pendingRes, approvedRes, archivedRes] = await Promise.all([
         api.get("/users/pending-alumni"),
         api.get("/users/registered-users"),
+        api.get("/users/archived-users")
       ]);
       setPendingUsers(pendingRes.data);
       setApprovedUsers(approvedRes.data.users);
-    } catch {
-      toast.error("Error fetching users:", error);
+      setArchivedUsers(archivedRes.data.users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
       toast.error("Failed to load users. Backend is probably on a nap break.");
     }
   };
@@ -46,10 +50,10 @@ const AdminUsers = () => {
       toast.success(`User ${action}d successfully!`);
     } catch (error) {
       if (error.response?.status === 404) {
-        toast.error("User  not found. It may have already been deleted.");
+        toast.error("User not found. It may have already been deleted.");
         await fetchUsers();
       } else if (error.response?.status === 400) {
-        toast.error(error.response.data.detail || "Bad request.");
+        console.error(error.response.data.detail || "Bad request.");
       } else {
         toast.error(`Could not ${action} the user. Try again.`);
       }
@@ -59,27 +63,45 @@ const AdminUsers = () => {
     }
   };
 
-  const handleSoftDelete = async (userId) => {
-    if (
-      !window.confirm(
-        "Are you sure you want to delete this user? This action can be undone."
-      )
-    )
+  const handleArchive = async (userId) => {
+    if (!window.confirm("Are you sure you want to archive this user? This action can be undone."))
       return;
 
     setActionLoadingId(userId);
     try {
-      await api.delete(`/users/${userId}/delete`);
+      await api.delete(`/users/${userId}/archive`);
       await fetchUsers();
-      toast.success("User deleted successfully!");
+      toast.success("User archived successfully!");
+    } catch (error) {
+      if (error.response?.status === 404) {
+        toast.error("User not found. It may have already been archived.");
+        await fetchUsers();
+      } else {
+        toast.error("Could not archive the user. Try again.");
+      }
+      console.error("Failed to archive user:", error);
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const handleUnarchive = async (userId) => {
+    if (!window.confirm("Are you sure you want to unarchive this user?"))
+      return;
+
+    setActionLoadingId(userId);
+    try {
+      await api.patch(`/users/${userId}/unarchive`);
+      await fetchUsers();
+      toast.success("User unarchived successfully!");
     } catch (error) {
       if (error.response?.status === 404) {
         toast.error("User not found. It may have already been deleted.");
         await fetchUsers();
       } else {
-        toast.error("Could not delete the user. Try again.");
+        toast.error("Could not unarchive the user. Try again.");
       }
-      console.error("Failed to delete user:", error);
+      console.error("Failed to unarchive user:", error);
     } finally {
       setActionLoadingId(null);
     }
@@ -131,7 +153,7 @@ const AdminUsers = () => {
     }
   };
 
-  const renderTable = (users, showActions = false) => (
+  const renderTable = (users, showActions = false, isArchivedTable = false) => (
     <table
       className={`min-w-full border rounded-lg shadow transition-colors duration-300 ${
         isDark
@@ -185,7 +207,7 @@ const AdminUsers = () => {
               <td className="p-3">{user.sex}</td>
               <td className="p-3">{user.present_address || "-"}</td>
               <td className="p-3">{user.permanent_address || "-"}</td>
-              <td className="flex items-center gap-2 p-3">
+              <td className={`flex items-center gap-2 p-3 ${isArchivedTable ? 'justify-center' : ''}`}>
                 {showActions ? (
                   <>
                     <button
@@ -213,14 +235,25 @@ const AdminUsers = () => {
                   </>
                 ) : (
                   <>
-                    <button
-                      title="Archive"
-                      onClick={() => handleSoftDelete(user.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <FontAwesomeIcon icon={faUserMinus} />
-                    </button>
-                    {user.is_active ? (
+                    {!user.deleted_at && (
+                      <button
+                        title="Archive"
+                        onClick={() => handleArchive(user.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <FontAwesomeIcon icon={faUserMinus} />
+                      </button>
+                    )}
+                    {user.deleted_at && (
+                      <button
+                        title="Unarchive"
+                        onClick={() => handleUnarchive(user.id)}
+                        className="text-yellow-500 hover:text-yellow-700"
+                      >
+                        <FontAwesomeIcon icon={faRefresh} />
+                      </button>
+                    )}
+                    {!user.deleted_at && user.is_active && (
                       <button
                         title="Block"
                         onClick={() => handleBlock(user.id)}
@@ -228,7 +261,8 @@ const AdminUsers = () => {
                       >
                         <FontAwesomeIcon icon={faUserSlash} />
                       </button>
-                    ) : (
+                    )}
+                    {!user.deleted_at && !user.is_active && (
                       <button
                         title="Unblock"
                         onClick={() => handleUnblock(user.id)}
@@ -268,8 +302,7 @@ const AdminUsers = () => {
     >
       <h2 className="mb-4 text-2xl font-bold">Users</h2>
       <p className="mb-4 text-lg font-semibold">
-        On this page, you can approve or decline, search, archive, and block
-        users.
+        On this page, you can approve or decline, search, archive and unarchive, block and unblock users.
       </p>
       <div className="flex items-center justify-end mb-4 space-x-2">
         <input
@@ -302,6 +335,18 @@ const AdminUsers = () => {
               .toLowerCase()
               .includes(searchTerm.toLowerCase())
           )
+      )}
+      <h3 className="mt-6 mb-4 text-xl font-bold">Archived Users</h3>
+      {renderTable(
+        archivedUsers
+          .filter((u) => ["alumni"].includes(u.role))
+          .filter((u) =>
+            `${u.firstname} ${u.lastname} ${u.username}`
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          ),
+        false,  
+        true
       )}
     </div>
   );
