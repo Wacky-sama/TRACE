@@ -3,6 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";
+import {
+  isStrongPassword,
+  getPasswordStrength,
+  getPasswordStrengthMessage,
+} from "../../utils/passwordUtils";
 import PhoneInput from "../PhoneInput";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
@@ -11,10 +16,22 @@ import UsernameInput from "../UsernameInput";
 
 function PersonalInfoForm({ formData, setFormData, nextStep }) {
   const [errors, setErrors] = useState({});
+  const [passwordStrength, setPasswordStrength] = useState({
+    score: 0,
+    label: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [emailAvailable, setEmailAvailable] = useState(null);
   const [usernameAvailable, setUsernameAvailable] = useState(null);
+
+  useEffect(() => {
+    if (formData.registerPassword) {
+      setPasswordStrength(getPasswordStrength(formData.registerPassword));
+    } else {
+      setPasswordStrength({ score: 0, label: "" });
+    }
+  }, [formData.registerPassword]);
 
   useEffect(() => {
     if (formData.birthday) {
@@ -76,9 +93,17 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
     if (!formData.registerPassword)
       validateErrors.registerPassword = "Password is required";
+    else if (!isStrongPassword(formData.registerPassword))
+      validateErrors.registerPassword = getPasswordStrengthMessage(
+        formData.registerPassword
+      );
 
     if (!formData.registerConfirmPassword)
       validateErrors.registerConfirmPassword = "Confirm Password is required";
+    else if (!isStrongPassword(formData.registerConfirmPassword))
+      validateErrors.registerConfirmPassword = getPasswordStrengthMessage(
+        formData.registerConfirmPassword
+      );
 
     if (
       formData.registerPassword &&
@@ -307,10 +332,11 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
       <div className="space-2">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {/* Password Field */}
           <FloatingInput
             id="registerPassword"
             type={showPassword ? "text" : "password"}
-            value={formData.registerPassword}
+            value={formData.registerPassword || ""}
             onChange={(e) =>
               setFormData({ ...formData, registerPassword: e.target.value })
             }
@@ -319,16 +345,17 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           >
             <span
               onClick={() => setShowPassword(!showPassword)}
-              className="cursor-pointer"
+              className="absolute inset-y-0 flex items-center text-gray-500 cursor-pointer right-3"
             >
-              <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
             </span>
           </FloatingInput>
 
+          {/* Confirm Password Field */}
           <FloatingInput
             id="registerConfirmPassword"
             type={showConfirmPassword ? "text" : "password"}
-            value={formData.registerConfirmPassword}
+            value={formData.registerConfirmPassword || ""}
             onChange={(e) =>
               setFormData({
                 ...formData,
@@ -340,15 +367,44 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           >
             <span
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="cursor-pointer"
+              className="absolute inset-y-0 flex items-center text-gray-500 cursor-pointer right-3"
             >
               <FontAwesomeIcon
-                icon={showConfirmPassword ? faEye : faEyeSlash}
+                icon={showConfirmPassword ? faEyeSlash : faEye}
               />
             </span>
           </FloatingInput>
         </div>
 
+        {/* Password Strength Bar */}
+        {formData.registerPassword && (
+          <div className="mt-2">
+            <div className="w-full h-2 bg-gray-200 rounded-full">
+              <div
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  passwordStrength.score === 0
+                    ? "bg-gray-300 w-0"
+                    : passwordStrength.score === 1
+                    ? "bg-red-500 w-1/4"
+                    : passwordStrength.score === 2
+                    ? "bg-orange-400 w-2/4"
+                    : passwordStrength.score === 3
+                    ? "bg-yellow-400 w-3/4"
+                    : "bg-green-500 w-full"
+                }`}
+              />
+            </div>
+            <p
+              className={`text-sm mt-1 ${
+                passwordStrength.score <= 2 ? "text-red-500" : "text-green-600"
+              }`}
+            >
+              {passwordStrength.label}
+            </p>
+          </div>
+        )}
+
+        {/* Password Match Message */}
         {formData.registerPassword && formData.registerConfirmPassword && (
           <p
             className={`text-sm mt-1 ${
