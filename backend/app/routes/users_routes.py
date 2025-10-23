@@ -339,7 +339,7 @@ def block_user(user_id: str, db: Session = Depends(get_db)):
         db=db,
         user_id=str(user.id),
         action_type=ActionType.update,
-        description=f"Blocked user {user.firstname} {user.lastname}",
+        description=f"Blocked user - {user.firstname} {user.lastname}",
         target_user_id=str(user.id)
     )
  
@@ -355,7 +355,7 @@ def unblock_user(user_id: str, db: Session = Depends(get_db)):
         db=db,
         user_id=str(user.id),
         action_type=ActionType.update,
-        description=f"Unblocked user {user.firstname} {user.lastname}",
+        description=f"Unblocked user - {user.firstname} {user.lastname}",
         target_user_id=str(user.id)
     )
 
@@ -371,7 +371,7 @@ def archive_user(user_id: str, db: Session = Depends(get_db)):
         db=db,
         user_id=str(user.id),
         action_type=ActionType.delete,
-        description=f"Soft deleted user {user.firstname} {user.lastname}",
+        description=f"Archived user - {user.firstname} {user.lastname}",
         target_user_id=str(user.id)
     )
     
@@ -390,7 +390,7 @@ def unarchive_user(user_id: str, db: Session = Depends(get_db)):
         db=db,
         user_id=str(user.id),
         action_type=ActionType.update,
-        description=f"Unarchived user {user.firstname} {user.lastname}",
+        description=f"Unarchived user - {user.firstname} {user.lastname}",
         target_user_id=str(user.id)
     )    
 
