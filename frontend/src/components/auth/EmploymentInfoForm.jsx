@@ -13,11 +13,7 @@ const EMPLOYED_STATUSES = [
   "Casual",
 ];
 
-const NON_EMPLOYED_STATUSES = [
-  "Unemployed", 
-  "Retired", 
-  "Looking for Work"
-];
+const NON_EMPLOYED_STATUSES = ["Unemployed", "Retired", "Looking for Work"];
 
 const NON_EMPLOYED_REASONS = [
   "Advance or further study",
@@ -29,16 +25,9 @@ const NON_EMPLOYED_REASONS = [
   "Other reasons, please specify",
 ];
 
-const PLACE_OF_WORK_OPTIONS = [
-  "Local", 
-  "Abroad"
-];
+const PLACE_OF_WORK_OPTIONS = ["Local", "Abroad"];
 
-const EMPLOYMENT_NOW_OPTIONS = [
-  "Yes", 
-  "No", 
-  "Never Employed"
-];
+const EMPLOYMENT_NOW_OPTIONS = ["Yes", "No", "Never Employed"];
 
 const OCCUPATION_OPTIONS = [
   "Officials of Government and Special-Interest Organizations, Corporate Executives, Managers, Managing Proprietors and Supervisors",
@@ -161,7 +150,7 @@ function EmploymentInfoForm({
 
   const onSubmit = async () => {
     if (!validate()) {
-      toast.error("Please fix the errors before submitting.");
+      toast.error("Oops! Please check the form for errors and try again.");
       return;
     }
 
@@ -184,21 +173,14 @@ function EmploymentInfoForm({
       setOtherNonEmployedReason("");
       setOtherOccupation("");
 
-      toast.success(
-        "Registration submitted successfully! Redirecting to login page..."
-      );
+      toast.success("Registration submitted successfully! Redirecting to login page...");
 
       setTimeout(() => {
         navigate("/alumni-login");
       }, 2000);
     } catch (error) {
       setSubmitting(false);
-
-      if (error.message?.toLowerCase().includes("username")) {
-        toast.error(
-          "Username is already taken. Please go back and choose a different username."
-        );
-      } else if (error.response?.data?.message) {
+      if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
         toast.error(
