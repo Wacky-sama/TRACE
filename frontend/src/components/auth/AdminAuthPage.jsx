@@ -41,49 +41,51 @@ function AdminAuthPage() {
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
-        <div className="container flex items-center justify-between px-4 py-4 mx-auto">
-          {/* Left side: Logo and text */}
-          <div
-            className="flex items-center gap-2 cursor-pointer"
-            onClick={goToLandingPage}
-          >
-            <GraduationCap className="w-8 h-8 text-primary" />
-            <div>
-              <h1 className="text-xl font-bold text-foreground">TRACE</h1>
-              <p className="text-xs text-muted-foreground">
-                CSU Gonzaga Campus
-              </p>
-            </div>
-          </div>
+  <div className="container flex items-center justify-between px-4 py-3 mx-auto sm:py-4">
+    {/* Left side: Logo and text */}
+    <div
+      className="flex items-center gap-2 cursor-pointer"
+      onClick={goToLandingPage}
+    >
+      <GraduationCap className="w-7 h-7 text-primary sm:w-8 sm:h-8" />
+      <div>
+        <h1 className="text-lg font-bold text-foreground sm:text-xl">TRACE</h1>
+        <p className="text-[10px] text-muted-foreground sm:text-xs">
+          CSU Gonzaga Campus
+        </p>
+      </div>
+    </div>
 
-          {/* Right side: Grouped buttons and ThemeToggle */}
-          <div className="flex items-center gap-4">
-            <Button
-              onClick={() => navigate("/alumni-login")}
-              className={`px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full ${
-                location.pathname === "/alumni-login"
-                  ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
-                  : "border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
-              }`}
-            >
-              Alumni Login
-            </Button>
+    {/* Right side: Grouped buttons and ThemeToggle */}
+    <div className="flex items-center gap-2 sm:gap-4">
+      <Button
+        onClick={() => navigate("/alumni-login")}
+        className={`px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-lg font-semibold transition-all duration-200 rounded-full ${
+          location.pathname === "/alumni-login" ||
+          location.pathname === "/alumni-register"
+            ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
+            : "border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
+        }`}
+      >
+        Alumni Login
+      </Button>
 
-            <Button
-              onClick={() => navigate("/admin-login")}
-              className={`px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full ${
-                location.pathname === "/admin-login"
-                  ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
-                  : "border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
-              }`}
-            >
-              Admin Portal
-            </Button>
+      <Button
+        onClick={() => navigate("/admin-login")}
+        className={`px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-lg font-semibold transition-all duration-200 rounded-full ${
+          location.pathname === "/admin-login"
+            ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
+            : "border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
+        }`}
+      >
+        Admin Portal
+      </Button>
 
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <ThemeToggle />
+    </div>
+  </div>
+</header>
+
       <div className="flex items-center justify-center min-h-screen px-4 bg-[hsl(var(--background))]">
         <div className="flex flex-col w-full max-w-4xl overflow-hidden transition-transform duration-300 transform bg-white shadow-lg rounded-xl md:flex-row hover:-translate-y-2">
           <div className="flex items-center justify-center flex-1 p-4 bg-gray-800 md:p-8">
