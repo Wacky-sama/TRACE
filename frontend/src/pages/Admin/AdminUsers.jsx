@@ -28,8 +28,8 @@ const AdminUsers = () => {
       ]);
       setPendingUsers(pendingRes.data);
       setApprovedUsers(approvedRes.data.users);
-    } catch (error) {
-      console.error("Error fetching users:", error);
+    } catch {
+      toast.error("Error fetching users:", error);
       toast.error("Failed to load users. Backend is probably on a nap break.");
     }
   };
@@ -214,7 +214,7 @@ const AdminUsers = () => {
                 ) : (
                   <>
                     <button
-                      title="Delete"
+                      title="Archive"
                       onClick={() => handleSoftDelete(user.id)}
                       className="text-red-500 hover:text-red-700"
                     >
@@ -244,8 +244,9 @@ const AdminUsers = () => {
           ))
         ) : (
           <tr>
-            <td colSpan="12" 
-            className={`p-4 text-center ${
+            <td
+              colSpan="12"
+              className={`p-4 text-center ${
                 isDark ? "text-gray-400" : "text-gray-500"
               }`}
             >
@@ -266,6 +267,10 @@ const AdminUsers = () => {
       } min-h-screen p-6`}
     >
       <h2 className="mb-4 text-2xl font-bold">Users</h2>
+      <p className="mb-4 text-lg font-semibold">
+        On this page, you can approve or decline, search, archive, and block
+        users.
+      </p>
       <div className="flex items-center justify-end mb-4 space-x-2">
         <input
           type="text"
@@ -283,11 +288,21 @@ const AdminUsers = () => {
           className={isDark ? "text-gray-300" : "text-gray-600"}
         />
       </div>
+      {/* Border */}
       <div className="mb-6 border-t"></div>
+
       <h3 className="mb-4 text-xl font-bold">Pending Alumni Approvals</h3>
       {renderTable(pendingUsers, true)}
       <h3 className="mt-6 mb-4 text-xl font-bold">Registered Users</h3>
-      {renderTable(approvedUsers.filter((u) => ["alumni"].includes(u.role)))}
+      {renderTable(
+        approvedUsers
+          .filter((u) => ["alumni"].includes(u.role))
+          .filter((u) =>
+            `${u.firstname} ${u.lastname} ${u.username}`
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          )
+      )}
     </div>
   );
 };

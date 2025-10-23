@@ -52,19 +52,19 @@ TRACE: Tracking Alumni for Centralized Events
 ![Employment Status](/docs/images/AlumniEmploymentLight.png)
 
 **Dark Mode**
-![Employment Status](/docs/images/AlumniEmploymentDark.png)
+![Employment Status](/docs/images/AlumniEmploymentInfoDark.png)
 
 **Light Mode**
 ![Employment Status - Yes](/docs/images/AlumniEmployedYesLight.png)
 
 **Dark Mode**
-![Employment Status - Yes](/docs/images/AlumniEmployedYesDark.png)
+![Employment Status - Yes](/docs/images/AlumniEmploymentInfoYesDark.png)
 
 **Light Mode**
 ![Employment Status - No](/docs/images/AlumniEmployedNoLight.png)
 
 **Dark Mode**
-![Employment Status - No](/docs/images/AlumniEmployedNoDark.png)
+![Employment Status - No](/docs/images/AlumniEmploymentInfoNoDark.png)
 
 **Light Mode**
 ![Employment Status - Never](/docs/images/AlumniEmployedNeverLight.png)
