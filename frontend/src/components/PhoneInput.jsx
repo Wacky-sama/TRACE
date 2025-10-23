@@ -47,7 +47,7 @@ function PhoneInput({
         onChange={handleChange}
         onBlur={handleBlur}
         defaultCountry={defaultCountry}
-        inputClassName={`w-full p-3 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+        className={`w-full p-3 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
           isDark
             ? "bg-gray-800 text-white border-gray-600"
             : "bg-white text-gray-900 border-gray-300"
@@ -55,7 +55,7 @@ function PhoneInput({
         countrySelectorStyleProps={{
           buttonClassName: `flex items-center px-2 py-1 border-r rounded-l-md ${
             isDark
-              ? "bg-gray-700 text-white border-gray-600 hover:bg-gray-600"
+              ? "bg-gray-800 text-white border-gray-600 hover:bg-gray-600"
               : "bg-gray-100 text-gray-900 border-gray-300 hover:bg-gray-200"
           }`,
           dropdownStyleProps: {

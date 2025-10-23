@@ -134,3 +134,11 @@ body {
 .dark .react-international-phone-input::placeholder {
   color: hsl(var(--muted-foreground)) !important; /* Muted placeholder text */
 }
+
+.react-international-phone-input-container {
+  width: 100% !important;
+}
+
+.react-international-phone-input {
+  width: 100% !important;
+}
