@@ -4,12 +4,14 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
+import EmailInput from "../EmailInput";
 import UsernameInput from "../UsernameInput";
 
 function PersonalInfoForm({ formData, setFormData, nextStep }) {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [emailAvailable, setEmailAvailable] = useState(null);
   const [usernameAvailable, setUsernameAvailable] = useState(null);
 
   useEffect(() => {
@@ -87,15 +89,15 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
       <div className="space-2">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          <FloatingInput
+          <EmailInput
             id="email"
-            type="email"
             value={formData.email}
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
             label="Email"
             error={errors.email}
+            onAvailabilityChange={setEmailAvailable}
           />
           <UsernameInput
             id="registerIdentifier"

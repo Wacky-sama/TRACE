@@ -1,3 +1,4 @@
+import re
 from uuid import UUID
 from fastapi import APIRouter,  BackgroundTasks, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
@@ -9,7 +10,9 @@ from app.database import get_db
 from app.models.activity_logs_models import ActionType
 from app.models.users_models import User, UserRole
 from app.models.gts_responses_models import GTSResponses
-from app.schemas.users_schemas import (UsernameCheckRequest, 
+from app.schemas.users_schemas import (EmailCheckRequest,
+                                      EmailCheckResponse,
+                                      UsernameCheckRequest, 
                                       UsernameCheckResponse,
                                       UserLogin,
                                       AdminUserCreate, 
@@ -29,6 +32,37 @@ router = APIRouter(
     prefix="/users", 
     tags=["Users"]
 )
+
+# Email check
+@router.post("/check-email", response_model=EmailCheckResponse, tags=["public"])
+def check_email_availability(
+    request: EmailCheckRequest,
+    db: Session = Depends(get_db)
+):
+    email = request.email.strip().lower()
+    
+    email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    if not re.match(email_regex, email):
+        return EmailCheckResponse(
+            available=False,
+            message="Invalid Email Format"
+        )
+        
+    existing_user = db.query(User).filter(
+        User.email.ilike(email),
+        User.deleted_at.is_(None)
+    ).first()
+        
+    if existing_user:
+        return EmailCheckResponse(
+            available=False,
+            message="Email is already taken"
+        )
+            
+    return EmailCheckResponse(
+        available=True,
+        message="Email is available"
+    )
 
 # Username check
 @router.post("/check-username", response_model=UsernameCheckResponse, tags=["public"])
