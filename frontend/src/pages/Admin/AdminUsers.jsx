@@ -53,7 +53,7 @@ const AdminUsers = () => {
       } else {
         toast.error(`Could not ${action} the user. Try again.`);
       }
-      toast.error(`Failed to ${action} user:`, error);
+      console.error(`Failed to ${action} user:`, error);
     } finally {
       setActionLoadingId(null);
     }
@@ -79,7 +79,7 @@ const AdminUsers = () => {
       } else {
         toast.error("Could not delete the user. Try again.");
       }
-      toast.error("Failed to delete user:", error);
+      console.error("Failed to delete user:", error);
     } finally {
       setActionLoadingId(null);
     }
@@ -102,7 +102,7 @@ const AdminUsers = () => {
       } else {
         toast.error("Could not block the user. Try again.");
       }
-      toast.error("Failed to block user:", error);
+      console.error("Failed to block user:", error);
     } finally {
       setActionLoadingId(null);
     }
@@ -125,7 +125,7 @@ const AdminUsers = () => {
       } else {
         toast.error("Could not unblock the user. Try again.");
       }
-      toast.error("Failed to unblock user:", error);
+      console.error("Failed to unblock user:", error);
     } finally {
       setActionLoadingId(null);
     }
@@ -214,7 +214,7 @@ const AdminUsers = () => {
                 ) : (
                   <>
                     <button
-                      title="Delete"
+                      title="Archive"
                       onClick={() => handleSoftDelete(user.id)}
                       className="text-red-500 hover:text-red-700"
                     >
@@ -267,6 +267,10 @@ const AdminUsers = () => {
       } min-h-screen p-6`}
     >
       <h2 className="mb-4 text-2xl font-bold">Users</h2>
+      <p className="mb-4 text-lg font-semibold">
+        On this page, you can approve or decline, search, archive, and block
+        users.
+      </p>
       <div className="flex items-center justify-end mb-4 space-x-2">
         <input
           type="text"
@@ -284,7 +288,9 @@ const AdminUsers = () => {
           className={isDark ? "text-gray-300" : "text-gray-600"}
         />
       </div>
+      {/* Border */}
       <div className="mb-6 border-t"></div>
+
       <h3 className="mb-4 text-xl font-bold">Pending Alumni Approvals</h3>
       {renderTable(pendingUsers, true)}
       <h3 className="mt-6 mb-4 text-xl font-bold">Registered Users</h3>
