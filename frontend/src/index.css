@@ -86,3 +86,51 @@ body {
     @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
   }
 }
+
+/* Only apply in dark mode using your .dark class */
+.dark .react-international-phone-country-selector-button {
+  background-color: hsl(var(--card)) !important; /* Matches your dark card background */
+  color: hsl(var(--foreground)) !important; /* White text */
+  border-color: hsl(var(--border)) !important; /* Dark border */
+}
+
+.dark .react-international-phone-country-selector-button:hover {
+  background-color: hsl(var(--accent)) !important; /* Subtle hover using accent */
+}
+
+/* Dropdown list */
+.dark .react-international-phone-dropdown {
+  background-color: hsl(var(--card)) !important; /* Dark card background */
+  border-color: hsl(var(--border)) !important; /* Dark border */
+  color: hsl(var(--foreground)) !important; /* White text */
+}
+
+.dark .react-international-phone-country {
+  color: hsl(var(--foreground)) !important; /* White text for countries */
+}
+
+.dark .react-international-phone-country:hover {
+  background-color: hsl(var(--accent)) !important; /* Hover background */
+}
+
+/* Flag adjustments (if needed) */
+.dark .react-international-phone-flag {
+  /* Invert flags for visibility on dark backgrounds; test and remove if flags look off */
+  filter: invert(1) !important;
+}
+
+/* Target the input field for dark mode */
+.dark .react-international-phone-input {
+  background-color: hsl(var(--input)) !important; /* Dark input background */
+  color: hsl(var(--foreground)) !important; /* White text */
+  border-color: hsl(var(--border)) !important; /* Dark border */
+}
+
+.dark .react-international-phone-input:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 2px hsl(var(--ring)) !important; /* Focus ring using your theme */
+}
+
+.dark .react-international-phone-input::placeholder {
+  color: hsl(var(--muted-foreground)) !important; /* Muted placeholder text */
+}
