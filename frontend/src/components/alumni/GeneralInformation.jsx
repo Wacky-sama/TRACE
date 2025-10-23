@@ -1,6 +1,7 @@
 // A. GENERAL INFORMATION
 import { useState } from "react";
 import { useTheme } from "../../context/ThemeProvider";
+import PhoneInput from "../PhoneInput";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 
@@ -17,15 +18,16 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
   const isDark = theme === "dark";
 
   const [formData, setFormData] = useState({
-    full_name: gtsData.full_name || "",
-    permanent_address: gtsData.permanent_address || "",
-    contact_email: gtsData.contact_email || "",
-    mobile: gtsData.mobile || "",
+    full_name: gtsData.full_name,
+    permanent_address: gtsData.permanent_address,
+    contact_email: gtsData.contact_email,
+    mobile: gtsData.mobile,
     civil_status: gtsData.civil_status || "",
-    sex: gtsData.sex || "",
-    birthday: gtsData.birthday || "",
+    sex: gtsData.sex,
+    birthday: gtsData.birthday
   });
 
+  const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(null);
@@ -36,8 +38,16 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
   };
 
   const handleSave = async () => {
-    setSaving(true);
+    const validateErrors = {};
+    if (!formData.mobile?.trim()) {
+      validateErrors.mobile = "Contact number is required";
+    } else if (!isValidPhoneNumber(formData.mobile)) {
+      validateErrors.mobile = "Please enter a valid phone number (e.g., +63 912 345 6789)";
+    }
+    setErrors(validateErrors);
+    if (Object.keys(validateErrors).length > 0) return;
 
+    setSaving(true);
     const result = await onUpdate("personal", formData);
     setSaving(false);
     setSaveSuccess(result.success);
@@ -72,16 +82,6 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
 
         <div>
           <FloatingInput
-            id="permanent_address"
-            type="text"
-            label="Permanent Address"
-            value={formData.permanent_address}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div>
-          <FloatingInput
             id="contact_email"
             type="email"
             label="E-mail Address"
@@ -93,13 +93,14 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
 
         <div>
           <FloatingInput
-            id="mobile"
-            type="tel"
-            label="Mobile Number"
-            value={formData.mobile}
+            id="permanent_address"
+            type="text"
+            label="Permanent Address"
+            value={formData.permanent_address}
             onChange={handleChange}
           />
         </div>
+
 
         <div className="mb-4">
           <FloatingSelect
@@ -121,6 +122,17 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
             value={formData.birthday}
             label="Birthday"
             readOnly
+          />
+        </div>
+        <div>
+          <PhoneInput
+            id="mobile"
+            label="Contact Number"
+            value={formData.mobile}
+            onChange={handleChange}
+            error={errors.mobile}
+            defaultCountry="ph"
+            onError={(error) => setErrors((prev) => ({ ...prev, mobile: error }))}
           />
         </div>
       </div>
