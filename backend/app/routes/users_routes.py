@@ -167,6 +167,7 @@ def create_user_as_admin(
         firstname=user_data.firstname,
         middle_initial=user_data.middle_initial,
         name_extension=user_data.name_extension,
+        sex=user_data.sex,
         role=UserRole.admin,
         is_approved=True 
     )

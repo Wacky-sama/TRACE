@@ -3,12 +3,6 @@ import { useState, useEffect } from "react";
 import api from "../../services/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import {
-  isStrongPassword,
-  getPasswordStrength,
-  getPasswordStrengthMessage,
-} from "../../utils/passwordUtils";
-import EmailInput from "../../components/EmailInput";
 import UsernameInput from "../../components/UsernameInput";
 import FloatingInput from "../../components/FloatingInput";
 import FloatingSelect from "../../components/FloatingSelect";
@@ -44,26 +38,14 @@ const AdminCreateUser = () => {
     firstName: "",
     middleInitial: "",
     nameExtension: "",
+    sex: ""
   });
 
-  const [passwordStrength, setPasswordStrength] = useState({
-    score: 0,
-    label: "",
-  });
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [emailAvailable, setEmailAvailable] = useState(null);
   const [usernameAvailable, setUsernameAvailable] = useState(null);
-
-  useEffect(() => {
-    if (formData.registerPassword) {
-      setPasswordStrength(getPasswordStrength(formData.registerPassword));
-    } else {
-      setPasswordStrength({ score: 0, label: "" });
-    }
-  }, [formData.registerPassword]);
 
   const capitalizeFirstLetter = (str) => {
     if (!str) return "";
@@ -76,34 +58,16 @@ const AdminCreateUser = () => {
   const validate = () => {
     const validateErrors = {};
     if (!formData.email?.trim()) validateErrors.email = "Email is required";
-    else if (emailAvailable === false)
-      validateErrors.email = "Email is already taken";
-
     if (!formData.registerIdentifier?.trim())
       validateErrors.registerIdentifier = "Username is required";
     else if (usernameAvailable === false)
       validateErrors.registerIdentifier = "Username is already taken";
-
-   if (!formData.lastName?.trim())
-      validateErrors.lastName = "Last name is required";
-
-    if (!formData.firstName?.trim())
-      validateErrors.firstName = "First name is required";
-
-    if (!formData.registerPassword)
-      validateErrors.registerPassword = "Password is required";
-    else if (!isStrongPassword(formData.registerPassword))
-      validateErrors.registerPassword = getPasswordStrengthMessage(
-        formData.registerPassword
-      );
-
+    if (!formData.lastName?.trim()) validateErrors.lastName = "Last name is required";
+    if (!formData.firstName?.trim()) validateErrors.firstName = "First name is required";
+    if (!formData.sex) validateErrors.sex = "Sex is required";  // Add this
+    if (!formData.registerPassword) validateErrors.registerPassword = "Password is required";
     if (!formData.registerConfirmPassword)
       validateErrors.registerConfirmPassword = "Confirm Password is required";
-    else if (!isStrongPassword(formData.registerConfirmPassword))
-      validateErrors.registerConfirmPassword = getPasswordStrengthMessage(
-        formData.registerConfirmPassword
-      );
-
     if (
       formData.registerPassword &&
       formData.registerConfirmPassword &&
@@ -120,13 +84,27 @@ const AdminCreateUser = () => {
     setMessage("");
     if (!validate()) return;
 
+    // Explicitly map frontend keys to backend-expected keys
+    const payload = {
+      username: formData.registerIdentifier,
+      email: formData.email,
+      password: formData.registerPassword,
+      lastname: formData.lastName,
+      firstname: formData.firstName,
+      middle_initial: formData.middleInitial,
+      name_extension: formData.nameExtension,
+      role: "admin",
+      sex: formData.sex,  // Add this
+    };
+
+    console.log("Payload being sent:", payload);  // For debugging
+
     try {
-      const payload = { ...formData };
-      delete payload.registerConfirmPassword;
-      await api.post("/users/admin/create-user", payload, {
+      const response = await api.post("/users/admin/create-user", payload, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
-      toast.success("User created successfully!");
+      console.log("Success response:", response);  // For debugging
+      setMessage("User created successfully!");
       setFormData({
         registerIdentifier: "",
         email: "",
@@ -136,9 +114,15 @@ const AdminCreateUser = () => {
         firstName: "",
         middleInitial: "",
         nameExtension: "",
+        sex: "",  // Reset this
       });
     } catch (error) {
-      setMessage(error.response?.data?.detail || "Creation failed");
+      console.error("Error response:", error.response);  // For debugging
+      // Stringify the error object to make it renderable
+      const errorMsg = error.response?.data
+        ? JSON.stringify(error.response.data, null, 2)
+        : "Creation failed";
+      setMessage(errorMsg);
     }
   };
 
@@ -173,28 +157,22 @@ const AdminCreateUser = () => {
           </h2>
 
           <div className="grid grid-cols-1 gap-3 mb-4 md:grid-cols-2">
-            <EmailInput
+            <FloatingInput
               id="email"
+              type="email"
               value={formData.email}
               onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  email: e.target.value.toLowerCase(),
-                })
+                setFormData({ ...formData, email: e.target.value.toLowerCase() })
               }
               label="Email"
               error={errors.email}
-              onAvailabilityChange={setEmailAvailable}
             />
 
             <UsernameInput
               id="registerIdentifier"
               value={formData.registerIdentifier}
               onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  registerIdentifier: e.target.value.toLowerCase(),
-                })
+                setFormData({ ...formData, registerIdentifier: e.target.value.toLowerCase() })
               }
               error={errors.registerIdentifier}
               onAvailabilityChange={setUsernameAvailable}
@@ -206,40 +184,32 @@ const AdminCreateUser = () => {
               id="lastName"
               value={formData.lastName}
               onChange={(e) =>
-              setFormData({
-                ...formData,
-                lastName: capitalizeEachWord(e.target.value),
-              })
-            }
-            label="Last Name"
-            error={errors.lastName}
+                setFormData({ ...formData, lastName: e.target.value })
+              }
+              label="Last Name"
+              error={errors.lastName}
             />
-
             <FloatingInput
               id="firstName"
               value={formData.firstName}
-               onChange={(e) =>
-              setFormData({
-                ...formData,
-                firstName: capitalizeEachWord(e.target.value),
-              })
-            }
+              onChange={(e) =>
+                setFormData({ ...formData, firstName: e.target.value })
+              }
               label="First Name"
               error={errors.firstName}
             />
-
             <FloatingInput
-              id="middleInitial"
-              value={formData.middleInitial || ""}
-              onChange={(e) => {
-                const value = e.target.value.toUpperCase();
-                if (/^[A-Z]?$/.test(value)) {
-                  setFormData({ ...formData, middleInitial: value });
-                }
-              }}
-              label="Middle Initial"
-              error={errors.middleInitial}
-            />
+            id="middleInitial"
+            value={formData.middleInitial || ""}
+            onChange={(e) => {
+              const value = e.target.value.toUpperCase();
+              if (/^[A-Z]?$/.test(value)) {
+                setFormData({ ...formData, middleInitial: value });
+              }
+            }}
+            label="Middle Initial"
+            error={errors.middleInitial}
+          />
           </div>
 
           <FloatingSelect
@@ -252,6 +222,15 @@ const AdminCreateUser = () => {
             placeholder="None"
             error={errors.nameExtension}
             options={["Jr.", "Sr.", "II", "III", "IV", "V"]}
+          />
+
+          <FloatingSelect
+            id="sex"
+            value={formData.sex}
+            onChange={(e) => setFormData({ ...formData, sex: e.target.value })}
+            label="Sex"
+            error={errors.sex}
+            options={["Male", "Female"]}
           />
 
           <div className="grid grid-cols-1 gap-3 mt-4 md:grid-cols-2">
@@ -298,33 +277,6 @@ const AdminCreateUser = () => {
             </FloatingInput>
           </div>
 
-          {formData.registerPassword && (
-            <div className="mt-2">
-              <div className="w-full h-2 bg-gray-200 rounded-full">
-                <div
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    passwordStrength.score === 0
-                      ? "bg-gray-300 w-0"
-                      : passwordStrength.score === 1
-                      ? "bg-red-500 w-1/4"
-                      : passwordStrength.score === 2
-                      ? "bg-orange-400 w-2/4"
-                      : passwordStrength.score === 3
-                      ? "bg-yellow-400 w-3/4"
-                      : "bg-green-500 w-full"
-                  }`}
-                />
-              </div>
-              <p
-                className={`text-sm mt-1 text-center ${
-                  passwordStrength.score <= 2 ? "text-red-500" : "text-green-600"
-                }`}
-              >
-                {passwordStrength.label}
-              </p>
-            </div>
-          )}
-
           {formData.registerPassword && formData.registerConfirmPassword && (
             <p
               className={`text-sm mt-1 text-center ${
@@ -347,7 +299,9 @@ const AdminCreateUser = () => {
           </button>
 
           {message && (
-            <p className="mt-2 text-sm text-center text-green-600">{message}</p>
+            <p className="mt-2 text-sm text-center text-red-600 whitespace-pre-wrap">
+              {message}
+            </p>
           )}
         </form>
       </div>

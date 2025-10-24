@@ -68,6 +68,8 @@ class AdminUserCreate(BaseModel):
     firstname: str
     middle_initial: Optional[str] = None
     name_extension: Optional[str] = None
+    sex: SexEnum
+    role: UserRole
     
 class UserOut(BaseModel):
     id: UUID
