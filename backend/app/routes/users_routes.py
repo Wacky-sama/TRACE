@@ -134,7 +134,7 @@ def login(
         is_approved=user.is_approved
     )
 
- # Admin-only route to create Admin accounts (limits: 2 Admins)
+# Admin-only route to create Admin accounts (limits: 2 Admins)
 @router.post("/admin/create-user", response_model=UserOut, status_code=201)
 def create_user_as_admin(
     user_data: AdminUserCreate,
@@ -163,7 +163,7 @@ def create_user_as_admin(
         lastname=user_data.lastname,
         firstname=user_data.firstname,
         middle_initial=user_data.middle_initial,
-        role=user_data.role,
+        role=UserRole.admin,
         is_approved=True 
     )
     db.add(new_user)
