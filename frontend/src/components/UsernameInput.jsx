@@ -111,7 +111,7 @@ function UsernameInput({
       <div className="h-5 mt-1">
         {displayError && <p className="text-xs text-red-500">{displayError}</p>}
         {!displayError && value && value.length >= 3 && !isChecking && isAvailable === true && (
-          <p className="text-xs text-green-600">✓ Username is available</p>
+          <p className="text-xs text-green-500">✓ Username is available</p>
         )}
       </div>
     </div>
