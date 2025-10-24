@@ -58,10 +58,8 @@ function RegisterForm() {
     setRegisterSuccess("");
 
     try {
-      const presentFullAddress = `${formData.presentBarangayStreet}, 
-      ${formData.presentMunicipality}, ${formData.presentProvince}`;
-      const permanentFullAddress = `${formData.permanentBarangayStreet}, 
-      ${formData.permanentMunicipality}, ${formData.permanentProvince}`;
+      const presentFullAddress = formData.presentAddress;
+      const permanentFullAddress = formData.permanentAddress;
 
       // PAYLOAD 1 - Create User
       const userPayload = {
@@ -123,8 +121,8 @@ function RegisterForm() {
             ? finalNonEmployedReasons
             : null,
 
-        permanent_address: formData.permanentAddress.trim(),
-        present_address: formData.presentAddress.trim()
+        present_address: presentFullAddress,
+        permanent_address: permanentFullAddress
       };
 
       await api.post(
@@ -135,7 +133,7 @@ function RegisterForm() {
       setRegisterSuccess(
         "Registration submitted successfully! Please wait for approval."
       );
-      setTimeout(() => navigate('/alumni-login'), 3000);
+      setTimeout(() => navigate("/alumni-login"), 3000);
     } catch (error) {
       if (error.response?.data) {
         console.error("Server validation error:", error.response.data);
