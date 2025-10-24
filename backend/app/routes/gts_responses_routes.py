@@ -69,6 +69,7 @@ def create_initial_gts_response(
         sex=user.sex,
         birthday=user.birthday,
         permanent_address=user.permanent_address,
+        present_address=user.present_address,
         ever_employed=gts_data.ever_employed,
         is_employed=gts_data.is_employed,
         non_employed_reasons=gts_data.non_employed_reasons,
