@@ -61,6 +61,7 @@ const AdminNotifications = () => {
     };
 
     fetchNotifications();
+    
     const interval = setInterval(fetchNotifications, 10000);
     return () => clearInterval(interval);
   }, []);

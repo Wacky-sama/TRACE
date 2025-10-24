@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "../../services/api";
+import { toast } from "react-toastify";
 
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
@@ -50,8 +51,9 @@ const AlumniNotifications = () => {
       setNotifications((prev) =>
         prev.map((n) => (n.id === id ? { ...n, read: true } : n))
       );
-    } catch (error) {
-      console.error("Failed to mark notification as read:", error);
+      toast.success("Notification marked as read");
+    } catch {
+      toast.error("Failed to mark notification as read:");
     }
   };
 
