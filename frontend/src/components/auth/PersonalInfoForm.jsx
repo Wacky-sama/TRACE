@@ -26,8 +26,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   const [emailAvailable, setEmailAvailable] = useState(null);
   const [usernameAvailable, setUsernameAvailable] = useState(null);
   const provinces = Object.keys(phProvincesCities);
-  const municipalities =
-    phProvincesCities[formData.province] || [];
+  const municipalities = phProvincesCities[formData.province] || [];
 
   useEffect(() => {
     if (formData.registerPassword) {
@@ -54,6 +53,9 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
     if (!str) return "";
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   };
+
+  const capitalizeEachWord = (str) =>
+    str.replace(/\b\w/g, (char) => char.toUpperCase());
 
   const validate = () => {
     const validateErrors = {};
@@ -140,18 +142,39 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   };
 
   const handleNext = () => {
+    // Build full addresses from components BEFORE validation
+    const presentFullAddress = [
+      formData.presentBarangayStreet?.trim(),
+      formData.presentMunicipality?.trim(),
+      formData.presentProvince?.trim(),
+    ]
+      .filter(Boolean) // Remove empty parts
+      .join(", ");
+
+    const permanentFullAddress = [
+      formData.permanentBarangayStreet?.trim(),
+      formData.permanentMunicipality?.trim(),
+      formData.permanentProvince?.trim(),
+    ]
+      .filter(Boolean) // Remove empty parts
+      .join(", ");
+
+    // Update formData with the built addresses
+    setFormData((prev) => ({
+      ...prev,
+      presentAddress: presentFullAddress,
+      permanentAddress: permanentFullAddress,
+      // Keep your existing transformations
+      email: prev.email?.trim().toLowerCase() || "",
+      registerIdentifier: prev.registerIdentifier?.trim().toLowerCase() || "",
+      lastName: capitalizeEachWord(prev.lastName?.trim()),
+      firstName: capitalizeEachWord(prev.firstName?.trim()),
+      middleInitial: capitalizeFirstLetter(prev.middleInitial?.trim()),
+      nameExtension: prev.nameExtension?.trim() || "",
+    }));
+
+    // Now validate (presentAddress and permanentAddress will be set)
     if (validate()) {
-      setFormData((prev) => ({
-        ...prev,
-        email: prev.email?.trim().toLowerCase() || "",
-        registerIdentifier: prev.registerIdentifier?.trim().toLowerCase() || "",
-        lastName: capitalizeFirstLetter(prev.lastName?.trim()),
-        firstName: capitalizeFirstLetter(prev.firstName?.trim()),
-        middleInitial: capitalizeFirstLetter(prev.middleInitial?.trim()),
-        nameExtension: prev.nameExtension?.trim() || "",
-        presentAddress: prev.presentAddress?.trim() || "",
-        permanentAddress: prev.permanentAddress?.trim() || "",
-      }));
       nextStep();
     }
   };
@@ -200,7 +223,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             onChange={(e) =>
               setFormData({
                 ...formData,
-                lastName: capitalizeFirstLetter(e.target.value),
+                lastName: capitalizeEachWord(e.target.value),
               })
             }
             label="Last Name"
@@ -212,7 +235,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             onChange={(e) =>
               setFormData({
                 ...formData,
-                firstName: capitalizeFirstLetter(e.target.value),
+                firstName: capitalizeEachWord(e.target.value),
               })
             }
             label="First Name"
@@ -221,12 +244,12 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           <FloatingInput
             id="middleInitial"
             value={formData.middleInitial || ""}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                middleInitial: capitalizeFirstLetter(e.target.value),
-              })
-            }
+            onChange={(e) => {
+              const value = e.target.value.toUpperCase();
+              if (/^[A-Z]?$/.test(value)) {
+                setFormData({ ...formData, middleInitial: value });
+              }
+            }}
             label="Middle Initial"
             error={errors.middleInitial}
           />
@@ -323,7 +346,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             onChange={(e) =>
               setFormData({
                 ...formData,
-                presentBarangayStreet: e.target.value,
+                presentBarangayStreet: capitalizeEachWord(e.target.value),
               })
             }
             error={errors.presentBarangayStreet}
@@ -373,7 +396,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             onChange={(e) =>
               setFormData({
                 ...formData,
-                permanentBarangayStreet: e.target.value,
+                permanentBarangayStreet: capitalizeEachWord(e.target.value),
               })
             }
             error={errors.permanentBarangayStreet}

@@ -74,6 +74,9 @@ function EmploymentInfoForm({
   const [submitting, setSubmitting] = useState(false);
   const isDark = useDarkMode();
 
+  const capitalizeEachWord = (str) =>
+    str.replace(/\b\w/g, (char) => char.toUpperCase());
+
   const validate = () => {
     const newErrors = {};
 
@@ -323,7 +326,7 @@ function EmploymentInfoForm({
                   label="Company Name"
                   value={formData.companyName}
                   onChange={(e) =>
-                    setFormData({ ...formData, companyName: e.target.value })
+                    setFormData({ ...formData, companyName: capitalizeEachWord(e.target.value) })
                   }
                   error={errors.companyName}
                   darkMode={isDark}
@@ -334,7 +337,7 @@ function EmploymentInfoForm({
                   label="Company Address"
                   value={formData.companyAddress}
                   onChange={(e) =>
-                    setFormData({ ...formData, companyAddress: e.target.value })
+                    setFormData({ ...formData, companyAddress:  capitalizeEachWord(e.target.value) })
                   }
                   error={errors.companyAddress}
                   darkMode={isDark}
