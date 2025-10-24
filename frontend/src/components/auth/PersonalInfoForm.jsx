@@ -55,7 +55,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   };
 
   const capitalizeEachWord = (str) =>
-    str.replace(/\b\w/g, (char) => char.toUpperCase());
+    str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 
   const validate = () => {
     const validateErrors = {};
