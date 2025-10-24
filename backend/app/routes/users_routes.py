@@ -145,8 +145,11 @@ def create_user_as_admin(
     if current_user.role != UserRole.admin:
         raise HTTPException(status_code=403, detail="Only admins can create users")
 
-    if db.query(User).filter(User.email == user_data.email).first():
+     # Check for existing email/username
+    if db.query(User).filter(User.email == user_data.email, User.deleted_at.is_(None)).first():
         raise HTTPException(status_code=400, detail="Email already registered")
+    if db.query(User).filter(User.username == user_data.username, User.deleted_at.is_(None)).first():
+        raise HTTPException(status_code=400, detail="Username already registered")
     
     admin_count = db.query(User).filter(User.role == UserRole.admin).count()
 
@@ -163,6 +166,7 @@ def create_user_as_admin(
         lastname=user_data.lastname,
         firstname=user_data.firstname,
         middle_initial=user_data.middle_initial,
+        name_extension=user_data.name_extension,
         role=UserRole.admin,
         is_approved=True 
     )

@@ -21,10 +21,10 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
     score: 0,
     label: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [emailAvailable, setEmailAvailable] = useState(null);
   const [usernameAvailable, setUsernameAvailable] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const provinces = Object.keys(phProvincesCities);
   const municipalities = phProvincesCities[formData.province] || [];
 
@@ -196,6 +196,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             error={errors.email}
             onAvailabilityChange={setEmailAvailable}
           />
+
           <UsernameInput
             id="registerIdentifier"
             value={formData.registerIdentifier}
@@ -452,7 +453,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
       <div className="space-2">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {/* Password Field */}
           <FloatingInput
             id="registerPassword"
             type={showPassword ? "text" : "password"}
@@ -471,7 +471,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             </span>
           </FloatingInput>
 
-          {/* Confirm Password Field */}
           <FloatingInput
             id="registerConfirmPassword"
             type={showConfirmPassword ? "text" : "password"}
@@ -496,7 +495,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           </FloatingInput>
         </div>
 
-        {/* Password Strength Bar */}
         {formData.registerPassword && (
           <div className="mt-2">
             <div className="w-full h-2 bg-gray-200 rounded-full">
@@ -524,7 +522,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           </div>
         )}
 
-        {/* Password Match Message */}
         {formData.registerPassword && formData.registerConfirmPassword && (
           <p
             className={`text-sm mt-1 ${
