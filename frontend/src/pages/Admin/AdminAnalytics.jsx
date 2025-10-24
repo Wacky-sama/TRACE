@@ -6,11 +6,11 @@ import {
 } from "recharts";
 import api from "../../services/api";
 
-// Hook to track dark mode state
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains("dark")
   );
+
   useEffect(() => {
     const observer = new MutationObserver(() => {
       setIsDark(document.documentElement.classList.contains("dark"));
@@ -21,6 +21,7 @@ function useDarkMode() {
     });
     return () => observer.disconnect();
   }, []);
+
   return isDark;
 }
 
@@ -28,21 +29,31 @@ const AdminAnalytics = () => {
   const isDark = useDarkMode();
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
-
   const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#6366f1"];
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAll = async () => {
       try {
-        const res = await api.get("/admin/analytics");
-        setStats(res.data);
+        const [users, events, gts, logs] = await Promise.all([
+          api.get("/admin/analytics/users"),
+          api.get("/admin/analytics/events"),
+          api.get("/admin/analytics/gts"),
+          api.get("/admin/analytics/logs"),
+        ]);
+
+        setStats({
+          ...users.data,
+          ...events.data,
+          ...gts.data,
+          ...logs.data,
+        });
       } catch (error) {
         console.error("Failed to fetch analytics:", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+    fetchAll();
   }, []);
 
   if (loading) {
@@ -71,10 +82,10 @@ const AdminAnalytics = () => {
           {/* Header */}
           <header className="mb-6">
             <h1 className={`text-3xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>
-              Admin Analytics
+              Analytics
             </h1>
             <p className={`${isDark ? "text-gray-300" : "text-gray-700"}`}>
-              Data insights and trends from alumni, events, and GTS participation.
+              Real-time insights from alumni, GTS, and event activity.
             </p>
           </header>
 
@@ -103,7 +114,7 @@ const AdminAnalytics = () => {
 
             {/* Charts Section */}
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {/* 1. Event Participation Trend */}
+              {/* Event Participation Trend */}
               <div className={`p-6 rounded-xl shadow ${isDark ? "bg-gray-800" : "bg-white"}`}>
                 <h3 className={`text-lg font-semibold mb-4 ${isDark ? "text-gray-200" : "text-gray-800"}`}>
                   Event Participation Trend
@@ -118,7 +129,7 @@ const AdminAnalytics = () => {
                 </ResponsiveContainer>
               </div>
 
-              {/* 2. Employment Trend */}
+              {/* Employment Trend */}
               <div className={`p-6 rounded-xl shadow ${isDark ? "bg-gray-800" : "bg-white"}`}>
                 <h3 className={`text-lg font-semibold mb-4 ${isDark ? "text-gray-200" : "text-gray-800"}`}>
                   Employment Trend Over Time
@@ -133,7 +144,7 @@ const AdminAnalytics = () => {
                 </ResponsiveContainer>
               </div>
 
-              {/* 3. GTS Completion Donut */}
+              {/* GTS Completion Donut */}
               <div className={`p-6 rounded-xl shadow ${isDark ? "bg-gray-800" : "bg-white"}`}>
                 <h3 className={`text-lg font-semibold mb-4 ${isDark ? "text-gray-200" : "text-gray-800"}`}>
                   GTS Completion Overview
@@ -161,7 +172,7 @@ const AdminAnalytics = () => {
                 </ResponsiveContainer>
               </div>
 
-              {/* 4. GTS Completion by Department */}
+              {/* GTS Completion by Department */}
               <div className={`p-6 rounded-xl shadow ${isDark ? "bg-gray-800" : "bg-white"}`}>
                 <h3 className={`text-lg font-semibold mb-4 ${isDark ? "text-gray-200" : "text-gray-800"}`}>
                   GTS Completion by Department
