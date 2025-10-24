@@ -17,8 +17,10 @@ function EmailInput({
   const [isAvailable, setIsAvailable] = useState(null);
   const [validationError, setValidationError] = useState("");
 
+  const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+
   useEffect(() => {
-    if (!value || !value.includes('@')) {
+    if (!value) {
       setIsAvailable(null);
       setValidationError("");
       setIsChecking(false);
@@ -26,10 +28,17 @@ function EmailInput({
       return;
     }
 
+    if (!emailRegex.test(value)) {
+      setIsAvailable(null);
+      setValidationError("Invalid email format (e.g., example@domain.com)");
+      setIsChecking(false);
+      if (onAvailabilityChange) onAvailabilityChange(null);
+      return;
+    }
+    setValidationError("");
+
     const timeoutId = setTimeout(async () => {
       setIsChecking(true);
-      setValidationError("");
-
       try {
         const response = await checkEmailAvailability(value);
         setIsAvailable(response.available);
@@ -44,7 +53,6 @@ function EmailInput({
         setIsChecking(false);
       }
     }, 500);
-
     return () => clearTimeout(timeoutId);
   }, [value, onAvailabilityChange]);
 
@@ -111,7 +119,7 @@ function EmailInput({
       <div className="h-5 mt-1">
         {displayError && <p className="text-xs text-red-500">{displayError}</p>}
         {!displayError && value && value.includes('@') && !isChecking && isAvailable === true && (
-          <p className="text-xs text-green-600">✓ Email is available</p>
+          <p className="text-xs text-green-500">✓ Email is available</p>
         )}
       </div>
     </div>
