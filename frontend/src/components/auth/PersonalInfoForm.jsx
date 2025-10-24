@@ -142,13 +142,12 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   };
 
   const handleNext = () => {
-    // Build full addresses from components BEFORE validation
     const presentFullAddress = [
       formData.presentBarangayStreet?.trim(),
       formData.presentMunicipality?.trim(),
       formData.presentProvince?.trim(),
     ]
-      .filter(Boolean) // Remove empty parts
+      .filter(Boolean)
       .join(", ");
 
     const permanentFullAddress = [
@@ -156,15 +155,13 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       formData.permanentMunicipality?.trim(),
       formData.permanentProvince?.trim(),
     ]
-      .filter(Boolean) // Remove empty parts
+      .filter(Boolean)
       .join(", ");
 
-    // Update formData with the built addresses
     setFormData((prev) => ({
       ...prev,
       presentAddress: presentFullAddress,
       permanentAddress: permanentFullAddress,
-      // Keep your existing transformations
       email: prev.email?.trim().toLowerCase() || "",
       registerIdentifier: prev.registerIdentifier?.trim().toLowerCase() || "",
       lastName: capitalizeEachWord(prev.lastName?.trim()),
@@ -173,7 +170,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       nameExtension: prev.nameExtension?.trim() || "",
     }));
 
-    // Now validate (presentAddress and permanentAddress will be set)
     if (validate()) {
       nextStep();
     }
