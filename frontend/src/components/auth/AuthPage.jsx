@@ -84,7 +84,7 @@ function AuthPage() {
                   </motion.div>
                 )}
               </AnimatePresence>
-              <p className="mb-4 text-sm text-gray-500">
+              <p className="mt-6 mb-4 text-sm text-gray-500 dark:text-gray-200">
                 {isRegistering
                   ? "Already have an account?"
                   : "Don't have an account?"}{" "}
@@ -92,7 +92,7 @@ function AuthPage() {
                   onClick={() =>
                     navigate(isRegistering ? "/login" : "/register")
                   }
-                  className="text-blue-600 hover:underline"
+                  className="text-blue-600 dark:text-white hover:underline"
                 >
                   {isRegistering ? "Login here." : "Register here."}
                 </button>

@@ -30,7 +30,7 @@ function EmailInput({
 
     if (!emailRegex.test(value)) {
       setIsAvailable(null);
-      setValidationError("Invalid email format (e.g., example@domain.com)");
+      setValidationError("Invalid email format");
       setIsChecking(false);
       if (onAvailabilityChange) onAvailabilityChange(null);
       return;
