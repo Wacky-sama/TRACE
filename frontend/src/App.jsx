@@ -13,8 +13,8 @@ import { useTheme } from "./context/ThemeProvider";
 import api from "./services/api";
 import "react-toastify/dist/ReactToastify.css";
 import LandingPage from "./pages/LandingPage";
+import AuthPage from "./components/auth/AuthPage";
 // Admin imports
-import AdminAuthPage from "./components/auth/AdminAuthPage";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminCreateUser from "./pages/Admin/AdminCreateUser";
@@ -26,7 +26,6 @@ import AdminNotifications from "./pages/Admin/AdminNotifications";
 import AdminSettings from "./pages/Admin/AdminSettings";
 import AdminLayout from "./pages/Admin/AdminLayout";
 // Alumni imports
-import AlumniAuthPage from "./components/auth/AlumniAuthPage";
 import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
 import AlumniEvents from "./pages/Alumni/AlumniEvents";
 import AlumniNotifications from "./pages/Alumni/AlumniNotifications";
@@ -159,26 +158,10 @@ function App() {
             </Route>
 
             <Route
-              path="/alumni-login"
+              path="/login"
               element={
                 <PublicRoute>
-                  <AlumniAuthPage />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/alumni-register"
-              element={
-                <PublicRoute>
-                  <AlumniAuthPage />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/admin-login"
-              element={
-                <PublicRoute>
-                  <AdminAuthPage />
+                  <AuthPage />
                 </PublicRoute>
               }
             />

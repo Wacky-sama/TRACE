@@ -8,7 +8,7 @@ import { setAuthData, setUser, clearAuthData } from '../../utils/storage';
 import { useUser } from '../../context/UserContext';
 import FloatingInput from '../FloatingInput';
 
-function LoginForm({ expectedRole }) {
+function LoginForm() {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -30,20 +30,6 @@ function LoginForm({ expectedRole }) {
       
       if (role === "alumni" && !is_approved) {
         toast.info("Your account is pending approval by the admin.");
-        return;
-      }
-
-      if (role !== expectedRole) {
-        toast.error(`Access denied: This login page is for ${expectedRole} only. Please use the appropriate portal.`);
-
-        setTimeout(() => {
-          clearAuthData();
-          if (role === "admin") {
-            navigate("/admin-login");
-          } else if (role === "alumni") {
-            navigate("/alumni-login");
-          }
-        }, 4000);
         return;
       }
 
