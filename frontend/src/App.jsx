@@ -166,6 +166,14 @@ function App() {
               }
             />
             <Route
+              path="/register"
+              element={
+                <PublicRoute>
+                  <AuthPage />
+                </PublicRoute>
+              }
+            />
+            <Route
               path="/"
               element={
                 <PublicRoute>

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faUser, faLock } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import { login, getProfile } from '../../services/auth';
-import { setAuthData, setUser, clearAuthData } from '../../utils/storage';
+import { setAuthData, setUser } from '../../utils/storage';
 import { useUser } from '../../context/UserContext';
 import FloatingInput from '../FloatingInput';
 
