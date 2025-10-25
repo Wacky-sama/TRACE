@@ -13,7 +13,7 @@ import ThemeToggle from "../components/ThemeToggle";
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  
+
   const features = [
     {
       icon: <Calendar className="w-8 h-8 text-primary" />,
@@ -55,21 +55,39 @@ export default function LandingPage() {
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       {/* Sticky Navbar */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
-        <div className="container flex items-center justify-between px-4 py-4 mx-auto">
-          {/* Left side: Logo and text - Now clickable */}
-          <div 
+        <div className="container flex items-center justify-between px-4 py-3 mx-auto sm:py-4">
+          {/* Left side: Logo and text */}
+          <div
             className="flex items-center gap-2 cursor-pointer"
             onClick={goToHome}
           >
-            <GraduationCap className="w-8 h-8 text-primary" />
+            <GraduationCap className="w-7 h-7 text-primary sm:w-8 sm:h-8" />
             <div>
-              <h1 className="text-xl font-bold text-foreground">TRACE</h1>
-              <p className="text-xs text-muted-foreground">
+              <h1 className="text-lg font-bold text-foreground sm:text-xl">
+                TRACE
+              </h1>
+              <p className="text-[10px] text-muted-foreground sm:text-xs">
                 CSU Gonzaga Campus
               </p>
             </div>
           </div>
-          <ThemeToggle />
+
+          {/* Right side: Grouped buttons and ThemeToggle */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Button
+              onClick={() => navigate("/login")}
+              className={`px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-lg font-semibold transition-all duration-200 rounded-full ${
+                location.pathname === "/login" ||
+                location.pathname === "/register"
+                  ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
+                  : "border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
+              }`}
+            >
+              Login
+            </Button>
+
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -86,23 +104,6 @@ export default function LandingPage() {
             community. Manage events, update profiles, and stay engaged with
             your alma mater.
           </p>
-
-          <div className="flex flex-wrap justify-center gap-4 mt-10">
-            <Button
-              onClick={() => navigate("/alumni-login")}  
-              className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-110 hover:scale-105"
-            >
-              Alumni Login
-            </Button>
-            
-            <Button
-              variant="outline"
-              onClick={() => navigate("/admin-login")} 
-              className="px-6 py-3 text-lg font-semibold transition-all duration-200 rounded-full border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] hover:scale-105"
-            >
-              Admin Portal
-            </Button>
-          </div>
         </div>
       </section>
 

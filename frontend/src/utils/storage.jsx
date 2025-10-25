@@ -28,12 +28,7 @@ export const clearAuthData = () => {
   localStorage.removeItem("user");
 };
 
-export const alumniLogout = () => {
+export const userLogout = () => {
   clearAuthData();
-  window.location.href = "/alumni-login"; 
-};
-
-export const adminLogout = () => {
-  clearAuthData();
-  window.location.href = "/admin-login"; 
+  window.location.href = "/login"; 
 };

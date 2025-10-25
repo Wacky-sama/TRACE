@@ -1,4 +1,4 @@
-import { adminLogout } from "../../utils/storage";
+import { userLogout } from "../../utils/storage";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -53,9 +53,9 @@ const AdminSidebar = () => {
   ];
 
   const handleLogout = () => {
-    adminLogout();
+    userLogout();
     setCurrentUser(null);
-    navigate("/admin-login");
+    navigate("/login");
   };
 
   const toggleDropdown = (key) => {
