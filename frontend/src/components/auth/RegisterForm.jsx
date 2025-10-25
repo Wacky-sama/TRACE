@@ -133,7 +133,7 @@ function RegisterForm() {
       setRegisterSuccess(
         "Registration submitted successfully! Please wait for approval."
       );
-      setTimeout(() => navigate("/alumni-login"), 3000);
+      setTimeout(() => navigate("/login"), 3000);
     } catch (error) {
       if (error.response?.data) {
         console.error("Server validation error:", error.response.data);
