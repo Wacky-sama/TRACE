@@ -31,7 +31,8 @@ const AdminCreateEvent = () => {
     title: "",
     description: "",
     location: "",
-    event_date: null,
+    start_date: null,
+    end_date: null,
   });
 
   const [errors, setErrors] = useState({});
@@ -42,8 +43,12 @@ const AdminCreateEvent = () => {
     const validateErrors = {};
     
     if (!formData.title.trim()) validateErrors.title = "Title is required";
-    if (!formData.location) validateErrors.location = "Location is required";
-    if (!formData.event_date) validateErrors.event_date = "Event date is required";
+    if (!formData.location.trim()) validateErrors.location = "Location is required";
+    if (!formData.start_date) validateErrors.start_date = "Start date is required";
+    if (!formData.end_date) validateErrors.end_date = "End date is required";
+    if (formData.start_date && formData.end_date && formData.start_date > formData.end_date) {
+      validateErrors.end_date = "End date must be on or after start date";
+    }
     setErrors(validateErrors);
     return Object.keys(validateErrors).length === 0;
   };
@@ -59,15 +64,18 @@ const AdminCreateEvent = () => {
         "/events/",
         {
           ...formData,
-          event_date: formData.event_date
-            ? formData.event_date.toISOString().split("T")[0]
+          start_date: formData.start_date
+            ? formData.start_date.toISOString().split("T")[0]
+            : "",
+          end_date: formData.end_date
+            ? formData.end_date.toISOString().split("T")[0]
             : "",
         },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
 
       setMessage("Event created successfully!");
-      setFormData({ title: "", description: "", location: "", event_date: null });
+      setFormData({ title: "", description: "", location: "", start_date: null, end_date: null });
       setErrors({});
     } catch (error) {
       setMessage(error.response?.data?.detail || "Failed to create event");
@@ -114,15 +122,11 @@ const AdminCreateEvent = () => {
               darkMode={isDark}
             />
 
-            <FloatingSelect
+            <FloatingInput
               id="location"
               label="Location"
               value={formData.location}
-              onChange={(e) => 
-                setFormData({ ...formData, location: e.target.value })
-              }
-              options={["GYM", "Conference Hall", "Oval", "Admin Building", "Mabric Hall"]}
-              placeholder="Select Location"
+              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
               error={errors.location}
               darkMode={isDark}
             />
@@ -151,16 +155,29 @@ const AdminCreateEvent = () => {
             />
           </div>
 
-          <AdminFloatingDatePicker
-            id="event_date"
-            label="Event Date"
-            value={formData.event_date}
-            onChange={(date) => 
-              setFormData({ ...formData, event_date: date })
-            }
-            error={errors.event_date}
-            darkMode={isDark} 
-          />
+          <div className="grid grid-cols-1 gap-3 mb-4 md:grid-cols-2">
+            <AdminFloatingDatePicker
+              id="start_date"
+              label="Start Date"
+              value={formData.start_date}
+              onChange={(date) => 
+                setFormData({ ...formData, start_date: date })
+              }
+              error={errors.start_date}
+              darkMode={isDark} 
+            />
+
+            <AdminFloatingDatePicker
+              id="end_date"
+              label="End Date"
+              value={formData.end_date}
+              onChange={(date) => 
+                setFormData({ ...formData, end_date: date })
+              }
+              error={errors.end_date}
+              darkMode={isDark} 
+            />
+          </div>
 
           <button
             type="submit"

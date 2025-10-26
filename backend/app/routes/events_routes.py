@@ -27,7 +27,8 @@ def create_event(
         title=event_in.title,
         description=event_in.description,
         location=event_in.location,
-        event_date=event_in.event_date,
+        start_date=event_in.start_date,
+        end_date=event_in.end_date,
         created_by=current_user.id,
         status="approved",  # Default status for created events
         created_at=datetime.utcnow()
@@ -100,7 +101,6 @@ def delete_event(
     db.commit()
     return {"message": "Event deleted successfully"}
 
-
 @router.put("/{event_id}", response_model=events_schemas.EventOut)
 def update_event(
     event_id: UUID,
@@ -118,7 +118,8 @@ def update_event(
     event.title = event_in.title
     event.description = event_in.description
     event.location = event_in.location
-    event.event_date = event_in.event_date
+    event.start_date = event_in.start_date
+    event.end_date = event_in.end_date
 
     db.commit()
     db.refresh(event)
