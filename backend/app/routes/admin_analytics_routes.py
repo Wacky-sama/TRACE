@@ -78,7 +78,7 @@ def get_admin_analytics(
         gts_completed = sum(1 for r in complete_responses if is_gts_complete(r))
 
         # ACTIVE EVENTS (unchanged)
-        active_events = db.query(func.count(Event.id)).scalar()
+        active_events = db.query(func.count(Events.id)).scalar()
 
         # DEPARTMENTS (unchanged)
         departments = db.query(Users.course).filter(*alumni_filters).distinct().count()
@@ -105,14 +105,14 @@ def get_admin_analytics(
         )
         employment_trend_data = [{"year": int(y), "employed": e} for y, e in employment_trend]
 
-        # EVENT PARTICIPATION TREND (unchanged)
+        # EVENT PARTICIPATION TREND
         event_trend = (
             db.query(
-                extract("month", Events.event_date).label("month"),
+                extract("month", Events.start_date).label("month"),  
                 func.count(Events.id).label("attendance"),
             )
-            .group_by(extract("month", Events.event_date))
-            .order_by(extract("month", Events.event_date))
+            .group_by(extract("month", Events.start_date)) 
+            .order_by(extract("month", Events.start_date))
             .all()
         )
         event_chart_data = [
