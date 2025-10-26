@@ -300,56 +300,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       />
 
       <div className="space-2">
-        {/* PRESENT ADDRESS */}
-        <div>
-          <h3 className="mb-1 font-medium text-md">Present Address</h3>
-          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-            <FloatingSelect
-              id="presentProvince"
-              label="Province"
-              value={formData.presentProvince}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  presentProvince: e.target.value,
-                  presentMunicipality: "",
-                })
-              }
-              options={Object.keys(phProvincesCities)}
-              error={errors.presentProvince}
-            />
-            <FloatingSelect
-              id="presentMunicipality"
-              label="City / Municipality"
-              value={formData.presentMunicipality}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  presentMunicipality: e.target.value,
-                })
-              }
-              options={
-                formData.presentProvince
-                  ? phProvincesCities[formData.presentProvince]
-                  : []
-              }
-              error={errors.presentMunicipality}
-            />
-          </div>
-          <FloatingInput
-            id="presentBarangayStreet"
-            label="Barangay / Street / House No."
-            value={formData.presentBarangayStreet}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                presentBarangayStreet: capitalizeEachWord(e.target.value),
-              })
-            }
-            error={errors.presentBarangayStreet}
-          />
-        </div>
-
         {/* PERMANENT ADDRESS */}
         <div>
           <h3 className="mb-1 font-medium text-md">Permanent Address</h3>
@@ -397,6 +347,55 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
               })
             }
             error={errors.permanentBarangayStreet}
+          />
+        </div>
+        {/* PRESENT ADDRESS */}
+        <div>
+          <h3 className="mb-1 font-medium text-md">Present Address</h3>
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+            <FloatingSelect
+              id="presentProvince"
+              label="Province"
+              value={formData.presentProvince}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  presentProvince: e.target.value,
+                  presentMunicipality: "",
+                })
+              }
+              options={Object.keys(phProvincesCities)}
+              error={errors.presentProvince}
+            />
+            <FloatingSelect
+              id="presentMunicipality"
+              label="City / Municipality"
+              value={formData.presentMunicipality}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  presentMunicipality: e.target.value,
+                })
+              }
+              options={
+                formData.presentProvince
+                  ? phProvincesCities[formData.presentProvince]
+                  : []
+              }
+              error={errors.presentMunicipality}
+            />
+          </div>
+          <FloatingInput
+            id="presentBarangayStreet"
+            label="Barangay / Street / House No."
+            value={formData.presentBarangayStreet}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                presentBarangayStreet: capitalizeEachWord(e.target.value),
+              })
+            }
+            error={errors.presentBarangayStreet}
           />
         </div>
 
