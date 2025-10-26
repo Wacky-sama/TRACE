@@ -39,7 +39,9 @@ function AuthPage() {
         </div>
       </header>
       <div className="flex items-center justify-center min-h-screen px-4 bg-[hsl(var(--background))]">
-        <div className="flex flex-col w-full max-w-4xl overflow-hidden transition-transform duration-300 transform bg-white shadow-lg rounded-xl md:flex-row hover:-translate-y-2">
+        {/* Changed: bg-white to bg-card for theme-awareness */}
+        <div className="flex flex-col w-full max-w-4xl overflow-hidden transition-transform duration-300 transform shadow-lg bg-card rounded-xl md:flex-row hover:-translate-y-2">
+          {/* Left side: Kept bg-gray-800 for contrast (dark in both modes); texts are already light */}
           <div className="flex items-center justify-center flex-1 p-4 bg-gray-800 md:p-8">
             <div className="text-center">
               <img
@@ -58,7 +60,8 @@ function AuthPage() {
 
           <div className="flex-1 p-6 md:p-10 bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))]">
             <div className="w-full max-w-md mx-auto text-center">
-              <h2 className="mb-6 text-2xl font-semibold">
+              {/* Added: text-foreground for h2 to ensure it adapts */}
+              <h2 className="mb-6 text-2xl font-semibold text-foreground">
                 {isRegistering ? "Register" : "Login"}
               </h2>
               <AnimatePresence mode="wait">
@@ -84,7 +87,8 @@ function AuthPage() {
                   </motion.div>
                 )}
               </AnimatePresence>
-              <p className="mt-6 mb-4 text-sm text-gray-500 dark:text-gray-200">
+              {/* Changed: text-muted-foreground for better theme adaptation; button to text-primary */}
+              <p className="mt-6 mb-4 text-lg text-muted-foreground">
                 {isRegistering
                   ? "Already have an account?"
                   : "Don't have an account?"}{" "}
@@ -92,7 +96,7 @@ function AuthPage() {
                   onClick={() =>
                     navigate(isRegistering ? "/login" : "/register")
                   }
-                  className="text-blue-600 dark:text-white hover:underline"
+                  className="text-blue-600 text-primary hover:underline"
                 >
                   {isRegistering ? "Login here." : "Register here."}
                 </button>
