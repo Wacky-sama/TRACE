@@ -215,7 +215,7 @@ CREATE TABLE users (
         last_seen TIMESTAMP,
         birthday DATE,
         present_address TEXT,
-        contact_number TEXT,
+        contact_number character varying(20),
         sex sexenum NOT NULL,
         permanent_address VARCHAR
 );
