@@ -17,4 +17,4 @@ class EventAttendance(Base):
 
     # Relationships (Optional: only if you want easy access)
     event = relationship("Event", backref="attendances", foreign_keys=[event_id])
-    user = relationship("User", backref="event_attendances", foreign_keys=[user_id])
+    user = relationship("Users", backref="event_attendances", foreign_keys=[user_id])

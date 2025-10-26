@@ -73,4 +73,4 @@ class GTSResponses(Base):
     submitted_at = Column(Date, server_default=func.now())
 
     # Relations
-    user = relationship("User", backref="gts_responses")
+    user = relationship("Users", backref="gts_responses")

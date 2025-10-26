@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
-from app.models.users_models import User
+from app.models.users_models import Users
 from app.models.gts_responses_models import GTSResponses
 from app.utils.auth import get_current_user
 from app.schemas.gts_responses_schemas import (
@@ -91,7 +91,7 @@ def create_initial_gts_response(
 # Alumni see their own GTS response
 @router.get("/me", response_model=GTSResponsesOut)
 def get_my_gts_response(
-    current_user: User = Depends(get_current_user), 
+    current_user: Users = Depends(get_current_user), 
     db: Session = Depends(get_db)
 ):
     gts_responses = db.query(GTSResponses).filter(GTSResponses.user_id == current_user.id).first()
@@ -109,7 +109,7 @@ def update_gts_response(
     gts_id: UUID, 
     updated_data: GTSResponsesPersonalUpdate, 
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user)
 ):
     gts = db.query(GTSResponses).filter(
         GTSResponses.id == gts_id, 
@@ -136,7 +136,7 @@ def update_educational_info(
     gts_id: UUID,
     updated_data: GTSResponsesEducationalUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user)
 ):
     gts = db.query(GTSResponses).filter(
         GTSResponses.id == gts_id,
@@ -164,7 +164,7 @@ def update_trainings_info(
     gts_id: UUID,
     updated_data: GTSResponsesTrainingUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user)
 ):
     gts = db.query(GTSResponses).filter(
         GTSResponses.id == gts_id,
@@ -192,7 +192,7 @@ def update_employment_info(
     gts_id: UUID,
     updated_data: GTSResponsesEmploymentUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user)
 ):
     gts = db.query(GTSResponses).filter(
         GTSResponses.id == gts_id,
@@ -219,7 +219,7 @@ def update_job_satisfaction(
     gts_id: UUID,
     updated_data: GTSResponsesJobSatisfactionUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user)
 ):
     gts = db.query(GTSResponses).filter(
         GTSResponses.id == gts_id,
@@ -242,7 +242,7 @@ def update_services_from_csu(
     gts_id: UUID,
     updated_data: GTSResponsesServicesUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user)
 ):
     gts = db.query(GTSResponses).filter(
         GTSResponses.id == gts_id,
@@ -265,7 +265,7 @@ def update_problems_issues(
     gts_id: UUID,
     updated_data: GTSResponsesProblemsUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user)
 ):
     gts = db.query(GTSResponses).filter(
         GTSResponses.id == gts_id,

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func, extract
 from datetime import datetime, timedelta
 from app.database import get_db
-from app.models.users_models import User
+from app.models.users_models import Users
 from app.models.gts_responses_models import GTSResponses
 from app.models.events_models import Event
 from app.models.activity_logs_models import ActivityLog

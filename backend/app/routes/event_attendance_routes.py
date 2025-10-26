@@ -5,7 +5,7 @@ from uuid import UUID
 from app.database import get_db
 from app.models import event_attendance_models
 from app.routes.users_routes import get_current_user
-from app.models.users_models import User
+from app.models.users_models import Users
 from app.schemas.event_attendance_schemas import AttendanceOut
 
 router = APIRouter(
@@ -16,7 +16,7 @@ router = APIRouter(
 def attend_event(
     event_id: UUID,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user)
 ):
     if current_user.role != "alumni":
         raise HTTPException(status_code=403, detail="Only alumni can attend events.")
