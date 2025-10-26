@@ -5,25 +5,24 @@ from datetime import datetime
 from app.database import get_db
 from app.routes.users_routes import get_current_user  
 from app.models.users_models import Users 
-from app.models import events_models
-from app.schemas import events_schemas
-from app.schemas.events_schemas import EventAction
+from app.models.events_models import Events
+from app.schemas.events_schemas import EventOut, EventAction, EventCreate
 
 router = APIRouter(
     prefix="/events",
     tags=["Events"]
 )
 
-@router.post("/", response_model=events_schemas.EventOut)
+@router.post("/", response_model=EventOut)
 def create_event(
-    event_in: events_schemas.EventCreate,
+    event_in: EventCreate,
     db: Session = Depends(get_db),
     current_user: Users = Depends(get_current_user)  
 ):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Only Admin can create events.")
 
-    new_event = events_models.Event(
+    new_event = Events(
         title=event_in.title,
         description=event_in.description,
         location=event_in.location,
@@ -41,22 +40,22 @@ def create_event(
 def get_events_by_status(db, status, skip=0, limit=100):
     creator = aliased(Users)
     results = (
-        db.query(events_models.Event, creator.firstname, creator.lastname)
-        .join(creator, events_models.Event.created_by == creator.id)
-        .filter(events_models.Event.status == status)
+        db.query(Events, creator.firstname, creator.lastname)
+        .join(creator, Events.created_by == creator.id)
+        .filter(Events.status == status)
         .offset(skip)
         .limit(limit)
         .all()
     )
 
     return [
-        events_schemas.EventOut(
+        EventOut(
             **{**event.__dict__, "created_by_name": f"{firstname} {lastname}"}
         )
         for event, firstname, lastname in results
     ]
 
-@router.get("/", response_model=list[events_schemas.EventOut])
+@router.get("/", response_model=list[EventOut])
 def get_events(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
     if current_user.role not in {"admin", "alumni"}:
         raise HTTPException(status_code=403, detail="Not authorized")
@@ -72,7 +71,7 @@ def update_event_status(
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    event = db.query(events_models.Event).filter(events_models.Event.id == event_id).first()
+    event = db.query(Events).filter(Events.id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
@@ -81,7 +80,7 @@ def update_event_status(
     db.refresh(event)
     return {
     "message": f"Event {action}d successfully",
-    "event": events_schemas.EventOut.from_orm(event)
+    "event": EventOut.from_orm(event)
 }
 
 @router.delete("/{event_id}")
@@ -93,7 +92,7 @@ def delete_event(
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    event = db.query(events_models.Event).filter(events_models.Event.id == event_id).first()
+    event = db.query(Events).filter(Events.id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
@@ -101,17 +100,17 @@ def delete_event(
     db.commit()
     return {"message": "Event deleted successfully"}
 
-@router.put("/{event_id}", response_model=events_schemas.EventOut)
+@router.put("/{event_id}", response_model=EventOut)
 def update_event(
     event_id: UUID,
-    event_in: events_schemas.EventCreate,
+    event_in: EventCreate,
     db: Session = Depends(get_db),
     current_user: Users = Depends(get_current_user)
 ):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    event = db.query(events_models.Event).filter(events_models.Event.id == event_id).first()
+    event = db.query(Events).filter(Events.id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 

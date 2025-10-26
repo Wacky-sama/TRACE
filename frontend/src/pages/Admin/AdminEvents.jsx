@@ -24,19 +24,42 @@ const AdminEvents = () => {
     title: "",
     description: "",
     location: "",
-    event_date: null,
+    start_date: null,
+    end_date: null,
   });
 
+  // New states for location handling
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [customLocation, setCustomLocation] = useState("");
+  const [showCustomLocation, setShowCustomLocation] = useState(false);
+
   const [errors, setErrors] = useState({});
-  const [message, setMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+
+  const locationOptions = [
+    "GYM",
+    "Conference Hall",
+    "Oval",
+    "Admin Building",
+    "Mabric Hall",
+    "Other",
+  ];
 
   const validate = () => {
     const validateErrors = {};
     if (!editForm.title.trim()) validateErrors.title = "Title is required";
-    if (!editForm.location) validateErrors.location = "Location is required";
-    if (!editForm.event_date)
-      validateErrors.event_date = "Event date is required";
+    if (!editForm.location.trim())
+      validateErrors.location = "Location is required";
+    if (!editForm.start_date)
+      validateErrors.start_date = "Start date is required";
+    if (!editForm.end_date) validateErrors.end_date = "End date is required";
+    if (
+      editForm.start_date &&
+      editForm.end_date &&
+      editForm.start_date > editForm.end_date
+    ) {
+      validateErrors.end_date = "End date must be on or after start date";
+    }
     setErrors(validateErrors);
     return Object.keys(validateErrors).length === 0;
   };
@@ -47,9 +70,7 @@ const AdminEvents = () => {
       setEvents(res.data);
     } catch (error) {
       console.error("Error fetching events:", error);
-      toast.error(
-        "Failed to load events. Backend might be on a coffee break."
-      );
+      toast.error("Failed to load events. Backend might be on a coffee break.");
     } finally {
       setLoading(false);
     }
@@ -67,15 +88,33 @@ const AdminEvents = () => {
       title: eventData.title,
       description: eventData.description || "",
       location: eventData.location || "",
-      event_date: new Date(eventData.event_date),
+      start_date: new Date(eventData.start_date),
+      end_date: new Date(eventData.end_date),
     });
-    setMessage("");
+
+    const isOther = !locationOptions.slice(0, -1).includes(eventData.location);
+    setSelectedLocation(isOther ? "Other" : eventData.location);
+    setCustomLocation(isOther ? eventData.location : "");
+    setShowCustomLocation(isOther);
     setErrors({});
+  };
+
+  const handleLocationChange = (e) => {
+    const value = e.target.value;
+    setSelectedLocation(value);
+    setShowCustomLocation(value === "Other");
+    const effectiveLocation = value === "Other" ? customLocation : value;
+    setEditForm({ ...editForm, location: effectiveLocation });
+  };
+
+  const handleCustomLocationChange = (e) => {
+    const value = e.target.value;
+    setCustomLocation(value);
+    setEditForm({ ...editForm, location: value });
   };
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    setMessage("");
     if (!validate()) return;
 
     try {
@@ -83,8 +122,11 @@ const AdminEvents = () => {
         `/events/${editingEvent.id}`,
         {
           ...editForm,
-          event_date: editForm.event_date
-            ? editForm.event_date.toISOString().split("T")[0]
+          start_date: editForm.start_date
+            ? editForm.start_date.toISOString().split("T")[0]
+            : "",
+          end_date: editForm.end_date
+            ? editForm.end_date.toISOString().split("T")[0]
             : "",
         },
         { headers: { Authorization: `Bearer ${getToken()}` } }
@@ -92,6 +134,9 @@ const AdminEvents = () => {
 
       toast.success("Event updated successfully!");
       setEditingEvent(null);
+      setSelectedLocation("");
+      setCustomLocation("");
+      setShowCustomLocation(false);
       setErrors({});
       await fetchEvents();
     } catch (error) {
@@ -164,13 +209,18 @@ const AdminEvents = () => {
           }`}
         >
           <tr>
-            {["Title", "Location", "Description", "Date", "Actions"].map(
-              (header) => (
-                <th key={header} className="p-3 text-left align-middle">
-                  {header}
-                </th>
-              )
-            )}
+            {[
+              "Title",
+              "Location",
+              "Description",
+              "Start Date",
+              "End Date",
+              "Actions",
+            ].map((header) => (
+              <th key={header} className="p-3 text-left align-middle">
+                {header}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody className="text-sm">
@@ -190,7 +240,8 @@ const AdminEvents = () => {
                 <td className="p-3">{event.title}</td>
                 <td className="p-3">{event.location}</td>
                 <td className="p-3">{event.description || "-"}</td>
-                <td className="p-3">{event.event_date}</td>
+                <td className="p-3">{event.start_date}</td>
+                <td className="p-3">{event.end_date}</td>
                 <td className="flex gap-3 p-3">
                   <button
                     title="Edit"
@@ -259,24 +310,28 @@ const AdminEvents = () => {
                 darkMode={isDark}
               />
 
-              <FloatingSelect
-                id="location"
-                label="Location"
-                value={editForm.location}
-                onChange={(e) =>
-                  setEditForm({ ...editForm, location: e.target.value })
-                }
-                options={[
-                  "GYM",
-                  "Conference Hall",
-                  "Oval",
-                  "Admin Building",
-                  "Mabric Hall",
-                ]}
-                placeholder="Select Location"
-                error={errors.location}
-                darkMode={isDark}
-              />
+              <div>
+                <FloatingSelect
+                  id="location"
+                  label="Location"
+                  value={selectedLocation}
+                  onChange={handleLocationChange}
+                  options={locationOptions}
+                  error={errors.location}
+                  darkMode={isDark}
+                />
+                {showCustomLocation && (
+                  <FloatingInput
+                    id="customLocation"
+                    label="Custom Location"
+                    value={customLocation}
+                    onChange={handleCustomLocationChange}
+                    error={errors.location}
+                    darkMode={isDark}
+                    className="mt-2"
+                  />
+                )}
+              </div>
             </div>
 
             <div className="mb-4">
@@ -304,21 +359,39 @@ const AdminEvents = () => {
               />
             </div>
 
-            <AdminFloatingDatePicker
-              id="event_date"
-              label="Event Date"
-              value={editForm.event_date}
-              onChange={(date) =>
-                setEditForm({ ...editForm, event_date: date })
-              }
-              error={errors.event_date}
-              darkMode={isDark}
-            />
+            <div className="grid grid-cols-1 gap-3 mb-4">
+              <AdminFloatingDatePicker
+                id="start_date"
+                label="Start Date"
+                value={editForm.start_date}
+                onChange={(date) =>
+                  setEditForm({ ...editForm, start_date: date })
+                }
+                error={errors.start_date}
+                darkMode={isDark}
+              />
+
+              <AdminFloatingDatePicker
+                id="end_date"
+                label="End Date"
+                value={editForm.end_date}
+                onChange={(date) =>
+                  setEditForm({ ...editForm, end_date: date })
+                }
+                error={errors.end_date}
+                darkMode={isDark}
+              />
+            </div>
 
             <div className="flex justify-end gap-2 mt-4">
               <button
                 type="button"
-                onClick={() => setEditingEvent(null)}
+                onClick={() => {
+                  setEditingEvent(null);
+                  setSelectedLocation("");
+                  setCustomLocation("");
+                  setShowCustomLocation(false);
+                }}
                 className={`px-4 py-2 rounded ${
                   isDark
                     ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
@@ -334,12 +407,6 @@ const AdminEvents = () => {
                 Save Changes
               </button>
             </div>
-
-            {message && (
-              <p className="mt-2 text-sm text-center text-green-600">
-                {message}
-              </p>
-            )}
           </form>
         </div>
       )}
@@ -348,4 +415,3 @@ const AdminEvents = () => {
 };
 
 export default AdminEvents;
-

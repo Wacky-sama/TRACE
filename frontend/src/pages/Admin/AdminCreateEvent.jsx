@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import { getToken } from "../../utils/storage";
 import api from "../../services/api";
 import FloatingInput from "../../components/FloatingInput";
@@ -35,18 +36,59 @@ const AdminCreateEvent = () => {
     end_date: null,
   });
 
+  const capitalizeFirstLetter = (str) => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
+
+  const capitalizeEachWord = (str) =>
+    str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [customLocation, setCustomLocation] = useState("");
+  const [showCustomLocation, setShowCustomLocation] = useState(false);
+
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const locationOptions = [
+    "GYM",
+    "Conference Hall",
+    "Oval",
+    "Admin Building",
+    "Mabric Hall",
+    "Other",
+  ];
+
+  const handleLocationChange = (e) => {
+    const value = e.target.value;
+    setSelectedLocation(value);
+    setShowCustomLocation(value === "Other");
+    const effectiveLocation = value === "Other" ? customLocation : value;
+    setFormData({ ...formData, location: effectiveLocation });
+  };
+
+  const handleCustomLocationChange = (e) => {
+    const value = e.target.value;
+    setCustomLocation(value);
+    setFormData({ ...formData, location: value });
+  };
+
   const validate = () => {
     const validateErrors = {};
-    
+
     if (!formData.title.trim()) validateErrors.title = "Title is required";
-    if (!formData.location.trim()) validateErrors.location = "Location is required";
-    if (!formData.start_date) validateErrors.start_date = "Start date is required";
+    if (!formData.location.trim())
+      validateErrors.location = "Location is required";
+    if (!formData.start_date)
+      validateErrors.start_date = "Start date is required";
     if (!formData.end_date) validateErrors.end_date = "End date is required";
-    if (formData.start_date && formData.end_date && formData.start_date > formData.end_date) {
+    if (
+      formData.start_date &&
+      formData.end_date &&
+      formData.start_date > formData.end_date
+    ) {
       validateErrors.end_date = "End date must be on or after start date";
     }
     setErrors(validateErrors);
@@ -74,8 +116,17 @@ const AdminCreateEvent = () => {
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
 
-      setMessage("Event created successfully!");
-      setFormData({ title: "", description: "", location: "", start_date: null, end_date: null });
+      toast.success("Event created successfully!");
+      setFormData({
+        title: "",
+        description: "",
+        location: "",
+        start_date: null,
+        end_date: null,
+      });
+      setSelectedLocation("");
+      setCustomLocation("");
+      setShowCustomLocation(false);
       setErrors({});
     } catch (error) {
       setMessage(error.response?.data?.detail || "Failed to create event");
@@ -92,7 +143,8 @@ const AdminCreateEvent = () => {
     >
       <div>
         <p className="mb-4 text-lg font-semibold">
-          On this page, you can create events that alumni can view and register for.
+          On this page, you can create events that alumni can view and attend
+          for.
         </p>
         <p className="mb-6 text-sm">
           Note: Make sure to provide accurate details for your event.
@@ -106,7 +158,9 @@ const AdminCreateEvent = () => {
         >
           <h2
             className={`text-xl font-semibold border-b pb-2 mb-4 ${
-              isDark ? "text-gray-100 border-gray-700" : "text-gray-800 border-gray-200"
+              isDark
+                ? "text-gray-100 border-gray-700"
+                : "text-gray-800 border-gray-200"
             }`}
           >
             Create Event
@@ -117,19 +171,37 @@ const AdminCreateEvent = () => {
               id="title"
               label="Event Title"
               value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  title: capitalizeEachWord(e.target.value),
+                })
+              }
               error={errors.title}
               darkMode={isDark}
             />
 
-            <FloatingInput
-              id="location"
-              label="Location"
-              value={formData.location}
-              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-              error={errors.location}
-              darkMode={isDark}
-            />
+            <div>
+              <FloatingSelect
+                id="location"
+                label="Location"
+                value={selectedLocation}
+                onChange={handleLocationChange}
+                options={locationOptions}
+                error={errors.location}
+                darkMode={isDark}
+              />
+              {showCustomLocation && (
+                <FloatingInput
+                  id="customLocation"
+                  label="Custom Location"
+                  value={customLocation}
+                  onChange={handleCustomLocationChange}
+                  error={errors.location}
+                  darkMode={isDark} 
+                />
+              )}
+            </div>
           </div>
 
           <div className="mb-4">
@@ -144,7 +216,11 @@ const AdminCreateEvent = () => {
             <textarea
               id="description"
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) =>
+                setFormData({ 
+                  ...formData, description: capitalizeFirstLetter(e.target.value),
+                })
+              }
               placeholder="Describe your event..."
               rows={3}
               className={`w-full p-3 text-sm border rounded-md focus:outline-none focus:ring ${
@@ -160,11 +236,13 @@ const AdminCreateEvent = () => {
               id="start_date"
               label="Start Date"
               value={formData.start_date}
-              onChange={(date) => 
-                setFormData({ ...formData, start_date: date })
+              onChange={(date) =>
+                setFormData({ 
+                  ...formData, start_date: date 
+                })
               }
               error={errors.start_date}
-              darkMode={isDark} 
+              darkMode={isDark}
             />
 
             <AdminFloatingDatePicker
@@ -172,10 +250,12 @@ const AdminCreateEvent = () => {
               label="End Date"
               value={formData.end_date}
               onChange={(date) => 
-                setFormData({ ...formData, end_date: date })
+                setFormData({ 
+                  ...formData, end_date: date 
+                })
               }
               error={errors.end_date}
-              darkMode={isDark} 
+              darkMode={isDark}
             />
           </div>
 
@@ -188,9 +268,7 @@ const AdminCreateEvent = () => {
           </button>
 
           {message && (
-            <p className="mt-2 text-sm text-center text-green-600">
-              {message}
-            </p>
+            <p className="mt-2 text-sm text-center text-green-600">{message}</p>
           )}
         </form>
       </div>
