@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, BarChart, Bar,
@@ -32,28 +33,19 @@ const AdminAnalytics = () => {
   const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#6366f1"];
 
   useEffect(() => {
-    const fetchAll = async () => {
+    const fetchAnalytics = async () => {
       try {
-        const [users, events, gts, logs] = await Promise.all([
-          api.get("/admin/analytics/users"),
-          api.get("/admin/analytics/events"),
-          api.get("/admin/analytics/gts"),
-          api.get("/admin/analytics/logs"),
-        ]);
-
-        setStats({
-          ...users.data,
-          ...events.data,
-          ...gts.data,
-          ...logs.data,
-        });
-      } catch (error) {
-        console.error("Failed to fetch analytics:", error);
+        const response = await api.get("/admin/analytics/");
+        setStats(response.data);
+      } catch {
+        toast.error("Failed to fetch analytics");
       } finally {
         setLoading(false);
       }
     };
-    fetchAll();
+    fetchAnalytics();
+    const interval = setInterval(fetchAnalytics, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) {
@@ -65,14 +57,14 @@ const AdminAnalytics = () => {
   }
 
   const summaryCards = [
-    { label: "Total Alumni", value: stats.totalAlumni },
-    { label: "Active Alumni", value: stats.activeAlumni },
-    { label: "Pending Approvals", value: stats.pendingApprovals },
-    { label: "Employment Rate", value: `${stats.employmentRate || 0}%` },
-    { label: "GTS Completed", value: stats.gtsCompleted },
-    { label: "Active Events", value: stats.activeEvents },
-    { label: "Departments", value: stats.departments },
-    { label: "Recent Logins", value: stats.recentLogins },
+    { label: "Total Alumni", value: stats.summary?.totalAlumni },
+    { label: "Active Alumni", value: stats.summary?.activeAlumni },
+    { label: "Pending Approvals", value: stats.summary?.pendingApprovals },
+    { label: "Employment Rate", value: `${stats.summary?.employmentRate || 0}%` },
+    { label: "GTS Completed", value: stats.summary?.gtsCompleted },
+    { label: "Active Events", value: stats.summary?.activeEvents },
+    { label: "Departments", value: stats.summary?.departments },
+    { label: "Recent Logins", value: stats.summary?.recentLogins },
   ];
 
   return (
@@ -153,8 +145,8 @@ const AdminAnalytics = () => {
                   <PieChart>
                     <Pie
                       data={[
-                        { name: "Completed", value: stats.gtsCompleted || 0 },
-                        { name: "Incomplete", value: (stats.totalAlumni || 0) - (stats.gtsCompleted || 0) },
+                        { name: "Completed", value: stats.summary?.gtsCompleted || 0 },
+                        { name: "Incomplete", value: (stats.summary?.totalAlumni || 0) - (stats.summary?.gtsCompleted || 0) },
                       ]}
                       cx="50%"
                       cy="50%"
