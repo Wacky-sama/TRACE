@@ -38,19 +38,19 @@ def get_admin_analytics(
 
         # Handle department filtering (now using 'course')
         if department:
-            filters.append(User.course == department)
+            filters.append(Users.course == department)
 
         # Alumni-specific filters (role + department)
-        alumni_filters = [User.role == 'alumni'] + filters
+        alumni_filters = [Users.role == 'alumni'] + filters
 
         # BASIC COUNTS
-        total_alumni = db.query(func.count(User.id)).filter(*alumni_filters).scalar()
-        active_alumni = db.query(func.count(User.id)).filter(User.is_active == True, *alumni_filters).scalar()
-        pending_approvals = db.query(func.count(User.id)).filter(User.is_approved == False, *alumni_filters).scalar()
+        total_alumni = db.query(func.count(Users.id)).filter(*alumni_filters).scalar()
+        active_alumni = db.query(func.count(Users.id)).filter(Users.is_active == True, *alumni_filters).scalar()
+        pending_approvals = db.query(func.count(Users.id)).filter(Users.is_approved == False, *alumni_filters).scalar()
 
         total_responses = (
             db.query(func.count(GTSResponses.id))
-            .join(User, User.id == GTSResponses.user_id)
+            .join(Users, Users.id == GTSResponses.user_id)
             .filter(*gts_filters, *filters)
             .scalar()
         )
@@ -58,7 +58,7 @@ def get_admin_analytics(
         # EMPLOYMENT RATE
         employed_count = (
             db.query(func.count(GTSResponses.id))
-            .join(User, User.id == GTSResponses.user_id)
+            .join(Users, Users.id == GTSResponses.user_id)
             .filter(GTSResponses.is_employed == True, *gts_filters, *filters)
             .scalar()
         )
@@ -71,13 +71,13 @@ def get_admin_analytics(
         active_events = db.query(func.count(Event.id)).scalar()
 
         # ======== DEPARTMENTS ========
-        departments = db.query(User.course).filter(*alumni_filters).distinct().count()
+        departments = db.query(Users.course).filter(*alumni_filters).distinct().count()
 
         # ======== RECENT LOGINS ========
         last_7_days = datetime.utcnow() - timedelta(days=7)
         recent_logins = (
-            db.query(func.count(User.id))
-            .filter(User.last_seen >= last_7_days, *alumni_filters) 
+            db.query(func.count(Users.id))
+            .filter(Users.last_seen >= last_7_days, *alumni_filters) 
             .scalar()
         )
 
@@ -87,7 +87,7 @@ def get_admin_analytics(
                 extract("year", GTSResponses.submitted_at).label("year"),
                 func.count(GTSResponses.id).label("employed"),
             )
-            .join(User, User.id == GTSResponses.user_id)
+            .join(Users, Users.id == GTSResponses.user_id)
             .filter(GTSResponses.is_employed == True, *gts_filters, *filters)
             .group_by(extract("year", GTSResponses.submitted_at))
             .order_by(extract("year", GTSResponses.submitted_at))
@@ -112,10 +112,10 @@ def get_admin_analytics(
 
         # GTS COMPLETION BY DEPARTMENT
         gts_by_department = (
-            db.query(User.course, func.count(GTSResponses.id))
-            .join(GTSResponses, GTSResponses.user_id == User.id)
+            db.query(Users.course, func.count(GTSResponses.id))
+            .join(GTSResponses, GTSResponses.user_id == Users.id)
             .filter(*filters)
-            .group_by(User.course)
+            .group_by(Users.course)
             .all()
         )
         gts_by_dept_data = [
