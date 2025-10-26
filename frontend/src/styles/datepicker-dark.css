@@ -75,3 +75,17 @@
   width: 100% !important;
   display: block !important;
 }
+
+/* Disabled days (e.g., past dates before minDate) */
+.react-datepicker-dark .react-datepicker__day--disabled {
+  color: #6b7280; /* Dim gray text (adjust to taste, e.g., #9ca3af for lighter) */
+  background-color: #1f2937; /* Keep background dark */
+  cursor: not-allowed; /* Indicate not clickable */
+  opacity: 0.5; /* Optional: Add slight transparency for extra visual cue */
+}
+
+/* Ensure disabled days don't react to hover (override the general hover rule) */
+.react-datepicker-dark .react-datepicker__day--disabled:hover {
+  background-color: #1f2937; /* No hover effect */
+  color: #6b7280; /* Keep dimmed */
+}
