@@ -77,6 +77,8 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
     if (!formData.birthday) validateErrors.birthday = "Birthday is required";
 
+    if (!formData.age) validateErrors.age = "Age is required";
+
     if (!formData.sex) validateErrors.sex = "Sex is required";
 
     if (!formData.presentProvince)
@@ -269,11 +271,11 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
           <AlumniFloatingDatePicker
             id="birthday"
+            label="Birthday"
             value={formData.birthday}
             onChange={(date) =>
               setFormData({ ...formData, birthday: date || null })
             }
-            label="Birthday"
             error={errors.birthday}
             maxDate={
               new Date(new Date().setFullYear(new Date().getFullYear() - 18))
@@ -282,9 +284,10 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           />
           <FloatingInput
             id="age"
+            label="Age"
             type="number"
             value={formData.age || ""}
-            label="Age"
+            error={errors.age}
             readOnly
           />
         </div>
