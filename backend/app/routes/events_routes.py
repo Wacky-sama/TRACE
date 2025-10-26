@@ -9,7 +9,10 @@ from app.models import events_models
 from app.schemas import events_schemas
 from app.schemas.events_schemas import EventAction
 
-router = APIRouter(prefix="/events", tags=["Events"])
+router = APIRouter(
+    prefix="/events",
+    tags=["Events"]
+)
 
 @router.post("/", response_model=events_schemas.EventOut)
 def create_event(
@@ -35,7 +38,7 @@ def create_event(
     return new_event
 
 def get_events_by_status(db, status, skip=0, limit=100):
-    creator = aliased(User)
+    creator = aliased(Users)
     results = (
         db.query(events_models.Event, creator.firstname, creator.lastname)
         .join(creator, events_models.Event.created_by == creator.id)
@@ -79,7 +82,6 @@ def update_event_status(
     "message": f"Event {action}d successfully",
     "event": events_schemas.EventOut.from_orm(event)
 }
-
 
 @router.delete("/{event_id}")
 def delete_event(
