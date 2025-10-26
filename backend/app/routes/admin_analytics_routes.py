@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from app.database import get_db
 from app.models.users_models import Users
 from app.models.gts_responses_models import GTSResponses
-from app.models.events_models import Event
+from app.models.events_models import Events
 from app.models.activity_logs_models import ActivityLog
 
 router = APIRouter(
@@ -108,11 +108,11 @@ def get_admin_analytics(
         # EVENT PARTICIPATION TREND (unchanged)
         event_trend = (
             db.query(
-                extract("month", Event.event_date).label("month"),
-                func.count(Event.id).label("attendance"),
+                extract("month", Events.event_date).label("month"),
+                func.count(Events.id).label("attendance"),
             )
-            .group_by(extract("month", Event.event_date))
-            .order_by(extract("month", Event.event_date))
+            .group_by(extract("month", Events.event_date))
+            .order_by(extract("month", Events.event_date))
             .all()
         )
         event_chart_data = [
