@@ -8,7 +8,7 @@ from typing import List, Optional
 from app.config import settings
 from app.database import get_db
 from app.models.activity_logs_models import ActionType
-from app.models.users_models import User, UserRole
+from app.models.users_models import Users, UserRole
 from app.models.gts_responses_models import GTSResponses
 from app.schemas.users_schemas import (EmailCheckRequest,
                                       EmailCheckResponse,
@@ -100,8 +100,8 @@ def login(
     credentials: UserLogin,
     db: Session = Depends(get_db)
 ):
-    user = db.query(User).filter(
-        (User.username == credentials.identifier) | (User.email == credentials.identifier)
+    user = db.query(Users).filter(
+        (Users.username == credentials.identifier) | (Users.email == credentials.identifier)
     ).first()
 
     if not user:
@@ -139,19 +139,19 @@ def login(
 def create_user_as_admin(
     user_data: AdminUserCreate,
     background_tasks: BackgroundTasks,
-    current_user: User = Depends(get_current_user),
+    current_user: Users = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     if current_user.role != UserRole.admin:
         raise HTTPException(status_code=403, detail="Only admins can create users")
 
      # Check for existing email/username
-    if db.query(User).filter(User.email == user_data.email, User.deleted_at.is_(None)).first():
+    if db.query(Users).filter(Users.email == user_data.email, Users.deleted_at.is_(None)).first():
         raise HTTPException(status_code=400, detail="Email already registered")
-    if db.query(User).filter(User.username == user_data.username, User.deleted_at.is_(None)).first():
+    if db.query(Users).filter(Users.username == user_data.username, Users.deleted_at.is_(None)).first():
         raise HTTPException(status_code=400, detail="Username already registered")
     
-    admin_count = db.query(User).filter(User.role == UserRole.admin).count()
+    admin_count = db.query(Users).filter(Users.role == UserRole.admin).count()
 
     if user_data.role == UserRole.admin and admin_count >= 2:
         raise HTTPException(status_code=400, detail="Maximum number of Admins (2) reached")
@@ -276,7 +276,7 @@ def register_alumni(
 # List all unapproved alumni registrations
 @router.get("/pending-alumni", response_model=List[UserPendingApprovalOut])
 def get_pending_alumni(db: Session = Depends(get_db)):
-    pending_alumni = db.query(User).filter(User.role == UserRole.alumni, User.is_approved == False).all()
+    pending_alumni = db.query(Users).filter(Users.role == UserRole.alumni, Users.is_approved == False).all()
     return pending_alumni
 
 # List approved, non-archived users with optional filters (role, course, batch year)
@@ -289,23 +289,23 @@ def get_registered_users(
     batch_year: Optional[int] = None,
     db: Session = Depends(get_db)
 ):
-    query = db.query(User).filter(
-        User.is_approved == True,
-        User.deleted_at.is_(None)
+    query = db.query(Users).filter(
+        Users.is_approved == True,
+        Users.deleted_at.is_(None)
     )
 
     # Optional filters
     if role:
         try:
             role_enum = UserRole(role)
-            query = query.filter(User.role == role_enum)
+            query = query.filter(Users.role == role_enum)
         except ValueError:
             raise HTTPException(status_code=400, detail="Invalid role")
 
     if course:
-        query = query.filter(User.course == course)
+        query = query.filter(Users.course == course)
     if batch_year:
-        query = query.filter(User.batch_year == batch_year)
+        query = query.filter(Users.batch_year == batch_year)
 
     # Pagination
     total = query.count()
@@ -334,7 +334,7 @@ def get_registered_users(
 # Set user as inactive (block); user must not be archived
 @router.patch("/{user_id}/block", status_code=204)
 def block_user(user_id: str, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(Users).filter(Users.id == user_id).first()
     if not user or user.deleted_at:
         raise HTTPException(status_code=404, detail="User not found")
     user.is_active = False
@@ -351,7 +351,7 @@ def block_user(user_id: str, db: Session = Depends(get_db)):
 # Reactivate a previously blocked user
 @router.patch("/{user_id}/unblock", status_code=204)
 def unblock_user(user_id: str, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(Users).filter(Users.id == user_id).first()
     if not user or user.deleted_at:
         raise HTTPException(status_code=404, detail="User not found")
     user.is_active = True
@@ -367,7 +367,7 @@ def unblock_user(user_id: str, db: Session = Depends(get_db)):
 # Archive user by setting deleted_at timestamp
 @router.delete("/{user_id}/archive", status_code=204)
 def archive_user(user_id: str, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(Users).filter(Users.id == user_id).first()
     if not user or user.deleted_at:
         raise HTTPException(status_code=404, detail="User not found")
     user.deleted_at = datetime.utcnow()
@@ -383,7 +383,7 @@ def archive_user(user_id: str, db: Session = Depends(get_db)):
 # Unarchive a user by unsetting deleted_at
 @router.patch("/{user_id}/unarchive", status_code=204)
 def unarchive_user(user_id: str, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(Users).filter(Users.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     if not user.deleted_at:
@@ -405,9 +405,9 @@ def approve_user(
     user_id: str,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user)
 ):
-    user = db.query(User).filter(User.id == UUID(user_id)).first()
+    user = db.query(Users).filter(Users.id == UUID(user_id)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     if user.is_approved:
@@ -467,9 +467,9 @@ def decline_user(
     user_id: str,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user)
 ):
-    user = db.query(User).filter(User.id == UUID(user_id)).first()
+    user = db.query(Users).filter(Users.id == UUID(user_id)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     if user.is_approved:
@@ -509,9 +509,9 @@ def decline_user(
 # Get total user count and counts per role
 @router.get("/stats")
 def get_user_stats(db: Session = Depends(get_db)):
-    total_users = db.query(User).count()
-    admins = db.query(User).filter(User.role == UserRole.admin).count()
-    alumni = db.query(User).filter(User.role == UserRole.alumni).count()
+    total_users = db.query(Users).count()
+    admins = db.query(Users).filter(Users.role == UserRole.admin).count()
+    alumni = db.query(Users).filter(Users.role == UserRole.alumni).count()
     
     return {
         "total_users": total_users,
@@ -521,19 +521,19 @@ def get_user_stats(db: Session = Depends(get_db)):
 # Count users who are active and not archived (i.e., not blocked or soft-deleted)
 @router.get("/active")
 def get_active_users(db: Session = Depends(get_db)):
-    active_users = db.query(User).filter(User.is_active == True, User.deleted_at.is_(None)).count()
+    active_users = db.query(Users).filter(Users.is_active == True, Users.deleted_at.is_(None)).count()
     return {"active_users": active_users}
 
 # Count users who are blocked (inactive) but not archived
 @router.get("/blocked")
 def get_blocked_users(db: Session = Depends(get_db)):
-    blocked_users = db.query(User).filter(User.is_active == False, User.deleted_at.is_(None)).count()
+    blocked_users = db.query(Users).filter(Users.is_active == False, Users.deleted_at.is_(None)).count()
     return {"blocked_users": blocked_users}
 
 # Count soft-deleted users (i.e., users with a non-null deleted_at)
 @router.get("/archived")
 def get_archived_count(db: Session = Depends(get_db)):
-    archived_users = db.query(User).filter(User.deleted_at.isnot(None)).count()
+    archived_users = db.query(Users).filter(Users.deleted_at.isnot(None)).count()
     return {"archived_users": archived_users}
 
 # List archived users (soft-deleted) with optional filters (role, course, batch year)
@@ -546,19 +546,19 @@ def get_archived_users(
     batch_year: Optional[int] = None,
     db: Session = Depends(get_db)
 ):
-    query = db.query(User).filter(User.deleted_at.isnot(None))
+    query = db.query(Users).filter(Users.deleted_at.isnot(None))
 
     if role:
         try:
             role_enum = UserRole(role)
-            query = query.filter(User.role == role_enum)
+            query = query.filter(Users.role == role_enum)
         except ValueError:
             raise HTTPException(status_code=400, detail="Invalid role")
 
     if course:
-        query = query.filter(User.course == course)
+        query = query.filter(Users.course == course)
     if batch_year:
-        query = query.filter(User.batch_year == batch_year)
+        query = query.filter(Users.batch_year == batch_year)
 
     total = query.count()
     pages = (total + limit - 1) // limit
@@ -582,17 +582,17 @@ def get_archived_users(
 @router.get("/online", response_model=List[UserOut])
 def get_online_users(db: Session = Depends(get_db)):    
     five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
-    online_users = db.query(User).filter(
-        User.last_seen >= five_minutes_ago,
-        User.is_active == True,
-        User.is_approved == True,
-        User.deleted_at.is_(None),
-        User.role.in_([UserRole.admin, UserRole.alumni])
+    online_users = db.query(Users).filter(
+        Users.last_seen >= five_minutes_ago,
+        Users.is_active == True,
+        Users.is_approved == True,
+        Users.deleted_at.is_(None),
+        Users.role.in_([UserRole.admin, UserRole.alumni])
     ).all()
 
     return online_users
 
 # Get current user
 @router.get("/me", response_model=UserProfileOut)
-def get_current_user_profile(current_user: User = Depends(get_current_user)):
+def get_current_user_profile(current_user: Users = Depends(get_current_user)):
     return current_user

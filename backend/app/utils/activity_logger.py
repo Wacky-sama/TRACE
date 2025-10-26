@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.activity_logs_models import ActivityLog, ActionType
-from app.models.users_models import User
+from app.models.users_models import Users
 from datetime import datetime, timezone
 
 def log_activity(
@@ -23,7 +23,7 @@ def log_activity(
         if created_at is None:
             created_at = datetime.now(timezone.utc)
         
-        user = db.query(User).filter(User.id == user_id).first()
+        user = db.query(Users).filter(Users.id == user_id).first()
         
         if user and user.role.value == "alumni" and not user.is_approved:
             allowed_actions = {ActionType.register, ActionType.login, ActionType.update}

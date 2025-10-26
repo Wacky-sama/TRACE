@@ -3,7 +3,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from datetime import datetime
 from app.database import SessionLocal
-from app.models.users_models import User, UserRole
+from app.models.users_models import Users, UserRole
 from app.utils.security import decode_access_token
 import logging
 
@@ -51,7 +51,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 raise ValueError("Missing username in token payload")
 
             # Validate user existence
-            user = db.query(User).filter(User.username == username).first()
+            user = db.query(Users).filter(Users.username == username).first()
             if not user:
                 logger.warning(f"Invalid user token: {username}")
                 return JSONResponse({"detail": "Invalid user"}, status_code=401)

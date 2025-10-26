@@ -4,7 +4,7 @@ from uuid import UUID
 from datetime import datetime
 from app.database import get_db
 from app.routes.users_routes import get_current_user  
-from app.models.users_models import User  
+from app.models.users_models import Users 
 from app.models import events_models
 from app.schemas import events_schemas
 from app.schemas.events_schemas import EventAction
@@ -15,7 +15,7 @@ router = APIRouter(prefix="/events", tags=["Events"])
 def create_event(
     event_in: events_schemas.EventCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)  
+    current_user: Users = Depends(get_current_user)  
 ):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Only Admin can create events.")
@@ -53,7 +53,7 @@ def get_events_by_status(db, status, skip=0, limit=100):
     ]
 
 @router.get("/", response_model=list[events_schemas.EventOut])
-def get_events(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def get_events(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
     if current_user.role not in {"admin", "alumni"}:
         raise HTTPException(status_code=403, detail="Not authorized")
     return get_events_by_status(db, "approved")
@@ -63,7 +63,7 @@ def update_event_status(
     event_id: UUID,
     action: EventAction,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user)
 ):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
@@ -85,7 +85,7 @@ def update_event_status(
 def delete_event(
     event_id: UUID,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user)
 ):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
@@ -104,7 +104,7 @@ def update_event(
     event_id: UUID,
     event_in: events_schemas.EventCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user)
 ):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
