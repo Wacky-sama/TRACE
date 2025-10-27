@@ -27,5 +27,15 @@ class ActivityLog(Base):
     meta_data = Column(JSON, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
-    user = relationship("Users", foreign_keys=[user_id], back_populates="activity_logs", lazy="joined")
-    target_user = relationship("Users", foreign_keys=[target_user_id], lazy="joined")
+    user = relationship(
+        "Users", 
+        foreign_keys=[user_id], 
+        back_populates="activity_logs", 
+        lazy="joined"
+    )
+    
+    target_user = relationship(
+        "Users", 
+        foreign_keys=[target_user_id], 
+        lazy="joined"
+    )
