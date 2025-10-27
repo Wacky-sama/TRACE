@@ -15,6 +15,7 @@ import {
   getPasswordStrength,
   getPasswordStrengthMessage,
 } from "../../utils/passwordUtils";
+import FloatingInput from "../../components/FloatingInput";
 
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
@@ -48,6 +49,9 @@ const AlumniSettings = () => {
     new: "",
     confirm: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -82,9 +86,9 @@ const AlumniSettings = () => {
 
     try {
       await api.post("/users/change-password", {
-         current_password: passwordData.current,
-         new_password: passwordData.new,
-         confirm_new_password: passwordData.confirm
+        current_password: passwordData.current,
+        new_password: passwordData.new,
+        confirm_new_password: passwordData.confirm,
       });
       toast.success("Password changed successfully!");
       setPasswordData({ current: "", new: "", confirm: "" });
@@ -211,174 +215,118 @@ const AlumniSettings = () => {
 
                 <form onSubmit={handlePasswordChange} className="space-y-4">
                   {/* Current Password */}
-                  <div className="relative">
-                    <label
-                      htmlFor="current"
-                      className={`block mb-1 font-medium ${
-                        isDark ? "text-gray-300" : "text-gray-700"
-                      }`}
-                    >
-                      Current Password
-                    </label>
-                    <input
-                      id="current"
-                      type={passwordData.showCurrent ? "text" : "password"}
-                      value={passwordData.current}
-                      onChange={(e) =>
-                        setPasswordData({
-                          ...passwordData,
-                          current: e.target.value,
-                        })
-                      }
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none ${
-                        isDark
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white border-gray-300 text-gray-900"
-                      }`}
-                      required
-                    />
+                  <FloatingInput
+                    id="currentPassword"
+                    type={showPassword ? "text" : "password"}
+                    value={passwordData.current}
+                    onChange={(e) =>
+                      setPasswordData({
+                        ...passwordData,
+                        current: e.target.value,
+                      })
+                    }
+                    label="Current Password"
+                  >
                     <span
-                      onClick={() =>
-                        setPasswordData((prev) => ({
-                          ...prev,
-                          showCurrent: !prev.showCurrent,
-                        }))
-                      }
-                      className="absolute inset-y-0 flex items-center text-gray-400 cursor-pointer right-3"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 flex items-center text-gray-500 cursor-pointer right-3"
                     >
                       <FontAwesomeIcon
-                        icon={passwordData.showCurrent ? faEyeSlash : faEye}
+                        icon={showPassword ? faEyeSlash : faEye}
                       />
                     </span>
-                  </div>
+                  </FloatingInput>
 
                   {/* New Password */}
-                  <div className="relative">
-                    <label
-                      htmlFor="new"
-                      className={`block mb-1 font-medium ${
-                        isDark ? "text-gray-300" : "text-gray-700"
-                      }`}
-                    >
-                      New Password
-                    </label>
-                    <input
-                      id="new"
-                      type={passwordData.showNew ? "text" : "password"}
-                      value={passwordData.new}
-                      onChange={(e) => {
-                        const newPassword = e.target.value;
-                        setPasswordData({ ...passwordData, new: newPassword });
-                        setPasswordStrength(getPasswordStrength(newPassword));
-                      }}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none ${
-                        isDark
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white border-gray-300 text-gray-900"
-                      }`}
-                      required
-                    />
+                  <FloatingInput
+                    id="newPassword"
+                    type={showNewPassword ? "text" : "password"}
+                    value={passwordData.new}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setPasswordData({ ...passwordData, new: value });
+                      setPasswordStrength(getPasswordStrength(value));
+                    }}
+                    label="New Password"
+                  >
                     <span
-                      onClick={() =>
-                        setPasswordData((prev) => ({
-                          ...prev,
-                          showNew: !prev.showNew,
-                        }))
-                      }
-                      className="absolute inset-y-0 flex items-center text-gray-400 cursor-pointer right-3"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute inset-y-0 flex items-center text-gray-500 cursor-pointer right-3"
                     >
                       <FontAwesomeIcon
-                        icon={passwordData.showNew ? faEyeSlash : faEye}
+                        icon={showNewPassword ? faEyeSlash : faEye}
                       />
                     </span>
+                  </FloatingInput>
 
-                    {/* Password Strength Bar */}
-                    {passwordData.new && (
-                      <div className="mt-2">
-                        <div className="w-full h-2 bg-gray-200 rounded-full">
-                          <div
-                            className={`h-2 rounded-full transition-all duration-300 ${
-                              passwordStrength.score === 0
-                                ? "bg-gray-300 w-0"
-                                : passwordStrength.score === 1
-                                ? "bg-red-500 w-1/4"
-                                : passwordStrength.score === 2
-                                ? "bg-orange-400 w-2/4"
-                                : passwordStrength.score === 3
-                                ? "bg-yellow-400 w-3/4"
-                                : "bg-green-500 w-full"
-                            }`}
-                          />
-                        </div>
-                        <p
-                          className={`text-sm mt-1 ${
-                            passwordStrength.score <= 2
-                              ? "text-red-500"
-                              : "text-green-600"
+                  {/* Strength Bar */}
+                  {passwordData.new && (
+                    <div className="mt-2">
+                      <div className="w-full h-2 bg-gray-200 rounded-full">
+                        <div
+                          className={`h-2 rounded-full transition-all duration-300 ${
+                            passwordStrength.score === 0
+                              ? "bg-gray-300 w-0"
+                              : passwordStrength.score === 1
+                              ? "bg-red-500 w-1/4"
+                              : passwordStrength.score === 2
+                              ? "bg-orange-400 w-2/4"
+                              : passwordStrength.score === 3
+                              ? "bg-yellow-400 w-3/4"
+                              : "bg-green-500 w-full"
                           }`}
-                        >
-                          {passwordStrength.label}
-                        </p>
+                        />
                       </div>
-                    )}
-                  </div>
-
-                  {/* Confirm New Password */}
-                  <div className="relative">
-                    <label
-                      htmlFor="confirm"
-                      className={`block mb-1 font-medium ${
-                        isDark ? "text-gray-300" : "text-gray-700"
-                      }`}
-                    >
-                      Confirm New Password
-                    </label>
-                    <input
-                      id="confirm"
-                      type={passwordData.showConfirm ? "text" : "password"}
-                      value={passwordData.confirm}
-                      onChange={(e) =>
-                        setPasswordData({
-                          ...passwordData,
-                          confirm: e.target.value,
-                        })
-                      }
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none ${
-                        isDark
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white border-gray-300 text-gray-900"
-                      }`}
-                      required
-                    />
-                    <span
-                      onClick={() =>
-                        setPasswordData((prev) => ({
-                          ...prev,
-                          showConfirm: !prev.showConfirm,
-                        }))
-                      }
-                      className="absolute inset-y-0 flex items-center text-gray-400 cursor-pointer right-3"
-                    >
-                      <FontAwesomeIcon
-                        icon={passwordData.showConfirm ? faEyeSlash : faEye}
-                      />
-                    </span>
-
-                    {/* Match Status */}
-                    {passwordData.confirm && (
                       <p
                         className={`text-sm mt-1 ${
-                          passwordData.new === passwordData.confirm
-                            ? "text-green-600"
-                            : "text-red-600"
+                          passwordStrength.score <= 2
+                            ? "text-red-500"
+                            : "text-green-600"
                         }`}
                       >
-                        {passwordData.new === passwordData.confirm
-                          ? "Passwords match"
-                          : "Passwords do not match"}
+                        {passwordStrength.label}
                       </p>
-                    )}
-                  </div>
+                    </div>
+                  )}
+
+                  {/* Confirm Password */}
+                  <FloatingInput
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={passwordData.confirm}
+                    onChange={(e) =>
+                      setPasswordData({
+                        ...passwordData,
+                        confirm: e.target.value,
+                      })
+                    }
+                    label="Confirm New Password"
+                  >
+                    <span
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      className="absolute inset-y-0 flex items-center text-gray-500 cursor-pointer right-3"
+                    >
+                      <FontAwesomeIcon
+                        icon={showConfirmPassword ? faEyeSlash : faEye}
+                      />
+                    </span>
+                  </FloatingInput>
+
+                  {passwordData.new && passwordData.confirm && (
+                    <p
+                      className={`text-sm mt-1 ${
+                        passwordData.new === passwordData.confirm
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {passwordData.new === passwordData.confirm
+                        ? "Passwords match"
+                        : "Passwords do not match"}
+                    </p>
+                  )}
 
                   <button
                     type="submit"
