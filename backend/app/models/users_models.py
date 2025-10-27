@@ -1,9 +1,9 @@
 import uuid
 import enum
-from sqlalchemy import Column, String, Boolean, Enum, Integer, DateTime, Date
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String, Boolean, Enum, Integer, DateTime, Date # pyright: ignore[reportMissingImports]
+from sqlalchemy.dialects.postgresql import UUID # pyright: ignore[reportMissingImports]
+from sqlalchemy.sql import func # pyright: ignore[reportMissingImports]
+from sqlalchemy.orm import relationship # pyright: ignore[reportMissingImports]
 from app.database import Base
 
 class UserRole(str, enum.Enum):

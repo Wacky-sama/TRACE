@@ -1,6 +1,6 @@
-/* eslint-disable no-unused-vars */
+ 
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import api from "../../services/api";
 import { useTheme } from "../../context/ThemeProvider";
 

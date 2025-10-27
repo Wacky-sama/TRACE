@@ -8,7 +8,7 @@ import {
   faSort,
   faFilter,
 } from "@fortawesome/free-solid-svg-icons";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import api from "../../services/api";
 
@@ -104,7 +104,7 @@ const AdminNotifications = () => {
   return (
     <div className={`flex min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-100"}`}>
       <main className="flex-1 p-6">
-        <div className="mx-auto max-w-5xl">
+        <div className="max-w-5xl mx-auto">
           <h1
             className={`text-3xl font-bold mb-4 ${
               isDark ? "text-white" : "text-gray-900"
@@ -128,7 +128,7 @@ const AdminNotifications = () => {
           >
             <div className="flex items-center space-x-2">
               <FontAwesomeIcon icon={faFilter} />
-              <label htmlFor="filter" className="text-sm font-medium ml-2">
+              <label htmlFor="filter" className="ml-2 text-sm font-medium">
                 Filter:
               </label>
               <select
@@ -149,7 +149,7 @@ const AdminNotifications = () => {
 
             <div className="flex items-center space-x-2">
               <FontAwesomeIcon icon={faSort} />
-              <label htmlFor="sort" className="text-sm font-medium ml-2">
+              <label htmlFor="sort" className="ml-2 text-sm font-medium">
                 Sort:
               </label>
               <select
@@ -179,7 +179,7 @@ const AdminNotifications = () => {
                 Loading notifications...
               </p>
             ) : filteredNotifications.length === 0 ? (
-              <div className="flex flex-col items-center justify-center text-center py-12">
+              <div className="flex flex-col items-center justify-center py-12 text-center">
                 <FontAwesomeIcon
                   icon={faBell}
                   size="2x"
@@ -225,7 +225,7 @@ const AdminNotifications = () => {
                         />
                       </div>
                       <div>
-                        <p className="font-medium text-sm">{notif.title}</p>
+                        <p className="text-sm font-medium">{notif.title}</p>
                         <p
                           className={`text-xs mt-1 ${
                             isDark ? "text-gray-300" : "text-gray-600"
@@ -247,14 +247,14 @@ const AdminNotifications = () => {
                       {!notif.is_read && (
                         <button
                           onClick={() => markAsRead(notif.id)}
-                          className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700 transition"
+                          className="px-3 py-1 text-xs font-medium text-white transition bg-green-600 rounded hover:bg-green-700"
                         >
                           Mark Read
                         </button>
                       )}
                       <button
                         onClick={() => deleteNotification(notif.id)}
-                        className="px-3 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700 transition"
+                        className="px-3 py-1 text-xs font-medium text-white transition bg-red-600 rounded hover:bg-red-700"
                       >
                         <FontAwesomeIcon icon={faTrash} />
                       </button>

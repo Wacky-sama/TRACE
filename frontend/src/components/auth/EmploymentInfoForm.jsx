@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 
