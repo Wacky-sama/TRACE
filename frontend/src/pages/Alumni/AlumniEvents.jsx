@@ -41,7 +41,7 @@ const AlumniEvents = () => {
   const handleDecline = async (eventId) => {
     try {
       await api.post(`/attendance/${eventId}/decline`);
-      toast.success("You declined this event.");
+      toast.info("You declined this event.");
     } catch (error) {
       alert(error.response?.data?.detail || "Failed to decline.");
     }
