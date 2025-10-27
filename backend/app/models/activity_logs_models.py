@@ -6,11 +6,11 @@ from sqlalchemy.orm import relationship
 from app.database import Base
 
 class ActionType(str, enum.Enum):
-    register = "register" # User registration
-    approve = "approve" # Admin approval of user
-    decline = "decline" # Admin decline of user
-    delete = "delete" # User deletion
-    update = "update" # User information update
+    register = "register" # Alumni registration
+    approve = "approve" # Admin approval of alumni
+    decline = "decline" # Admin decline of alumni
+    delete = "delete" # Alumni deletion
+    update = "update" # Alumni information update
     login = "login" # User login
     logout = "logout" # User logout
     attend_event = "attend_event" # Alumni attend event
