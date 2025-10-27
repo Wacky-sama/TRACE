@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import api from "../../services/api";
 import { useTheme } from "../../context/ThemeProvider";
 
@@ -27,6 +29,24 @@ const AlumniEvents = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleAttend = async (eventId) => {
+    try {
+      await api.post(`/attendance/${eventId}`);
+      toast.success("Successfully registered for the event!");
+    } catch (error) {
+      alert(error.response?.data?.detail || "Failed to register.");
+    }
+  };
+
+  const handleDecline = async (eventId) => {
+    try {
+      await api.post(`/attendance/${eventId}/decline`);
+      toast.success("You declined this event.");
+    } catch (error) {
+      alert(error.response?.data?.detail || "Failed to decline.");
+    }
+  };
+
   if (loading)
     return (
       <p className={`p-4 ${isDark ? "text-gray-100" : "text-gray-900"}`}>
@@ -35,73 +55,75 @@ const AlumniEvents = () => {
     );
 
   return (
+    <div
+      className={`${
+        isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
+      } min-h-screen p-6`}
+    >
+      <h2 className="mb-4 text-2xl font-bold">Events</h2>
       <div
-        className={`${
-          isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
-        } min-h-screen p-6`}
-      >
-        <h2 className="mb-4 text-2xl font-bold">Events</h2>
-        <div
-          className={`mt-4 mb-6 border-t ${
-            isDark ? "border-gray-700" : "border-gray-300"
-          }`}
-        >
-          
-        </div>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {events.length > 0 ? (
-            events.map((event) => (
-              <div
-                key={event.id}
-                className={`p-4 rounded-lg shadow ${
-                  isDark
-                    ? "bg-gray-800 text-gray-200"
-                    : "bg-white text-gray-900"
+        className={`mt-4 mb-6 border-t ${
+          isDark ? "border-gray-700" : "border-gray-300"
+        }`}
+      ></div>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {events.length > 0 ? (
+          events.map((event) => (
+            <div
+              key={event.id}
+              className={`p-4 rounded-lg shadow ${
+                isDark ? "bg-gray-800 text-gray-200" : "bg-white text-gray-900"
+              }`}
+            >
+              <h3
+                className={`text-lg font-semibold ${
+                  isDark ? "text-gray-100" : "text-gray-900"
                 }`}
               >
-                <h3
-                  className={`text-lg font-semibold ${
-                    isDark ? "text-gray-100" : "text-gray-900"
-                  }`}
+                {event.title}
+              </h3>
+              <p
+                className={`mb-2 text-sm ${
+                  isDark ? "text-gray-100" : "text-gray-900"
+                }`}
+              >
+                {event.description || "No description"}
+              </p>
+              <p className="text-sm">
+                <strong>Location:</strong> {event.location}
+              </p>
+              <p className="text-sm">
+                <strong>Start Date:</strong> {event.start_date}
+              </p>
+              <p className="text-sm">
+                <strong>End Date:</strong> {event.end_date}
+              </p>
+              <p className="text-sm">
+                <strong>Created By:</strong> {event.created_by_name}
+              </p>
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={() => handleAttend(event.id)}
+                  className="px-4 py-2 text-white transition-colors bg-green-600 rounded hover:bg-green-700"
                 >
-                  {event.title}
-                </h3>
-                <p
-                  className={`mb-2 text-sm ${
-                    isDark ? "text-gray-100" : "text-gray-900"
-                  }`}
+                  Attend
+                </button>
+                <button
+                  onClick={() => handleDecline(event.id)}
+                  className="px-4 py-2 text-white transition-colors bg-red-600 rounded hover:bg-red-700"
                 >
-                  {event.description || "No description"}
-                </p>
-                <p className="text-sm">
-                  <strong>Location:</strong> {event.location}
-                </p>
-                <p className="text-sm">
-                  <strong>Start Date:</strong> {event.start_date}
-                </p>
-                <p className="text-sm">
-                  <strong>End Date:</strong> {event.end_date}
-                </p>
-                <p className="text-sm">
-                  <strong>Created By:</strong> {event.created_by_name}
-                </p>
-                <div className="flex gap-2 mt-4">
-                  <button className="px-4 py-2 text-white transition-colors bg-green-600 rounded hover:bg-green-700">
-                    Attend
-                  </button>
-                  <button className="px-4 py-2 text-white transition-colors bg-red-600 rounded hover:bg-red-700">
-                    Cannot Attend
-                  </button>
-                </div>
+                  Cannot Attend
+                </button>
               </div>
-            ))
-          ) : (
-            <p className={`text-gray-500 ${isDark ? "text-gray-400" : ""}`}>
-              No events available.
-            </p>
-          )}
-        </div>
+            </div>
+          ))
+        ) : (
+          <p className={`text-gray-500 ${isDark ? "text-gray-400" : ""}`}>
+            No events available.
+          </p>
+        )}
       </div>
+    </div>
   );
 };
 
