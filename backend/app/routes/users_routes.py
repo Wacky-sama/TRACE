@@ -10,7 +10,8 @@ from app.database import get_db
 from app.models.activity_logs_models import ActionType
 from app.models.users_models import Users, UserRole
 from app.models.gts_responses_models import GTSResponses
-from app.schemas.users_schemas import (EmailCheckRequest,
+from app.schemas.users_schemas import (ChangePasswordRequest,
+                                      EmailCheckRequest,
                                       EmailCheckResponse,
                                       UsernameCheckRequest, 
                                       UsernameCheckResponse,
@@ -48,9 +49,9 @@ def check_email_availability(
             message="Invalid Email Format"
         )
         
-    existing_user = db.query(User).filter(
-        User.email.ilike(email),
-        User.deleted_at.is_(None)
+    existing_user = db.query(Users).filter(
+        Users.email.ilike(email),
+        Users.deleted_at.is_(None)
     ).first()
         
     if existing_user:
@@ -78,9 +79,9 @@ def check_username_availability(
             message="Username must be at least 3 characters"
         )
 
-    existing_user = db.query(User).filter(
-        User.username.ilike(username),
-        User.deleted_at.is_(None)
+    existing_user = db.query(Users).filter(
+        Users.username.ilike(username),
+        Users.deleted_at.is_(None)
     ).first()
         
     if existing_user:
@@ -159,7 +160,7 @@ def create_user_as_admin(
     if user_data.role == UserRole.alumni:
         raise HTTPException(status_code=400, detail="Alumni cannot be created by admin, please register via alumni route")
 
-    new_user = User(
+    new_user = Users(
         username=user_data.username,
         email=user_data.email,
         password_hash=hash_password(user_data.password),
@@ -217,14 +218,14 @@ def register_alumni(
     db: Session = Depends(get_db)
 ):
     # Check for existing email/username
-    if db.query(User).filter(User.email == user_data.email, User.deleted_at.is_(None)).first():
+    if db.query(Users).filter(Users.email == user_data.email, Users.deleted_at.is_(None)).first():
         raise HTTPException(status_code=400, detail="Email already registered")
-    if db.query(User).filter(User.username == user_data.username, User.deleted_at.is_(None)).first():
+    if db.query(Users).filter(Users.username == user_data.username, Users.deleted_at.is_(None)).first():
         raise HTTPException(status_code=400, detail="Username already registered")
 
     try:
         # Create and save new alumni user
-        new_user = User(
+        new_user = Users(
             username=user_data.username,
             email=user_data.email,
             password_hash=hash_password(user_data.password),
@@ -596,3 +597,31 @@ def get_online_users(db: Session = Depends(get_db)):
 @router.get("/me", response_model=UserProfileOut)
 def get_current_user_profile(current_user: Users = Depends(get_current_user)):
     return current_user
+
+@router.post("/change-password", status_code=200)
+def change_password(
+    request: ChangePasswordRequest,
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
+):
+    if not verify_password(request.current_password, current_user.password_hash):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+
+    if request.new_password != request.confirm_new_password:
+        raise HTTPException(status_code=400, detail="New passwords do not match")
+
+    if verify_password(request.new_password, current_user.password_hash):
+        raise HTTPException(status_code=400, detail="New password cannot be the same as the current password")
+
+    current_user.password_hash = hash_password(request.new_password)
+    db.commit()
+
+    log_activity(
+        db=db,
+        user_id=current_user.id,
+        action_type=ActionType.update,
+        description=f"{current_user.role.value.capitalize()} changed their password",
+        target_user_id=current_user.id
+    )
+
+    return {"message": "Password changed successfully"}
