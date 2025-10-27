@@ -27,7 +27,13 @@ function AdminFloatingDatePicker({
         readOnly
         placeholder=" "
         className={`w-full p-3 pt-6 pl-3 text-sm rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 peer border transition-colors duration-300
-          ${isDark ? "bg-gray-800 border-gray-600 text-white" : "bg-white border-gray-300 text-gray-900"}`}
+          ${
+            error
+            ? "border-red-500"
+            : isDark
+            ? "bg-gray-800 border-gray-600 text-white"
+            : "bg-white border-gray-300 text-gray-900"
+        }`}
       />
       <label
         htmlFor={id}
