@@ -45,9 +45,11 @@ const AlumniSidebar = () => {
         {isOpen && currentUser && (
           <div className="w-full text-center">
             <div className="text-sm font-semibold text-white">
-              <p className="font-semibold">{formatFullname(currentUser)}</p>
-              <p className="text-sm text-gray-400 capitalize">
-                {currentUser.role}
+              <p className="font-semibold">
+                {formatFullname(currentUser)}
+              </p>
+              <p className="text-gray-400">
+                {currentUser.email}
               </p>
             </div>
           </div>
