@@ -28,11 +28,13 @@ function AlumniFloatingDatePicker({
         readOnly
         placeholder=" "
         className={`block w-full p-3 pt-6 text-sm rounded-md cursor-pointer border focus:outline-none focus:ring-2 focus:ring-blue-500 peer transition-colors duration-300
-      ${
-        isDark
-          ? "bg-gray-800 border-gray-600 text-white"
-          : "bg-white border-gray-300 text-gray-900"
-      }`}
+        ${
+            error
+            ? "border-red-500"
+            : isDark
+            ? "bg-gray-800 border-gray-600 text-white"
+            : "bg-white border-gray-300 text-gray-900"
+        }`}
       />
       <label
         htmlFor={id}

@@ -16,7 +16,6 @@ function PhoneInput({
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  // Normalize number before validating (remove spaces)
   const handleBlur = () => {
     const normalizedValue = value?.replace(/\s+/g, "") || "";
 
@@ -27,7 +26,6 @@ function PhoneInput({
     }
   };
 
-  // Include `id` when triggering onChange
   const handleChange = (phone) => {
     onChange({ target: { id, value: phone } });
   };
@@ -40,11 +38,7 @@ function PhoneInput({
       <label
         htmlFor={id}
         className={`absolute left-3 px-1 transition-all duration-200 pointer-events-none 
-        ${
-          hasValue
-            ? "text-xs -top-2.5 text-blue-600"
-            : "top-3 text-sm"
-        } 
+        ${hasValue ? "text-xs -top-2.5 text-blue-600" : "top-3 text-sm"} 
         ${isDark ? "bg-gray-800 text-gray-400" : "bg-white text-gray-500"}`}
       >
         {label}
@@ -57,11 +51,14 @@ function PhoneInput({
         onChange={handleChange}
         onBlur={handleBlur}
         defaultCountry={defaultCountry}
-        className={`w-full p-3 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-          isDark
-            ? "bg-gray-800 text-white border-gray-600"
-            : "bg-white text-gray-900 border-gray-300"
-        }`}
+        className={`w-full p-3 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 
+          ${
+            error
+              ? "border-red-500"
+              : isDark
+              ? "bg-gray-800 text-white border-gray-600"
+              : "bg-white text-gray-900 border-gray-300"
+          }`}
         countrySelectorStyleProps={{
           buttonClassName: `flex items-center px-2 py-1 border-r rounded-l-md ${
             isDark

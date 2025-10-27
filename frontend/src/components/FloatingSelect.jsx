@@ -22,7 +22,9 @@ function FloatingSelect({
           onChange={onChange}
           className={`w-full p-3 pt-6 border rounded-md text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer
             ${
-              isDark
+              error
+                ? "border-red-500"
+                : isDark
                 ? "bg-gray-800 text-white border-gray-600"
                 : "bg-white text-gray-900 border-gray-300"
             }`}
