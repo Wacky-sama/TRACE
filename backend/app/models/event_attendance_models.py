@@ -15,6 +15,16 @@ class EventAttendance(Base):
     registered_at = Column(DateTime, default=datetime.utcnow)
     attended_at = Column(DateTime, nullable=True)
 
-    # Relationships (Optional: only if you want easy access)
-    event = relationship("Events", backref="attendances", foreign_keys=[event_id])
-    user = relationship("Users", backref="event_attendances", foreign_keys=[user_id])
+     # Relationships
+    event = relationship(
+        "Events", 
+        back_populates="attendances", 
+        foreign_keys=[event_id], 
+        passive_deletes=True
+    )
+    
+    user = relationship(
+        "Users", 
+        backref="event_attendances", 
+        foreign_keys=[user_id]
+    )

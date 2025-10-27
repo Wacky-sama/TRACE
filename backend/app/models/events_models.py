@@ -21,3 +21,16 @@ class Events(Base):
     remarks = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
     creator = relationship("Users", foreign_keys=[created_by])
+    
+    # Relationships
+    creator = relationship(
+        "Users", 
+        foreign_keys=[created_by]
+    )
+    
+    attendances = relationship(
+        "EventAttendance",
+        back_populates="event",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
