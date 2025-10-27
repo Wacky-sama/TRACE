@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "../../services/api";
@@ -182,7 +183,7 @@ const AlumniNotifications = () => {
                         {new Date(notif.created_at).toLocaleString()}
                       </p>
                       {!notif.read && (
-                        <span className="inline-block mt-2 text-xs bg-blue-600 text-white px-2 py-1 rounded-full">
+                        <span className="inline-block px-2 py-1 mt-2 text-xs text-white bg-blue-600 rounded-full">
                           New
                         </span>
                       )}

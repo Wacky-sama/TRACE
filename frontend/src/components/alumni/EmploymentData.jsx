@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { fillOffset, motion } from "framer-motion";
