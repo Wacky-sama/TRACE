@@ -48,8 +48,8 @@ const AlumniSidebar = () => {
               <p className="font-semibold">
                 {formatFullname(currentUser)}
               </p>
-              <p className="text-gray-400">
-                {currentUser.email}
+              <p className="text-gray-400 capitalize">
+                {currentUser.role}
               </p>
             </div>
           </div>
