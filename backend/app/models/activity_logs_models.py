@@ -13,6 +13,8 @@ class ActionType(str, enum.Enum):
     update = "update" # User information update
     login = "login" # User login
     logout = "logout" # User logout
+    attend_event = "attend_event" # Alumni attend event
+    decline_event = "decline_event" # Alumni decline event
 
 class ActivityLog(Base):
     __tablename__ = "activity_logs"
