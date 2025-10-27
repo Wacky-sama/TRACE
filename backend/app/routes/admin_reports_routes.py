@@ -23,7 +23,7 @@ def generate_report(report_type: str, format: str = "pdf", db: Session = Depends
 
     # Fetch data based on type
     if report_type == "alumni":
-        data = db.query(Users).filter(Users.role == "alumni", Users.is_deleted == False).all()
+        data = db.query(Users).filter(Users.role == "alumni", Users.deleted_at.is_(None)).all()
     elif report_type == "events":
         data = db.query(Events).all()
     elif report_type == "gts":

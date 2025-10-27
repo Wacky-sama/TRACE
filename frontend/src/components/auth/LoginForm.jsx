@@ -7,7 +7,7 @@ import {
   faUser,
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { login, getProfile } from "../../services/auth";
 import { setAuthData, setUser } from "../../utils/storage";
 import { useUser } from "../../context/UserContext";

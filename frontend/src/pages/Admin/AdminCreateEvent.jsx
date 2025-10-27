@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { getToken } from "../../utils/storage";
 import api from "../../services/api";
 import FloatingInput from "../../components/FloatingInput";

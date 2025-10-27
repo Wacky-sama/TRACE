@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { getToken, getRole, isApproved, clearAuthData } from "./utils/storage";
 import {
@@ -7,7 +8,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { getUser, setUser } from "./utils/storage";
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "./context/ThemeProvider";
 import api from "./services/api";
@@ -184,7 +185,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
 
-          <ToastContainer position="top-right" autoClose={3000} pauseOnHover />
+          <Toaster position="top-right" autoClose={3000} pauseOnHover />
         </Router>
       </motion.div>
     </AnimatePresence>

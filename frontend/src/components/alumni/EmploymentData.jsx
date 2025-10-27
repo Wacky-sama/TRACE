@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { fillOffset, motion } from "framer-motion";
 import { useTheme } from "../../context/ThemeProvider";
 import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";
