@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { checkEmailAvailability } from "../services/authService";
 import { useTheme } from "../context/ThemeProvider";
 
+const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+
 function EmailInput({
   id,
   value,
@@ -16,8 +18,6 @@ function EmailInput({
   const [isChecking, setIsChecking] = useState(false);
   const [isAvailable, setIsAvailable] = useState(null);
   const [validationError, setValidationError] = useState("");
-
-  const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
 
   useEffect(() => {
     if (!value) {
