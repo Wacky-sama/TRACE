@@ -77,7 +77,10 @@ const AlumniEvents = () => {
                   <strong>Location:</strong> {event.location}
                 </p>
                 <p className="text-sm">
-                  <strong>Date:</strong> {event.event_date}
+                  <strong>Start Date:</strong> {event.start_date}
+                </p>
+                <p className="text-sm">
+                  <strong>End Date:</strong> {event.end_date}
                 </p>
                 <p className="text-sm">
                   <strong>Created By:</strong> {event.created_by_name}
