@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "../../services/api";
@@ -55,7 +56,6 @@ const AlumniDashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Framer Motion variants for fade/slide
   const tabVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.35 } },
@@ -173,11 +173,18 @@ const AlumniDashboard = () => {
                             {event.description || "No description"}
                           </p>
                           <p
-                            className={`text-xs ${
+                            className={`text-sm ${
                               isDark ? "text-gray-400" : "text-gray-500"
                             }`}
                           >
-                            Date: {event.event_date || "To Be Announced"}
+                            Start Date: {event.start_date || "To Be Announced"}
+                          </p>
+                          <p
+                            className={`text-sm ${
+                              isDark ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
+                            End Date: {event.end_date || "To Be Announced"}
                           </p>
                         </div>
                       ))
