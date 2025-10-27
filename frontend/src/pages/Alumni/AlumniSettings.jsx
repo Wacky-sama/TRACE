@@ -2,9 +2,19 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
-import api from "../../services/api";
+import {
+  faUser,
+  faLock,
+  faEye,
+  faEyeSlash,
+} from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
+import api from "../../services/api";
+import {
+  isStrongPassword,
+  getPasswordStrength,
+  getPasswordStrengthMessage,
+} from "../../utils/passwordUtils";
 
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
@@ -29,6 +39,10 @@ const AlumniSettings = () => {
   const isDark = useDarkMode();
   const [activeTab, setActiveTab] = useState("account");
   const [user, setUser] = useState(null);
+  const [passwordStrength, setPasswordStrength] = useState({
+    score: 0,
+    label: "",
+  });
   const [passwordData, setPasswordData] = useState({
     current: "",
     new: "",
@@ -55,16 +69,28 @@ const AlumniSettings = () => {
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
+
+    if (!isStrongPassword(passwordData.new)) {
+      toast.error(getPasswordStrengthMessage(passwordData.new));
+      return;
+    }
+
     if (passwordData.new !== passwordData.confirm) {
       toast.error("New passwords do not match!");
       return;
     }
+
     try {
-      await api.post("/users/change-password", passwordData);
+      await api.post("/users/change-password", {
+         current_password: passwordData.current,
+         new_password: passwordData.new,
+         confirm_new_password: passwordData.confirm
+      });
       toast.success("Password changed successfully!");
       setPasswordData({ current: "", new: "", confirm: "" });
-    } catch {
-      toast.error("Failed to change password.");
+      setPasswordStrength({ score: 0, label: "" });
+    } catch (error) {
+      toast.error(error.response?.data?.detail || "Failed to change password.");
     }
   };
 
@@ -175,13 +201,28 @@ const AlumniSettings = () => {
                   isDark ? "bg-gray-800" : "bg-white"
                 }`}
               >
+                <h2
+                  className={`text-2xl font-semibold mb-4 ${
+                    isDark ? "text-white" : "text-gray-900"
+                  }`}
+                >
+                  Change Password
+                </h2>
+
                 <form onSubmit={handlePasswordChange} className="space-y-4">
-                  <div>
-                    <label className="block mb-1 text-sm font-medium">
+                  {/* Current Password */}
+                  <div className="relative">
+                    <label
+                      htmlFor="current"
+                      className={`block mb-1 font-medium ${
+                        isDark ? "text-gray-300" : "text-gray-700"
+                      }`}
+                    >
                       Current Password
                     </label>
                     <input
-                      type="password"
+                      id="current"
+                      type={passwordData.showCurrent ? "text" : "password"}
                       value={passwordData.current}
                       onChange={(e) =>
                         setPasswordData({
@@ -189,31 +230,112 @@ const AlumniSettings = () => {
                           current: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-400 dark:bg-gray-700 dark:border-gray-600"
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none ${
+                        isDark
+                          ? "bg-gray-700 border-gray-600 text-white"
+                          : "bg-white border-gray-300 text-gray-900"
+                      }`}
+                      required
                     />
+                    <span
+                      onClick={() =>
+                        setPasswordData((prev) => ({
+                          ...prev,
+                          showCurrent: !prev.showCurrent,
+                        }))
+                      }
+                      className="absolute inset-y-0 flex items-center text-gray-400 cursor-pointer right-3"
+                    >
+                      <FontAwesomeIcon
+                        icon={passwordData.showCurrent ? faEyeSlash : faEye}
+                      />
+                    </span>
                   </div>
-                  <div>
-                    <label className="block mb-1 text-sm font-medium">
+
+                  {/* New Password */}
+                  <div className="relative">
+                    <label
+                      htmlFor="new"
+                      className={`block mb-1 font-medium ${
+                        isDark ? "text-gray-300" : "text-gray-700"
+                      }`}
+                    >
                       New Password
                     </label>
                     <input
-                      type="password"
+                      id="new"
+                      type={passwordData.showNew ? "text" : "password"}
                       value={passwordData.new}
-                      onChange={(e) =>
-                        setPasswordData({
-                          ...passwordData,
-                          new: e.target.value,
-                        })
-                      }
-                      className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-400 dark:bg-gray-700 dark:border-gray-600"
+                      onChange={(e) => {
+                        const newPassword = e.target.value;
+                        setPasswordData({ ...passwordData, new: newPassword });
+                        setPasswordStrength(getPasswordStrength(newPassword));
+                      }}
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none ${
+                        isDark
+                          ? "bg-gray-700 border-gray-600 text-white"
+                          : "bg-white border-gray-300 text-gray-900"
+                      }`}
+                      required
                     />
+                    <span
+                      onClick={() =>
+                        setPasswordData((prev) => ({
+                          ...prev,
+                          showNew: !prev.showNew,
+                        }))
+                      }
+                      className="absolute inset-y-0 flex items-center text-gray-400 cursor-pointer right-3"
+                    >
+                      <FontAwesomeIcon
+                        icon={passwordData.showNew ? faEyeSlash : faEye}
+                      />
+                    </span>
+
+                    {/* Password Strength Bar */}
+                    {passwordData.new && (
+                      <div className="mt-2">
+                        <div className="w-full h-2 bg-gray-200 rounded-full">
+                          <div
+                            className={`h-2 rounded-full transition-all duration-300 ${
+                              passwordStrength.score === 0
+                                ? "bg-gray-300 w-0"
+                                : passwordStrength.score === 1
+                                ? "bg-red-500 w-1/4"
+                                : passwordStrength.score === 2
+                                ? "bg-orange-400 w-2/4"
+                                : passwordStrength.score === 3
+                                ? "bg-yellow-400 w-3/4"
+                                : "bg-green-500 w-full"
+                            }`}
+                          />
+                        </div>
+                        <p
+                          className={`text-sm mt-1 ${
+                            passwordStrength.score <= 2
+                              ? "text-red-500"
+                              : "text-green-600"
+                          }`}
+                        >
+                          {passwordStrength.label}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <label className="block mb-1 text-sm font-medium">
-                      Confirm Password
+
+                  {/* Confirm New Password */}
+                  <div className="relative">
+                    <label
+                      htmlFor="confirm"
+                      className={`block mb-1 font-medium ${
+                        isDark ? "text-gray-300" : "text-gray-700"
+                      }`}
+                    >
+                      Confirm New Password
                     </label>
                     <input
-                      type="password"
+                      id="confirm"
+                      type={passwordData.showConfirm ? "text" : "password"}
                       value={passwordData.confirm}
                       onChange={(e) =>
                         setPasswordData({
@@ -221,12 +343,46 @@ const AlumniSettings = () => {
                           confirm: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-400 dark:bg-gray-700 dark:border-gray-600"
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none ${
+                        isDark
+                          ? "bg-gray-700 border-gray-600 text-white"
+                          : "bg-white border-gray-300 text-gray-900"
+                      }`}
+                      required
                     />
+                    <span
+                      onClick={() =>
+                        setPasswordData((prev) => ({
+                          ...prev,
+                          showConfirm: !prev.showConfirm,
+                        }))
+                      }
+                      className="absolute inset-y-0 flex items-center text-gray-400 cursor-pointer right-3"
+                    >
+                      <FontAwesomeIcon
+                        icon={passwordData.showConfirm ? faEyeSlash : faEye}
+                      />
+                    </span>
+
+                    {/* Match Status */}
+                    {passwordData.confirm && (
+                      <p
+                        className={`text-sm mt-1 ${
+                          passwordData.new === passwordData.confirm
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {passwordData.new === passwordData.confirm
+                          ? "Passwords match"
+                          : "Passwords do not match"}
+                      </p>
+                    )}
                   </div>
+
                   <button
                     type="submit"
-                    className="px-4 py-2 text-white transition bg-blue-600 rounded hover:bg-blue-700"
+                    className="w-full py-3 mt-4 font-medium text-white transition bg-blue-600 rounded-md hover:bg-blue-700"
                   >
                     Update Password
                   </button>

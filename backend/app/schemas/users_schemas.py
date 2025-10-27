@@ -31,6 +31,14 @@ class SexEnum(str, enum.Enum):
     male = "Male"
     female = "Female"
 
+class ChangePasswordRequest(BaseModel):
+    current_password: str = Field(..., min_length=8)
+    new_password: str = Field(..., min_length=8)
+    confirm_new_password: str = Field(..., min_length=8)
+
+class AdminResetPasswordRequest(BaseModel):
+    new_password: str = Field(..., min_length=6)
+
 class TokenResponse(BaseModel):
     token: str
     role: UserRole
