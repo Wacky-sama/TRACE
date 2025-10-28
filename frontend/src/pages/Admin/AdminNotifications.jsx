@@ -34,6 +34,11 @@ function useDarkMode() {
 const AdminNotifications = () => {
   const isDark = useDarkMode();
   const [notifications, setNotifications] = useState([]);
+  const getNotifType = (actionType) => {
+    if (["decline", "delete"].includes(actionType)) return "alert";
+    if (["approve", "register"].includes(actionType)) return "message";
+    return "info";
+  };
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("newest");
@@ -69,9 +74,7 @@ const AdminNotifications = () => {
     try {
       await api.patch(`/notifications/${id}/read`);
       setNotifications((prev) =>
-        prev.map((n) =>
-          n.id === id ? { ...n, is_read: true } : n
-        )
+        prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
       );
       toast.success("Notification marked as read");
     } catch {
@@ -102,7 +105,9 @@ const AdminNotifications = () => {
     });
 
   return (
-    <div className={`flex min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-100"}`}>
+    <div
+      className={`flex min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-100"}`}
+    >
       <main className="flex-1 p-6">
         <div className="max-w-5xl mx-auto">
           <h1
@@ -112,12 +117,9 @@ const AdminNotifications = () => {
           >
             Notifications
           </h1>
-          <p
-            className={`mb-8 ${
-              isDark ? "text-gray-300" : "text-gray-600"
-            }`}
-          >
-            Manage system alerts, user updates, and platform events in real-time.
+          <p className={`mb-8 ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+            Manage system alerts, user updates, and platform events in
+            real-time.
           </p>
 
           {/* Filter and Sort Toolbar */}
@@ -183,9 +185,15 @@ const AdminNotifications = () => {
                 <FontAwesomeIcon
                   icon={faBell}
                   size="2x"
-                  className={`${isDark ? "text-gray-500" : "text-gray-400"} mb-3`}
+                  className={`${
+                    isDark ? "text-gray-500" : "text-gray-400"
+                  } mb-3`}
                 />
-                <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                <p
+                  className={`text-sm ${
+                    isDark ? "text-gray-400" : "text-gray-500"
+                  }`}
+                >
                   You’re all caught up! No notifications found.
                 </p>
               </div>
@@ -207,25 +215,28 @@ const AdminNotifications = () => {
                     <div className="flex items-start space-x-3">
                       <div
                         className={`flex items-center justify-center w-10 h-10 rounded-full ${
-                          notif.type === "alert"
+                          getNotifType(notif.action_type) === "alert"
                             ? "bg-red-100 text-red-600 dark:bg-red-800 dark:text-red-400"
-                            : notif.type === "message"
+                            : getNotifType(notif.action_type) === "message"
                             ? "bg-green-100 text-green-600 dark:bg-green-800 dark:text-green-400"
                             : "bg-blue-100 text-blue-600 dark:bg-blue-800 dark:text-blue-400"
                         }`}
                       >
                         <FontAwesomeIcon
                           icon={
-                            notif.type === "alert"
+                            getNotifType(notif.action_type) === "alert"
                               ? faCircleExclamation
-                              : notif.type === "message"
+                              : getNotifType(notif.action_type) === "message"
                               ? faEnvelopeOpenText
                               : faBell
                           }
                         />
                       </div>
+
                       <div>
-                        <p className="text-sm font-medium">{notif.title}</p>
+                        <p className="text-sm font-medium capitalize">
+                          {notif.action_type}
+                        </p>
                         <p
                           className={`text-xs mt-1 ${
                             isDark ? "text-gray-300" : "text-gray-600"

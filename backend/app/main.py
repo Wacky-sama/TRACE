@@ -5,6 +5,7 @@ from app.routes import (
     event_attendance_routes, 
     events_routes,
     gts_responses_routes,
+    notifications_routes,
     users_routes
     )
 from fastapi import FastAPI # pyright: ignore[reportMissingImports]
@@ -36,6 +37,7 @@ app.include_router(admin_reports_routes.router) # Admin reports routes
 app.include_router(events_routes.router) # Event routes
 app.include_router(event_attendance_routes.router) # Event attendance routes
 app.include_router(gts_responses_routes.router) # GTS response routes
+app.include_router(notifications_routes.router) # Notifications routes
 app.include_router(users_routes.router)  # User routes
 
 @app.get("/")

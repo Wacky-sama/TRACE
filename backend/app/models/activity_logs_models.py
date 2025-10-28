@@ -1,8 +1,7 @@
 import enum
-from sqlalchemy import func
-from sqlalchemy import Column, Enum, ForeignKey, DateTime, JSON
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from sqlalchemy import Boolean, Column, Enum, ForeignKey, func, DateTime, JSON # pyright: ignore[reportMissingImports]
+from sqlalchemy.dialects.postgresql import UUID # pyright: ignore[reportMissingImports]
+from sqlalchemy.orm import relationship # pyright: ignore[reportMissingImports]
 from app.database import Base
 
 class ActionType(str, enum.Enum):
@@ -25,6 +24,7 @@ class ActivityLog(Base):
     description = Column(JSON, nullable=False)
     target_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     meta_data = Column(JSON, nullable=True)
+    is_read = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     user = relationship(
