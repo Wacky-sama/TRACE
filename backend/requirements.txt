@@ -52,6 +52,7 @@ pure_eval==0.2.3
 pycparser==2.23
 pydantic==2.12.3
 pydantic-settings==2.11.0
+pydantic[email]
 pydantic_core==2.41.4
 PyJWT==2.10.1
 python-dateutil==2.9.0.post0
