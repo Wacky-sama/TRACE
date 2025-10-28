@@ -23,6 +23,7 @@
     "axios": "^1.9.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.24",
+    "html5-qrcode": "^2.3.8",
     "libphonenumber-js": "^1.12.24",
     "lucide-react": "^0.545.0",
     "react": "^19.1.0",
