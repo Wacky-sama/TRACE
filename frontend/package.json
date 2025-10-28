@@ -25,6 +25,7 @@
     "framer-motion": "^12.23.24",
     "libphonenumber-js": "^1.12.24",
     "lucide-react": "^0.545.0",
+    "qrcode.react": "^4.2.0",
     "react": "^19.1.0",
     "react-datepicker": "^8.7.0",
     "react-dom": "^19.1.0",

@@ -33,6 +33,16 @@ const AlumniEvents = () => {
     try {
       await api.post(`/attendance/${eventId}`);
       toast.success("Successfully registered for the event!");
+
+      const qrRes = await api.post(`/attendance/${eventId}/generate_qr`);
+      const { qr_code } = qrRes.data;
+
+      const link = document.createElement("a");
+      link.href = `data:image/png;base64,${qr_code}`;
+      link.download = `event-${eventId}-qr.png`;
+      link.click();
+
+      toast.success("QR Code generated! You can scan it when the event starts.");
     } catch (error) {
       alert(error.response?.data?.detail || "Failed to register.");
     }

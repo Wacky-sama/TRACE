@@ -1,6 +1,6 @@
-from sqlalchemy import Column, String, ForeignKey, DateTime
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String  # pyright: ignore[reportMissingImports]
+from sqlalchemy.dialects.postgresql import UUID # pyright: ignore[reportMissingImports]
+from sqlalchemy.orm import relationship # pyright: ignore[reportMissingImports]
 from uuid import uuid4
 from datetime import datetime
 from app.database import Base
@@ -14,6 +14,9 @@ class EventAttendance(Base):
     status = Column(String(10), default="registered")
     registered_at = Column(DateTime, default=datetime.utcnow)
     attended_at = Column(DateTime, nullable=True)
+    qr_token = Column(String, unique=True, nullable=True)
+    is_valid = Column(Boolean, default=True)
+    scanned_at = Column(DateTime, nullable=True)
 
      # Relationships
     event = relationship(
