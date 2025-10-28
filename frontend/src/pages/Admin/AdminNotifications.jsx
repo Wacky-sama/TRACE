@@ -242,7 +242,7 @@ const AdminNotifications = () => {
                             isDark ? "text-gray-300" : "text-gray-600"
                           }`}
                         >
-                          {notif.message || "No details available."}
+                          {notif.description || "No details available."}
                         </p>
                         <p
                           className={`text-xs mt-2 ${
