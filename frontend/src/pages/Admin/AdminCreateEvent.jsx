@@ -36,14 +36,6 @@ const AdminCreateEvent = () => {
     end_date: null,
   });
 
-  const capitalizeFirstLetter = (str) => {
-    if (!str) return "";
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-  };
-
-  const capitalizeEachWord = (str) =>
-    str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
-
   const [selectedLocation, setSelectedLocation] = useState("");
   const [customLocation, setCustomLocation] = useState("");
   const [showCustomLocation, setShowCustomLocation] = useState(false);
@@ -174,7 +166,7 @@ const AdminCreateEvent = () => {
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  title: capitalizeEachWord(e.target.value),
+                  title: e.target.value
                 })
               }
               error={errors.title}
@@ -218,7 +210,7 @@ const AdminCreateEvent = () => {
               value={formData.description}
               onChange={(e) =>
                 setFormData({ 
-                  ...formData, description: capitalizeFirstLetter(e.target.value),
+                  ...formData, description: e.target.value
                 })
               }
               placeholder="Describe your event..."
