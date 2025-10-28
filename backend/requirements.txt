@@ -12,4 +12,6 @@ psycopg2
 python-dotenv==1.1.0
 SQLAlchemy==2.0.41
 starlette
-uvicorn
+uvicorn==0.38.0
+qrcode==8.2
+reportlab==4.4.4
