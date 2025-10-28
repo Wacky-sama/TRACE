@@ -1,3 +1,4 @@
+# WARNING: Do not use pipreqs, it installs unnecessary Jupyter dependencies.
 aiosmtplib==4.0.1
 alembic==1.16.5
 argon2_cffi
@@ -8,10 +9,7 @@ pydantic_settings==2.9.1
 pydantic[email]
 PyJWT==2.10.1
 psycopg2
-pipreqs
 python-dotenv==1.1.0
 SQLAlchemy==2.0.41
 starlette
-psycopg2
-pipreqs
 uvicorn
