@@ -3,8 +3,7 @@ alembic==1.16.5
 argon2==0.1.10
 fastapi==0.120.1
 pydantic==2.12.3
-pydantic_settings==2.11.0
-PyJWT==2.10.1
+pydantic-settings==2.11.0
 PyJWT==2.10.1
 python-dotenv==1.2.1
 qrcode==8.2
