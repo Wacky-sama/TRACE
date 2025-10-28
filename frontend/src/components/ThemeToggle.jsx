@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useTheme } from '../context/ThemeProvider';
 import { Moon, Sun } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
