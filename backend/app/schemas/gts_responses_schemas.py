@@ -1,6 +1,6 @@
 import enum
-from pydantic import BaseModel, validator
-from typing import Optional, List, Dict, Any
+from pydantic import BaseModel, field_validator, validator # pyright: ignore[reportMissingImports]
+from typing import Any, Dict,  List, Optional, Union 
 from uuid import UUID
 from datetime import date
 
@@ -60,7 +60,7 @@ class GTSResponsesEmploymentUpdate(BaseModel):
     ever_employed: Optional[bool] = None
     is_employed: Optional[bool] = None
     non_employed_reasons: Optional[List[str]] = None
-    employment_status: Optional[str]
+    employment_status: Optional[str] = None
     occupation: Optional[List[str]] = None
     company_name: Optional[str] = None
     company_address: Optional[str] = None
@@ -68,18 +68,35 @@ class GTSResponsesEmploymentUpdate(BaseModel):
     place_of_work: Optional[str] = None
     first_job: Optional[bool] = None
     job_related_to_course: Optional[bool] = None
-    job_start_date: Optional[date] = None
-    months_to_first_job: Optional[int] = None
+    job_start_date: Optional[Union[date, str]] = None
+    months_to_first_job: Optional[Union[int, str]] = None
     job_find_methods: Optional[List[str]] = None
     job_reasons: Optional[List[str]] = None
     job_change_reasons: Optional[List[str]] = None
     job_level_first: Optional[str] = None
     job_level_current: Optional[str] = None
-    first_job_salary: Optional[float] = None
+    first_job_salary: Optional[Union[float, str]] = None
     curriculum_relevance_first_job: Optional[bool] = None
     curriculum_relevance_second_job: Optional[bool] = None
     useful_competencies: Optional[List[str]] = None
     curriculum_improvement_suggestions: Optional[str] = None
+    
+    @field_validator("months_to_first_job", "first_job_salary", mode="before")
+    def convert_numbers(cls, v):
+        if v in (None, "", "null"):
+            return None
+        try:
+            return float(v) if "." in str(v) else int(v)
+        except ValueError:
+            return None
+        
+    @field_validator("job_start_date", mode="before")
+    def parse_date(cls, v):
+        if v in (None, "", "mull"):
+            return None
+        if isinstance(v, str) and "T" in v:
+            return v.split("T")[0]
+        return v
     
     class Config:
         from_attributes = True

@@ -47,10 +47,10 @@ const AlumniGTSForm = () => {
     fetchGTSData();
   }, [userId]);
 
-  const handleUpdate = async (section, updatedFields) => {
+  const handleUpdate = async (section, gtsId,updatedFields) => {
     try {
       const response = await api.put(
-        `/gts_responses/${gtsData.id}/${section}`,
+        `/gts_responses/${gtsId}/${section}`,
         updatedFields,
         {
           headers: { Authorization: `Bearer ${getToken()}` },

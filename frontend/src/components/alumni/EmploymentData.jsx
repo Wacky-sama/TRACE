@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { fillOffset, motion } from "framer-motion";
 import { useTheme } from "../../context/ThemeProvider";
 import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";
 import FloatingInput from "../FloatingInput";
@@ -122,6 +121,17 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
+  const processInitialArray = (dbArray, options, otherKey) => {
+    if (!dbArray || !Array.isArray(dbArray)) return [];
+    const predefined = dbArray.filter(item => options.includes(item));
+    const custom = dbArray.filter(item => !options.includes(item));
+    const result = [...predefined];
+    if (custom.length > 0) {
+      result.push(otherKey); 
+    }
+    return result;
+  };
+
   const initialEmploymentNow =
     gtsData.ever_employed === false &&
     gtsData.employment_status === "Never Employed"
@@ -134,9 +144,17 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
     employmentNow: initialEmploymentNow,
     ever_employed: gtsData.ever_employed || false,
     is_employed: gtsData.is_employed || false,
-    non_employed_reasons: gtsData.non_employed_reasons || [],
+    non_employed_reasons: processInitialArray(
+      gtsData.non_employed_reasons,
+      NON_EMPLOYED_REASONS,
+      "Other reason(s), please specify"
+    ),
     employment_status: gtsData.employment_status || "",
-    occupation: gtsData.occupation || [],
+    occupation: processInitialArray(
+      gtsData.occupation,
+      OCCUPATION_OPTIONS,
+      "Others, please specify"
+    ),
     company_name: gtsData.company_name || "",
     company_address: gtsData.company_address || "",
     job_sector: gtsData.job_sector || "",
@@ -145,9 +163,21 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
     job_related_to_course: gtsData.job_related_to_course || false,
     job_start_date: gtsData.job_start_date || "",
     months_to_first_job: gtsData.months_to_first_job || "",
-    job_find_methods: gtsData.job_find_methods || [],
-    job_reasons: gtsData.job_reasons || [],
-    job_change_reasons: gtsData.job_change_reasons || [],
+    job_find_methods: processInitialArray(
+      gtsData.job_find_methods,
+      JOB_FIND_METHODS,
+      "Others, please specify"
+    ),
+    job_reasons: processInitialArray(
+      gtsData.job_reasons,
+      JOB_REASONS,
+      "Other reason(s), please specify"
+    ),
+    job_change_reasons: processInitialArray(
+      gtsData.job_change_reasons,
+      JOB_CHANGE_REASONS,
+      "Other reason(s), please specify"
+    ),
     job_level_first: gtsData.job_level_first || "",
     job_level_current: gtsData.job_level_current || "",
     first_job_salary: gtsData.first_job_salary || "",
@@ -155,18 +185,34 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
       gtsData.curriculum_relevance_first_job || false,
     curriculum_relevance_second_job:
       gtsData.curriculum_relevance_second_job || false,
-    useful_competencies: gtsData.useful_competencies || [],
+    useful_competencies: processInitialArray(
+      gtsData.useful_competencies,
+      USEFUL_COMPETENCIES,
+      "Other skills, please specify"
+    ),
     curriculum_improvement_suggestions:
       gtsData.curriculum_improvement_suggestions || "",
   });
 
-  const [otherOccupation, setOtherOccupation] = useState("");
-  const [otherNonEmployedReason, setOtherNonEmployedReason] = useState("");
+  const [otherOccupation, setOtherOccupation] = useState(
+    gtsData.occupation?.find(item => !OCCUPATION_OPTIONS.includes(item)) || ""
+  );
+  const [otherNonEmployedReason, setOtherNonEmployedReason] = useState(
+    gtsData.non_employed_reasons?.find(item => !NON_EMPLOYED_REASONS.includes(item)) || ""
+  );
   const [otherJobSector, setOtherJobSector] = useState("");
-  const [otherJobFindMethod, setOtherJobFindMethod] = useState("");
-  const [otherJobReason, setOtherJobReason] = useState("");
-  const [otherJobChangeReason, setOtherJobChangeReason] = useState("");
-  const [otherUsefulCompetency, setOtherUsefulCompetency] = useState("");
+  const [otherJobFindMethod, setOtherJobFindMethod] = useState(
+    gtsData.job_find_methods?.find(item => !JOB_FIND_METHODS.includes(item)) || ""
+  );
+  const [otherJobReason, setOtherJobReason] = useState(
+    gtsData.job_reasons?.find(item => !JOB_REASONS.includes(item)) || ""
+  );
+  const [otherJobChangeReason, setOtherJobChangeReason] = useState(
+    gtsData.job_change_reasons?.find(item => !JOB_CHANGE_REASONS.includes(item)) || ""
+  );
+  const [otherUsefulCompetency, setOtherUsefulCompetency] = useState(
+    gtsData.useful_competencies?.find(item => !USEFUL_COMPETENCIES.includes(item)) || ""
+  );
 
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -358,53 +404,52 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
     setSaving(true);
 
     const processArrayWithOther = (array, otherValue, otherKey) => {
-      return array.map((item) => {
+      const processed = array.map((item) => {
         if (item === otherKey) return otherValue.trim();
         return item;
       });
+      return [...new Set(processed)];
     };
 
     const updatedFields = {
-      ...formData,
-      ever_employed: formData.employmentNow === "Yes",
-      is_employed: formData.employmentNow === "Yes",
-      non_employed_reasons: processArrayWithOther(
-        formData.non_employed_reasons,
-        otherNonEmployedReason,
-        "Other reason(s), please specify"
-      ),
-      occupation: processArrayWithOther(
-        formData.occupation,
-        otherOccupation,
-        "Others, pls specify"
-      ),
-      job_sector:
-        formData.job_sector === "Others, please specify"
-          ? otherJobSector.trim()
-          : formData.job_sector,
-      job_find_methods: processArrayWithOther(
-        formData.job_find_methods,
-        otherJobFindMethod,
-        "Others, please specify"
-      ),
-      job_reasons: processArrayWithOther(
-        formData.job_reasons,
-        otherJobReason,
-        "Other reason(s), please specify"
-      ),
-      job_change_reasons: processArrayWithOther(
-        formData.job_change_reasons,
-        otherJobChangeReason,
-        "Other reason (s), please specify"
-      ),
-      useful_competencies: processArrayWithOther(
-        formData.useful_competencies,
-        otherUsefulCompetency,
-        "Other skills, please specify"
-      ),
-    };
-
-    const result = await onUpdate("employment", updatedFields);
+     ...formData,
+     ever_employed: formData.employmentNow === "Yes",
+     is_employed: formData.employmentNow === "Yes",
+     non_employed_reasons: processArrayWithOther(
+       formData.non_employed_reasons,
+       otherNonEmployedReason,
+       "Other reason(s), please specify"
+     ),
+     occupation: processArrayWithOther(
+       formData.occupation,
+       otherOccupation,
+       "Others, please specify"
+     ),
+     job_sector: formData.job_sector === "Others, please specify"
+       ? otherJobSector.trim()
+       : formData.job_sector,
+     job_find_methods: processArrayWithOther(
+       formData.job_find_methods,
+       otherJobFindMethod,
+       "Others, please specify"
+     ),
+     job_reasons: processArrayWithOther(
+       formData.job_reasons,
+       otherJobReason,
+       "Other reason(s), please specify"
+     ),
+     job_change_reasons: processArrayWithOther(
+       formData.job_change_reasons,
+       otherJobChangeReason,
+       "Other reason(s), please specify"
+     ),
+     useful_competencies: processArrayWithOther(
+       formData.useful_competencies,
+       otherUsefulCompetency,
+       "Other skills, please specify"
+     ),
+   };
+    const result = await onUpdate("employment", gtsData.id, updatedFields);
     setSaving(false);
     setSaveSuccess(result.success);
     setMessage(
@@ -473,9 +518,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
         id="employmentNow"
         label="Are you currently employed?"
         value={formData.employmentNow}
-        onChange={(e) =>
-          setFormData({ ...formData, employmentNow: e.target.value })
-        }
+        onChange={(e) => handleEmploymentNowChange(e.target.value)}
         options={EMPLOYMENT_NOW_OPTIONS}
         error={errors.employmentNow}
         darkMode={isDark}
@@ -559,7 +602,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               <FloatingInput
                 id="otherJobSector"
                 value={otherJobSector}
-                onChange={(e) => otherJobSector(e.target.value.trimStart())}
+                onChange={(e) => setOtherJobSector(e.target.value.trimStart())}
                 label="Please specify your job sector"
                 error={errors.otherJobSector}
               />
@@ -599,7 +642,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
                 </label>
               ))}
             </div>
-            {formData.occupation.includes("Others, pls specify") && (
+            {formData.occupation.includes("Others, please specify") && (
               <FloatingInput
                 id="otherOccupation"
                 value={otherOccupation}
