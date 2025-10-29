@@ -3,6 +3,7 @@ from pydantic import BaseModel, field_validator, validator # pyright: ignore[rep
 from typing import Any, Dict,  List, Optional, Union 
 from uuid import UUID
 from datetime import date
+from app.schemas.trainings_schemas import TrainingItem
 
 class SexEnum(str, enum.Enum):
     male = "Male"
@@ -45,13 +46,6 @@ class GTSResponsesEducationalUpdate(BaseModel):
         from_attributes = True
         
 # C. TRAINING(S) ADVANCE STUDIES ATTENTED AFTER COLLEGE(optional)
-class TrainingItem(BaseModel):
-    title: str
-    duration: Optional[str] = None
-    credits_earned: Optional[str] = None
-    institution: Optional[str] = None
-
-
 class GTSResponsesTrainingUpdate(BaseModel):
     trainings: Optional[List[TrainingItem]] = None
 
@@ -147,7 +141,7 @@ class GTSResponsesOut(BaseModel):
     pursued_advance_degree_reasons: Optional[List[str]] = None
     
     # SECTION C: TRAINING(S) ADVANCE STUDIES ATTENTED AFTER COLLEGE(optional)
-    trainings: Optional[List[Dict[str, Any]]] = None
+    trainings: Optional[List[TrainingItem]] = None
     
     # SECTION D: EMPLOYMENT DATA
     ever_employed: Optional[bool]

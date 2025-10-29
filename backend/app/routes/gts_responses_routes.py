@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException # pyright: ignore[reportMissingImports]
-from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
+from sqlalchemy.orm import Session, selectinload # pyright: ignore[reportMissingImports]
 from typing import List
 from app.database import get_db
 from app.models.users_models import Users
 from app.models.gts_responses_models import GTSResponses
+from app.models.trainings_models import Training
 from app.utils.auth import get_current_user
 from app.schemas.gts_responses_schemas import (
     GTSResponsesCreate, GTSResponsesOut, 
@@ -35,7 +36,7 @@ def parse_pg_array(value):
 def get_all_responses(
     db: Session = Depends(get_db)
 ):
-    responses = db.query(GTSResponses).all()
+    responses = db.query(GTSResponses).options(selectinload(GTSResponses.trainings)).all()
     for resp in responses:
         resp.occupation = parse_pg_array(resp.occupation)
         resp.non_employed_reasons = parse_pg_array(resp.non_employed_reasons)
@@ -94,7 +95,7 @@ def get_my_gts_response(
     current_user: Users = Depends(get_current_user), 
     db: Session = Depends(get_db)
 ):
-    gts_responses = db.query(GTSResponses).filter(GTSResponses.user_id == current_user.id).first()
+    gts_responses = db.query(GTSResponses).options(selectinload(GTSResponses.trainings)).filter(GTSResponses.user_id == current_user.id).first()
     if not gts_responses:
         raise HTTPException(status_code=404, detail="No GTS response found")
 
@@ -174,16 +175,39 @@ def update_trainings_info(
     if not gts:
         raise HTTPException(status_code=404, detail="GTS Response not found")
 
-    for key, value in updated_data.dict(exclude_unset=True).items():
-        setattr(gts, key, value)
+    existing_trainings = {str(t.id): t for t in gts.trainings}
+    
+    new_trainings = []
+    for item in updated_data.trainings or []:
+        if item.id and item.id in existing_trainings:
+            training = existing_trainings[item.id]
+            training.title = item.title
+            training.duration = item.duration
+            training.credits_earned = item.credits_earned
+            training.institution = item.institution
+        else:
+            new_training = Training(
+                gts_id=gts_id,
+                title=item.title,
+                duration=item.duration,
+                credits_earned=item.credits_earned,
+                institution=item.institution
+            )
+            new_trainings.append(new_training)
+        
+    db.add_all(new_trainings)
+    
+    updated_ids = {item.id for item in updated_data.trainings if item.id}
+    for existing_id, training in existing_trainings.items():
+        if existing_id not in updated_ids:
+            db.delete(training)
     
     db.commit()
     db.refresh(gts)
     
-    # Parse other arrays for consistency
     gts.occupation = parse_pg_array(gts.occupation)
     gts.non_employed_reasons = parse_pg_array(gts.non_employed_reasons)
-
+    
     return gts
 
 # D. Update Employment Info

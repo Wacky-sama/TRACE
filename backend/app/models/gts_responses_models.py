@@ -3,6 +3,7 @@ from sqlalchemy import Column, String, Boolean, Integer, Date, ForeignKey, Text,
 from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY # pyright: ignore[reportMissingImports]
 from sqlalchemy.sql import func # pyright: ignore[reportMissingImports]
 from sqlalchemy.orm import relationship # pyright: ignore[reportMissingImports]
+from app.models.trainings_models import Training
 from app.database import Base
 
 class GTSResponses(Base):
@@ -31,8 +32,7 @@ class GTSResponses(Base):
     pursued_advance_degree = Column(Boolean, nullable=True)
     pursued_advance_degree_reasons = Column(ARRAY(Text), nullable=True)
     
-    # SECTION C: TRAINING(S) ADVANCE STUDIES ATTENTED AFTER COLLEGE(optional)
-    trainings = Column(JSONB, nullable=True)
+    # SECTION C: TRAINING(S) ADVANCE STUDIES ATTENTED AFTER COLLEGE(optional) - Seperate file trainings_models.py
 
     # SECTION D: EMPLOYMENT DATA
     ever_employed = Column(Boolean, nullable=True)
@@ -76,4 +76,10 @@ class GTSResponses(Base):
     user = relationship(
         "Users", 
         backref="gts_responses"
+    )
+    
+    trainings = relationship(
+        "Training",
+        back_populates="trainings",
+        cascade="all, delete-orphan"
     )
