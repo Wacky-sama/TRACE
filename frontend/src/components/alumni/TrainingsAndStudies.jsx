@@ -1,5 +1,5 @@
-// C. TRAINING(S) ADVANCE STUDIES ATTENDED AFTER COLLEGE (optional)
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useTheme } from "../../context/ThemeProvider";
 import FloatingInput from "../FloatingInput";
 
@@ -7,22 +7,20 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  // Updated: Include 'id' from backend data, or null for new trainings
+  // Include 'id' from backend data, or null for new trainings
   const [trainings, setTrainings] = useState(
     gtsData.trainings && gtsData.trainings.length > 0
-      ? gtsData.trainings.map(t => ({
-          id: t.id,  // Backend provides this for existing trainings
+      ? gtsData.trainings.map((t) => ({
+          id: t.id,
           title: t.title || "",
           duration: t.duration || "",
           credits_earned: t.credits_earned || "",
-          institution: t.institution || ""
+          institution: t.institution || "",
         }))
       : [{ id: null, title: "", duration: "", credits_earned: "", institution: "" }]
   );
 
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
-  const [saveSuccess, setSaveSuccess] = useState(null);
 
   const handleChange = (index, field, value) => {
     const updated = [...trainings];
@@ -30,7 +28,6 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
     setTrainings(updated);
   };
 
-  // Updated: Add 'id: null' for new trainings
   const handleAddTraining = () => {
     setTrainings([
       ...trainings,
@@ -45,14 +42,20 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
 
   const handleSave = async () => {
     setSaving(true);
-    // The trainings array now includes 'id' (null for new, existing for updates)
-    const result = await onUpdate("trainings", gtsData.id, { trainings });
-    setSaving(false);
-    setSaveSuccess(result.success);
-    setMessage(result.success ? "Saved successfully!" : "Update failed.");
-    
-    // Optional: If save succeeds, you could refetch gtsData to get updated IDs for new trainings
-    // But for now, this works as the backend handles it
+    try {
+      const result = await onUpdate("trainings", gtsData.id, { trainings });
+
+      if (result.success) {
+        toast.success("Saved successfully!");
+      } else {
+        toast.error("Update failed. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An unexpected error occurred.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -71,7 +74,7 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
 
       {trainings.map((training, index) => (
         <div
-          key={index}  // Consider using training.id if available for better keys, but index is fine for now
+          key={training.id || index}
           className={`p-4 mb-4 rounded-lg border ${
             isDark ? "border-gray-700" : "border-gray-300"
           }`}
@@ -96,18 +99,14 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
               type="text"
               label="Credits Earned"
               value={training.credits_earned}
-              onChange={(e) =>
-                handleChange(index, "credits_earned", e.target.value)
-              }
+              onChange={(e) => handleChange(index, "credits_earned", e.target.value)}
             />
             <FloatingInput
               id={`institution-${index}`}
               type="text"
               label="Institution"
               value={training.institution}
-              onChange={(e) =>
-                handleChange(index, "institution", e.target.value)
-              }
+              onChange={(e) => handleChange(index, "institution", e.target.value)}
             />
           </div>
 
@@ -156,22 +155,6 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
           {saving ? "Saving..." : "Save"}
         </button>
       </div>
-
-      {message && (
-        <p
-          className={`mt-2 text-sm ${
-            saveSuccess
-              ? isDark
-                ? "text-green-400"
-                : "text-green-600"
-              : isDark
-              ? "text-red-400"
-              : "text-red-600"
-          }`}
-        >
-          {message}
-        </p>
-      )}
     </div>
   );
 };

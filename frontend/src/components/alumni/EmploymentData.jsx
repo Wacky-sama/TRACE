@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useTheme } from "../../context/ThemeProvider";
@@ -123,11 +122,11 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
 
   const processInitialArray = (dbArray, options, otherKey) => {
     if (!dbArray || !Array.isArray(dbArray)) return [];
-    const predefined = dbArray.filter(item => options.includes(item));
-    const custom = dbArray.filter(item => !options.includes(item));
+    const predefined = dbArray.filter((item) => options.includes(item));
+    const custom = dbArray.filter((item) => !options.includes(item));
     const result = [...predefined];
     if (custom.length > 0) {
-      result.push(otherKey); 
+      result.push(otherKey);
     }
     return result;
   };
@@ -195,28 +194,34 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
   });
 
   const [otherOccupation, setOtherOccupation] = useState(
-    gtsData.occupation?.find(item => !OCCUPATION_OPTIONS.includes(item)) || ""
+    gtsData.occupation?.find((item) => !OCCUPATION_OPTIONS.includes(item)) || ""
   );
   const [otherNonEmployedReason, setOtherNonEmployedReason] = useState(
-    gtsData.non_employed_reasons?.find(item => !NON_EMPLOYED_REASONS.includes(item)) || ""
+    gtsData.non_employed_reasons?.find(
+      (item) => !NON_EMPLOYED_REASONS.includes(item)
+    ) || ""
   );
   const [otherJobSector, setOtherJobSector] = useState("");
   const [otherJobFindMethod, setOtherJobFindMethod] = useState(
-    gtsData.job_find_methods?.find(item => !JOB_FIND_METHODS.includes(item)) || ""
+    gtsData.job_find_methods?.find(
+      (item) => !JOB_FIND_METHODS.includes(item)
+    ) || ""
   );
   const [otherJobReason, setOtherJobReason] = useState(
-    gtsData.job_reasons?.find(item => !JOB_REASONS.includes(item)) || ""
+    gtsData.job_reasons?.find((item) => !JOB_REASONS.includes(item)) || ""
   );
   const [otherJobChangeReason, setOtherJobChangeReason] = useState(
-    gtsData.job_change_reasons?.find(item => !JOB_CHANGE_REASONS.includes(item)) || ""
+    gtsData.job_change_reasons?.find(
+      (item) => !JOB_CHANGE_REASONS.includes(item)
+    ) || ""
   );
   const [otherUsefulCompetency, setOtherUsefulCompetency] = useState(
-    gtsData.useful_competencies?.find(item => !USEFUL_COMPETENCIES.includes(item)) || ""
+    gtsData.useful_competencies?.find(
+      (item) => !USEFUL_COMPETENCIES.includes(item)
+    ) || ""
   );
 
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
-  const [saveSuccess, setSaveSuccess] = useState(null);
   const [errors, setErrors] = useState({});
 
   const handleEmploymentNowChange = (value) => {
@@ -412,52 +417,57 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
     };
 
     const updatedFields = {
-     ...formData,
-     ever_employed: formData.employmentNow === "Yes",
-     is_employed: formData.employmentNow === "Yes",
-     non_employed_reasons: processArrayWithOther(
-       formData.non_employed_reasons,
-       otherNonEmployedReason,
-       "Other reason(s), please specify"
-     ),
-     occupation: processArrayWithOther(
-       formData.occupation,
-       otherOccupation,
-       "Others, please specify"
-     ),
-     job_sector: formData.job_sector === "Others, please specify"
-       ? otherJobSector.trim()
-       : formData.job_sector,
-     job_find_methods: processArrayWithOther(
-       formData.job_find_methods,
-       otherJobFindMethod,
-       "Others, please specify"
-     ),
-     job_reasons: processArrayWithOther(
-       formData.job_reasons,
-       otherJobReason,
-       "Other reason(s), please specify"
-     ),
-     job_change_reasons: processArrayWithOther(
-       formData.job_change_reasons,
-       otherJobChangeReason,
-       "Other reason(s), please specify"
-     ),
-     useful_competencies: processArrayWithOther(
-       formData.useful_competencies,
-       otherUsefulCompetency,
-       "Other skills, please specify"
-     ),
-   };
-    const result = await onUpdate("employment", gtsData.id, updatedFields);
-    setSaving(false);
-    setSaveSuccess(result.success);
-    setMessage(
-      result.success
-        ? "Saved successfully!"
-        : `Update failed: ${result.message}`
-    );
-    if (!result.success) toast.error(`Update failed: ${result.message}`);
+      ...formData,
+      ever_employed: formData.employmentNow === "Yes",
+      is_employed: formData.employmentNow === "Yes",
+      non_employed_reasons: processArrayWithOther(
+        formData.non_employed_reasons,
+        otherNonEmployedReason,
+        "Other reason(s), please specify"
+      ),
+      occupation: processArrayWithOther(
+        formData.occupation,
+        otherOccupation,
+        "Others, please specify"
+      ),
+      job_sector:
+        formData.job_sector === "Others, please specify"
+          ? otherJobSector.trim()
+          : formData.job_sector,
+      job_find_methods: processArrayWithOther(
+        formData.job_find_methods,
+        otherJobFindMethod,
+        "Others, please specify"
+      ),
+      job_reasons: processArrayWithOther(
+        formData.job_reasons,
+        otherJobReason,
+        "Other reason(s), please specify"
+      ),
+      job_change_reasons: processArrayWithOther(
+        formData.job_change_reasons,
+        otherJobChangeReason,
+        "Other reason(s), please specify"
+      ),
+      useful_competencies: processArrayWithOther(
+        formData.useful_competencies,
+        otherUsefulCompetency,
+        "Other skills, please specify"
+      ),
+    };
+    try {
+      const result = await onUpdate("employment", gtsData.id, updatedFields);
+      if (result.success) {
+        toast.success("Saved successfully!");
+      } else {
+        toast.error("Update failed. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An unexpected error occurred.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   useEffect(() => {
@@ -1046,22 +1056,6 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
           {saving ? "Saving..." : "Save"}
         </button>
       </div>
-
-      {message && (
-        <p
-          className={`mt-2 text-sm ${
-            saveSuccess
-              ? isDark
-                ? "text-green-400"
-                : "text-green-600"
-              : isDark
-              ? "text-red-400"
-              : "text-red-600"
-          }`}
-        >
-          {message}
-        </p>
-      )}
     </div>
   );
 };

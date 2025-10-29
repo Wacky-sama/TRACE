@@ -1,5 +1,6 @@
 // E. JOB SATISFACTION
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useTheme } from "../../context/ThemeProvider";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
@@ -16,8 +17,6 @@ const JobSatisfaction = ({ gtsData, onUpdate }) => {
   });
 
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
-  const [saveSuccess, setSaveSuccess] = useState(null);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -30,12 +29,24 @@ const JobSatisfaction = ({ gtsData, onUpdate }) => {
   };
 
   const handleSave = async () => {
-    setSaving(true);
+    if (!formData.job_satisfaction) {
+      toast.error("Please select your job satisfaction level.");
+      return;
+    }
 
-    const result = await onUpdate("job-satisfaction", gtsData.id, formData);
-    setSaving(false);
-    setSaveSuccess(result.success);
-    setMessage(result.success ? "Saved successfully!" : "Update failed.");
+    setSaving(true);
+    try {
+      const result = await onUpdate("job-satisfaction", gtsData.id, formData);
+      if (result.success) {
+        toast.success("Saved successfully!");
+      } else {
+        toast.error("Update failed. Please try again.");
+      }
+    } catch {
+      toast.error("An error occurred while saving.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -89,22 +100,6 @@ const JobSatisfaction = ({ gtsData, onUpdate }) => {
           {saving ? "Saving..." : "Save"}
         </button>
       </div>
-
-      {message && (
-        <p
-          className={`mt-2 text-sm ${
-            saveSuccess
-              ? isDark
-                ? "text-green-400"
-                : "text-green-600"
-              : isDark
-              ? "text-red-400"
-              : "text-red-600"
-          }`}
-        >
-          {message}
-        </p>
-      )}
     </div>
   );
 };

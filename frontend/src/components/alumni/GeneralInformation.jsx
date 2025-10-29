@@ -1,5 +1,5 @@
-// A. GENERAL INFORMATION
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useTheme } from "../../context/ThemeProvider";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import PhoneInput from "../PhoneInput";
@@ -26,13 +26,11 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
     mobile: gtsData.mobile || "",
     civil_status: gtsData.civil_status || "",
     sex: gtsData.sex || "",
-    birthday: gtsData.birthday || ""
+    birthday: gtsData.birthday || "",
   });
 
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
-  const [saveSuccess, setSaveSuccess] = useState(null);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -47,13 +45,26 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
       validateErrors.mobile = "Please enter a valid phone number (e.g., +63 912 345 6789)";
     }
     setErrors(validateErrors);
-    if (Object.keys(validateErrors).length > 0) return;
+
+    if (Object.keys(validateErrors).length > 0) {
+      toast.error("Please fix the highlighted errors before saving.");
+      return;
+    }
 
     setSaving(true);
-    const result = await onUpdate("personal", gtsData.id, formData);
-    setSaving(false);
-    setSaveSuccess(result.success);
-    setMessage(result.success ? "Saved successfully!" : "Update failed.");
+    try {
+      const result = await onUpdate("personal", gtsData.id, formData);
+      if (result.success) {
+        toast.success("Saved successfully!");
+      } else {
+        toast.error("Update failed. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An unexpected error occurred.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -135,6 +146,7 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
             readOnly
           />
         </div>
+
         <div>
           <PhoneInput
             id="mobile"
@@ -163,22 +175,6 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
           {saving ? "Saving..." : "Save"}
         </button>
       </div>
-
-      {message && (
-        <p
-          className={`mt-2 text-sm ${
-            saveSuccess
-              ? isDark
-                ? "text-green-400"
-                : "text-green-600"
-              : isDark
-              ? "text-red-400"
-              : "text-red-600"
-          }`}
-        >
-          {message}
-        </p>
-      )}
     </div>
   );
 };

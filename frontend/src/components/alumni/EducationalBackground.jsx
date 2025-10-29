@@ -42,8 +42,6 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
 
   const [otherReason, setOtherReason] = useState("");
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
-  const [saveSuccess, setSaveSuccess] = useState(null);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -81,10 +79,14 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
   };
 
   const handleSave = async () => {
-    if (formData.year_graduated && (formData.year_graduated < 1900 || formData.year_graduated > 2100)) {
-      toast.info("Year graduated must be between 1900 and 2100.");
+    if (
+      formData.year_graduated &&
+      (formData.year_graduated < 1900 || formData.year_graduated > 2100)
+    ) {
+      toast.error("Year graduated must be between 1900 and 2100.");
       return;
     }
+
     setSaving(true);
 
     const submitData = {
@@ -103,12 +105,19 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
       ],
     };
 
-    console.log("Submitting data:", submitData);
-
-    const result = await onUpdate("educational", gtsData.id, submitData);
-    setSaving(false);
-    setSaveSuccess(result.success);
-    setMessage(result.success ? "Saved successfully!" : "Update failed.");
+    try {
+      const result = await onUpdate("educational", gtsData.id, submitData);
+      if (result.success) {
+        toast.success("Saved successfully!");
+      } else {
+        toast.error("Update failed. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An unexpected error occurred.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -309,7 +318,7 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
         </div>
       )}
 
-       <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-end">
+      <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-end">
         <button
           onClick={handleSave}
           disabled={saving}
@@ -324,22 +333,6 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
           {saving ? "Saving..." : "Save"}
         </button>
       </div>
-
-      {message && (
-        <p
-          className={`mt-2 text-sm ${
-            saveSuccess
-              ? isDark
-                ? "text-green-400"
-                : "text-green-600"
-              : isDark
-              ? "text-red-400"
-              : "text-red-600"
-          }`}
-        >
-          {message}
-        </p>
-      )}
     </div>
   );
 };

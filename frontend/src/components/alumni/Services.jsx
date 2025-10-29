@@ -1,5 +1,6 @@
 // F. SERVICES FROM CSU
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useTheme } from "../../context/ThemeProvider";
 import FloatingInput from "../FloatingInput";
 
@@ -12,8 +13,6 @@ const Services = ({ gtsData, onUpdate }) => {
   });
 
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
-  const [saveSuccess, setSaveSuccess] = useState(null);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -21,11 +20,24 @@ const Services = ({ gtsData, onUpdate }) => {
   };
 
   const handleSave = async () => {
+    if (!formData.desired_services.trim()) {
+      toast.error("Please list at least one desired service.");
+      return;
+    }
+
     setSaving(true);
-    const result = await onUpdate("services", gtsData.id, formData);
-    setSaving(false);
-    setSaveSuccess(result.success);
-    setMessage(result.success ? "Saved successfully!" : "Update failed.");
+    try {
+      const result = await onUpdate("services", gtsData.id, formData);
+      if (result.success) {
+        toast.success("Saved successfully!");
+      } else {
+        toast.error("Update failed. Please try again.");
+      }
+    } catch {
+      toast.error("An error occurred while saving.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -65,22 +77,6 @@ const Services = ({ gtsData, onUpdate }) => {
           {saving ? "Saving..." : "Save"}
         </button>
       </div>
-
-      {message && (
-        <p
-          className={`mt-2 text-sm ${
-            saveSuccess
-              ? isDark
-                ? "text-green-400"
-                : "text-green-600"
-              : isDark
-              ? "text-red-400"
-              : "text-red-600"
-          }`}
-        >
-          {message}
-        </p>
-      )}
     </div>
   );
 };
