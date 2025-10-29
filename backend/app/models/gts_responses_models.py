@@ -80,6 +80,6 @@ class GTSResponses(Base):
     
     trainings = relationship(
         "Training",
-        back_populates="trainings",
+        back_populates="gts_response",
         cascade="all, delete-orphan"
     )

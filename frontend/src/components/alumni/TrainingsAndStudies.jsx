@@ -7,10 +7,17 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
+  // Updated: Include 'id' from backend data, or null for new trainings
   const [trainings, setTrainings] = useState(
     gtsData.trainings && gtsData.trainings.length > 0
-      ? gtsData.trainings
-      : [{ title: "", duration: "", credits_earned: "", institution: "" }]
+      ? gtsData.trainings.map(t => ({
+          id: t.id,  // Backend provides this for existing trainings
+          title: t.title || "",
+          duration: t.duration || "",
+          credits_earned: t.credits_earned || "",
+          institution: t.institution || ""
+        }))
+      : [{ id: null, title: "", duration: "", credits_earned: "", institution: "" }]
   );
 
   const [saving, setSaving] = useState(false);
@@ -23,10 +30,11 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
     setTrainings(updated);
   };
 
+  // Updated: Add 'id: null' for new trainings
   const handleAddTraining = () => {
     setTrainings([
       ...trainings,
-      { title: "", duration: "", credits_earned: "", institution: "" },
+      { id: null, title: "", duration: "", credits_earned: "", institution: "" },
     ]);
   };
 
@@ -37,11 +45,14 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
 
   const handleSave = async () => {
     setSaving(true);
-
+    // The trainings array now includes 'id' (null for new, existing for updates)
     const result = await onUpdate("trainings", gtsData.id, { trainings });
     setSaving(false);
     setSaveSuccess(result.success);
     setMessage(result.success ? "Saved successfully!" : "Update failed.");
+    
+    // Optional: If save succeeds, you could refetch gtsData to get updated IDs for new trainings
+    // But for now, this works as the backend handles it
   };
 
   return (
@@ -60,7 +71,7 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
 
       {trainings.map((training, index) => (
         <div
-          key={index}
+          key={index}  // Consider using training.id if available for better keys, but index is fine for now
           className={`p-4 mb-4 rounded-lg border ${
             isDark ? "border-gray-700" : "border-gray-300"
           }`}
