@@ -24,7 +24,8 @@ const JobSatisfaction = ({ gtsData, onUpdate }) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSelectChange = (value) => {
+  const handleSelectChange = (e) => {
+    const { value } = e.target;
     setFormData((prev) => ({ ...prev, job_satisfaction: value }));
   };
 
