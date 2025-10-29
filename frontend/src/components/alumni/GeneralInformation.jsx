@@ -50,7 +50,7 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
     if (Object.keys(validateErrors).length > 0) return;
 
     setSaving(true);
-    const result = await onUpdate("personal", formData);
+    const result = await onUpdate("personal", gtsData.id, formData);
     setSaving(false);
     setSaveSuccess(result.success);
     setMessage(result.success ? "Saved successfully!" : "Update failed.");

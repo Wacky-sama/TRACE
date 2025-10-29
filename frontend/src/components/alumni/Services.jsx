@@ -22,7 +22,7 @@ const Services = ({ gtsData, onUpdate }) => {
 
   const handleSave = async () => {
     setSaving(true);
-    const result = await onUpdate("services", formData);
+    const result = await onUpdate("services", gtsData.id, formData);
     setSaving(false);
     setSaveSuccess(result.success);
     setMessage(result.success ? "Saved successfully!" : "Update failed.");

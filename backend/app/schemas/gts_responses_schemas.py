@@ -31,16 +31,19 @@ class GTSResponsesEducationalUpdate(BaseModel):
     specialization: Optional[str] = None
     year_graduated: Optional[int] = None
     honors: Optional[str] = None
-    exams: Optional[Dict[str, Any]] = None
+    exams: Optional[List[Dict[str, Any]]] = None
     pursued_advance_degree: Optional[bool] = None
     pursued_advance_degree_reasons: Optional[List[str]] = None
+    
     @validator('year_graduated')
     def validate_year_graduated(cls, v):
         if v is not None and (v < 1900 or v > 2100):
             raise ValueError('Year graduated must be between 1900 and 2100')
         return v
+    
     class Config:
         from_attributes = True
+        
 # C. TRAINING(S) ADVANCE STUDIES ATTENTED AFTER COLLEGE(optional)
 class TrainingItem(BaseModel):
     title: str
@@ -139,7 +142,7 @@ class GTSResponsesOut(BaseModel):
     specialization: Optional[str] = None
     year_graduated: Optional[int] = None
     honors: Optional[str] = None
-    exams: Optional[Dict[str, Any]] = None
+    exams: Optional[List[Dict[str, Any]]] = None
     pursued_advance_degree: Optional[bool] = None
     pursued_advance_degree_reasons: Optional[List[str]] = None
     

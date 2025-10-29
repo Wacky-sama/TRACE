@@ -4,6 +4,7 @@ import { useTheme } from "../../context/ThemeProvider";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";
+import toast from "react-hot-toast";
 
 const ADVANCE_DEGREE_PROGRAMS = [
   "High Grades in the course or subject area (s) related to the course",
@@ -80,25 +81,31 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
   };
 
   const handleSave = async () => {
+    if (formData.year_graduated && (formData.year_graduated < 1900 || formData.year_graduated > 2100)) {
+      toast.info("Year graduated must be between 1900 and 2100.");
+      return;
+    }
     setSaving(true);
 
     const submitData = {
       ...formData,
       year_graduated: formData.year_graduated
-        ? parseInt(formData.year_graduated)
+        ? parseInt(formData.year_graduated, 10)
         : null,
       exams: formData.exams.filter(
-        (exam) => exam.name || exam.date || exam.rating
+        (exam) => exam.name?.trim() || exam.date || exam.rating?.trim()
       ),
       pursued_advance_degree_reasons: [
         ...formData.pursued_advance_degree_reasons.filter(
           (r) => r !== "Others, please specify"
         ),
-        ...(otherReason ? [`Others: ${otherReason}`] : []),
+        ...(otherReason?.trim() ? [`Others: ${otherReason.trim()}`] : []),
       ],
     };
 
-    const result = await onUpdate("educational", submitData);
+    console.log("Submitting data:", submitData);
+
+    const result = await onUpdate("educational", gtsData.id, submitData);
     setSaving(false);
     setSaveSuccess(result.success);
     setMessage(result.success ? "Saved successfully!" : "Update failed.");

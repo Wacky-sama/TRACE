@@ -7,7 +7,6 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  // Initialize trainings list
   const [trainings, setTrainings] = useState(
     gtsData.trainings && gtsData.trainings.length > 0
       ? gtsData.trainings
@@ -18,7 +17,6 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
   const [message, setMessage] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(null);
 
-  // Handle field changes per training
   const handleChange = (index, field, value) => {
     const updated = [...trainings];
     updated[index][field] = value;
@@ -40,7 +38,7 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
   const handleSave = async () => {
     setSaving(true);
 
-    const result = await onUpdate("trainings", { trainings });
+    const result = await onUpdate("trainings", gtsData.id, { trainings });
     setSaving(false);
     setSaveSuccess(result.success);
     setMessage(result.success ? "Saved successfully!" : "Update failed.");
