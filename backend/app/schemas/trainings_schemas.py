@@ -1,9 +1,20 @@
-from pydantic import BaseModel # pyright: ignore[reportMissingImports]
-from typing import Optional
+from pydantic import BaseModel, field_validator # pyright: ignore[reportMissingImports]
+from typing import Optional, Union
+from uuid import UUID
 
 class TrainingItem(BaseModel):
-    id: Optional[str] = None
+    id: Optional[Union[str, UUID]] = None
     title: str
     duration: Optional[str] = None
     credits_earned: Optional[str] = None
     institution: Optional[str] = None
+    
+    @field_validator("id", mode="before")
+    @classmethod
+    def convert_uuid_to_str(cls, v):
+        """
+        Convert UUID to string if needed.
+        """
+        if isinstance(v, UUID):
+            return str(v)
+        return v
