@@ -25,6 +25,20 @@
 
 ---
 
+## Quick Start
+
+1. Install prerequisites - [Installation Guide](/docs/INSTALLATION.md)
+2. Setup database - [Database Setup](/docs/DATABASE_SETUP.md)
+3. Run dev server - [Development Guide](/docs/DEVELOPMENT.md)
+
+---
+
+## Documentation
+
+- [User Interface Preview](/docs/README.md)
+
+---
+
 ## Developer
 
 Built by [**Tabugadir, Kenji "Brocks" I.**](https://www.facebook.com/Wackyfu/)
