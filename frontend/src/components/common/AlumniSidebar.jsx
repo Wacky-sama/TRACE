@@ -22,7 +22,7 @@ const AlumniSidebar = () => {
     { icon: faHouseUser, label: "Dashboard", route: "/alumni/dashboard" },
     { icon: faCalendar, label: "Events", route: "/alumni/events" },
     { icon: faBell, label: "Notifications", route: "/alumni/notifications" },
-    { icon: faGear, label: "Account Settings", route: "/alumni/settings" },
+    { icon: faGear, label: "Settings", route: "/alumni/settings" },
   ];
 
   const handleLogout = () => {

@@ -49,7 +49,7 @@ const AdminSidebar = () => {
     { icon: faChartSimple, label: "Analytics", route: "/admin/analytics" },
     { icon: faFile, label: "Reports", route: "/admin/reports" },
     { icon: faBell, label: "Notifications", route: "/admin/notifications" },
-    { icon: faGear, label: "Account Settings", route: "/admin/settings" },
+    { icon: faGear, label: "Settings", route: "/admin/settings" },
   ];
 
   const handleLogout = () => {
