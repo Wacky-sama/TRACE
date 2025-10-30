@@ -34,6 +34,7 @@
     "react-international-phone": "^4.6.0",
     "react-router-dom": "^7.6.2",
     "react-toastify": "^11.0.5",
+    "react-zxing": "^2.1.0",
     "recharts": "^2.15.3",
     "tailwindcss": "^4.1.8"
   },

@@ -1,4 +1,4 @@
-import io, base64, uuid, qrcode # pyright: ignore[reportMissingModuleSource]
+import io, base64, uuid, qrcode, json # pyright: ignore[reportMissingModuleSource]
 from fastapi import APIRouter, Body, Depends, HTTPException # pyright: ignore[reportMissingImports]
 from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
 from uuid import UUID
@@ -144,7 +144,7 @@ def generate_qr_code(
         db.refresh(record)
 
     # Create QR as image (Base64)
-    qr_data = {"token": record.qr_token}
+    qr_data = json.dumps({"token": record.qr_token})
     qr_img = qrcode.make(qr_data)
     buf = io.BytesIO()
     qr_img.save(buf, format="PNG")
