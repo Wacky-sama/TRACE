@@ -21,6 +21,7 @@ import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminCreateUser from "./pages/Admin/AdminCreateUser";
 import AdminCreateEvent from "./pages/Admin/AdminCreateEvent";
 import AdminEvents from "./pages/Admin/AdminEvents";
+import AdminQRScanner from "./pages/Admin/AdminQRScanner";
 import AdminAnalytics from "./pages/Admin/AdminAnalytics";
 import AdminReports from "./pages/Admin/AdminReports";
 import AdminNotifications from "./pages/Admin/AdminNotifications";
@@ -133,6 +134,7 @@ function App() {
               <Route path="create-user" element={<AdminCreateUser />} />
               <Route path="create-event" element={<AdminCreateEvent />} />
               <Route path="events" element={<AdminEvents />} />
+              <Route path="qr-scanner" element={<AdminQRScanner />} />
               <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="reports" element={<AdminReports />} />
               <Route path="notifications" element={<AdminNotifications />} />

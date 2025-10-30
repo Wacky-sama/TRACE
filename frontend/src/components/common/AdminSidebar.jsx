@@ -1,6 +1,7 @@
 import { userLogout } from "../../utils/storage";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useState } from "react";
+import { ScanQrCode } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouseUser,
@@ -46,6 +47,7 @@ const AdminSidebar = () => {
         { label: "Create Event", route: "/admin/create-event" },
       ],
     },
+    { icon: ScanQrCode, label: "QR Scanner", route: "/admin/qr-scanner" },
     { icon: faChartSimple, label: "Analytics", route: "/admin/analytics" },
     { icon: faFile, label: "Reports", route: "/admin/reports" },
     { icon: faBell, label: "Notifications", route: "/admin/notifications" },
@@ -109,10 +111,18 @@ const AdminSidebar = () => {
                      }`
                   }
                 >
-                  <FontAwesomeIcon
-                    icon={item.icon}
-                    className="w-5 h-5 text-gray-400 group-hover:text-white"
-                  />
+                  {item.icon && (
+                    <>
+                      {item.icon.displayName ? (
+                        <item.icon className="w-5 h-5 text-gray-400 group-hover:text-white" />
+                      ) : (
+                        <FontAwesomeIcon
+                          icon={item.icon}
+                          className="w-5 h-5 text-gray-400 group-hover:text-white"
+                        />
+                      )}
+                    </>
+                  )}
                   {isOpen && <span className="font-medium">{item.label}</span>}
                 </NavLink>
               ) : (
@@ -175,7 +185,6 @@ const AdminSidebar = () => {
         {/* Divider */}
         <div className="mx-3 my-4 border-t border-gray-600"></div>
 
-        {/* Logout */}
         <div className="px-3">
           <button
             onClick={handleLogout}
