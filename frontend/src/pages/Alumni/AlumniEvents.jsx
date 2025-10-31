@@ -8,18 +8,16 @@ const AlumniEvents = () => {
   const isDark = theme === "dark";
 
   const [events, setEvents] = useState([]);
-  const [attendanceStatuses, setAttendanceStatuses] = useState({}); // {eventId: "registered" | "declined" | null}
+  const [attendanceStatuses, setAttendanceStatuses] = useState({});
   const [loading, setLoading] = useState(true);
-  const [loadingActions, setLoadingActions] = useState({}); // {eventId: "attend" | "decline" | null}
+  const [loadingActions, setLoadingActions] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch events
         const eventsRes = await api.get("/events");
         setEvents(eventsRes.data);
 
-        // Fetch user's attendance statuses (assumes /attendance/my-status endpoint)
         const statusRes = await api.get("/attendance/my-status");
         const statuses = {};
         statusRes.data.forEach((item) => {
@@ -43,7 +41,6 @@ const AlumniEvents = () => {
       await api.post(`/attendance/${eventId}`);
       toast.success("Successfully registered for the event!");
 
-      // Generate QR (assuming /accept is correct; change to /generate_qr if needed)
       const qrRes = await api.post(`/attendance/${eventId}/accept`);
       const { qr_code } = qrRes.data;
 
@@ -54,7 +51,6 @@ const AlumniEvents = () => {
 
       toast.success("QR Code generated! You can scan it when the event starts.");
 
-      // Update local state
       setAttendanceStatuses((prev) => ({ ...prev, [eventId]: "registered" }));
     } catch (error) {
       console.error("Attend error:", error);
@@ -70,7 +66,6 @@ const AlumniEvents = () => {
       await api.post(`/attendance/${eventId}/decline`);
       toast.info("You have declined this event.");
 
-      // Update local state
       setAttendanceStatuses((prev) => ({ ...prev, [eventId]: "declined" }));
     } catch (error) {
       console.error("Decline error:", error);

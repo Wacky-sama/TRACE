@@ -26,12 +26,14 @@ import AdminAnalytics from "./pages/Admin/AdminAnalytics";
 import AdminReports from "./pages/Admin/AdminReports";
 import AdminNotifications from "./pages/Admin/AdminNotifications";
 import AdminSettings from "./pages/Admin/AdminSettings";
+import AdminChangePassword from "./pages/Admin/settings/ChangePassword";
 import AdminLayout from "./pages/Admin/AdminLayout";
 // Alumni imports
 import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
 import AlumniEvents from "./pages/Alumni/AlumniEvents";
 import AlumniNotifications from "./pages/Alumni/AlumniNotifications";
 import AlumniSettings from "./pages/Alumni/AlumniSettings";
+import AlumniChangePassword from "./pages/Alumni/settings/ChangePassword";
 import AlumniLayout from "./pages/Alumni/AlumniLayout";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -138,7 +140,9 @@ function App() {
               <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="reports" element={<AdminReports />} />
               <Route path="notifications" element={<AdminNotifications />} />
-              <Route path="settings" element={<AdminSettings />} />
+              <Route path="settings" element={<AdminSettings />}>
+                <Route path="change-password" element={<AdminChangePassword />} />
+              </Route>
             </Route>
 
             {/* Alumni routes */}
@@ -157,7 +161,9 @@ function App() {
               <Route path="dashboard" element={<AlumniDashboard />} />
               <Route path="events" element={<AlumniEvents />} />
               <Route path="notifications" element={<AlumniNotifications />} />
-              <Route path="settings" element={<AlumniSettings />} />
+              <Route path="settings" element={<AlumniSettings />}>
+                <Route path="change-password" element={<AlumniChangePassword />} />
+              </Route>
             </Route>
 
             <Route
