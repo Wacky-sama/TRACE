@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
-import AccountInfo from "./settings/AccountInfo";
-import ChangePassword from "./settings/ChangePassword";
+import AdminAccountInfo from "./settings/AccountInfo";
+import AdminChangePassword from "./settings/ChangePassword";
 
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
@@ -27,7 +28,12 @@ function useDarkMode() {
 
 const AlumniSettings = () => {
   const isDark = useDarkMode();
-  const [activeTab, setActiveTab] = useState("account");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const activeTab = location.pathname.includes("change-password")
+    ? "password"
+    : "account";
 
   const tabVariants = {
     hidden: { opacity: 0, y: 10 },
@@ -65,12 +71,19 @@ const AlumniSettings = () => {
             </p>
           </header>
 
+          {/* Tabs Navigation */}
           <div className="mb-8 border-b border-gray-300 dark:border-gray-700">
             <nav className="flex space-x-6">
               {tabs.map((tab) => (
                 <button
                   key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
+                  onClick={() =>
+                    navigate(
+                      tab.key === "password"
+                        ? "/alumni/settings/change-password"
+                        : "/alumni/settings"
+                    )
+                  }
                   className={`flex items-center gap-2 pb-2 text-lg font-medium border-b-2 transition-colors ${
                     activeTab === tab.key
                       ? isDark
@@ -88,6 +101,7 @@ const AlumniSettings = () => {
             </nav>
           </div>
 
+          {/* Tab Content */}
           <AnimatePresence mode="wait">
             {activeTab === "account" && (
               <motion.div
@@ -100,7 +114,7 @@ const AlumniSettings = () => {
                   isDark ? "bg-gray-800" : "bg-white"
                 }`}
               >
-                <AccountInfo />
+                <AdminAccountInfo />
               </motion.div>
             )}
             {activeTab === "password" && (
@@ -114,7 +128,7 @@ const AlumniSettings = () => {
                   isDark ? "bg-gray-800" : "bg-white"
                 }`}
               >
-                <ChangePassword />
+                <AdminChangePassword />
               </motion.div>
             )}
           </AnimatePresence>

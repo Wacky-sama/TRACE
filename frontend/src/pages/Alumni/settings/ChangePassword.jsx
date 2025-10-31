@@ -1,4 +1,4 @@
- import { useState } from "react";
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
@@ -11,7 +11,7 @@ import {
 import FloatingInput from "../../../components/FloatingInput";
 import { useTheme } from "../../../context/ThemeProvider";
 
-const ChangePassword = () => {
+const AlumniChangePassword = () => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
@@ -20,16 +20,23 @@ const ChangePassword = () => {
     new: "",
     confirm: "",
   });
+
   const [passwordStrength, setPasswordStrength] = useState({
     score: 0,
     label: "",
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
+
+    if (!passwordData.current || !passwordData.new || !passwordData.confirm) {
+      toast.error("All fields are required.");
+      return;
+    }
 
     if (!isStrongPassword(passwordData.new)) {
       toast.error(getPasswordStrengthMessage(passwordData.new));
@@ -57,7 +64,7 @@ const ChangePassword = () => {
 
   return (
     <section
-      className={`rounded-xl shadow-md p-6 transition-colors ${
+      className={`rounded-xl shadow-md p-6 transition-colors duration-300 ${
         isDark ? "bg-gray-800" : "bg-white"
       }`}
     >
@@ -156,7 +163,7 @@ const ChangePassword = () => {
           </span>
         </FloatingInput>
 
-        {/* Password Match Check */}
+        {/* Password Match Indicator */}
         {passwordData.new && passwordData.confirm && (
           <p
             className={`text-sm mt-1 ${
@@ -183,4 +190,4 @@ const ChangePassword = () => {
   );
 };
 
-export default ChangePassword;
+export default AlumniChangePassword;

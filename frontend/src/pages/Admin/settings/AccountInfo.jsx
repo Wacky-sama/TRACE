@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "../../../context/ThemeProvider";
 import api from "../../../services/api";
 
-const AccountInfo = () => {
+const AdminAccountInfo = () => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
@@ -93,4 +93,4 @@ const AccountInfo = () => {
   );
 };
 
-export default AccountInfo;
+export default AdminAccountInfo;
