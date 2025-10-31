@@ -76,7 +76,7 @@ def decline_event(
 
     event = db.query(events_models.Events).filter_by(id=event_id, status="approved").first()
     if not event:
-        raise HTTPException(status_code=404, detail="Event not found or not approved")
+        raise HTTPException(status_code=404, detail="Event not found")
     
     record = db.query(event_attendance_models.EventAttendance).filter_by(
         event_id=event_id,
@@ -87,15 +87,14 @@ def decline_event(
         record = event_attendance_models.EventAttendance(
             event_id=event_id,
             user_id=current_user.id,
-            status="declined",
-            attended_at=datetime.utcnow()
+            status="declined"
         )
         db.add(record)
     else:
         record.status = "declined"
-        record.attended_at = datetime.utcnow()
 
     db.commit()
+    db.refresh(record)
     
     log_activity(
         db=db,
@@ -112,9 +111,9 @@ def decline_event(
         }
     )
     
-    return {"message": "Attendance declined successfully."}
+    return record
 
-@router.post("/{event_id}/generate_qr")
+@router.post("/{event_id}/accept")
 def generate_qr_code(
     event_id: UUID,
     db: Session = Depends(get_db),
@@ -151,6 +150,11 @@ def generate_qr_code(
     qr_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
 
     return {"qr_code": qr_b64, "token": record.qr_token}
+
+@router.get("/my-status")
+def get_my_attendance_status(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
+    records = db.query(event_attendance_models.EventAttendance).filter_by(user_id=current_user.id).all()
+    return [{"event_id": str(r.event_id), "status": r.status} for r in records]
 
 @router.post("/scan")
 def scan_qr(
