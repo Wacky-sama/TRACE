@@ -1,29 +1,27 @@
 import { useState } from "react";
 import { useZxing } from "react-zxing";
 import toast from "react-hot-toast";
-import { CheckCircle, XCircle } from "lucide-react"; // ✅ icons
+import { CheckCircle, XCircle } from "lucide-react";
 import api from "../../services/api";
 
 const AdminQRScanner = () => {
   const [result, setResult] = useState("No result");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [flashState, setFlashState] = useState(null); // "success" | "error"
+  const [flashState, setFlashState] = useState(null);
 
   const handleScan = async (token) => {
     if (!token || isProcessing) return;
     setIsProcessing(true);
 
     try {
-      const response = await api.post("/attendance/scan", { token });
+      const response = await api.post(`/attendance/scan?token={token}`);
       toast.success(response.data.message);
 
-      // ✅ success flash
       setFlashState("success");
       setTimeout(() => setFlashState(null), 600);
     } catch (err) {
       toast.error(err.response?.data?.detail || "Failed to validate QR.");
 
-      // ❌ error flash
       setFlashState("error");
       setTimeout(() => setFlashState(null), 600);
     } finally {
@@ -61,7 +59,6 @@ const AdminQRScanner = () => {
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50 dark:bg-gray-900">
-      {/* ✅/❌ Flash Overlay */}
       {flashState && (
         <div
           className={`absolute inset-0 flex items-center justify-center transition-all duration-500 pointer-events-none ${
