@@ -121,7 +121,6 @@ const AlumniSettings = () => {
             </p>
           </header>
 
-          {/* Tabs */}
           <div className="mb-8 border-b border-gray-300 dark:border-gray-700">
             <nav className="flex space-x-6">
               {[
@@ -148,7 +147,6 @@ const AlumniSettings = () => {
             </nav>
           </div>
 
-          {/* Tab Content */}
           <AnimatePresence mode="wait">
             {activeTab === "account" && (
               <motion.section
@@ -214,7 +212,6 @@ const AlumniSettings = () => {
                 </h2>
 
                 <form onSubmit={handlePasswordChange} className="space-y-4">
-                  {/* Current Password */}
                   <FloatingInput
                     id="currentPassword"
                     type={showPassword ? "text" : "password"}
@@ -237,7 +234,6 @@ const AlumniSettings = () => {
                     </span>
                   </FloatingInput>
 
-                  {/* New Password */}
                   <FloatingInput
                     id="newPassword"
                     type={showNewPassword ? "text" : "password"}
@@ -259,7 +255,6 @@ const AlumniSettings = () => {
                     </span>
                   </FloatingInput>
 
-                  {/* Strength Bar */}
                   {passwordData.new && (
                     <div className="mt-2">
                       <div className="w-full h-2 bg-gray-200 rounded-full">
@@ -289,7 +284,6 @@ const AlumniSettings = () => {
                     </div>
                   )}
 
-                  {/* Confirm Password */}
                   <FloatingInput
                     id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
