@@ -4,7 +4,7 @@ import { getToken } from "../../utils/storage";
 import api from "../../services/api";
 import FloatingInput from "../../components/FloatingInput";
 import FloatingSelect from "../../components/FloatingSelect";
-import AdminFloatingDateTimePicker from "../../components/common/AdminFloatingDateTimePicker";
+import AdminFloatingDatePicker from "../../components/common/AdminFloatingDatePicker";
 
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
@@ -32,15 +32,18 @@ const AdminCreateEvent = () => {
     title: "",
     description: "",
     location: "",
-    start_datetime: null,
-    end_datetime: null,
+    start_date: null,
+    start_time_startday: "",
+    end_time_startday: "",
+    end_date: null,
+    start_time_endday: "",
+    end_time_endday: "",
   });
 
   const [selectedLocation, setSelectedLocation] = useState("");
   const [customLocation, setCustomLocation] = useState("");
   const [showCustomLocation, setShowCustomLocation] = useState(false);
   const [errors, setErrors] = useState({});
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const locationOptions = [
@@ -67,48 +70,62 @@ const AdminCreateEvent = () => {
   };
 
   const validate = () => {
-    const validateErrors = {};
+    const errors = {};
 
-    if (!formData.title.trim()) validateErrors.title = "Title is required";
-    if (!formData.location.trim())
-      validateErrors.location = "Location is required";
-    if (!formData.start_datetime)
-      validateErrors.start_datetime = "Start date/time is required";
-    if (!formData.end_datetime)
-      validateErrors.end_datetime = "End date/time is required";
-    if (
-      formData.start_datetime &&
-      formData.end_datetime &&
-      formData.start_datetime > formData.end_datetime
-    ) {
-      validateErrors.end_datetime = "End datetime must be after start datetime";
+    if (!formData.title.trim()) errors.title = "Event title is required";
+    if (!formData.start_date) errors.start_date = "Start date is required";
+    if (!formData.end_date) errors.end_date = "End date is required";
+
+    if (!formData.start_time_startday)
+      errors.start_time_startday = "Start time for start date is required";
+    if (!formData.end_time_startday)
+      errors.end_time_startday = "End time for start date is required";
+    if (!formData.start_time_endday)
+      errors.start_time_endday = "Start time for end date is required";
+    if (!formData.end_time_endday)
+      errors.end_time_endday = "End time for end date is required";
+
+    if (selectedLocation === "Other" && !customLocation.trim()) {
+      errors.location = "Please enter a custom location";
     }
 
-    setErrors(validateErrors);
-    return Object.keys(validateErrors).length === 0;
+    if (
+      formData.start_date &&
+      formData.end_date &&
+      formData.start_time_startday &&
+      formData.end_time_endday &&
+      new Date(`${formData.start_date}T${formData.start_time_startday}`) >
+        new Date(`${formData.end_date}T${formData.end_time_endday}`)
+    ) {
+      errors.end_time_endday = "End time must be after start time";
+    }
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage("");
     if (!validate()) return;
 
     setLoading(true);
     try {
       await api.post(
-        "/events/",
+        "/events/create-event",
         {
           title: formData.title,
           description: formData.description,
           location: formData.location,
-          start_date: formData.start_datetime?.toISOString().split("T")[0],
-          end_date: formData.end_datetime?.toISOString().split("T")[0],
-          start_time: formData.start_datetime
-            ? formData.start_datetime.toISOString().split("T")[1].slice(0, 8)
-            : null, 
-          end_time: formData.end_datetime
-            ? formData.end_datetime.toISOString().split("T")[1].slice(0, 8)
-            : null,
+          start_date: formData.start_date
+            ? formData.start_date.toISOString().split("T")[0]
+            : "",
+          end_date: formData.end_date
+            ? formData.end_date.toISOString().split("T")[0]
+            : "",
+          start_time_startday: formData.start_time_startday || null,
+          end_time_startday: formData.end_time_startday || null,
+          start_time_endday: formData.start_time_endday || null,
+          end_time_endday: formData.end_time_endday || null,
         },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
@@ -118,15 +135,18 @@ const AdminCreateEvent = () => {
         title: "",
         description: "",
         location: "",
-        start_datetime: null,
-        end_datetime: null,
+        start_date: null,
+        end_date: null,
+        start_time_startday: "",
+        end_time_startday: "",
+        start_time_endday: "",
+        end_time_endday: "",
       });
+
       setSelectedLocation("");
       setCustomLocation("");
       setShowCustomLocation(false);
       setErrors({});
-    } catch (error) {
-      setMessage(error.response?.data?.detail || "Failed to create event");
     } finally {
       setLoading(false);
     }
@@ -223,28 +243,115 @@ const AdminCreateEvent = () => {
             />
           </div>
 
-          <div className="grid grid-cols-1 gap-3 mb-4 md:grid-cols-2">
-            <AdminFloatingDateTimePicker
-              id="start_datetime"
-              label="Start Date & Time"
-              value={formData.start_datetime}
-              onChange={(datetime) =>
-                setFormData({ ...formData, start_datetime: datetime })
-              }
-              error={errors.start_datetime}
-              darkMode={isDark}
-            />
+          {/* Start Date Section */}
+          <div className="mb-4">
+            <h3
+              className={`text-sm font-medium mb-2 ${
+                isDark ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
+              Start Date and Times
+            </h3>
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              {/* Start Date */}
+              <AdminFloatingDatePicker
+                id="start_date"
+                label="Start Date"
+                value={formData.start_date}
+                onChange={(date) =>
+                  setFormData({ ...formData, start_date: date })
+                }
+                error={errors.start_date}
+                darkMode={isDark}
+                showTimeSelect={false}
+              />
 
-            <AdminFloatingDateTimePicker
-              id="end_datetime"
-              label="End Date & Time"
-              value={formData.end_datetime}
-              onChange={(datetime) =>
-                setFormData({ ...formData, end_datetime: datetime })
-              }
-              error={errors.end_datetime}
-              darkMode={isDark}
-            />
+              {/* Start Time */}
+              <FloatingInput
+                id="start_time_startday"
+                label="Start Time"
+                type="time"
+                value={formData.start_time_startday}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    start_time_startday: e.target.value,
+                  })
+                }
+                error={errors.start_time_startday}
+                darkMode={isDark}
+              />
+
+              {/* End Time */}
+              <FloatingInput
+                id="end_time_startday"
+                label="End Time (Same Day)"
+                type="time"
+                value={formData.end_time_startday || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    end_time_startday: e.target.value,
+                  })
+                }
+                error={errors.end_time_startday}
+                darkMode={isDark}
+              />
+            </div>
+          </div>
+
+          {/* End Date Section */}
+          <div className="mb-4">
+            <h3
+              className={`text-sm font-medium mb-2 ${
+                isDark ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
+              End Date and Times
+            </h3>
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              {/* End Date */}
+              <AdminFloatingDatePicker
+                id="end_date"
+                label="End Date"
+                value={formData.end_date}
+                onChange={(date) =>
+                  setFormData({ ...formData, end_date: date })
+                }
+                error={errors.end_date}
+                darkMode={isDark}
+                showTimeSelect={false}
+              />
+
+              {/* Start Time (End Day) */}
+              <FloatingInput
+                id="start_time_endday"
+                label="Start Time (End Day)"
+                type="time"
+                value={formData.start_time_endday || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    start_time_endday: e.target.value,
+                  })
+                }
+                error={errors.start_time_endday}
+                darkMode={isDark}
+              />
+
+              {/* End Time (End Day) */}
+              <FloatingInput
+                id="end_time_endday"
+                label="End Time (End Day)"
+                type="time"
+                value={formData.end_time_endday || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, end_time_endday: e.target.value })
+                }
+                error={errors.end_time_endday}
+                darkMode={isDark}
+              />
+            </div>
           </div>
 
           <button
@@ -254,10 +361,6 @@ const AdminCreateEvent = () => {
           >
             {loading ? "Creating..." : "Create Event"}
           </button>
-
-          {message && (
-            <p className="mt-2 text-sm text-center text-green-600">{message}</p>
-          )}
         </form>
       </div>
     </div>
