@@ -237,7 +237,7 @@ const AdminUsers = () => {
                   <>
                     {!user.deleted_at && (
                       <button
-                        title="Archive"
+                        title="Archive User"
                         onClick={() => handleArchive(user.id)}
                         className="text-red-500 hover:text-red-700"
                       >
@@ -246,7 +246,7 @@ const AdminUsers = () => {
                     )}
                     {user.deleted_at && (
                       <button
-                        title="Unarchive"
+                        title="Unarchive User"
                         onClick={() => handleUnarchive(user.id)}
                         className="text-yellow-500 hover:text-yellow-700"
                       >
@@ -255,7 +255,7 @@ const AdminUsers = () => {
                     )}
                     {!user.deleted_at && user.is_active && (
                       <button
-                        title="Block"
+                        title="Block User"
                         onClick={() => handleBlock(user.id)}
                         className="text-blue-500 hover:text-blue-700"
                       >
@@ -264,7 +264,7 @@ const AdminUsers = () => {
                     )}
                     {!user.deleted_at && !user.is_active && (
                       <button
-                        title="Unblock"
+                        title="Unblock User"
                         onClick={() => handleUnblock(user.id)}
                         className="text-green-500 hover:text-green-700"
                       >

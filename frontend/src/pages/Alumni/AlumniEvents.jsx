@@ -13,7 +13,7 @@ const AlumniEvents = () => {
   const [loadingActions, setLoadingActions] = useState({});
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchEvents = async () => {
       try {
         const eventsRes = await api.get("/events");
         setEvents(eventsRes.data);
@@ -26,13 +26,17 @@ const AlumniEvents = () => {
         setAttendanceStatuses(statuses);
       } catch (error) {
         console.error("Failed to fetch data:", error);
-        toast.error("Failed to load events or attendance status. Please refresh.");
+        toast.error(
+          "Failed to load events or attendance status. Please refresh."
+        );
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    fetchEvents();
+    const interval = setInterval(fetchEvents, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleAttend = async (eventId) => {
@@ -49,12 +53,16 @@ const AlumniEvents = () => {
       link.download = `event-${eventId}-qr.png`;
       link.click();
 
-      toast.success("QR Code generated! You can scan it when the event starts.");
+      toast.success(
+        "QR Code generated! You can scan it when the event starts."
+      );
 
       setAttendanceStatuses((prev) => ({ ...prev, [eventId]: "registered" }));
     } catch (error) {
       console.error("Attend error:", error);
-      toast.error(error.response?.data?.detail || "Failed to register for the event.");
+      toast.error(
+        error.response?.data?.detail || "Failed to register for the event."
+      );
     } finally {
       setLoadingActions((prev) => ({ ...prev, [eventId]: null }));
     }
@@ -69,15 +77,46 @@ const AlumniEvents = () => {
       setAttendanceStatuses((prev) => ({ ...prev, [eventId]: "declined" }));
     } catch (error) {
       console.error("Decline error:", error);
-      toast.error(error.response?.data?.detail || "Failed to decline the event.");
+      toast.error(
+        error.response?.data?.detail || "Failed to decline the event."
+      );
     } finally {
       setLoadingActions((prev) => ({ ...prev, [eventId]: null }));
     }
   };
 
+  const formatDate = (dateStr) =>
+    dateStr
+      ? new Date(dateStr).toLocaleDateString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+      : "N/A";
+
+  const formatTime = (timeStr) => {
+    if (!timeStr) return "N/A";
+    try {
+      const [h, m, s] = timeStr.split(":");
+      const d = new Date();
+      d.setHours(h, m, s || 0);
+      return d.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return timeStr;
+    }
+  };
+
   if (loading) {
     return (
-      <div className={`min-h-screen p-6 ${isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"}`}>
+      <div
+        className={`min-h-screen p-6 ${
+          isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
+        }`}
+      >
         <div className="flex items-center justify-center">
           <div className="w-8 h-8 border-b-2 border-gray-600 rounded-full animate-spin"></div>
           <p className="ml-2">Loading events...</p>
@@ -87,9 +126,18 @@ const AlumniEvents = () => {
   }
 
   return (
-    <div className={`min-h-screen p-6 ${isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"}`}>
+    <div
+      className={`min-h-screen p-6 ${
+        isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
+      }`}
+    >
       <h2 className="mb-4 text-2xl font-bold">Events</h2>
-      <div className={`mt-4 mb-6 border-t ${isDark ? "border-gray-700" : "border-gray-300"}`}></div>
+      <div
+        className={`mt-4 mb-6 border-t ${
+          isDark ? "border-gray-700" : "border-gray-300"
+        }`}
+      ></div>
+
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {events.length > 0 ? (
           events.map((event) => {
@@ -102,31 +150,50 @@ const AlumniEvents = () => {
             return (
               <div
                 key={event.id}
-                className={`p-4 rounded-lg shadow ${isDark ? "bg-gray-800 text-gray-200" : "bg-white text-gray-900"}`}
+                className={`p-4 rounded-lg shadow transition-all ${
+                  isDark
+                    ? "bg-gray-800 hover:bg-gray-750 text-gray-200"
+                    : "bg-white hover:bg-gray-50 text-gray-900"
+                }`}
               >
-                <h3 className={`text-lg font-semibold ${isDark ? "text-gray-100" : "text-gray-900"}`}>
-                  {event.title}
-                </h3>
-                <p className={`mb-2 text-sm ${isDark ? "text-gray-100" : "text-gray-900"}`}>
-                  {event.description || "No description"}
+                <h3 className="mb-1 text-lg font-semibold">{event.title}</h3>
+                <p className="mb-2 text-sm">
+                  <strong>Description:</strong>
+                  {event.description || "No description provided."}
                 </p>
-                <p className="text-sm">
-                  <strong>Location:</strong> {event.location}
-                </p>
-                <p className="text-sm">
-                  <strong>Start Date:</strong> {event.start_date}
-                </p>
-                <p className="text-sm">
-                  <strong>End Date:</strong> {event.end_date}
-                </p>
-                <p className="text-sm">
-                  <strong>Created By:</strong> {event.created_by_name}
-                </p>
+
+                <div className="space-y-1 text-sm">
+                  <p>
+                    <strong>Location:</strong>
+                    {event.location}
+                  </p>
+                  <p>
+                    <strong>Start:</strong> {formatDate(event.start_date)} —{" "}
+                    {formatTime(event.start_time_startday)} —{" "}
+                    {formatTime(event.start_time_endday)}
+                  </p>
+
+                  <p>
+                    <strong>End:</strong> {formatDate(event.end_date)} —{" "}
+                    {formatTime(event.end_time_endday)} —{" "}
+                    {formatTime(event.end_time_startday)}
+                  </p>
+
+                  <p>
+                    <strong>Created By:</strong> {event.created_by_name}
+                  </p>
+                </div>
+
                 {status && (
-                  <p className={`mt-2 text-sm font-medium ${isDeclined ? "text-red-500" : "text-green-500"}`}>
+                  <p
+                    className={`mt-3 text-sm font-medium ${
+                      isDeclined ? "text-red-500" : "text-green-500"
+                    }`}
+                  >
                     Status: {status.charAt(0).toUpperCase() + status.slice(1)}
                   </p>
                 )}
+
                 <div className="flex gap-2 mt-4">
                   {!isAttending && !isDeclined && (
                     <>
@@ -138,7 +205,6 @@ const AlumniEvents = () => {
                             ? "bg-gray-500 cursor-not-allowed"
                             : "bg-green-600 hover:bg-green-700"
                         }`}
-                        aria-label={`Attend event: ${event.title}`}
                       >
                         {isLoadingAttend ? (
                           <>
@@ -149,6 +215,7 @@ const AlumniEvents = () => {
                           "Attend"
                         )}
                       </button>
+
                       <button
                         onClick={() => handleDecline(event.id)}
                         disabled={isLoadingAttend || isLoadingDecline}
@@ -157,7 +224,6 @@ const AlumniEvents = () => {
                             ? "bg-gray-500 cursor-not-allowed"
                             : "bg-red-600 hover:bg-red-700"
                         }`}
-                        aria-label={`Decline event: ${event.title}`}
                       >
                         {isLoadingDecline ? (
                           <>

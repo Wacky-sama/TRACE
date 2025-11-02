@@ -14,16 +14,22 @@ const AdminQRScanner = () => {
     setIsProcessing(true);
 
     try {
-      const response = await api.post(`/attendance/scan?token={token}`);
+      const response = await api.post("/attendance/scan", { token });
       toast.success(response.data.message);
 
       setFlashState("success");
       setTimeout(() => setFlashState(null), 600);
     } catch (err) {
-      toast.error(err.response?.data?.detail || "Failed to validate QR.");
+      const res = err.response;
+      console.error("QR Scan Error:", res?.data || err);
+      const detail =
+        typeof res?.data?.detail === "string"
+          ? res.data.detail
+          : Array.isArray(res?.data?.detail)
+          ? res.data.detail.map((d) => d.msg).join(", ")
+          : "Failed to validate QR.";
 
-      setFlashState("error");
-      setTimeout(() => setFlashState(null), 600);
+      toast.error(detail);
     } finally {
       setIsProcessing(false);
     }
@@ -62,9 +68,7 @@ const AdminQRScanner = () => {
       {flashState && (
         <div
           className={`absolute inset-0 flex items-center justify-center transition-all duration-500 pointer-events-none ${
-            flashState === "success"
-              ? "bg-green-500/40"
-              : "bg-red-500/40"
+            flashState === "success" ? "bg-green-500/40" : "bg-red-500/40"
           }`}
         >
           {flashState === "success" ? (

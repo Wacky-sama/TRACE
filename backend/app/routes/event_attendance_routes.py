@@ -3,17 +3,51 @@ from fastapi import APIRouter, Body, Depends, HTTPException # pyright: ignore[re
 from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
 from uuid import UUID
 from datetime import datetime, timezone
+from app.middleware.auth_middleware import AuthMiddleware
 from app.database import get_db
 from app.models.activity_logs_models import ActionType
 from app.models import (event_attendance_models, events_models)
 from app.models.users_models import Users
 from app.routes.users_routes import get_current_user 
-from app.schemas.event_attendance_schemas import AttendanceOut
+from app.schemas.event_attendance_schemas import AttendanceOut, QRScanRequest
 from app.utils.activity_logger import log_activity
 
 router = APIRouter(
     prefix="/attendance", 
     tags=["Attendance"])
+
+@router.post("/scan")
+def scan_qr(
+    body: QRScanRequest,
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user),
+):
+    token = body.token
+    print(f"Scanned token: {token}")
+
+    # Find record
+    record = db.query(event_attendance_models.EventAttendance).filter_by(qr_token=token).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="QR code not found.")
+
+    event = db.query(events_models.Events).filter_by(id=record.event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found.")
+
+    now = datetime.now(timezone.utc)
+    if now < event.start_date:
+        raise HTTPException(status_code=400, detail="Event has not started yet.")
+
+    if not record.is_valid:
+        raise HTTPException(status_code=400, detail="QR already used or invalid.")
+
+    # Mark attendance
+    record.is_valid = False
+    record.scanned_at = now
+    record.attended_at = now
+    db.commit()
+
+    return {"message": f"Attendance for {record.user.firstname} {record.user.lastname} validated successfully."}
 
 @router.post("/{event_id}", response_model=AttendanceOut)
 def attend_event(
@@ -65,6 +99,44 @@ def attend_event(
 
     return attendance
 
+@router.post("/{event_id}/accept")
+def generate_qr_code(
+    event_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
+):
+    # Only alumni
+    if current_user.role != "alumni":
+        raise HTTPException(status_code=403, detail="Only alumni can generate QR codes.")
+
+    # Confirm event
+    event = db.query(events_models.Events).filter_by(id=event_id, status="approved").first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found or not approved.")
+
+    # Must already be registered
+    record = db.query(event_attendance_models.EventAttendance).filter_by(
+        event_id=event_id,
+        user_id=current_user.id
+    ).first()
+    if not record:
+        raise HTTPException(status_code=400, detail="You must attend the event first before generating a QR.")
+
+    # Generate or reuse QR token
+    if not record.qr_token:
+        record.qr_token = str(uuid.uuid4())
+        db.commit()
+        db.refresh(record)
+
+    # Create QR as image (Base64)
+    qr_data = json.dumps({"token": record.qr_token})
+    qr_img = qrcode.make(qr_data)
+    buf = io.BytesIO()
+    qr_img.save(buf, format="PNG")
+    qr_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+
+    return {"qr_code": qr_b64, "token": record.qr_token}
+
 @router.post("/{event_id}/decline")
 def decline_event(
     event_id: UUID,
@@ -113,72 +185,7 @@ def decline_event(
     
     return record
 
-@router.post("/{event_id}/accept")
-def generate_qr_code(
-    event_id: UUID,
-    db: Session = Depends(get_db),
-    current_user: Users = Depends(get_current_user)
-):
-    # Only alumni
-    if current_user.role != "alumni":
-        raise HTTPException(status_code=403, detail="Only alumni can generate QR codes.")
-
-    # Confirm event
-    event = db.query(events_models.Events).filter_by(id=event_id, status="approved").first()
-    if not event:
-        raise HTTPException(status_code=404, detail="Event not found or not approved.")
-
-    # Must already be registered
-    record = db.query(event_attendance_models.EventAttendance).filter_by(
-        event_id=event_id,
-        user_id=current_user.id
-    ).first()
-    if not record:
-        raise HTTPException(status_code=400, detail="You must attend the event first before generating a QR.")
-
-    # Generate or reuse QR token
-    if not record.qr_token:
-        record.qr_token = str(uuid.uuid4())
-        db.commit()
-        db.refresh(record)
-
-    # Create QR as image (Base64)
-    qr_data = json.dumps({"token": record.qr_token})
-    qr_img = qrcode.make(qr_data)
-    buf = io.BytesIO()
-    qr_img.save(buf, format="PNG")
-    qr_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
-
-    return {"qr_code": qr_b64, "token": record.qr_token}
-
 @router.get("/my-status")
 def get_my_attendance_status(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
     records = db.query(event_attendance_models.EventAttendance).filter_by(user_id=current_user.id).all()
     return [{"event_id": str(r.event_id), "status": r.status} for r in records]
-
-@router.post("/scan")
-def scan_qr(
-    token: str = Body(..., embed=True),
-    db: Session = Depends(get_db)
-):
-    record = db.query(event_attendance_models.EventAttendance).filter_by(qr_token=token).first()
-    if not record:
-        raise HTTPException(status_code=404, detail="QR code not found.")
-
-    event = db.query(events_models.Events).filter_by(id=record.event_id).first()
-    if not event:
-        raise HTTPException(status_code=404, detail="Event not found.")
-
-    now = datetime.now(timezone.utc)
-    if now < event.start_date:
-        raise HTTPException(status_code=400, detail="Event has not started yet.")
-
-    if not record.is_valid:
-        raise HTTPException(status_code=400, detail="QR already used or invalid.")
-
-    record.is_valid = False
-    record.scanned_at = now
-    record.attended_at = now
-    db.commit()
-
-    return {"message": f"Attendance for {record.user.firstname} {record.user.lastname} validated successfully."}

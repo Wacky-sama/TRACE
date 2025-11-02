@@ -26,9 +26,12 @@ const AdminEvents = () => {
     location: "",
     start_date: null,
     end_date: null,
+    start_time_startday: "",
+    end_time_startday: "",
+    start_time_endday: "",
+    end_time_endday: "",
   });
 
-  // New states for location handling
   const [selectedLocation, setSelectedLocation] = useState("");
   const [customLocation, setCustomLocation] = useState("");
   const [showCustomLocation, setShowCustomLocation] = useState(false);
@@ -90,6 +93,10 @@ const AdminEvents = () => {
       location: eventData.location || "",
       start_date: new Date(eventData.start_date),
       end_date: new Date(eventData.end_date),
+      start_time_startday: eventData.start_time_startday || "",
+      end_time_startday: eventData.end_time_startday || "",
+      start_time_endday: eventData.start_time_endday || "",
+      end_time_endday: eventData.end_time_endday || "",
     });
 
     const isOther = !locationOptions.slice(0, -1).includes(eventData.location);
@@ -117,20 +124,25 @@ const AdminEvents = () => {
     e.preventDefault();
     if (!validate()) return;
 
+    const cleanedForm = {
+      ...editForm,
+      location: editForm.location.trim(),
+      start_date: editForm.start_date
+        ? editForm.start_date.toISOString().split("T")[0]
+        : null,
+      end_date: editForm.end_date
+        ? editForm.end_date.toISOString().split("T")[0]
+        : null,
+      start_time_startday: editForm.start_time_startday || null,
+      end_time_startday: editForm.end_time_startday || null,
+      start_time_endday: editForm.start_time_endday || null,
+      end_time_endday: editForm.end_time_endday || null,
+    };
+
     try {
-      await api.put(
-        `/events/${editingEvent.id}`,
-        {
-          ...editForm,
-          start_date: editForm.start_date
-            ? editForm.start_date.toISOString().split("T")[0]
-            : "",
-          end_date: editForm.end_date
-            ? editForm.end_date.toISOString().split("T")[0]
-            : "",
-        },
-        { headers: { Authorization: `Bearer ${getToken()}` } }
-      );
+      await api.put(`/events/${editingEvent.id}`, cleanedForm, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
 
       toast.success("Event updated successfully!");
       setEditingEvent(null);
@@ -140,8 +152,11 @@ const AdminEvents = () => {
       setErrors({});
       await fetchEvents();
     } catch (error) {
-      console.error("Failed to update event:", error);
-      toast.error("Failed to update event.");
+      console.error("Failed to update event:", error.response?.data || error);
+      toast.error(
+        error.response?.data?.detail ||
+          "Failed to update event. Check your input."
+      );
     }
   };
 
@@ -214,7 +229,9 @@ const AdminEvents = () => {
               "Location",
               "Description",
               "Start Date",
+              "Start Time",
               "End Date",
+              "End Time",
               "Actions",
             ].map((header) => (
               <th key={header} className="p-3 text-left align-middle">
@@ -230,37 +247,53 @@ const AdminEvents = () => {
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase())
             )
-            .map((event) => (
-              <tr
-                key={event.id}
-                className={`border-t ${
-                  isDark ? "border-gray-700" : "border-gray-200"
-                }`}
-              >
-                <td className="p-3">{event.title}</td>
-                <td className="p-3">{event.location}</td>
-                <td className="p-3">{event.description || "-"}</td>
-                <td className="p-3">{event.start_date}</td>
-                <td className="p-3">{event.end_date}</td>
-                <td className="flex gap-3 p-3">
-                  <button
-                    title="Edit"
-                    onClick={() => handleEdit(event)}
-                    className="text-yellow-500 hover:text-yellow-600"
-                  >
-                    <FontAwesomeIcon icon={faPenToSquare} size="lg" />
-                  </button>
+            .map((event) => {
+              const startDate = new Date(event.start_date);
+              const endDate = new Date(event.end_date);
+              const formattedStartDate = startDate.toLocaleDateString();
+              const formattedStartTime = startDate.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+              const formattedEndDate = endDate.toLocaleDateString();
+              const formattedEndTime = endDate.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
 
-                  <button
-                    title="Delete"
-                    onClick={() => handleDelete(event.id)}
-                    className="text-red-500 hover:text-red-600"
-                  >
-                    <FontAwesomeIcon icon={faTrash} size="lg" />
-                  </button>
-                </td>
-              </tr>
-            ))}
+              return (
+                <tr
+                  key={event.id}
+                  className={`border-t ${
+                    isDark ? "border-gray-700" : "border-gray-200"
+                  }`}
+                >
+                  <td className="p-3">{event.title}</td>
+                  <td className="p-3">{event.location}</td>
+                  <td className="p-3">{event.description || "-"}</td>
+                  <td className="p-3">{formattedStartDate}</td>
+                  <td className="p-3">{formattedStartTime}</td>
+                  <td className="p-3">{formattedEndDate}</td>
+                  <td className="p-3">{formattedEndTime}</td>
+                  <td className="flex gap-3 p-3">
+                    <button
+                      title="Edit"
+                      onClick={() => handleEdit(event)}
+                      className="text-yellow-500 hover:text-yellow-600"
+                    >
+                      <FontAwesomeIcon icon={faPenToSquare} size="lg" />
+                    </button>
+                    <button
+                      title="Delete"
+                      onClick={() => handleDelete(event.id)}
+                      className="text-red-500 hover:text-red-600"
+                    >
+                      <FontAwesomeIcon icon={faTrash} size="lg" />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           {events.filter((event) =>
             `${event.title} ${event.location} ${event.description || ""}`
               .toLowerCase()
@@ -268,7 +301,7 @@ const AdminEvents = () => {
           ).length === 0 && (
             <tr>
               <td
-                colSpan="5"
+                colSpan="8"
                 className={`p-4 text-center ${
                   isDark ? "text-gray-400" : "text-gray-500"
                 }`}
@@ -381,6 +414,91 @@ const AdminEvents = () => {
                 error={errors.end_date}
                 darkMode={isDark}
               />
+            </div>
+            <div className="grid grid-cols-1 gap-3 mb-4">
+              <div>
+                <label className="block mb-1 text-sm font-medium">
+                  Start Time (Start Day)
+                </label>
+                <input
+                  type="time"
+                  value={editForm.start_time_startday}
+                  onChange={(e) =>
+                    setEditForm({
+                      ...editForm,
+                      start_time_startday: e.target.value,
+                    })
+                  }
+                  className={`w-full p-2 border rounded-md ${
+                    isDark
+                      ? "bg-gray-700 border-gray-600 text-gray-100"
+                      : "bg-white border-gray-300 text-gray-900"
+                  }`}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium">
+                  End Time (Start Day)
+                </label>
+                <input
+                  type="time"
+                  value={editForm.end_time_startday}
+                  onChange={(e) =>
+                    setEditForm({
+                      ...editForm,
+                      end_time_startday: e.target.value,
+                    })
+                  }
+                  className={`w-full p-2 border rounded-md ${
+                    isDark
+                      ? "bg-gray-700 border-gray-600 text-gray-100"
+                      : "bg-white border-gray-300 text-gray-900"
+                  }`}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium">
+                  Start Time (End Day)
+                </label>
+                <input
+                  type="time"
+                  value={editForm.start_time_endday}
+                  onChange={(e) =>
+                    setEditForm({
+                      ...editForm,
+                      start_time_endday: e.target.value,
+                    })
+                  }
+                  className={`w-full p-2 border rounded-md ${
+                    isDark
+                      ? "bg-gray-700 border-gray-600 text-gray-100"
+                      : "bg-white border-gray-300 text-gray-900"
+                  }`}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium">
+                  End Time (End Day)
+                </label>
+                <input
+                  type="time"
+                  value={editForm.end_time_endday}
+                  onChange={(e) =>
+                    setEditForm({
+                      ...editForm,
+                      end_time_endday: e.target.value,
+                    })
+                  }
+                  className={`w-full p-2 border rounded-md ${
+                    isDark
+                      ? "bg-gray-700 border-gray-600 text-gray-100"
+                      : "bg-white border-gray-300 text-gray-900"
+                  }`}
+                />
+              </div>
             </div>
 
             <div className="flex justify-end gap-2 mt-4">
