@@ -28,7 +28,6 @@ const AdminEvents = () => {
     end_date: null,
   });
 
-  // New states for location handling
   const [selectedLocation, setSelectedLocation] = useState("");
   const [customLocation, setCustomLocation] = useState("");
   const [showCustomLocation, setShowCustomLocation] = useState(false);
@@ -197,88 +196,107 @@ const AdminEvents = () => {
       <div className="mb-6 border-t"></div>
 
       <table
-        className={`min-w-full border rounded-lg shadow transition-colors duration-300 ${
-          isDark
-            ? "bg-gray-800 border-gray-700 text-gray-200"
-            : "bg-white border-gray-200 text-gray-900"
-        }`}
-      >
-        <thead
-          className={`${
-            isDark ? "bg-gray-700 text-gray-200" : "bg-gray-100 text-gray-700"
+  className={`min-w-full border rounded-lg shadow transition-colors duration-300 ${
+    isDark
+      ? "bg-gray-800 border-gray-700 text-gray-200"
+      : "bg-white border-gray-200 text-gray-900"
+  }`}
+>
+  <thead
+    className={`${
+      isDark ? "bg-gray-700 text-gray-200" : "bg-gray-100 text-gray-700"
+    }`}
+  >
+    <tr>
+      {[
+        "Title",
+        "Location",
+        "Description",
+        "Start Date",
+        "Start Time",
+        "End Date",
+        "End Time",
+        "Actions",
+      ].map((header) => (
+        <th key={header} className="p-3 text-left align-middle">
+          {header}
+        </th>
+      ))}
+    </tr>
+  </thead>
+  <tbody className="text-sm">
+    {events
+      .filter((event) =>
+        `${event.title} ${event.location} ${event.description || ""}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      )
+      .map((event) => {
+        const startDate = new Date(event.start_date);
+        const endDate = new Date(event.end_date);
+        const formattedStartDate = startDate.toLocaleDateString();
+        const formattedStartTime = startDate.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        const formattedEndDate = endDate.toLocaleDateString();
+        const formattedEndTime = endDate.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        return (
+          <tr
+            key={event.id}
+            className={`border-t ${
+              isDark ? "border-gray-700" : "border-gray-200"
+            }`}
+          >
+            <td className="p-3">{event.title}</td>
+            <td className="p-3">{event.location}</td>
+            <td className="p-3">{event.description || "-"}</td>
+            <td className="p-3">{formattedStartDate}</td>
+            <td className="p-3">{formattedStartTime}</td>
+            <td className="p-3">{formattedEndDate}</td>
+            <td className="p-3">{formattedEndTime}</td>
+            <td className="flex gap-3 p-3">
+              <button
+                title="Edit"
+                onClick={() => handleEdit(event)}
+                className="text-yellow-500 hover:text-yellow-600"
+              >
+                <FontAwesomeIcon icon={faPenToSquare} size="lg" />
+              </button>
+              <button
+                title="Delete"
+                onClick={() => handleDelete(event.id)}
+                className="text-red-500 hover:text-red-600"
+              >
+                <FontAwesomeIcon icon={faTrash} size="lg" />
+              </button>
+            </td>
+          </tr>
+        );
+      })}
+    {events.filter((event) =>
+      `${event.title} ${event.location} ${event.description || ""}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    ).length === 0 && (
+      <tr>
+        <td
+          colSpan="8"
+          className={`p-4 text-center ${
+            isDark ? "text-gray-400" : "text-gray-500"
           }`}
         >
-          <tr>
-            {[
-              "Title",
-              "Location",
-              "Description",
-              "Start Date",
-              "End Date",
-              "Actions",
-            ].map((header) => (
-              <th key={header} className="p-3 text-left align-middle">
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="text-sm">
-          {events
-            .filter((event) =>
-              `${event.title} ${event.location} ${event.description || ""}`
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase())
-            )
-            .map((event) => (
-              <tr
-                key={event.id}
-                className={`border-t ${
-                  isDark ? "border-gray-700" : "border-gray-200"
-                }`}
-              >
-                <td className="p-3">{event.title}</td>
-                <td className="p-3">{event.location}</td>
-                <td className="p-3">{event.description || "-"}</td>
-                <td className="p-3">{event.start_date}</td>
-                <td className="p-3">{event.end_date}</td>
-                <td className="flex gap-3 p-3">
-                  <button
-                    title="Edit"
-                    onClick={() => handleEdit(event)}
-                    className="text-yellow-500 hover:text-yellow-600"
-                  >
-                    <FontAwesomeIcon icon={faPenToSquare} size="lg" />
-                  </button>
+          No events found.
+        </td>
+      </tr>
+    )}
+  </tbody>
+</table>
 
-                  <button
-                    title="Delete"
-                    onClick={() => handleDelete(event.id)}
-                    className="text-red-500 hover:text-red-600"
-                  >
-                    <FontAwesomeIcon icon={faTrash} size="lg" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          {events.filter((event) =>
-            `${event.title} ${event.location} ${event.description || ""}`
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())
-          ).length === 0 && (
-            <tr>
-              <td
-                colSpan="5"
-                className={`p-4 text-center ${
-                  isDark ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                No events found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
 
       {editingEvent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">

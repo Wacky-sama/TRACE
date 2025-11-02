@@ -44,7 +44,7 @@ class EventOut(BaseModel):
     location: str
     start_date: date
     end_date: date
-    start_date: Optional[time] = None
+    start_time: Optional[time] = None
     end_time: Optional[time] = None
     status: str
     created_by: UUID

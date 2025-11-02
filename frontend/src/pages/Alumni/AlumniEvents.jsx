@@ -117,7 +117,13 @@ const AlumniEvents = () => {
                   <strong>Start Date:</strong> {event.start_date}
                 </p>
                 <p className="text-sm">
+                  <strong>Start Time:</strong> {event.start_time}
+                </p>
+                <p className="text-sm">
                   <strong>End Date:</strong> {event.end_date}
+                </p>
+                <p className="text-sm">
+                  <strong>End Date:</strong> {event.end_time}
                 </p>
                 <p className="text-sm">
                   <strong>Created By:</strong> {event.created_by_name}

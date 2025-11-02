@@ -101,8 +101,14 @@ const AdminCreateEvent = () => {
           title: formData.title,
           description: formData.description,
           location: formData.location,
-          start_datetime: formData.start_datetime?.toISOString(),
-          end_datetime: formData.end_datetime?.toISOString(),
+          start_date: formData.start_datetime?.toISOString().split("T")[0],
+          end_date: formData.end_datetime?.toISOString().split("T")[0],
+          start_time: formData.start_datetime
+            ? formData.start_datetime.toISOString().split("T")[1].slice(0, 8)
+            : null, 
+          end_time: formData.end_datetime
+            ? formData.end_datetime.toISOString().split("T")[1].slice(0, 8)
+            : null,
         },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
