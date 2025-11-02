@@ -40,6 +40,7 @@ def create_event(
     db.add(new_event)
     db.commit()
     db.refresh(new_event)
+    
     return new_event
 
 # Get All Events (Admin + Alumni)
@@ -72,7 +73,7 @@ def update_event(
     event_id: UUID,
     event_in: EventCreate,
     db: Session = Depends(get_db),
-    current_user: Users = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user),
 ):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
@@ -81,19 +82,12 @@ def update_event(
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
-    # Update fields
-    event.title = event_in.title
-    event.description = event_in.description
-    event.location = event_in.location
-    event.start_date = event_in.start_date
-    event.end_date = event_in.end_date
-    event.start_time_startday = event_in.start_time_startday
-    event.end_time_startday = event_in.end_time_startday
-    event.start_time_endday = event_in.start_time_endday
-    event.end_time_endday = event_in.end_time_endday
+    for field, value in event_in.dict(exclude_unset=True).items():
+        setattr(event, field, value)
 
     db.commit()
     db.refresh(event)
+    
     return event
 
 # Delete Event (Admin only)

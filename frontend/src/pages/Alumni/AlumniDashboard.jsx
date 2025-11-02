@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import api from "../../services/api";
 import AlumniGTSForm from "./AlumniGTSForm";
 
+// ✅ Custom Hook for Dark Mode Detection
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains("dark")
@@ -22,6 +23,32 @@ function useDarkMode() {
 
   return isDark;
 }
+
+// ✅ Helper functions for better date/time formatting
+const formatDate = (dateStr) =>
+  dateStr
+    ? new Date(dateStr).toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "TBA";
+
+const formatTime = (timeStr) => {
+  if (!timeStr) return "TBA";
+  try {
+    const [h, m, s] = timeStr.split(":");
+    const d = new Date();
+    d.setHours(h, m, s || 0);
+    return d.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return timeStr;
+  }
+};
 
 const AlumniDashboard = () => {
   const isDark = useDarkMode();
@@ -42,7 +69,7 @@ const AlumniDashboard = () => {
   }, []);
 
   useEffect(() => {
-    const fetchApprovedEvents = async () => {
+    const fetchEvents = async () => {
       try {
         const res = await api.get("/events");
         setEvents(res.data);
@@ -50,9 +77,9 @@ const AlumniDashboard = () => {
         console.error("Failed to fetch approved events:", error);
       }
     };
-    fetchApprovedEvents();
+    fetchEvents();
 
-    const interval = setInterval(fetchApprovedEvents, 10000);
+    const interval = setInterval(fetchEvents, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -82,7 +109,7 @@ const AlumniDashboard = () => {
                 isDark ? "text-gray-300" : "text-gray-700"
               }`}
             >
-              Welcome, {currentUser?.firstname}!
+              Welcome, {currentUser?.firstname || "User"}!
             </p>
           </header>
 
@@ -112,7 +139,6 @@ const AlumniDashboard = () => {
             </nav>
           </div>
 
-          {/* Tab Content with animation */}
           <AnimatePresence mode="wait">
             {activeTab === "overview" && (
               <motion.section
@@ -131,61 +157,52 @@ const AlumniDashboard = () => {
                   >
                     Upcoming Events
                   </h3>
+
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {events.length === 0 ? (
                       <div
-                        className={`p-6 rounded-lg shadow transition-colors ${
+                        className={`p-6 rounded-lg shadow ${
                           isDark
-                            ? "bg-gray-800 text-white"
-                            : "bg-white text-gray-900"
+                            ? "bg-gray-800 text-gray-400"
+                            : "bg-white text-gray-600"
                         }`}
                       >
-                        <p
-                          className={`${
-                            isDark ? "text-gray-400" : "text-gray-500"
-                          }`}
-                        >
-                          No upcoming events.
-                        </p>
+                        <p>No upcoming events.</p>
                       </div>
                     ) : (
                       events.map((event) => (
                         <div
                           key={event.id}
-                          className={`p-6 rounded-lg shadow transition-colors ${
+                          className={`p-6 rounded-lg shadow transition-all ${
                             isDark
-                              ? "bg-gray-800 text-white"
-                              : "bg-white text-gray-900"
+                              ? "bg-gray-800 hover:bg-gray-750 text-gray-200"
+                              : "bg-white hover:bg-gray-50 text-gray-900"
                           }`}
                         >
-                          <h3
-                            className={`text-lg font-semibold mb-2 ${
-                              isDark ? "text-gray-100" : "text-gray-900"
-                            }`}
-                          >
+                          <h3 className="mb-2 text-lg font-semibold">
                             {event.title}
                           </h3>
                           <p
-                            className={`text-sm mb-1 ${
+                            className={`text-sm mb-2 ${
                               isDark ? "text-gray-300" : "text-gray-700"
                             }`}
                           >
-                            {event.description || "No description"}
+                            {event.description || "No description provided."}
                           </p>
-                          <p
-                            className={`text-sm ${
-                              isDark ? "text-gray-400" : "text-gray-500"
-                            }`}
-                          >
-                            Start Date: {event.start_date || "To Be Announced"}
-                          </p>
-                          <p
-                            className={`text-sm ${
-                              isDark ? "text-gray-400" : "text-gray-500"
-                            }`}
-                          >
-                            End Date: {event.end_date || "To Be Announced"}
-                          </p>
+
+                          <div className="space-y-1 text-sm">
+                            <p>
+                              <strong>Start:</strong>{" "}
+                              {formatDate(event.start_date)} —{" "}
+                              {formatTime(event.start_time_startday)} —{" "}
+                              {formatTime(event.start_time_endday)}
+                            </p>
+                            <p>
+                              <strong>End:</strong> {formatDate(event.end_date)}{" "}
+                              — {formatTime(event.end_time_endday)} —{" "}
+                              {formatTime(event.end_time_startday)}
+                            </p>
+                          </div>
                         </div>
                       ))
                     )}
