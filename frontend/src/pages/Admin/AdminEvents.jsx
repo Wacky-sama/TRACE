@@ -10,7 +10,7 @@ import api from "../../services/api";
 import { getToken } from "../../utils/storage";
 import FloatingInput from "../../components/FloatingInput";
 import FloatingSelect from "../../components/FloatingSelect";
-import AdminFloatingDatePicker from "../../components/common/AdminFloatingDatePicker";
+import AdminFloatingDatePicker from "../../components/common/AdminFloatingDateTimePicker";
 import { useTheme } from "../../context/ThemeProvider";
 
 const AdminEvents = () => {

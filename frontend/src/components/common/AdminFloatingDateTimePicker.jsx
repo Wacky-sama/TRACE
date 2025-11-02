@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../../styles/datepicker-dark.css";
 import { useTheme } from "../../context/ThemeProvider";
 
-function AdminFloatingDatePicker({
+function AdminFloatingDateTimePicker({
   id,
   value,
   onChange,
@@ -12,10 +12,11 @@ function AdminFloatingDatePicker({
   error,
   minDate = new Date(),
   maxDate,
+  darkMode,
   ...props
 }) {
   const { theme } = useTheme();
-  const isDark = theme === "dark";
+  const isDark = darkMode ?? theme === "dark";
 
   const CustomInput = forwardRef(({ value: inputValue, onClick }, ref) => (
     <div className="relative w-full">
@@ -27,8 +28,8 @@ function AdminFloatingDatePicker({
         readOnly
         placeholder=" "
         className={`w-full p-3 pt-6 pl-3 text-sm rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 peer border transition-colors duration-300
-          ${
-            error
+        ${
+          error
             ? "border-red-500"
             : isDark
             ? "bg-gray-800 border-gray-600 text-white"
@@ -37,10 +38,14 @@ function AdminFloatingDatePicker({
       />
       <label
         htmlFor={id}
-        className={`absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm transition-all duration-200 transform origin-left pointer-events-none
-          peer-focus:top-1 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-blue-500
-          peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs
-          ${isDark ? "peer-[:not(:placeholder-shown)]:text-gray-300" : "peer-[:not(:placeholder-shown)]:text-gray-600"}`}
+        className={`absolute left-3 top-1/2 -translate-y-1/2 text-sm transition-all duration-200 transform origin-left pointer-events-none
+        peer-focus:top-1 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-blue-500
+        peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs
+        ${
+          isDark
+            ? "text-white peer-focus:text-blue-400 peer-[:not(:placeholder-shown)]:text-white"
+            : "text-gray-500 peer-[:not(:placeholder-shown)]:text-gray-600"
+        }`}
       >
         {label}
       </label>
@@ -52,16 +57,13 @@ function AdminFloatingDatePicker({
       <DatePicker
         selected={value instanceof Date ? value : null}
         onChange={onChange}
+        showTimeSelect
+        dateFormat="MM/dd/yyyy h:mm aa"
+        timeFormat="h:mm aa"
+        timeIntervals={15}
         minDate={minDate}
         maxDate={maxDate}
-        dateFormat="MM/dd/yyyy"
-        showMonthDropdown
-        showYearDropdown
-        dropdownMode="select"
-        yearDropdownItemNumber={200}
-        scrollableYearDropdown
         customInput={<CustomInput />}
-        isClearable
         popperClassName={isDark ? "react-datepicker-dark" : ""}
         {...props}
       />
@@ -71,4 +73,4 @@ function AdminFloatingDatePicker({
   );
 }
 
-export default AdminFloatingDatePicker;
+export default AdminFloatingDateTimePicker;

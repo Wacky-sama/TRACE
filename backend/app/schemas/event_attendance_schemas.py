@@ -3,11 +3,14 @@ from uuid import UUID
 from datetime import datetime
 from typing import Optional
 
+class QRScanRequest(BaseModel):
+    token: str
+    
 class AttendanceBase(BaseModel):
     event_id: UUID
 
 class AttendanceCreate(AttendanceBase):
-    pass  # Could be extended if you allow setting more than just event_id
+    pass
 
 class AttendanceOut(BaseModel):
     id: UUID

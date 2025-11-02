@@ -28,6 +28,8 @@ def create_event(
         location=event_in.location,
         start_date=event_in.start_date,
         end_date=event_in.end_date,
+        start_time=event_in.start_time,
+        end_time=event_in.end_time,
         created_by=current_user.id,
         status="approved",  # Default status for created events
         created_at=datetime.utcnow()
@@ -119,6 +121,8 @@ def update_event(
     event.location = event_in.location
     event.start_date = event_in.start_date
     event.end_date = event_in.end_date
+    event.start_time = event_in.start_time
+    event.end_time = event_in.end_time
 
     db.commit()
     db.refresh(event)

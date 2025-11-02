@@ -4,7 +4,7 @@ import { getToken } from "../../utils/storage";
 import api from "../../services/api";
 import FloatingInput from "../../components/FloatingInput";
 import FloatingSelect from "../../components/FloatingSelect";
-import AdminFloatingDatePicker from "../../components/common/AdminFloatingDatePicker";
+import AdminFloatingDateTimePicker from "../../components/common/AdminFloatingDateTimePicker";
 
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
@@ -32,14 +32,13 @@ const AdminCreateEvent = () => {
     title: "",
     description: "",
     location: "",
-    start_date: null,
-    end_date: null,
+    start_datetime: null,
+    end_datetime: null,
   });
 
   const [selectedLocation, setSelectedLocation] = useState("");
   const [customLocation, setCustomLocation] = useState("");
   const [showCustomLocation, setShowCustomLocation] = useState(false);
-
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -73,16 +72,18 @@ const AdminCreateEvent = () => {
     if (!formData.title.trim()) validateErrors.title = "Title is required";
     if (!formData.location.trim())
       validateErrors.location = "Location is required";
-    if (!formData.start_date)
-      validateErrors.start_date = "Start date is required";
-    if (!formData.end_date) validateErrors.end_date = "End date is required";
+    if (!formData.start_datetime)
+      validateErrors.start_datetime = "Start date/time is required";
+    if (!formData.end_datetime)
+      validateErrors.end_datetime = "End date/time is required";
     if (
-      formData.start_date &&
-      formData.end_date &&
-      formData.start_date > formData.end_date
+      formData.start_datetime &&
+      formData.end_datetime &&
+      formData.start_datetime > formData.end_datetime
     ) {
-      validateErrors.end_date = "End date must be on or after start date";
+      validateErrors.end_datetime = "End datetime must be after start datetime";
     }
+
     setErrors(validateErrors);
     return Object.keys(validateErrors).length === 0;
   };
@@ -97,13 +98,11 @@ const AdminCreateEvent = () => {
       await api.post(
         "/events/",
         {
-          ...formData,
-          start_date: formData.start_date
-            ? formData.start_date.toISOString().split("T")[0]
-            : "",
-          end_date: formData.end_date
-            ? formData.end_date.toISOString().split("T")[0]
-            : "",
+          title: formData.title,
+          description: formData.description,
+          location: formData.location,
+          start_datetime: formData.start_datetime?.toISOString(),
+          end_datetime: formData.end_datetime?.toISOString(),
         },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
@@ -113,8 +112,8 @@ const AdminCreateEvent = () => {
         title: "",
         description: "",
         location: "",
-        start_date: null,
-        end_date: null,
+        start_datetime: null,
+        end_datetime: null,
       });
       setSelectedLocation("");
       setCustomLocation("");
@@ -164,10 +163,7 @@ const AdminCreateEvent = () => {
               label="Event Title"
               value={formData.title}
               onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  title: e.target.value
-                })
+                setFormData({ ...formData, title: e.target.value })
               }
               error={errors.title}
               darkMode={isDark}
@@ -190,7 +186,7 @@ const AdminCreateEvent = () => {
                   value={customLocation}
                   onChange={handleCustomLocationChange}
                   error={errors.location}
-                  darkMode={isDark} 
+                  darkMode={isDark}
                 />
               )}
             </div>
@@ -209,9 +205,7 @@ const AdminCreateEvent = () => {
               id="description"
               value={formData.description}
               onChange={(e) =>
-                setFormData({ 
-                  ...formData, description: e.target.value
-                })
+                setFormData({ ...formData, description: e.target.value })
               }
               placeholder="Describe your event..."
               rows={3}
@@ -224,29 +218,25 @@ const AdminCreateEvent = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-3 mb-4 md:grid-cols-2">
-            <AdminFloatingDatePicker
-              id="start_date"
-              label="Start Date"
-              value={formData.start_date}
-              onChange={(date) =>
-                setFormData({ 
-                  ...formData, start_date: date 
-                })
+            <AdminFloatingDateTimePicker
+              id="start_datetime"
+              label="Start Date & Time"
+              value={formData.start_datetime}
+              onChange={(datetime) =>
+                setFormData({ ...formData, start_datetime: datetime })
               }
-              error={errors.start_date}
+              error={errors.start_datetime}
               darkMode={isDark}
             />
 
-            <AdminFloatingDatePicker
-              id="end_date"
-              label="End Date"
-              value={formData.end_date}
-              onChange={(date) => 
-                setFormData({ 
-                  ...formData, end_date: date 
-                })
+            <AdminFloatingDateTimePicker
+              id="end_datetime"
+              label="End Date & Time"
+              value={formData.end_datetime}
+              onChange={(datetime) =>
+                setFormData({ ...formData, end_datetime: datetime })
               }
-              error={errors.end_date}
+              error={errors.end_datetime}
               darkMode={isDark}
             />
           </div>
