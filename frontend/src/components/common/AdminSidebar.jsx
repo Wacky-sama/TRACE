@@ -1,6 +1,6 @@
 import { userLogout } from "../../utils/storage";
 import { useNavigate, NavLink } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ScanQrCode } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,10 +20,23 @@ import { useUser } from "../../context/UserContext";
 import { formatFullname } from "../../utils/format";
 
 const AdminSidebar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(window.innerWidth >= 768);
   const [openDropdowns, setOpenDropdowns] = useState([]);
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useUser();
+
+  useEffect(() => {
+      const handleResize = () => {
+        if (window.innerWidth < 768) {
+          setIsOpen(false);
+        } else {
+          setIsOpen(true);
+        }
+      };
+  
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
   const navigationItems = [
     { icon: faHouseUser, label: "Dashboard", route: "/admin/dashboard" },
@@ -80,7 +93,9 @@ const AdminSidebar = () => {
         {isOpen && currentUser && (
           <div className="w-full text-center">
             <div className="text-sm font-semibold text-white">
-              <p className="font-semibold">{formatFullname(currentUser)}</p>
+              <p className="font-semibold">
+                {formatFullname(currentUser)}
+              </p>
               <p className="text-sm text-gray-400 capitalize">
                 {currentUser.role}
               </p>

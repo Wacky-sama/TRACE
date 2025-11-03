@@ -1,6 +1,6 @@
 import { userLogout } from "../../utils/storage";
 import { useNavigate, NavLink } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouseUser,
@@ -14,9 +14,22 @@ import { useUser } from "../../context/UserContext";
 import { formatFullname } from "../../utils/format";
 
 const AlumniSidebar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(window.innerWidth >= 768);
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useUser();
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsOpen(false);
+      } else {
+        setIsOpen(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const navigationItems = [
     { icon: faHouseUser, label: "Dashboard", route: "/alumni/dashboard" },
