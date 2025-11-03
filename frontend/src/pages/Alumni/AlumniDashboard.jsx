@@ -89,21 +89,23 @@ const AlumniDashboard = () => {
 
   return (
     <div
-      className={`flex min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-100"}`}
+      className={`flex min-h-screen flex-col ${
+        isDark ? "bg-gray-900" : "bg-gray-100"
+      }`}
     >
-      <main className="flex-1 p-6">
-        <div className="mx-auto max-w-7xl">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8">
+        <div className="mx-auto w-full max-w-7xl">
           {/* Header */}
-          <header className="mb-6">
+          <header className="mb-6 text-center sm:text-left">
             <h1
-              className={`text-3xl font-bold ${
+              className={`text-2xl sm:text-3xl font-bold ${
                 isDark ? "text-white" : "text-gray-900"
               }`}
             >
               Dashboard
             </h1>
             <p
-              className={`text-lg ${
+              className={`text-base sm:text-lg ${
                 isDark ? "text-gray-300" : "text-gray-700"
               }`}
             >
@@ -113,7 +115,7 @@ const AlumniDashboard = () => {
 
           {/* Tabs */}
           <div className="mb-8 border-b border-gray-300 dark:border-gray-700">
-            <nav className="flex space-x-6">
+            <nav className="flex flex-wrap justify-center sm:justify-start gap-4 sm:space-x-6">
               {[
                 { key: "overview", label: "Overview" },
                 { key: "gts", label: "Graduate Tracer Study" },
@@ -121,7 +123,7 @@ const AlumniDashboard = () => {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
-                  className={`pb-2 text-lg font-medium transition-colors border-b-2 ${
+                  className={`pb-2 text-base sm:text-lg font-medium transition-colors border-b-2 ${
                     activeTab === tab.key
                       ? isDark
                         ? "border-blue-400 text-blue-400"
@@ -137,6 +139,7 @@ const AlumniDashboard = () => {
             </nav>
           </div>
 
+          {/* Tab Content */}
           <AnimatePresence mode="wait">
             {activeTab === "overview" && (
               <motion.section
@@ -149,14 +152,14 @@ const AlumniDashboard = () => {
               >
                 <div>
                   <h3
-                    className={`text-2xl font-semibold mb-4 ${
+                    className={`text-xl sm:text-2xl font-semibold mb-4 ${
                       isDark ? "text-gray-100" : "text-gray-900"
                     }`}
                   >
                     Upcoming Events
                   </h3>
 
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {events.length === 0 ? (
                       <div
                         className={`p-6 rounded-lg shadow ${
@@ -218,7 +221,7 @@ const AlumniDashboard = () => {
                 exit="exit"
               >
                 <div
-                  className={`rounded-xl shadow-md p-6 transition-colors ${
+                  className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
                     isDark ? "bg-gray-800" : "bg-white"
                   }`}
                 >
