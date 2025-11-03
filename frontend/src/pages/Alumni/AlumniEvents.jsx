@@ -132,6 +132,9 @@ const AlumniEvents = () => {
       }`}
     >
       <h2 className="mb-4 text-2xl font-bold">Events</h2>
+      <p className={`text-lg ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+        Browse upcoming events and attend.
+      </p>
       <div
         className={`mt-4 mb-6 border-t ${
           isDark ? "border-gray-700" : "border-gray-300"

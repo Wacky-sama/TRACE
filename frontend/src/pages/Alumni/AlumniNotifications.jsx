@@ -72,7 +72,6 @@ const AlumniNotifications = () => {
     >
       <main className="flex-1 p-6">
         <div className="mx-auto max-w-7xl">
-          {/* Header */}
           <header className="mb-6">
             <h1
               className={`text-3xl font-bold ${
