@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import api from "../../services/api";
 import AlumniGTSForm from "./AlumniGTSForm";
 
-// ✅ Custom Hook for Dark Mode Detection
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains("dark")
@@ -24,7 +23,6 @@ function useDarkMode() {
   return isDark;
 }
 
-// ✅ Helper functions for better date/time formatting
 const formatDate = (dateStr) =>
   dateStr
     ? new Date(dateStr).toLocaleDateString("en-US", {
