@@ -74,18 +74,20 @@ const AlumniAccountInfo = () => {
               isDark ? "text-gray-100" : "text-gray-800"
             }`}
           >
-            {user.email}
+            {user.email || "Email not provided"}
           </p>
         </div>
 
         <div>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Role</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Phone Number
+          </p>
           <p
-            className={`text-lg font-semibold capitalize ${
+            className={`text-lg font-semibold ${
               isDark ? "text-gray-100" : "text-gray-800"
             }`}
           >
-            {user.role}
+            {user.contact_number || "Phone Number not provided"}
           </p>
         </div>
       </div>
