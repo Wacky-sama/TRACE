@@ -71,6 +71,7 @@ const JobSatisfaction = ({ gtsData, onUpdate }) => {
             label="How would you rate your overall job satisfaction?"
             onChange={handleSelectChange}
             options={SATISFACTION_LEVELS}
+            labelClassName="text-[0.55rem] sm:text-xs peer-focus:text-[0.55rem]"
           />
         </div>
 
@@ -81,6 +82,7 @@ const JobSatisfaction = ({ gtsData, onUpdate }) => {
             label="Why? (Reason for your answer)"
             value={formData.job_satisfaction_reason}
             onChange={handleChange}
+            labelClassName="text-[0.70rem] sm:text-xs peer-focus:text-[0.55rem]"
           />
         </div>
       </div>

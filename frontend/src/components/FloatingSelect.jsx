@@ -9,10 +9,12 @@ function FloatingSelect({
   options = [],
   placeholder = "Select an option",
   darkMode,
+  labelClassName = "",
   ...props
 }) {
   const { theme } = useTheme();
   const isDark = darkMode ?? theme === "dark";
+  const hasValue = value && value !== "";
 
   return (
     <div className="mb-4">
@@ -33,27 +35,27 @@ function FloatingSelect({
         >
           <option value="">{placeholder}</option>
           {options.map((opt, i) => {
-            const label = typeof opt === "string" ? opt : opt.label;
+            const labelText = typeof opt === "string" ? opt : opt.label;
             const val = typeof opt === "string" ? opt : opt.value;
             return (
               <option key={i} value={val}>
-                {label}
+                {labelText}
               </option>
             );
           })}
         </select>
 
+        {/* Floating Label */}
         <label
           htmlFor={id}
-          className={`absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm transition-all duration-200 transform origin-left
-            peer-focus:top-1 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-blue-500
-            peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:translate-y-0 
-            peer-[:not(:placeholder-shown)]:text-xs
+          className={`absolute left-3 transition-all duration-200 transform origin-left
+            ${hasValue ? "top-1 text-xs" : "top-1/2 -translate-y-1/2 text-sm"}
+            peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs
             ${
               isDark
-                ? "text-gray-400 peer-focus:text-blue-400 peer-[:not(:placeholder-shown)]:text-gray-300"
-                : "text-gray-500 peer-[:not(:placeholder-shown)]:text-gray-600"
-            }`}
+                ? "text-gray-400 peer-focus:text-blue-400"
+                : "text-gray-500 peer-focus:text-blue-600"
+            } ${labelClassName}`}
         >
           {label}
         </label>

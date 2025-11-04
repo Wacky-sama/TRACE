@@ -122,11 +122,27 @@ export const JOB_LEVEL_OPTIONS_CURRENT = [
   "Self-employed",
 ];
 
-const USEFUL_COMPETENCIES = [
+export const USEFUL_COMPETENCIES = [
   "Communication skills",
   "Human Relations skills",
   "Entrepreneurial skills",
   "Problem-solving skills",
   "Critical Thinking skills",
   "Other skills, please specify",
+];
+
+export const NON_EMPLOYED_STATUSES = [
+  "Unemployed", 
+  "Retired", 
+  "Looking for Work"
+];
+
+export const NON_EMPLOYED_REASONS = [
+  "Advance or further study",
+  "Family concern and decided not to find a job",
+  "Health-related reasons",
+  "Lack of work experience",
+  "No job opportunity",
+  "Did not look for a job",
+  "Other reason(s), please specify",
 ];

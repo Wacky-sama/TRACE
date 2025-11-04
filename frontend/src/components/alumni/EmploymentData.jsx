@@ -1,12 +1,21 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useTheme } from "../../context/ThemeProvider";
-import { NON_EMPLOYED_REASONS, EMPLOYMENT_NOW_OPTIONS, EMPLOYED_STATUSES, 
-  NON_EMPLOYED_STATUSES, PLACE_OF_WORK_OPTIONS, JOB_SECTORS, 
-  OCCUPATION_OPTIONS, JOB_FIND_METHODS, JOB_REASONS, 
-  JOB_CHANGE_REASONS, USEFUL_COMPETENCIES, JOB_LEVEL_OPTIONS_FIRST, 
-  JOB_LEVEL_OPTIONS_CURRENT } 
-  from "../../data/GTS/contants"
+import {
+  NON_EMPLOYED_REASONS,
+  EMPLOYMENT_NOW_OPTIONS,
+  EMPLOYED_STATUSES,
+  NON_EMPLOYED_STATUSES,
+  PLACE_OF_WORK_OPTIONS,
+  JOB_SECTORS,
+  OCCUPATION_OPTIONS,
+  JOB_FIND_METHODS,
+  JOB_REASONS,
+  JOB_CHANGE_REASONS,
+  USEFUL_COMPETENCIES,
+  JOB_LEVEL_OPTIONS_FIRST,
+  JOB_LEVEL_OPTIONS_CURRENT,
+} from "../../data/GTS/contants";
 import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
@@ -407,18 +416,10 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
 
   return (
     <div
-      className={`p-4 rounded-lg shadow transition-colors duration-300 ${
+      className={`p-4 sm:p-6 md:p-8 rounded-lg shadow transition-colors duration-300 ${
         isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
       }`}
     >
-      <h2
-        className={`mb-4 text-xl font-semibold ${
-          isDark ? "text-gray-100" : "text-gray-800"
-        }`}
-      >
-        Employment Information
-      </h2>
-
       <FloatingSelect
         id="employmentNow"
         label="Are you currently employed?"
@@ -572,6 +573,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               })
             }
             options={["Yes", "No"]}
+            labelClassName="text-[0.70rem] sm:text-xs peer-focus:text-[0.70rem]"
           />
 
           <FloatingSelect
@@ -585,6 +587,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               })
             }
             options={["Yes", "No"]}
+            labelClassName="text-[0.60rem] sm:text-xs peer-focus:text-[0.60rem]"
           />
 
           <AlumniFloatingDatePicker
@@ -605,6 +608,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               setFormData({ ...formData, months_to_first_job: e.target.value })
             }
             label="How long did it take you to land your first job? (in months)"
+            labelClassName="text-[0.55rem] sm:text-xs peer-focus:text-[0.55rem]"
           />
           <div className="mb-4">
             <label
@@ -781,6 +785,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               setFormData({ ...formData, first_job_salary: e.target.value })
             }
             label="What are your initial gross monthly earning in your first job after college? (PhP)"
+            labelClassName="text-[0.50rem] sm:text-xs peer-focus:text-[0.50rem]"
           />
 
           <FloatingSelect
@@ -794,6 +799,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               })
             }
             options={["Yes", "No"]}
+            labelClassName="text-[0.55rem] sm:text-xs peer-focus:text-[0.55rem]"
           />
 
           <FloatingSelect
@@ -807,6 +813,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               })
             }
             options={["Yes", "No"]}
+            labelClassName="text-[0.55rem] sm:text-xs peer-focus:text-[0.55rem]"
           />
 
           {(formData.curriculum_relevance_first_job === true ||
@@ -880,6 +887,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               })
             }
             label="List down suggestions to further improve your course curriculum"
+            labelClassName="text-[0.50rem] sm:text-xs peer-focus:text-[0.50rem]"
           />
         </>
       )}

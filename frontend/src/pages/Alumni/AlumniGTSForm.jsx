@@ -12,7 +12,7 @@ import ProblemsIssuesAndConcerns from "../../components/alumni/ProblemsIssuesAnd
 
 const sections = [
   { id: "A", label: "General Information", component: GeneralInformation },
-  { id: "B", label: "Educational Background", component: EducationalBackground },
+  { id: "B", label: "Educational Attainment (Baccalaureate Degree Only)", component: EducationalBackground },
   { id: "C", label: "Training(s) / Advance Studies Attended After College (Optional)", component: TrainingsAndStudies },
   { id: "D", label: "Employment Data", component: EmploymentData },
   { id: "E", label: "Job Satisfaction", component: JobSatisfaction },

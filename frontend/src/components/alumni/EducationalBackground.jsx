@@ -110,9 +110,6 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
     >
       {/* Educational Attainment */}
       <section className="mb-6">
-        <h3 className="mb-2 text-lg font-medium">
-          Educational Attainment (Baccalaureate Degree Only)
-        </h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FloatingInput
             id="degree"
