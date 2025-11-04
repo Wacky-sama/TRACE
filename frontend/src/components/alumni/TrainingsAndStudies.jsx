@@ -34,17 +34,47 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
     ]);
   };
 
-  const handleRemoveTraining = (index) => {
+  const handleRemoveTraining = async (index) => {
+    const confirmed = window.confirm("Are you sure you want to remove this training? This action cannot be undone.");
+    if (!confirmed) return;
+
     const updated = trainings.filter((_, i) => i !== index);
+    const removedItem = trainings[index];
     setTrainings(updated);
+
+    setSaving(true);
+    try {
+      const result = await onUpdate("trainings", gtsData.id, { trainings: updated });
+      if (result.success) {
+        toast.success("Training removed successfully!");
+        if (result.data?.trainings) {
+          setTrainings(result.data.trainings);
+        }
+      } else {
+        setTrainings([...updated, removedItem]);
+        toast.error("Failed to remove training. Please try again.");
+      }
+    } catch (error) {
+      console.error("Remove error:", error);
+      setTrainings([...updated, removedItem]);
+      toast.error("An error occurred while removing the training.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleSave = async () => {
     setSaving(true);
     try {
       const result = await onUpdate("trainings", gtsData.id, { trainings });
-      if (result.success) toast.success("Saved successfully!");
-      else toast.error("Update failed. Please try again.");
+      if (result.success) {
+        toast.success("Saved successfully!");
+        if (result.data?.trainings) {
+          setTrainings(result.data.trainings);
+        }
+      } else {
+        toast.error("Update failed. Please try again.");
+      }
     } catch (error) {
       console.error(error);
       toast.error("An unexpected error occurred.");
@@ -103,11 +133,8 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
               <button
                 type="button"
                 onClick={() => handleRemoveTraining(index)}
-                className={`text-sm font-medium ${
-                  isDark
-                    ? "text-red-400 hover:text-red-300"
-                    : "text-red-600 hover:text-red-700"
-                }`}
+                className="text-red-500 hover:text-red-700"
+                disabled={saving}
               >
                 Remove
               </button>

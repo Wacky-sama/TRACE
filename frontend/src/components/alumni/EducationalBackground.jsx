@@ -43,11 +43,54 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
     }));
   };
 
-  const removeExamRow = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      exams: prev.exams.filter((_, i) => i !== index),
-    }));
+  const removeExamRow = async (index) => {
+    const confirmed = window.confirm("Are you sure you want to remove this examination? This action cannot be undone.");
+    if (!confirmed) return;
+
+    const updatedExams = formData.exams.filter((_, i) => i !== index);
+    const removedExam = formData.exams[index];
+    setFormData((prev) => ({ ...prev, exams: updatedExams }));
+
+    setSaving(true);
+    try {
+      const submitData = {
+        ...formData,
+        exams: updatedExams.filter(
+          (exam) => exam.name?.trim() || exam.date || exam.rating?.trim()
+        ),
+        pursued_advance_degree_reasons: [
+          ...formData.pursued_advance_degree_reasons.filter(
+            (r) => r !== "Others, please specify"
+          ),
+          ...(otherReason?.trim() ? [`Others: ${otherReason.trim()}`] : []),
+        ],
+      };
+
+      const result = await onUpdate("educational", gtsData.id, submitData);
+      if (result.success) {
+        toast.success("Examination removed successfully!");
+        if (result.data) {
+          setFormData({
+            degree: result.data.degree || "",
+            specialization: result.data.specialization || "",
+            year_graduated: result.data.year_graduated || "",
+            honors: result.data.honors || "",
+            exams: Array.isArray(result.data.exams) ? result.data.exams : [],
+            pursued_advance_degree: result.data.pursued_advance_degree || false,
+            pursued_advance_degree_reasons: result.data.pursued_advance_degree_reasons || [],
+          });
+        }
+      } else {
+        setFormData((prev) => ({ ...prev, exams: [...updatedExams, removedExam] })); 
+        toast.error("Failed to remove examination. Please try again.");
+      }
+    } catch (error) {
+      console.error("Remove error:", error);
+      setFormData((prev) => ({ ...prev, exams: [...updatedExams, removedExam] }));
+      toast.error("An error occurred while removing the examination.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleReasonChange = (reason) => {
@@ -91,6 +134,17 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
       const result = await onUpdate("educational", gtsData.id, submitData);
       if (result.success) {
         toast.success("Saved successfully!");
+        if (result.data) {
+          setFormData({
+            degree: result.data.degree || "",
+            specialization: result.data.specialization || "",
+            year_graduated: result.data.year_graduated || "",
+            honors: result.data.honors || "",
+            exams: Array.isArray(result.data.exams) ? result.data.exams : [],
+            pursued_advance_degree: result.data.pursued_advance_degree || false,
+            pursued_advance_degree_reasons: result.data.pursued_advance_degree_reasons || [],
+          });
+        }
       } else {
         toast.error("Update failed. Please try again.");
       }
@@ -205,6 +259,7 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
                     <button
                       onClick={() => removeExamRow(index)}
                       className="text-red-500 hover:text-red-700"
+                      disabled={saving}
                     >
                       Remove
                     </button>
