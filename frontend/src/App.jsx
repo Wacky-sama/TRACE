@@ -32,6 +32,7 @@ import AdminLayout from "./pages/Admin/AdminLayout";
 import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
 import AlumniEvents from "./pages/Alumni/AlumniEvents";
 import AlumniNotifications from "./pages/Alumni/AlumniNotifications";
+import AlumniEventUpdates from "./pages/Alumni/notifications/EventUpdates";
 import AlumniSettings from "./pages/Alumni/AlumniSettings";
 import AlumniChangePassword from "./pages/Alumni/settings/ChangePassword";
 import AlumniLayout from "./pages/Alumni/AlumniLayout";
@@ -160,7 +161,9 @@ function App() {
               />
               <Route path="dashboard" element={<AlumniDashboard />} />
               <Route path="events" element={<AlumniEvents />} />
-              <Route path="notifications" element={<AlumniNotifications />} />
+              <Route path="notifications" element={<AlumniNotifications />}>
+                <Route path="event-updates" element={<AlumniEventUpdates />} />
+              </Route>
               <Route path="settings" element={<AlumniSettings />}>
                 <Route path="change-password" element={<AlumniChangePassword />} />
               </Route>

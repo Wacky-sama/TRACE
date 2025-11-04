@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
-import AdminAccountInfo from "./settings/AccountInfo";
-import AdminChangePassword from "./settings/ChangePassword";
+import AlumniAccountInfo from "./settings/AccountInfo";
+import AlumniChangePassword from "./settings/ChangePassword";
 
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
@@ -140,7 +140,7 @@ const AlumniSettings = () => {
                   isDark ? "bg-gray-800" : "bg-white"
                 }`}
               >
-                <AdminAccountInfo />
+                <AlumniAccountInfo />
               </motion.div>
             )}
             {activeTab === "password" && (
@@ -154,7 +154,7 @@ const AlumniSettings = () => {
                   isDark ? "bg-gray-800" : "bg-white"
                 }`}
               >
-                <AdminChangePassword />
+                <AlumniChangePassword />
               </motion.div>
             )}
           </AnimatePresence>
