@@ -1,7 +1,7 @@
 // B. EDUCATIONAL BACKGROUND
 import { useState } from "react";
 import { useTheme } from "../../context/ThemeProvider";
-import { ADVANCE_DEGREE_PROGRAMS } from "../../data/GTS/advanceDegreePrograms";
+import { ADVANCE_DEGREE_PROGRAMS } from "../../data/GTS/contants";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";

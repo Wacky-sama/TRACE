@@ -2,7 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTheme } from "../../context/ThemeProvider";
 import { isValidPhoneNumber } from "libphonenumber-js";
-import { CIVIL_STATUSES_OPTIONS } from "../../data/GTS/civilStatuses";
+import { CIVIL_STATUSES_OPTIONS } from "../../data/GTS/contants";
 import PhoneInput from "../PhoneInput";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";

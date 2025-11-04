@@ -1,120 +1,15 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useTheme } from "../../context/ThemeProvider";
+import { NON_EMPLOYED_REASONS, EMPLOYMENT_NOW_OPTIONS, EMPLOYED_STATUSES, 
+  NON_EMPLOYED_STATUSES, PLACE_OF_WORK_OPTIONS, JOB_SECTORS, 
+  OCCUPATION_OPTIONS, JOB_FIND_METHODS, JOB_REASONS, 
+  JOB_CHANGE_REASONS, USEFUL_COMPETENCIES, JOB_LEVEL_OPTIONS_FIRST, 
+  JOB_LEVEL_OPTIONS_CURRENT } 
+  from "../../data/GTS/contants"
 import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
-
-const EMPLOYMENT_NOW_OPTIONS = ["Yes", "No", "Never Employed"];
-
-const EMPLOYED_STATUSES = [
-  "Regular or Permanent",
-  "Contractual",
-  "Temporary",
-  "Self-employed / Freelance",
-  "Casual",
-];
-
-const NON_EMPLOYED_STATUSES = ["Unemployed", "Retired", "Looking for Work"];
-
-const NON_EMPLOYED_REASONS = [
-  "Advance or further study",
-  "Family concern and decided not to find a job",
-  "Health-related reasons",
-  "Lack of work experience",
-  "No job opportunity",
-  "Did not look for a job",
-  "Other reason(s), please specify",
-];
-
-const OCCUPATION_OPTIONS = [
-  "Officials of Government and Special-Interest Organizations, Corporate Executives, Managers, Managing Proprietors and Supervisors",
-  "Professionals",
-  "Technicians and Associate Professionals",
-  "Clerks",
-  "Service Workers and Shop and Market Sales Workers",
-  "Farmers, Forestry Workers and Fishermen",
-  "Trades and Related Workers",
-  "Plant and Machine Operators and Assemblers",
-  "Laborers and Unskilled Workers",
-  "Others, please specify",
-];
-
-const JOB_SECTORS = [
-  "Agriculture, Hunting and Forestry",
-  "Fishing",
-  "Mining and Quarrying",
-  "Manufacturing",
-  "Electricity, Gas and Water Supply",
-  "Construction",
-  "Wholesale and Retail Trade, repair of motor vehicles, motorcycles and personal and household goods",
-  "Hotels and Restaurants",
-  "Transport Storage and Communication",
-  "Financial Intermediation",
-  "Real State, Renting and Business Activities",
-  "Public Administration and Defense; Compulsory Social Security",
-  "Education",
-  "Health and Social Work",
-  "Other community, Social and Personal Service Activities",
-  "Private Households with Employed Persons",
-  "Self employed",
-  "Others, please specify",
-];
-
-const PLACE_OF_WORK_OPTIONS = ["Local", "Abroad"];
-
-const JOB_FIND_METHODS = [
-  "Response to an advertisement",
-  "As walk-in applicant",
-  "Recommended by someone",
-  "Information from friends",
-  "Arranged by school's job placement officer",
-  "Family business",
-  "Job Fair or PESO",
-  "Others, please specify",
-];
-
-const JOB_REASONS = [
-  "High salaries and benefits",
-  "Career challenge",
-  "Related to special skill",
-  "Related to course or program of study",
-  "Proximity to residence",
-  "Peer influence",
-  "Family influence",
-  "Other reason(s), please specify",
-];
-
-const JOB_CHANGE_REASONS = [
-  "Higher salaries and benefits",
-  "Career Change",
-  "Related to special skills",
-  "Proximity to residence",
-  "Other reason(s), please specify",
-];
-
-const JOB_LEVEL_OPTIONS_FIRST = [
-  "Rank or Clerical",
-  "Professional, Technical or Supervisory",
-  "Managerial or Executive",
-  "Self-employed",
-];
-
-const JOB_LEVEL_OPTIONS_CURRENT = [
-  "Rank or Clerical",
-  "Professional, Technical or Supervisory",
-  "Managerial or Executive",
-  "Self-employed",
-];
-
-const USEFUL_COMPETENCIES = [
-  "Communication skills",
-  "Human Relations skills",
-  "Entrepreneurial skills",
-  "Problem-solving skills",
-  "Critical Thinking skills",
-  "Other skills, please specify",
-];
 
 const EmploymentData = ({ gtsData, onUpdate }) => {
   const { theme } = useTheme();
