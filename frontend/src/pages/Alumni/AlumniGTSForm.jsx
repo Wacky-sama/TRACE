@@ -80,7 +80,7 @@ const AlumniGTSForm = () => {
     <div
       className={`max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 transition-colors duration-300 ${
         theme === "dark"
-          ? "bg-gray-900 text-gray-100"
+          ? "bg-gray-800 text-gray-100"
           : "bg-gray-50 text-gray-900"
       }`}
     >
