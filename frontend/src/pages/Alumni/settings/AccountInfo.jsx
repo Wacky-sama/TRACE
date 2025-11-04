@@ -32,8 +32,8 @@ const AlumniAccountInfo = () => {
   if (!user) {
     return (
       <div
-        className={`p-6 rounded-xl shadow-md text-center ${
-          isDark ? "bg-gray-800 text-gray-200" : "bg-white text-gray-700"
+        className={`flex flex-col min-h-screen transition-colors duration-300 ${
+          isDark ? "bg-gray-900" : "bg-gray-100"
         }`}
       >
         <p>Failed to load account information.</p>
@@ -43,12 +43,12 @@ const AlumniAccountInfo = () => {
 
   return (
     <section
-      className={`rounded-xl shadow-md p-6 transition-colors ${
+      className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
         isDark ? "bg-gray-800" : "bg-white"
       }`}
     >
       <h2
-        className={`text-2xl font-semibold mb-4 ${
+        className={`text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 ${
           isDark ? "text-white" : "text-gray-900"
         }`}
       >

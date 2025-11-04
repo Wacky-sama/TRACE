@@ -64,19 +64,19 @@ const AlumniChangePassword = () => {
 
   return (
     <section
-      className={`rounded-xl shadow-md p-6 transition-colors duration-300 ${
+      className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
         isDark ? "bg-gray-800" : "bg-white"
       }`}
     >
       <h2
-        className={`text-2xl font-semibold mb-4 ${
+        className={`text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 ${
           isDark ? "text-white" : "text-gray-900"
         }`}
       >
         Change Password
       </h2>
 
-      <form onSubmit={handlePasswordChange} className="space-y-4">
+      <form onSubmit={handlePasswordChange} className="space-y-4 sm:space-y-5">
         {/* Current Password */}
         <FloatingInput
           id="currentPassword"
@@ -157,9 +157,7 @@ const AlumniChangePassword = () => {
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             className="absolute inset-y-0 flex items-center text-gray-500 cursor-pointer right-3"
           >
-            <FontAwesomeIcon
-              icon={showConfirmPassword ? faEyeSlash : faEye}
-            />
+            <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
           </span>
         </FloatingInput>
 
@@ -181,7 +179,7 @@ const AlumniChangePassword = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full py-3 mt-4 font-medium text-white transition bg-blue-600 rounded-md hover:bg-blue-700"
+          className="w-full py-2.5 sm:py-3 mt-4 font-medium text-white transition bg-blue-600 rounded-md hover:bg-blue-700 text-sm sm:text-base"
         >
           Update Password
         </button>
