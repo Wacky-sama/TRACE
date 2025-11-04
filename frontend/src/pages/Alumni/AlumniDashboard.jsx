@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams } from "react-router-dom";
 import api from "../../services/api";
 import AlumniGTSForm from "./AlumniGTSForm";
 
@@ -50,9 +51,20 @@ const formatTime = (timeStr) => {
 
 const AlumniDashboard = () => {
   const isDark = useDarkMode();
-  const [activeTab, setActiveTab] = useState("overview");
+  const [searchParams, setSearchParams] = useSearchParams();
   const [events, setEvents] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const activeTab = searchParams.get("tab") || "overview";
+
+  const setActiveTab = (newTab) => {
+    const params = { tab: newTab };
+    if (newTab === "gts") {
+      params.section = "general-information";
+    } else {
+      searchParams.delete("section");
+    }
+    setSearchParams(params);
+  };
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -94,7 +106,7 @@ const AlumniDashboard = () => {
       }`}
     >
       <main className="flex-1 p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto w-full max-w-7xl">
+        <div className="w-full mx-auto max-w-7xl">
           {/* Header */}
           <header className="mb-6 text-center sm:text-left">
             <h1
@@ -115,7 +127,7 @@ const AlumniDashboard = () => {
 
           {/* Tabs */}
           <div className="mb-8 border-b border-gray-300 dark:border-gray-700">
-            <nav className="flex flex-wrap justify-center sm:justify-start gap-4 sm:space-x-6">
+            <nav className="flex flex-wrap justify-center gap-4 sm:justify-start sm:space-x-6">
               {[
                 { key: "overview", label: "Overview" },
                 { key: "gts", label: "Graduate Tracer Study" },
@@ -159,7 +171,7 @@ const AlumniDashboard = () => {
                     Upcoming Events
                   </h3>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6">
                     {events.length === 0 ? (
                       <div
                         className={`p-6 rounded-lg shadow ${

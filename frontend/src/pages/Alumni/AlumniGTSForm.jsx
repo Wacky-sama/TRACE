@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import api from "../../services/api";
 import { getToken, getUser } from "../../utils/storage";
 import { useTheme } from "../../context/ThemeProvider";
@@ -11,22 +12,27 @@ import Services from "../../components/alumni/Services";
 import ProblemsIssuesAndConcerns from "../../components/alumni/ProblemsIssuesAndConcerns";
 
 const sections = [
-  { id: "A", label: "General Information", component: GeneralInformation },
-  { id: "B", label: "Educational Attainment (Baccalaureate Degree Only)", component: EducationalBackground },
-  { id: "C", label: "Training(s) / Advance Studies Attended After College (Optional)", component: TrainingsAndStudies },
-  { id: "D", label: "Employment Data", component: EmploymentData },
-  { id: "E", label: "Job Satisfaction", component: JobSatisfaction },
-  { id: "F", label: "Services", component: Services },
-  { id: "G", label: "Problems, Issues & Concerns", component: ProblemsIssuesAndConcerns },
+  { id: "general-information", displayId: "A", label: "General Information", component: GeneralInformation },
+  { id: "educational-background", displayId: "B", label: "Educational Attainment (Baccalaureate Degree Only)", component: EducationalBackground },
+  { id: "trainings-and-studies", displayId: "C", label: "Training(s) / Advance Studies Attended After College (Optional)", component: TrainingsAndStudies },
+  { id: "employment-data", displayId: "D", label: "Employment Data", component: EmploymentData },
+  { id: "job-satisfaction", displayId: "E", label: "Job Satisfaction", component: JobSatisfaction },
+  { id: "services", displayId: "F", label: "Services", component: Services },
+  { id: "problems-issues-concerns", displayId: "G", label: "Problems, Issues & Concerns", component: ProblemsIssuesAndConcerns },
 ];
 
 const AlumniGTSForm = () => {
   const [gtsData, setGtsData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeSection, setActiveSection] = useState("A");
   const { theme } = useTheme();
   const user = getUser();
   const userId = user?.id;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeSection = searchParams.get("section") || sections[0].id;
+
+  const setActiveSection = (newSection) => {
+    setSearchParams({ tab: "gts", section: newSection });
+  };
 
   useEffect(() => {
     const fetchGTSData = async () => {
@@ -73,8 +79,7 @@ const AlumniGTSForm = () => {
       </div>
     );
 
-  const ActiveComponent =
-    sections.find((section) => section.id === activeSection)?.component;
+  const ActiveComponent = sections.find((section) => section.id === activeSection)?.component;
 
   return (
     <div
@@ -112,7 +117,7 @@ const AlumniGTSForm = () => {
         >
           {sections.map((section) => (
             <option key={section.id} value={section.id}>
-              {`${section.id}. ${section.label}`}
+              {`${section.displayId}. ${section.label}`}
             </option>
           ))}
         </select>
@@ -132,7 +137,7 @@ const AlumniGTSForm = () => {
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
-            {section.id}
+            {section.displayId}
           </button>
         ))}
       </div>
@@ -158,14 +163,11 @@ const AlumniGTSForm = () => {
       {/* Navigation Footer */}
       <div className="flex flex-col justify-between gap-3 pt-4 sm:flex-row">
         <button
-          onClick={() => {
-            const currentIndex = sections.findIndex(
-              (s) => s.id === activeSection
-            );
-            if (currentIndex > 0)
-              setActiveSection(sections[currentIndex - 1].id);
+         onClick={() => {
+            const currentIndex = sections.findIndex((s) => s.id === activeSection);
+            if (currentIndex > 0) setActiveSection(sections[currentIndex - 1].id);
           }}
-          disabled={activeSection === "A"}
+          disabled={activeSection === sections[0].id}
           className={`w-full sm:w-auto px-4 py-2 rounded-md font-medium transition-colors ${
             theme === "dark"
               ? "bg-gray-700 hover:bg-gray-600 text-gray-200"
@@ -177,13 +179,10 @@ const AlumniGTSForm = () => {
 
         <button
           onClick={() => {
-            const currentIndex = sections.findIndex(
-              (s) => s.id === activeSection
-            );
-            if (currentIndex < sections.length - 1)
-              setActiveSection(sections[currentIndex + 1].id);
+            const currentIndex = sections.findIndex((s) => s.id === activeSection);
+            if (currentIndex < sections.length - 1) setActiveSection(sections[currentIndex + 1].id); 
           }}
-          disabled={activeSection === "G"}
+          disabled={activeSection === sections[sections.length - 1].id}
           className={`w-full sm:w-auto px-4 py-2 rounded-md font-medium transition-colors ${
             theme === "dark"
               ? "bg-blue-600 hover:bg-blue-500 text-white"
