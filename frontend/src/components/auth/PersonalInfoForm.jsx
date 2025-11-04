@@ -9,6 +9,7 @@ import {
   getPasswordStrengthMessage,
 } from "../../utils/passwordUtils";
 import phProvincesCities from "../../data/phProvincesCities.json";
+import otherCountriesProvincesCities from "../../data/otherCountriesProvincesCities.json";
 import PhoneInput from "../PhoneInput";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
@@ -16,6 +17,10 @@ import EmailInput from "../EmailInput";
 import UsernameInput from "../UsernameInput";
 
 function PersonalInfoForm({ formData, setFormData, nextStep }) {
+  const allCountries = [
+    "Philippines",
+    ...Object.keys(otherCountriesProvincesCities),
+  ].sort((a, b) => a.localeCompare(b));
   const [errors, setErrors] = useState({});
   const [passwordStrength, setPasswordStrength] = useState({
     score: 0,
@@ -180,12 +185,12 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   };
 
   return (
-    <div className="space-4">
+    <div className="space-y-2">
       <h2 className="pb-2 mb-4 text-xl font-semibold border-b">
         Personal Information
       </h2>
 
-      <div className="space-2">
+      <div className="space-y-2">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <EmailInput
             id="email"
@@ -216,7 +221,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         </div>
       </div>
 
-      <div className="space-2">
+      <div className="space-y-2">
         <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <FloatingInput
             id="lastName"
@@ -269,7 +274,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         />
       </div>
 
-      <div className="space-2">
+      <div className="space-y-2">
         <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
           <AlumniFloatingDatePicker
             id="birthday"
@@ -304,7 +309,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         options={["Male", "Female"]}
       />
 
-      <div className="space-2">
+      <div className="space-y-2">
         {/* PERMANENT ADDRESS */}
         <div>
           <h3 className="mb-1 font-medium text-md">Permanent Address</h3>
@@ -313,7 +318,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           <FloatingSelect
             id="permanentCountry"
             label="Country"
-            value={formData.permanentCountry || "Philippines"}
+            value={formData.permanentCountry}
             onChange={(e) =>
               setFormData({
                 ...formData,
@@ -322,7 +327,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
                 permanentMunicipality: "",
               })
             }
-            options={["Philippines"]}
+            options={allCountries}
             error={errors.permanentCountry}
           />
 
@@ -338,7 +343,16 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
                 permanentMunicipality: "",
               })
             }
-            options={Object.keys(phProvincesCities)}
+            options={
+              formData.permanentCountry === "Philippines"
+                ? Object.keys(phProvincesCities).sort((a, b) =>
+                    a.localeCompare(b)
+                  )
+                : Object.keys(
+                    otherCountriesProvincesCities[formData.permanentCountry] ||
+                      []
+                  ).sort((a, b) => a.localeCompare(b))
+            }
             error={errors.permanentProvince}
           />
 
@@ -354,9 +368,15 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
               })
             }
             options={
-              formData.permanentProvince
-                ? phProvincesCities[formData.permanentProvince]
-                : []
+              formData.permanentCountry === "Philippines"
+                ? (phProvincesCities[formData.permanentProvince] || []).sort(
+                    (a, b) => a.localeCompare(b)
+                  )
+                : (
+                    otherCountriesProvincesCities[formData.permanentCountry]?.[
+                      formData.permanentProvince
+                    ] || []
+                  ).sort((a, b) => a.localeCompare(b))
             }
             error={errors.permanentMunicipality}
           />
@@ -383,7 +403,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           <FloatingSelect
             id="presentCountry"
             label="Country"
-            value={formData.presentCountry || "Philippines"}
+            value={formData.presentCountry}
             onChange={(e) =>
               setFormData({
                 ...formData,
@@ -392,7 +412,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
                 presentMunicipality: "",
               })
             }
-            options={["Philippines"]}
+            options={allCountries}
             error={errors.presentCountry}
           />
 
@@ -408,7 +428,15 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
                 presentMunicipality: "",
               })
             }
-            options={Object.keys(phProvincesCities)}
+            options={
+              formData.presentCountry === "Philippines"
+                ? Object.keys(phProvincesCities).sort((a, b) =>
+                    a.localeCompare(b)
+                  )
+                : Object.keys(
+                    otherCountriesProvincesCities[formData.presentCountry] || []
+                  ).sort((a, b) => a.localeCompare(b))
+            }
             error={errors.presentProvince}
           />
 
@@ -424,9 +452,15 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
               })
             }
             options={
-              formData.presentProvince
-                ? phProvincesCities[formData.presentProvince]
-                : []
+              formData.presentCountry === "Philippines"
+                ? (phProvincesCities[formData.presentProvince] || []).sort(
+                    (a, b) => a.localeCompare(b)
+                  )
+                : (
+                    otherCountriesProvincesCities[formData.presentCountry]?.[
+                      formData.presentProvince
+                    ] || []
+                  ).sort((a, b) => a.localeCompare(b))
             }
             error={errors.presentMunicipality}
           />
@@ -460,7 +494,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         />
       </div>
 
-      <div className="space-2">
+      <div className="space-y-2">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <FloatingSelect
             id="course"
@@ -496,7 +530,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         </div>
       </div>
 
-      <div className="space-2">
+      <div className="space-y-2">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <FloatingInput
             id="registerPassword"
