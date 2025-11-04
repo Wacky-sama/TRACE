@@ -10,10 +10,12 @@ function FloatingInput({
   icon,
   children,
   darkMode,
+  labelClassName = "",
   ...props
 }) {
   const { theme } = useTheme();
   const isDark = darkMode ?? theme === "dark";
+  const hasValue = value && value !== "";
 
   return (
     <div className="mb-4">
@@ -24,7 +26,6 @@ function FloatingInput({
             {icon}
           </span>
         )}
-
         {/* Input */}
         <input
           id={id}
@@ -45,26 +46,21 @@ function FloatingInput({
             }`}
           {...props}
         />
-
-        {/* Floating Label */}
         <label
           htmlFor={id}
-          className={`absolute ${
+          className={`absolute pointer-events-none ${
             icon ? "left-10" : "left-3"
-          } top-1/2 -translate-y-1/2 
-            text-gray-500 text-sm transition-all duration-200 transform origin-left
-            peer-focus:top-1 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-blue-500
-            peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:translate-y-0 
-            peer-[:not(:placeholder-shown)]:text-xs
-            ${
-              isDark
-                ? "text-gray-400 peer-focus:text-blue-400 peer-[:not(:placeholder-shown)]:text-gray-300"
-                : "text-gray-500 peer-[:not(:placeholder-shown)]:text-gray-600"
-            }`}
-        >
+          } transition-all duration-200 transform origin-left
+          ${hasValue ? "top-1" : "top-1/2 -translate-y-1/2"}
+          peer-focus:top-1 peer-focus:-translate-y-0
+          ${
+            isDark
+              ? "text-gray-400 peer-focus:text-blue-400"
+              : "text-gray-500 peer-focus:text-blue-600"
+          } ${labelClassName || "text-sm peer-focus:text-xs"}`}
+                >
           {label}
         </label>
-
         {/* Right Children (e.g. Eye toggle) */}
         {children && (
           <div className="absolute inset-y-0 flex items-center right-3">

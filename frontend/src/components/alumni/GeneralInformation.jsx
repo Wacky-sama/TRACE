@@ -2,17 +2,10 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTheme } from "../../context/ThemeProvider";
 import { isValidPhoneNumber } from "libphonenumber-js";
+import { CIVIL_STATUSES_OPTIONS } from "../../data/GTS/civilStatuses";
 import PhoneInput from "../PhoneInput";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
-
-const CIVIL_STATUSES_OPTIONS = [
-  "Single",
-  "Married",
-  "Separated/Divorced",
-  "Widow or Widower",
-  "Single Parent",
-];
 
 const GeneralInformation = ({ gtsData, onUpdate }) => {
   const { theme } = useTheme();
@@ -42,7 +35,8 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
     if (!formData.mobile?.trim()) {
       validateErrors.mobile = "Contact number is required";
     } else if (!isValidPhoneNumber(formData.mobile)) {
-      validateErrors.mobile = "Please enter a valid phone number (e.g., +63 912 345 6789)";
+      validateErrors.mobile =
+        "Please enter a valid phone number (e.g., +63 912 345 6789)";
     }
     setErrors(validateErrors);
 
@@ -73,14 +67,6 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
         isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
       }`}
     >
-      <h2
-        className={`mb-4 text-xl font-semibold ${
-          isDark ? "text-gray-100" : "text-gray-800"
-        }`}
-      >
-        General Information
-      </h2>
-
       <div className="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
         <div>
           <FloatingInput
@@ -155,7 +141,9 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
             onChange={handleChange}
             error={errors.mobile}
             defaultCountry="ph"
-            onError={(error) => setErrors((prev) => ({ ...prev, mobile: error }))}
+            onError={(error) =>
+              setErrors((prev) => ({ ...prev, mobile: error }))
+            }
           />
         </div>
       </div>

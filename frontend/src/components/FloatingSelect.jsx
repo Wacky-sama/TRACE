@@ -13,6 +13,7 @@ function FloatingSelect({
 }) {
   const { theme } = useTheme();
   const isDark = darkMode ?? theme === "dark";
+
   return (
     <div className="mb-4">
       <div className="relative">
@@ -31,11 +32,15 @@ function FloatingSelect({
           {...props}
         >
           <option value="">{placeholder}</option>
-          {options.map((opt, i) => (
-            <option key={i} value={opt}>
-              {opt}
-            </option>
-          ))}
+          {options.map((opt, i) => {
+            const label = typeof opt === "string" ? opt : opt.label;
+            const val = typeof opt === "string" ? opt : opt.value;
+            return (
+              <option key={i} value={val}>
+                {label}
+              </option>
+            );
+          })}
         </select>
 
         <label
@@ -54,7 +59,6 @@ function FloatingSelect({
         </label>
       </div>
 
-      {/* Error Message */}
       {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );
