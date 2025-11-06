@@ -2,10 +2,11 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faLock, faGear } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import AlumniAccountInfo from "./settings/AccountInfo";
 import AlumniChangePassword from "./settings/ChangePassword";
+import AlumniSystemPreference from "./settings/SystemPreference";
 
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
@@ -33,6 +34,8 @@ const AlumniSettings = () => {
 
   const activeTab = location.pathname.includes("change-password")
     ? "password"
+    : location.pathname.includes("system-preference")
+    ? "system"
     : "account";
 
   const tabVariants = {
@@ -44,6 +47,7 @@ const AlumniSettings = () => {
   const tabs = [
     { key: "account", label: "Account Information", icon: faUser },
     { key: "password", label: "Change Password", icon: faLock },
+    { key: "system", label: "System Preference", icon: faGear },
   ];
 
   return (
@@ -80,6 +84,8 @@ const AlumniSettings = () => {
                 navigate(
                   e.target.value === "password"
                     ? "/alumni/settings/change-password"
+                    : e.target.value === "system"
+                    ? "/alumni/settings/system-preference"
                     : "/alumni/settings"
                 )
               }
@@ -107,6 +113,8 @@ const AlumniSettings = () => {
                     navigate(
                       tab.key === "password"
                         ? "/alumni/settings/change-password"
+                        : tab.key === "system"
+                        ? "/alumni/settings/system-preference"
                         : "/alumni/settings"
                     )
                   }
@@ -155,6 +163,20 @@ const AlumniSettings = () => {
                 }`}
               >
                 <AlumniChangePassword />
+              </motion.div>
+            )}
+            {activeTab === "system" && (
+              <motion.div
+                key="system"
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
+                  isDark ? "bg-gray-800" : "bg-white"
+                }`}
+              >
+                <AlumniSystemPreference />
               </motion.div>
             )}
           </AnimatePresence>

@@ -35,6 +35,7 @@ import AlumniNotifications from "./pages/Alumni/AlumniNotifications";
 import AlumniEventUpdates from "./pages/Alumni/notifications/EventUpdates";
 import AlumniSettings from "./pages/Alumni/AlumniSettings";
 import AlumniChangePassword from "./pages/Alumni/settings/ChangePassword";
+import AlumniSystemPreference from "./pages/Alumni/settings/SystemPreference";
 import AlumniLayout from "./pages/Alumni/AlumniLayout";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -166,6 +167,7 @@ function App() {
               </Route>
               <Route path="settings" element={<AlumniSettings />}>
                 <Route path="change-password" element={<AlumniChangePassword />} />
+                <Route path="system-preference" element={<AlumniSystemPreference />} />
               </Route>
             </Route>
 
