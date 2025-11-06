@@ -26,7 +26,7 @@ const AlumniSystemPreference = () => {
 
   return (
     <div className="space-y-4">
-      <h2 className="mb-4 text-xl font-semibold">System Preferences</h2>
+      <h2 className="mb-4 text-xl font-semibold">System Preference</h2>
       <div className="flex items-center justify-between">
         <span
           lassName={`text-2xl sm:text-3xl font-bold ${
