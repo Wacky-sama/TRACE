@@ -24,6 +24,7 @@
     "country-state-city": "^3.2.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.24",
+    "jwt-decode": "^4.0.0",
     "libphonenumber-js": "^1.12.24",
     "lucide-react": "^0.545.0",
     "qrcode.react": "^4.2.0",
