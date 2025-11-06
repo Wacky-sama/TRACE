@@ -27,6 +27,7 @@ import AdminReports from "./pages/Admin/AdminReports";
 import AdminNotifications from "./pages/Admin/AdminNotifications";
 import AdminSettings from "./pages/Admin/AdminSettings";
 import AdminChangePassword from "./pages/Admin/settings/ChangePassword";
+import AdminSystemPreference from "./pages/Admin/settings/SystemPreference";
 import AdminLayout from "./pages/Admin/AdminLayout";
 // Alumni imports
 import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
@@ -144,6 +145,7 @@ function App() {
               <Route path="notifications" element={<AdminNotifications />} />
               <Route path="settings" element={<AdminSettings />}>
                 <Route path="change-password" element={<AdminChangePassword />} />
+                <Route path="system-preference" element={<AdminSystemPreference />} />
               </Route>
             </Route>
 

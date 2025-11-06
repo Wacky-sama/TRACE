@@ -47,7 +47,7 @@ const AlumniSettings = () => {
   const tabs = [
     { key: "account", label: "Account Information", icon: faUser },
     { key: "password", label: "Change Password", icon: faLock },
-    { key: "system", label: "System Preference", icon: faGear },
+    { key: "system", label: "System Preference", icon: faGear }
   ];
 
   return (

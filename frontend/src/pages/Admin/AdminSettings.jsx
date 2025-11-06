@@ -2,10 +2,11 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faLock, faGear } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import AdminAccountInfo from "./settings/AccountInfo";
 import AdminChangePassword from "./settings/ChangePassword";
+import AdminSystemPreference from "./settings/SystemPreference";
 
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
@@ -33,6 +34,8 @@ const AdminSettings = () => {
 
   const activeTab = location.pathname.includes("change-password")
     ? "password"
+    : location.pathname.includes("system-preference")
+    ? "system"
     : "account";
 
   const tabVariants = {
@@ -44,26 +47,28 @@ const AdminSettings = () => {
   const tabs = [
     { key: "account", label: "Account Information", icon: faUser },
     { key: "password", label: "Change Password", icon: faLock },
+    { key: "system", label: "System Preference", icon: faGear },
   ];
 
   return (
     <div
-      className={`flex min-h-screen transition-colors duration-300 ${
+      className={`flex flex-col min-h-screen transition-colors duration-300 ${
         isDark ? "bg-gray-900" : "bg-gray-100"
       }`}
     >
-      <main className="flex-1 p-6">
-        <div className="max-w-5xl mx-auto">
-          <header className="mb-6">
+      <main className="flex-1 p-4 sm:p-6">
+        <div className="w-full max-w-5xl mx-auto">
+          {/* Header */}
+          <header className="mb-6 text-center sm:text-left">
             <h1
-              className={`text-3xl font-bold ${
+              className={`text-2xl sm:text-3xl font-bold ${
                 isDark ? "text-white" : "text-gray-900"
               }`}
             >
               Settings
             </h1>
             <p
-              className={`text-lg ${
+              className={`text-base sm:text-lg ${
                 isDark ? "text-gray-300" : "text-gray-700"
               }`}
             >
@@ -71,9 +76,36 @@ const AdminSettings = () => {
             </p>
           </header>
 
-          {/* Tabs Navigation */}
-          <div className="mb-8 border-b border-gray-300 dark:border-gray-700">
-            <nav className="flex space-x-6">
+          {/* Responsive Dropdown for Mobile */}
+          <div className="mb-6 sm:hidden">
+            <select
+              value={activeTab}
+              onChange={(e) =>
+                navigate(
+                  e.target.value === "password"
+                    ? "/admin/settings/change-password"
+                    : e.target.value === "system"
+                    ? "/admin/settings/system-preference"
+                    : "/admin/settings"
+                )
+              }
+              className={`w-full p-2 rounded-md border text-sm font-medium ${
+                isDark
+                  ? "bg-gray-800 border-gray-700 text-gray-200"
+                  : "bg-white border-gray-300 text-gray-700"
+              }`}
+            >
+              {tabs.map((tab) => (
+                <option key={tab.key} value={tab.key}>
+                  {tab.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Tabs Navigation for Desktop */}
+          <div className="hidden mb-8 border-b border-gray-300 sm:block dark:border-gray-700">
+            <nav className="flex flex-wrap gap-6">
               {tabs.map((tab) => (
                 <button
                   key={tab.key}
@@ -81,10 +113,12 @@ const AdminSettings = () => {
                     navigate(
                       tab.key === "password"
                         ? "/admin/settings/change-password"
+                        : tab.key === "system"
+                        ? "/admin/settings/system-preference"
                         : "/admin/settings"
                     )
                   }
-                  className={`flex items-center gap-2 pb-2 text-lg font-medium border-b-2 transition-colors ${
+                  className={`flex items-center gap-2 pb-2 text-sm sm:text-lg font-medium border-b-2 transition-colors ${
                     activeTab === tab.key
                       ? isDark
                         ? "border-blue-400 text-blue-400"
@@ -95,7 +129,7 @@ const AdminSettings = () => {
                   }`}
                 >
                   <FontAwesomeIcon icon={tab.icon} />
-                  {tab.label}
+                  <span>{tab.label}</span>
                 </button>
               ))}
             </nav>
@@ -110,7 +144,7 @@ const AdminSettings = () => {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className={`rounded-xl shadow-md p-6 transition-colors ${
+                className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
                   isDark ? "bg-gray-800" : "bg-white"
                 }`}
               >
@@ -124,11 +158,25 @@ const AdminSettings = () => {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className={`rounded-xl shadow-md p-6 transition-colors ${
+                className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
                   isDark ? "bg-gray-800" : "bg-white"
                 }`}
               >
                 <AdminChangePassword />
+              </motion.div>
+            )}
+            {activeTab === "system" && (
+              <motion.div
+                key="system"
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
+                  isDark ? "bg-gray-800" : "bg-white"
+                }`}
+              >
+                <AdminSystemPreference />
               </motion.div>
             )}
           </AnimatePresence>

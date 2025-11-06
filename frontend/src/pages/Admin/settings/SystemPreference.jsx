@@ -20,7 +20,7 @@ function useDarkMode() {
   return isDark;
 }
 
-const AlumniSystemPreference = () => {
+const AdminSystemPreference = () => {
   const isDark = useDarkMode();
   const { theme, toggleTheme } = useTheme();
 
@@ -50,4 +50,4 @@ const AlumniSystemPreference = () => {
   );
 };
 
-export default AlumniSystemPreference;
+export default AdminSystemPreference;
