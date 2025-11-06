@@ -9,13 +9,10 @@ function FloatingSelect({
   options = [],
   placeholder = "Select an option",
   darkMode,
-  labelClassName = "",
   ...props
 }) {
   const { theme } = useTheme();
   const isDark = darkMode ?? theme === "dark";
-  const hasValue = value && value !== "";
-
   return (
     <div className="mb-4">
       <div className="relative">
@@ -35,32 +32,34 @@ function FloatingSelect({
         >
           <option value="">{placeholder}</option>
           {options.map((opt, i) => {
-            const labelText = typeof opt === "string" ? opt : opt.label;
-            const val = typeof opt === "string" ? opt : opt.value;
+            const optionValue = typeof opt === "object" ? opt.value : opt;
+            const optionLabel = typeof opt === "object" ? opt.label : opt;
+
             return (
-              <option key={i} value={val}>
-                {labelText}
+              <option key={i} value={optionValue}>
+                {optionLabel}
               </option>
             );
           })}
         </select>
 
-        {/* Floating Label */}
         <label
           htmlFor={id}
-          className={`absolute left-3 transition-all duration-200 transform origin-left
-            ${hasValue ? "top-1 text-xs" : "top-1/2 -translate-y-1/2 text-sm"}
-            peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs
+          className={`absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm transition-all duration-200 transform origin-left
+            peer-focus:top-1 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-blue-500
+            peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:translate-y-0 
+            peer-[:not(:placeholder-shown)]:text-xs
             ${
               isDark
-                ? "text-gray-400 peer-focus:text-blue-400"
-                : "text-gray-500 peer-focus:text-blue-600"
-            } ${labelClassName}`}
+                ? "text-gray-400 peer-focus:text-blue-400 peer-[:not(:placeholder-shown)]:text-gray-300"
+                : "text-gray-500 peer-[:not(:placeholder-shown)]:text-gray-600"
+            }`}
         >
           {label}
         </label>
       </div>
 
+      {/* Error Message */}
       {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );

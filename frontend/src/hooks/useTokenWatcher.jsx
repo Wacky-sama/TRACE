@@ -26,26 +26,21 @@ export default function useTokenWatcher() {
       const currentTime = Date.now();
       const remaining = expTime - currentTime;
 
-      console.log(`Token remaining: ${remaining / 1000}s`);
-
       const notifyThreshold = 30 * 1000;
 
       if (remaining <= 0) {
-        console.log("Token already expired — forcing logout.");
         toast.error("Your session has expired. Please log in again.");
         userLogout();
         return;
       }
 
       if (remaining <= notifyThreshold) {
-        console.log("Token will expire soon — showing immediate warning.");
         toast("Your session will expire soon.");
       }
 
       const notifyTimer = setTimeout(() => {
         if (!notifiedRef.current) {
           notifiedRef.current = true;
-          console.log("Triggering token expiration warning toast");
           toast("Your session will expire soon.");
         }
       }, Math.max(0, remaining - notifyThreshold));
