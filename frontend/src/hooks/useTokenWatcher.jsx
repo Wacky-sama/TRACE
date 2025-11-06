@@ -39,14 +39,14 @@ export default function useTokenWatcher() {
 
       if (remaining <= notifyThreshold) {
         console.log("Token will expire soon — showing immediate warning.");
-        toast.info("Your session will expire soon.");
+        toast("Your session will expire soon.");
       }
 
       const notifyTimer = setTimeout(() => {
         if (!notifiedRef.current) {
           notifiedRef.current = true;
           console.log("Triggering token expiration warning toast");
-          toast.info("Your session will expire soon.");
+          toast("Your session will expire soon.");
         }
       }, Math.max(0, remaining - notifyThreshold));
 

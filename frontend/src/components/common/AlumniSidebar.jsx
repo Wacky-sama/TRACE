@@ -10,10 +10,12 @@ import {
   faGear,
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
+import useTokenWatcher from "../../hooks/useTokenWatcher";
 import { useUser } from "../../context/UserContext";
 import { formatFullname } from "../../utils/format";
 
 const AlumniSidebar = () => {
+  useTokenWatcher();
   const [isOpen, setIsOpen] = useState(window.innerWidth >= 768);
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useUser();

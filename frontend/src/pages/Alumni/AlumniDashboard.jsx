@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
-import useTokenWatcher from "../../hooks/useTokenWatcher";
 import api from "../../services/api";
 import AlumniGTSForm from "./AlumniGTSForm";
 
@@ -51,7 +50,6 @@ const formatTime = (timeStr) => {
 };
 
 const AlumniDashboard = () => {
-  useTokenWatcher();
   const isDark = useDarkMode();
   const [searchParams, setSearchParams] = useSearchParams();
   const [events, setEvents] = useState([]);
