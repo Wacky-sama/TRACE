@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { UserContext } from "./UserProvider";
+import { UserContext } from "./UserContext";
 import { getUser, setUser, clearUser } from "../utils/storage";
 
 export const UserProvider = ({ children }) => {

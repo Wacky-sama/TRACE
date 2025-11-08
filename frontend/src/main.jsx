@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { UserProvider } from "./context/UserContext.jsx";
-import { ThemeProvider } from "./context/ThemeProvider.jsx";
+import { UserProvider } from "./context/UserProvider";
+import { ThemeProvider } from "./context/ThemeProvider";
 import "./index.css";
 import App from "./App.jsx";
 
