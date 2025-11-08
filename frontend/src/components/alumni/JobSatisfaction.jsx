@@ -1,7 +1,7 @@
 // E. JOB SATISFACTION
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useTheme } from "../../context/ThemeProvider";
+import { useTheme } from "../../hooks/useTheme";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 

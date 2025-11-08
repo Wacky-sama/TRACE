@@ -1,6 +1,6 @@
 import { Moon, Sun } from "lucide-react";
 import ThemeToggle from "../../../components/ThemeToggle";
-import { useTheme } from "../../../context/ThemeProvider";
+import { useTheme } from "../../../hooks/useTheme";
 
 const AlumniSystemPreference = () => {
   const { theme } = useTheme();

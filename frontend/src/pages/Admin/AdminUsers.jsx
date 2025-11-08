@@ -9,7 +9,7 @@ import {
   faRefresh,
   faMagnifyingGlass
 } from "@fortawesome/free-solid-svg-icons";
-import { useTheme } from "../../context/ThemeProvider";
+import { useTheme } from "../../hooks/useTheme";
 
 const AdminUsers = () => {
   const { theme } = useTheme();

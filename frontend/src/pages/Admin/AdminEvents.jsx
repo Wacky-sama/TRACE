@@ -11,7 +11,7 @@ import { getToken } from "../../utils/storage";
 import FloatingInput from "../../components/FloatingInput";
 import FloatingSelect from "../../components/FloatingSelect";
 import AdminFloatingDatePicker from "../../components/common/AdminFloatingDatePicker";
-import { useTheme } from "../../context/ThemeProvider";
+import { useTheme } from "../../hooks/useTheme";
 
 const AdminEvents = () => {
   const { theme } = useTheme();

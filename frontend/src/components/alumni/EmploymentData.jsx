@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { useTheme } from "../../context/ThemeProvider";
+import { useTheme } from "../../hooks/useTheme";
 import {
   NON_EMPLOYED_REASONS,
   EMPLOYMENT_NOW_OPTIONS,

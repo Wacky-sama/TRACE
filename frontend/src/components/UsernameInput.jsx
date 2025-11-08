@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { checkUsernameAvailability } from "../services/authService";
-import { useTheme } from "../context/ThemeProvider";
+import { useTheme } from "../hooks/useTheme";
 
 function UsernameInput({
   id,

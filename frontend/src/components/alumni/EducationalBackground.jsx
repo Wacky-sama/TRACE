@@ -1,6 +1,6 @@
 // B. EDUCATIONAL BACKGROUND
 import { useState } from "react";
-import { useTheme } from "../../context/ThemeProvider";
+import { useTheme } from "../../hooks/useTheme";
 import { ADVANCE_DEGREE_PROGRAMS } from "../../data/GTS/contants";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
