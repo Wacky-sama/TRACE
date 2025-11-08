@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import api from "../../services/api";
 import { getToken, getUser } from "../../utils/storage";
-import { useTheme } from "../../context/ThemeProvider";
+import { useTheme } from "../../hooks/useTheme";
 import GeneralInformation from "../../components/alumni/GeneralInformation";
 import EducationalBackground from "../../components/alumni/EducationalBackground";
 import TrainingsAndStudies from "../../components/alumni/TrainingsAndStudies";

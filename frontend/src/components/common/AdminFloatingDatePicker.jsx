@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../styles/datepicker-dark.css";
-import { useTheme } from "../../context/ThemeProvider";
+import { useTheme } from "../../hooks/useTheme";
 
 function AdminFloatingDatePicker({
   id,

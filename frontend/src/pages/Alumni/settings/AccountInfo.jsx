@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useTheme } from "../../../context/ThemeProvider";
+import { useTheme } from "../../../hooks/useTheme";
 import api from "../../../services/api";
 
 const AlumniAccountInfo = () => {

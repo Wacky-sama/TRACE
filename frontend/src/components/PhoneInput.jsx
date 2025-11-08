@@ -1,6 +1,6 @@
 import { PhoneInput as IntlPhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
-import { useTheme } from "../context/ThemeProvider";
+import { useTheme } from "../hooks/useTheme";
 import { isValidPhoneNumber } from "libphonenumber-js";
 
 function PhoneInput({

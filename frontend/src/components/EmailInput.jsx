@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { checkEmailAvailability } from "../services/authService";
-import { useTheme } from "../context/ThemeProvider";
+import { useTheme } from "../hooks/useTheme";
 
 const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
 

@@ -10,7 +10,7 @@ import {
 import toast from "react-hot-toast";
 import { login, getProfile } from "../../services/auth";
 import { setAuthData, setUser } from "../../utils/storage";
-import { useUser } from "../../context/UserContext";
+import { useUser } from "../../hooks/useUser"
 import FloatingInput from "../FloatingInput";
 
 function LoginForm() {

@@ -9,7 +9,7 @@ import {
   getPasswordStrengthMessage,
 } from "../../../utils/passwordUtils";
 import FloatingInput from "../../../components/FloatingInput";
-import { useTheme } from "../../../context/ThemeProvider";
+import { useTheme } from "../../../hooks/useTheme";
 
 const AdminChangePassword = () => {
   const { theme } = useTheme();

@@ -11,7 +11,7 @@ import {
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import useTokenWatcher from "../../hooks/useTokenWatcher";
-import { useUser } from "../../context/UserContext";
+import { useUser } from "../../hooks/useUser";
 import { formatFullname } from "../../utils/format";
 
 const AlumniSidebar = () => {
