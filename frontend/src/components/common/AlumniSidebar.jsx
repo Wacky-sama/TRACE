@@ -102,10 +102,8 @@ const AlumniSidebar = () => {
           ))}
         </ul>
 
-        {/* Divider */}
         <div className="mx-3 my-4 border-t border-gray-600"></div>
 
-        {/* Logout */}
         <div className="px-3">
           <button
             onClick={handleLogout}

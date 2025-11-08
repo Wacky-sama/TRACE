@@ -199,7 +199,6 @@ const AdminSidebar = () => {
           ))}
         </ul>
 
-        {/* Divider */}
         <div className="mx-3 my-4 border-t border-gray-600"></div>
 
         <div className="px-3">
