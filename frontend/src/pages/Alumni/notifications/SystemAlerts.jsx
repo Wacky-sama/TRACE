@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-import { motion } from "framer-motion";
-
 const AlumniSystemAlerts = ({ notifications, loading, markAsRead, isDark }) => {
   return (
     <section className="space-y-4">
@@ -23,11 +20,8 @@ const AlumniSystemAlerts = ({ notifications, loading, markAsRead, isDark }) => {
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {notifications.map((notif) => (
-            <motion.div
+            <div
               key={notif.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
               className={`p-5 rounded-lg shadow cursor-pointer transition-colors ${
                 notif.read
                   ? isDark
@@ -65,7 +59,7 @@ const AlumniSystemAlerts = ({ notifications, loading, markAsRead, isDark }) => {
                   New
                 </span>
               )}
-            </motion.div>
+            </div>
           ))}
         </div>
       )}
