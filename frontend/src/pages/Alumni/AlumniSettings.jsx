@@ -58,7 +58,6 @@ const AlumniSettings = () => {
     >
       <main className="flex-1 p-4 sm:p-6">
         <div className="w-full max-w-5xl mx-auto">
-          {/* Header */}
           <header className="mb-6 text-center sm:text-left">
             <h1
               className={`text-2xl sm:text-3xl font-bold ${
