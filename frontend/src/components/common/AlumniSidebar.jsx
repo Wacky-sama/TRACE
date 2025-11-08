@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { userLogout } from "../../utils/storage";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -10,6 +11,7 @@ import {
   faGear,
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
+import { motion } from "framer-motion";
 import useTokenWatcher from "../../hooks/useTokenWatcher";
 import { useUser } from "../../hooks/useUser";
 import { formatFullname } from "../../utils/format";
@@ -69,18 +71,24 @@ const AlumniSidebar = () => {
             </div>
           </div>
         )}
-        <button
+        <motion.button
           onClick={() => setIsOpen(!isOpen)}
           className="text-gray-300 hover:text-white"
+          whileHover={{ scale: 1.1, rotate: 5 }} // Modern hover: scale and rotate
+          transition={{ type: "spring", stiffness: 300 }}
         >
           <FontAwesomeIcon icon={faBars} />
-        </button>
+        </motion.button>
       </div>
 
       <nav className="mt-4">
         <ul className="px-3 space-y-2">
           {navigationItems.map((item) => (
-            <li key={item.label}>
+            <motion.li
+              key={item.label}
+              whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(255, 255, 255, 0.1)" }} // Subtle lift and glow
+              transition={{ duration: 0.2 }}
+            >
               <NavLink
                 to={item.route}
                 className={({ isActive }) =>
@@ -92,29 +100,41 @@ const AlumniSidebar = () => {
                    }`
                 }
               >
-                <FontAwesomeIcon
-                  icon={item.icon}
-                  className="w-5 h-5 text-gray-400 group-hover:text-white"
-                />
+                <motion.div
+                  whileHover={{ scale: 1.1, rotate: 5 }} // Icon hover: scale and rotate
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <FontAwesomeIcon
+                    icon={item.icon}
+                    className="w-5 h-5 text-gray-400 group-hover:text-white"
+                  />
+                </motion.div>
                 {isOpen && <span className="font-medium">{item.label}</span>}
               </NavLink>
-            </li>
+            </motion.li>
           ))}
         </ul>
 
         <div className="mx-3 my-4 border-t border-gray-600"></div>
 
         <div className="px-3">
-          <button
+          <motion.button
             onClick={handleLogout}
             className="flex items-center w-full gap-3 px-3 py-2 text-gray-300 rounded-lg hover:bg-red-600 hover:text-white group"
+            whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(239, 68, 68, 0.2)" }} // Red glow for logout
+            transition={{ duration: 0.2 }}
           >
-            <FontAwesomeIcon
-              icon={faRightFromBracket}
-              className="w-5 h-5 text-gray-400 group-hover:text-white"
-            />
+            <motion.div
+              whileHover={{ scale: 1.1, rotate: -5 }} // Icon hover: scale and rotate opposite
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <FontAwesomeIcon
+                icon={faRightFromBracket}
+                className="w-5 h-5 text-gray-400 group-hover:text-white"
+              />
+            </motion.div>
             {isOpen && <span className="font-medium">Logout</span>}
-          </button>
+          </motion.button>
         </div>
       </nav>
     </div>
