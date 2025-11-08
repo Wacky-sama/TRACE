@@ -1,6 +1,13 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-import { getToken, getRole, isApproved, clearAuthData, getUser, setUser } from "./utils/storage";
+import {
+  getToken,
+  getRole,
+  isApproved,
+  clearAuthData,
+  getUser,
+  setUser,
+} from "./utils/storage";
 import {
   BrowserRouter as Router,
   Routes,
@@ -108,6 +115,12 @@ function App() {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
+  const pageVariants = {
+    initial: { opacity: 0, y: 20 },
+    in: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+    out: { opacity: 0, y: -20, transition: { duration: 0.3, ease: "easeIn" } }, 
+  };
+
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -120,7 +133,6 @@ function App() {
       >
         <Router>
           <Routes>
-            {/* Admin routes */}
             <Route
               path="/admin"
               element={
@@ -133,22 +145,165 @@ function App() {
                 index
                 element={<Navigate to="/admin/dashboard" replace />}
               />
-              <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="users" element={<AdminUsers />} />
-              <Route path="create-user" element={<AdminCreateUser />} />
-              <Route path="create-event" element={<AdminCreateEvent />} />
-              <Route path="events" element={<AdminEvents />} />
-              <Route path="qr-scanner" element={<AdminQRScanner />} />
-              <Route path="analytics" element={<AdminAnalytics />} />
-              <Route path="reports" element={<AdminReports />} />
-              <Route path="notifications" element={<AdminNotifications />} />
-              <Route path="settings" element={<AdminSettings />}>
-                <Route path="change-password" element={<AdminChangePassword />} />
-                <Route path="system-preference" element={<AdminSystemPreference />} />
+              <Route
+                path="dashboard"
+                element={
+                  <motion.div
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                  >
+                    <AdminDashboard />
+                  </motion.div>
+                }
+              />
+              <Route
+                path="users"
+                element={
+                  <motion.div
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                  >
+                    <AdminUsers />
+                  </motion.div>
+                }
+              />
+              <Route
+                path="create-user"
+                element={
+                  <motion.div
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                  >
+                    <AdminCreateUser />
+                  </motion.div>
+                }
+              />
+              <Route
+                path="create-event"
+                element={
+                  <motion.div
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                  >
+                    <AdminCreateEvent />
+                  </motion.div>
+                }
+              />
+              <Route
+                path="events"
+                element={
+                  <motion.div
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                  >
+                    <AdminEvents />
+                  </motion.div>
+                }
+              />
+              <Route
+                path="qr-scanner"
+                element={
+                  <motion.div
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                  >
+                    <AdminQRScanner />
+                  </motion.div>
+                }
+              />
+              <Route
+                path="analytics"
+                element={
+                  <motion.div
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                  >
+                    <AdminAnalytics />
+                  </motion.div>
+                }
+              />
+              <Route
+                path="reports"
+                element={
+                  <motion.div
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                  >
+                    <AdminReports />
+                  </motion.div>
+                }
+              />
+              <Route
+                path="notifications"
+                element={
+                  <motion.div
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                  >
+                    <AdminNotifications />
+                  </motion.div>
+                }
+              />
+              <Route
+                path="settings"
+                element={
+                  <motion.div
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                  >
+                    <AdminSettings />
+                  </motion.div>
+                }
+              >
+                <Route
+                  path="change-password"
+                  element={
+                    <motion.div
+                      variants={pageVariants}
+                      initial="initial"
+                      animate="in"
+                      exit="out"
+                    >
+                      <AdminChangePassword />
+                    </motion.div>
+                  }
+                />
+                <Route
+                  path="system-preference"
+                  element={
+                    <motion.div
+                      variants={pageVariants}
+                      initial="initial"
+                      animate="in"
+                      exit="out"
+                    >
+                      <AdminSystemPreference />
+                    </motion.div>
+                  }
+                />
               </Route>
             </Route>
 
-            {/* Alumni routes */}
             <Route
               path="/alumni"
               element={
@@ -161,14 +316,98 @@ function App() {
                 index
                 element={<Navigate to="/alumni/dashboard" replace />}
               />
-              <Route path="dashboard" element={<AlumniDashboard />} />
-              <Route path="events" element={<AlumniEvents />} />
-              <Route path="notifications" element={<AlumniNotifications />}>
-                <Route path="event-updates" element={<AlumniEventUpdates />} />
+              <Route
+                path="dashboard"
+                element={
+                  <motion.div
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                  >
+                    <AlumniDashboard />
+                  </motion.div>
+                }
+              />
+              <Route
+                path="events"
+                element={
+                  <motion.div
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                  >
+                    <AlumniEvents />
+                  </motion.div>
+                }
+              />
+              <Route
+                path="notifications"
+                element={
+                  <motion.div
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                  >
+                    <AlumniNotifications />
+                  </motion.div>
+                }
+              >
+                <Route
+                  path="event-updates"
+                  element={
+                    <motion.div
+                      variants={pageVariants}
+                      initial="initial"
+                      animate="in"
+                      exit="out"
+                    >
+                      <AlumniEventUpdates />
+                    </motion.div>
+                  }
+                />
               </Route>
-              <Route path="settings" element={<AlumniSettings />}>
-                <Route path="change-password" element={<AlumniChangePassword />} />
-                <Route path="system-preference" element={<AlumniSystemPreference />} />
+              <Route
+                path="settings"
+                element={
+                  <motion.div
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                  >
+                    <AlumniSettings />
+                  </motion.div>
+                }
+              >
+                <Route
+                  path="change-password"
+                  element={
+                    <motion.div
+                      variants={pageVariants}
+                      initial="initial"
+                      animate="in"
+                      exit="out"
+                    >
+                      <AlumniChangePassword />
+                    </motion.div>
+                  }
+                />
+                <Route
+                  path="system-preference"
+                  element={
+                    <motion.div
+                      variants={pageVariants}
+                      initial="initial"
+                      animate="in"
+                      exit="out"
+                    >
+                      <AlumniSystemPreference />
+                    </motion.div>
+                  }
+                />
               </Route>
             </Route>
 
