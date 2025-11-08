@@ -3,8 +3,12 @@ import { useZxing } from "react-zxing";
 import toast from "react-hot-toast";
 import { CheckCircle, XCircle } from "lucide-react";
 import api from "../../services/api";
+import { useTheme } from "../../hooks/useTheme";
 
 const AdminQRScanner = () => {
+  const { theme } = useTheme();  
+  const isDark = theme === "dark"; 
+
   const [result, setResult] = useState("No result");
   const [isProcessing, setIsProcessing] = useState(false);
   const [flashState, setFlashState] = useState(null);
@@ -64,7 +68,7 @@ const AdminQRScanner = () => {
   });
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50 dark:bg-gray-900">
+    <div className={`relative flex flex-col items-center justify-center min-h-screen p-4 ${isDark ? "bg-gray-900" : "bg-gray-50"}`}>
       {flashState && (
         <div
           className={`absolute inset-0 flex items-center justify-center transition-all duration-500 pointer-events-none ${
@@ -85,7 +89,7 @@ const AdminQRScanner = () => {
         </div>
       )}
 
-      <h1 className="mb-4 text-xl font-semibold text-gray-800 dark:text-gray-200">
+      <h1 className={`mb-4 text-xl font-semibold ${isDark ? "text-gray-200" : "text-gray-800"}`}>
         QR Code Scanner
       </h1>
 
@@ -104,7 +108,7 @@ const AdminQRScanner = () => {
         )}
       </div>
 
-      <p className="mt-4 text-gray-700 dark:text-gray-300">
+      <p className={`mt-4 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
         {result && result !== "No result"
           ? `Scanned token: ${result}`
           : "Waiting for QR..."}

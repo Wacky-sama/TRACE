@@ -12,28 +12,11 @@ import EmailInput from "../../components/EmailInput";
 import UsernameInput from "../../components/UsernameInput";
 import FloatingInput from "../../components/FloatingInput";
 import FloatingSelect from "../../components/FloatingSelect";
-
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return isDark;
-}
+import { useTheme } from "../../hooks/useTheme";
 
 const AdminCreateUser = () => {
-  const isDark = useDarkMode();
+  const { theme } = useTheme();  
+  const isDark = theme === "dark"; 
 
   const [formData, setFormData] = useState({
     email: "",
@@ -65,11 +48,6 @@ const AdminCreateUser = () => {
       setPasswordStrength({ score: 0, label: "" });
     }
   }, [formData.registerPassword]);
-
-  const capitalizeFirstLetter = (str) => {
-    if (!str) return "";
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-  };
 
   const capitalizeEachWord = (str) =>
     str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
