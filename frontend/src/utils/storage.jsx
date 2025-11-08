@@ -30,5 +30,4 @@ export const clearAuthData = () => {
 
 export const userLogout = () => {
   clearAuthData();
-  window.location.href = "/login"; 
 };
