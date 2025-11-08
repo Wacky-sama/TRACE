@@ -9,6 +9,7 @@ export const UserProvider = ({ children }) => {
     if (currentUser) {
       setUser(currentUser);
     } else {
+      
       clearUser();
     }
   }, [currentUser]);
