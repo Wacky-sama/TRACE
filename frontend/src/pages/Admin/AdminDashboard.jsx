@@ -21,29 +21,13 @@ import {
   faTrash,
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
+import { useTheme } from "../../hooks/useTheme";
 import api from "../../services/api";
 
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return isDark;
-}
-
 const AdminDashboard = () => {
-  const isDark = useDarkMode();
+  const { theme } = useTheme();  
+  const isDark = theme === "dark"; 
+  
   const [userStats, setUserStats] = useState(null);
   const [activeUsers, setActiveUsers] = useState(null);
   const [blockedUsers, setBlockedUsers] = useState(null);

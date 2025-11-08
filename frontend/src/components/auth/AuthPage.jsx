@@ -65,7 +65,7 @@ function AuthPage() {
               <h2 className="mb-6 text-2xl font-semibold text-foreground">
                 {isRegistering ? "Register" : "Login"}
               </h2>
-              <AnimatePresence mode="wait">
+              <AnimatePresence>
                 {isRegistering ? (
                   <motion.div
                     key="register"

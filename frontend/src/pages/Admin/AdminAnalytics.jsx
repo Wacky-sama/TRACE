@@ -7,28 +7,12 @@ import {
   PieChart, Pie, Cell, Legend, BarChart, Bar,
 } from "recharts";
 import api from "../../services/api";
-
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return isDark;
-}
+import { useTheme } from "../../hooks/useTheme";
 
 const AdminAnalytics = () => {
-  const isDark = useDarkMode();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
   const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#6366f1"];

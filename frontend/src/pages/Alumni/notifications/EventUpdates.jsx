@@ -1,35 +1,22 @@
-/* eslint-disable no-unused-vars */
-import { useNavigate } from "react-router-dom";  // Add for navigation
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import api from "../../../services/api";
 
 const AlumniEventUpdates = ({ isDark }) => {
-  const navigate = useNavigate();  // For redirecting to /alumni/events
+  const navigate = useNavigate();
 
   const [events, setEvents] = useState([]);
-  const [attendanceStatuses, setAttendanceStatuses] = useState({});
   const [loading, setLoading] = useState(true);
-  const [loadingActions, setLoadingActions] = useState({});
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const eventsRes = await api.get("/events");
         setEvents(eventsRes.data);
-
-        const statusRes = await api.get("/attendance/my-status");
-        const statuses = {};
-        statusRes.data.forEach((item) => {
-          statuses[item.event_id] = item.status;
-        });
-        setAttendanceStatuses(statuses);
       } catch (error) {
         console.error("Failed to fetch data:", error);
-        toast.error(
-          "Failed to load events or attendance status. Please refresh."
-        );
+        toast.error("Failed to load events. Please refresh.");
       } finally {
         setLoading(false);
       }
@@ -39,52 +26,6 @@ const AlumniEventUpdates = ({ isDark }) => {
     const interval = setInterval(fetchEvents, 10000);
     return () => clearInterval(interval);
   }, []);
-
-  const handleAttend = async (eventId) => {
-    setLoadingActions((prev) => ({ ...prev, [eventId]: "attend" }));
-    try {
-      await api.post(`/attendance/${eventId}`);
-      toast.success("Successfully registered for the event!");
-
-      const qrRes = await api.post(`/attendance/${eventId}/accept`);
-      const { qr_code } = qrRes.data;
-
-      const link = document.createElement("a");
-      link.href = `data:image/png;base64,${qr_code}`;
-      link.download = `event-${eventId}-qr.png`;
-      link.click();
-
-      toast.success(
-        "QR Code generated! You can scan it when the event starts."
-      );
-
-      setAttendanceStatuses((prev) => ({ ...prev, [eventId]: "registered" }));
-    } catch (error) {
-      console.error("Attend error:", error);
-      toast.error(
-        error.response?.data?.detail || "Failed to register for the event."
-      );
-    } finally {
-      setLoadingActions((prev) => ({ ...prev, [eventId]: null }));
-    }
-  };
-
-  const handleDecline = async (eventId) => {
-    setLoadingActions((prev) => ({ ...prev, [eventId]: "decline" }));
-    try {
-      await api.post(`/attendance/${eventId}/decline`);
-      toast.info("You have declined this event.");
-
-      setAttendanceStatuses((prev) => ({ ...prev, [eventId]: "declined" }));
-    } catch (error) {
-      console.error("Decline error:", error);
-      toast.error(
-        error.response?.data?.detail || "Failed to decline the event."
-      );
-    } finally {
-      setLoadingActions((prev) => ({ ...prev, [eventId]: null }));
-    }
-  };
 
   const formatDate = (dateStr) =>
     dateStr
@@ -136,11 +77,8 @@ const AlumniEventUpdates = ({ isDark }) => {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {events.map((event) => {
             return (
-              <motion.div
+              <div
                 key={event.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
                 className={`p-5 rounded-lg shadow transition-colors ${
                   isDark
                     ? "bg-gray-800 hover:bg-gray-750 text-gray-200"
@@ -190,7 +128,6 @@ const AlumniEventUpdates = ({ isDark }) => {
                   </p>
                 </div>
 
-                {/* Added "View Event" button */}
                 <div className="mt-4">
                   <button
                     onClick={() => navigate("/alumni/events")}
@@ -203,7 +140,7 @@ const AlumniEventUpdates = ({ isDark }) => {
                     View Event
                   </button>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>

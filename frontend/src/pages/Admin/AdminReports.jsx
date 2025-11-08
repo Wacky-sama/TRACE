@@ -1,30 +1,12 @@
 /* eslint-disable no-unused-vars */
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import api from "../../services/api";
 import toast from "react-hot-toast";
-
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return isDark;
-}
+import { useTheme } from "../../hooks/useTheme";
 
 const AdminReports = () => {
-  const isDark = useDarkMode();
+  const { theme } = useTheme();  
+  const isDark = theme === "dark"; 
 
   const handleDownload = async (type, format = "pdf") => {
     const toastId = toast.loading(`Generating ${type} report...`);

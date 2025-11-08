@@ -7,28 +7,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import AdminAccountInfo from "./settings/AccountInfo";
 import AdminChangePassword from "./settings/ChangePassword";
 import AdminSystemPreference from "./settings/SystemPreference";
-
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return isDark;
-}
+import { useTheme } from "../../hooks/useTheme";
 
 const AdminSettings = () => {
-  const isDark = useDarkMode();
+  const { theme } = useTheme();  
+  const isDark = theme === "dark"; 
+
   const navigate = useNavigate();
   const location = useLocation();
 

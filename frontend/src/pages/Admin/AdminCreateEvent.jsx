@@ -1,32 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { getToken } from "../../utils/storage";
 import api from "../../services/api";
 import FloatingInput from "../../components/FloatingInput";
 import FloatingSelect from "../../components/FloatingSelect";
 import AdminFloatingDatePicker from "../../components/common/AdminFloatingDatePicker";
-
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return isDark;
-}
+import { useTheme } from "../../hooks/useTheme"; 
 
 const AdminCreateEvent = () => {
-  const isDark = useDarkMode();
+  const { theme } = useTheme();  
+  const isDark = theme === "dark"; 
 
   const [formData, setFormData] = useState({
     title: "",

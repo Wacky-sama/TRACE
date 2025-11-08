@@ -11,28 +11,12 @@ import {
 import toast from "react-hot-toast";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import api from "../../services/api";
-
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return isDark;
-}
+import { useTheme } from "../../hooks/useTheme";
 
 const AdminNotifications = () => {
-  const isDark = useDarkMode();
+  const { theme } = useTheme();  
+  const isDark = theme === "dark"; 
+
   const [notifications, setNotifications] = useState([]);
   const getNotifType = (actionType) => {
     if (["decline", "delete"].includes(actionType)) return "alert";
