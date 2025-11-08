@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -10,6 +9,7 @@ import {
   getPasswordStrengthMessage,
 } from "../../utils/passwordUtils";
 import phProvincesCities from "../../data/phProvincesCities.json";
+import otherCountriesProvincesCities from "../../data/otherCountriesProvincesCities.json";
 import PhoneInput from "../PhoneInput";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
@@ -17,6 +17,10 @@ import EmailInput from "../EmailInput";
 import UsernameInput from "../UsernameInput";
 
 function PersonalInfoForm({ formData, setFormData, nextStep }) {
+  const allCountries = [
+    "Philippines",
+    ...Object.keys(otherCountriesProvincesCities),
+  ].sort((a, b) => a.localeCompare(b));
   const [errors, setErrors] = useState({});
   const [passwordStrength, setPasswordStrength] = useState({
     score: 0,
@@ -26,8 +30,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   const [usernameAvailable, setUsernameAvailable] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const provinces = Object.keys(phProvincesCities);
-  const municipalities = phProvincesCities[formData.province] || [];
 
   useEffect(() => {
     if (formData.registerPassword) {
@@ -82,29 +84,33 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
     if (!formData.sex) validateErrors.sex = "Sex is required";
 
-    if (!formData.presentProvince)
-      validateErrors.presentProvince = "Present province is required";
-    if (!formData.presentMunicipality)
-      validateErrors.presentMunicipality =
-        "Present city/municipality is required";
-    if (!formData.presentBarangayStreet?.trim())
-      validateErrors.presentBarangayStreet =
-        "Present barangay/street is required";
+    if (formData.presentCountry === "Philippines") {
+      if (!formData.presentProvince)
+        validateErrors.presentProvince = "Province is required";
+      if (!formData.presentMunicipality)
+        validateErrors.presentMunicipality = "City/Municipality is required";
+      if (!formData.presentBarangayStreet?.trim())
+        validateErrors.presentBarangayStreet = "Barangay/Street is required";
+    } else {
+      if (!formData.presentProvince)
+        validateErrors.presentProvince = "State/Region is required";
+      if (!formData.presentMunicipality)
+        validateErrors.presentMunicipality = "City is required";
+    }
 
-    if (!formData.permanentProvince)
-      validateErrors.permanentProvince = "Permanent province is required";
-    if (!formData.permanentMunicipality)
-      validateErrors.permanentMunicipality =
-        "Permanent city/municipality is required";
-    if (!formData.permanentBarangayStreet?.trim())
-      validateErrors.permanentBarangayStreet =
-        "Permanent barangay/street is required";
-
-    if (!formData.presentAddress?.trim())
-      validateErrors.presentAddress = "Present address is required";
-
-    if (!formData.permanentAddress?.trim())
-      validateErrors.permanentAddress = "Permanent address is required";
+    if (formData.permanentCountry === "Philippines") {
+      if (!formData.permanentProvince)
+        validateErrors.permanentProvince = "Province is required";
+      if (!formData.permanentMunicipality)
+        validateErrors.permanentMunicipality = "City/Municipality is required";
+      if (!formData.permanentBarangayStreet?.trim())
+        validateErrors.permanentBarangayStreet = "Barangay/Street is required";
+    } else {
+      if (!formData.permanentProvince)
+        validateErrors.permanentProvince = "State/Region is required";
+      if (!formData.permanentMunicipality)
+        validateErrors.permanentMunicipality = "City is required";
+    }
 
     if (!formData.contactNumber?.trim()) {
       validateErrors.contactNumber = "Contact number is required";
@@ -179,12 +185,12 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   };
 
   return (
-    <div className="space-4">
+    <div className="space-y-2">
       <h2 className="pb-2 mb-4 text-xl font-semibold border-b">
         Personal Information
       </h2>
 
-      <div className="space-2">
+      <div className="space-y-2">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <EmailInput
             id="email"
@@ -215,7 +221,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         </div>
       </div>
 
-      <div className="space-2">
+      <div className="space-y-2">
         <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <FloatingInput
             id="lastName"
@@ -268,7 +274,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         />
       </div>
 
-      <div className="space-2">
+      <div className="space-y-2">
         <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
           <AlumniFloatingDatePicker
             id="birthday"
@@ -303,43 +309,78 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         options={["Male", "Female"]}
       />
 
-      <div className="space-2">
+      <div className="space-y-2">
         {/* PERMANENT ADDRESS */}
         <div>
           <h3 className="mb-1 font-medium text-md">Permanent Address</h3>
-          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-            <FloatingSelect
-              id="permanentProvince"
-              label="Province"
-              value={formData.permanentProvince}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  permanentProvince: e.target.value,
-                  permanentMunicipality: "",
-                })
-              }
-              options={Object.keys(phProvincesCities)}
-              error={errors.permanentProvince}
-            />
-            <FloatingSelect
-              id="permanentMunicipality"
-              label="City / Municipality"
-              value={formData.permanentMunicipality}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  permanentMunicipality: e.target.value,
-                })
-              }
-              options={
-                formData.permanentProvince
-                  ? phProvincesCities[formData.permanentProvince]
-                  : []
-              }
-              error={errors.permanentMunicipality}
-            />
-          </div>
+
+          {/* Country */}
+          <FloatingSelect
+            id="permanentCountry"
+            label="Country"
+            value={formData.permanentCountry}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                permanentCountry: e.target.value,
+                permanentProvince: "",
+                permanentMunicipality: "",
+              })
+            }
+            options={allCountries}
+            error={errors.permanentCountry}
+          />
+
+          {/* Province */}
+          <FloatingSelect
+            id="permanentProvince"
+            label="Province"
+            value={formData.permanentProvince}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                permanentProvince: e.target.value,
+                permanentMunicipality: "",
+              })
+            }
+            options={
+              formData.permanentCountry === "Philippines"
+                ? Object.keys(phProvincesCities).sort((a, b) =>
+                    a.localeCompare(b)
+                  )
+                : Object.keys(
+                    otherCountriesProvincesCities[formData.permanentCountry] ||
+                      []
+                  ).sort((a, b) => a.localeCompare(b))
+            }
+            error={errors.permanentProvince}
+          />
+
+          {/* Municipality / City */}
+          <FloatingSelect
+            id="permanentMunicipality"
+            label="City / Municipality"
+            value={formData.permanentMunicipality}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                permanentMunicipality: e.target.value,
+              })
+            }
+            options={
+              formData.permanentCountry === "Philippines"
+                ? (phProvincesCities[formData.permanentProvince] || []).sort(
+                    (a, b) => a.localeCompare(b)
+                  )
+                : (
+                    otherCountriesProvincesCities[formData.permanentCountry]?.[
+                      formData.permanentProvince
+                    ] || []
+                  ).sort((a, b) => a.localeCompare(b))
+            }
+            error={errors.permanentMunicipality}
+          />
+
           <FloatingInput
             id="permanentBarangayStreet"
             label="Barangay / Street / House No."
@@ -347,48 +388,83 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             onChange={(e) =>
               setFormData({
                 ...formData,
-                permanentBarangayStreet: capitalizeEachWord(e.target.value),
+                permanentBarangayStreet: e.target.value,
               })
             }
             error={errors.permanentBarangayStreet}
           />
         </div>
+
         {/* PRESENT ADDRESS */}
         <div>
           <h3 className="mb-1 font-medium text-md">Present Address</h3>
-          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-            <FloatingSelect
-              id="presentProvince"
-              label="Province"
-              value={formData.presentProvince}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  presentProvince: e.target.value,
-                  presentMunicipality: "",
-                })
-              }
-              options={Object.keys(phProvincesCities)}
-              error={errors.presentProvince}
-            />
-            <FloatingSelect
-              id="presentMunicipality"
-              label="City / Municipality"
-              value={formData.presentMunicipality}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  presentMunicipality: e.target.value,
-                })
-              }
-              options={
-                formData.presentProvince
-                  ? phProvincesCities[formData.presentProvince]
-                  : []
-              }
-              error={errors.presentMunicipality}
-            />
-          </div>
+
+          {/* Country */}
+          <FloatingSelect
+            id="presentCountry"
+            label="Country"
+            value={formData.presentCountry}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                presentCountry: e.target.value,
+                presentProvince: "",
+                presentMunicipality: "",
+              })
+            }
+            options={allCountries}
+            error={errors.presentCountry}
+          />
+
+          {/* Province */}
+          <FloatingSelect
+            id="presentProvince"
+            label="Province"
+            value={formData.presentProvince}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                presentProvince: e.target.value,
+                presentMunicipality: "",
+              })
+            }
+            options={
+              formData.presentCountry === "Philippines"
+                ? Object.keys(phProvincesCities).sort((a, b) =>
+                    a.localeCompare(b)
+                  )
+                : Object.keys(
+                    otherCountriesProvincesCities[formData.presentCountry] || []
+                  ).sort((a, b) => a.localeCompare(b))
+            }
+            error={errors.presentProvince}
+          />
+
+          {/* Municipality / City */}
+          <FloatingSelect
+            id="presentMunicipality"
+            label="City / Municipality"
+            value={formData.presentMunicipality}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                presentMunicipality: e.target.value,
+              })
+            }
+            options={
+              formData.presentCountry === "Philippines"
+                ? (phProvincesCities[formData.presentProvince] || []).sort(
+                    (a, b) => a.localeCompare(b)
+                  )
+                : (
+                    otherCountriesProvincesCities[formData.presentCountry]?.[
+                      formData.presentProvince
+                    ] || []
+                  ).sort((a, b) => a.localeCompare(b))
+            }
+            error={errors.presentMunicipality}
+          />
+
           <FloatingInput
             id="presentBarangayStreet"
             label="Barangay / Street / House No."
@@ -396,7 +472,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             onChange={(e) =>
               setFormData({
                 ...formData,
-                presentBarangayStreet: capitalizeEachWord(e.target.value),
+                presentBarangayStreet: e.target.value,
               })
             }
             error={errors.presentBarangayStreet}
@@ -418,7 +494,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         />
       </div>
 
-      <div className="space-2">
+      <div className="space-y-2">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <FloatingSelect
             id="course"
@@ -454,7 +530,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         </div>
       </div>
 
-      <div className="space-2">
+      <div className="space-y-2">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <FloatingInput
             id="registerPassword"

@@ -97,27 +97,20 @@ def check_username_availability(
 
 # Login with username or email; returns JWT token and user role
 @router.post("/login", response_model=TokenResponse)
-def login(
-    credentials: UserLogin,
-    db: Session = Depends(get_db)
-):
+def login(credentials: UserLogin, db: Session = Depends(get_db)):
     user = db.query(Users).filter(
         (Users.username == credentials.identifier) | (Users.email == credentials.identifier)
     ).first()
 
-    if not user:
+    if not user or not verify_password(credentials.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username/email or password")
 
-    if not verify_password(credentials.password, user.password_hash):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username/email or password")
-    
     if not user.is_active or user.deleted_at:
         raise HTTPException(status_code=403, detail="Access Denied!")
 
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)  
     token = create_access_token(
-        data={"sub": user.username, "role": user.role.value}, 
-        expires_delta=access_token_expires
+        data={"sub": user.username, "role": user.role.value},
+        expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
     )
 
     log_activity(
@@ -125,14 +118,14 @@ def login(
         user_id=user.id,
         action_type=ActionType.login,
         description=f"{user.role.value.capitalize()} - {user.firstname} {user.lastname} logged in",
-        created_at=datetime.now(timezone.utc)
+        created_at=datetime.now(timezone.utc),
     )
-    
+
     return TokenResponse(
         token=token,
         role=user.role,
         username=user.username,
-        is_approved=user.is_approved
+        is_approved=user.is_approved,
     )
 
 # Admin-only route to create Admin accounts (limits: 2 Admins)

@@ -1,7 +1,10 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "../../services/api";
+import AlumniSystemAlerts from "./notifications/SystemAlerts";  // Assuming this is your SystemAlerts component
+import AlumniEventUpdates from "./notifications/EventUpdates";  // Assuming this is your EventUpdates component
 
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
@@ -24,7 +27,9 @@ function useDarkMode() {
 
 const AlumniNotifications = () => {
   const isDark = useDarkMode();
-  const [activeTab, setActiveTab] = useState("system");
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -56,33 +61,41 @@ const AlumniNotifications = () => {
     }
   };
 
+  const activeTab = location.pathname.includes("event-updates") ? "events" : "system";
+
   const tabVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
     exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
   };
 
-  const filteredNotifications = notifications.filter((n) =>
-    activeTab === "system" ? n.type === "system" : n.type === "event"
-  );
+  const tabs = [
+    { key: "system", label: "System Alerts" },
+    { key: "events", label: "Event Updates" },
+  ];
+
+  const systemNotifications = notifications.filter((n) => n.type === "system");
+  const eventNotifications = notifications.filter((n) => n.type === "event");
 
   return (
     <div
-      className={`flex min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-100"}`}
+      className={`flex flex-col min-h-screen transition-colors duration-300 ${
+        isDark ? "bg-gray-900" : "bg-gray-100"
+      }`}
     >
-      <main className="flex-1 p-6">
-        <div className="mx-auto max-w-7xl">
+      <main className="flex-1 p-4 sm:p-6">
+        <div className="w-full max-w-5xl mx-auto">
           {/* Header */}
-          <header className="mb-6">
+          <header className="mb-6 text-center sm:text-left">
             <h1
-              className={`text-3xl font-bold ${
+              className={`text-2xl sm:text-3xl font-bold ${
                 isDark ? "text-white" : "text-gray-900"
               }`}
             >
               Notifications
             </h1>
             <p
-              className={`text-lg ${
+              className={`text-base sm:text-lg ${
                 isDark ? "text-gray-300" : "text-gray-700"
               }`}
             >
@@ -90,17 +103,45 @@ const AlumniNotifications = () => {
             </p>
           </header>
 
-          {/* Tabs */}
-          <div className="mb-8 border-b border-gray-300 dark:border-gray-700">
-            <nav className="flex space-x-6">
-              {[
-                { key: "system", label: "System Alerts" },
-                { key: "event", label: "Event Updates" },
-              ].map((tab) => (
+          {/* Responsive Dropdown for Mobile */}
+          <div className="mb-6 sm:hidden">
+            <select
+              value={activeTab}
+              onChange={(e) =>
+                navigate(
+                  e.target.value === "events"
+                    ? "/alumni/notifications/event-updates"
+                    : "/alumni/notifications"
+                )
+              }
+              className={`w-full p-2 rounded-md border text-sm font-medium ${
+                isDark
+                  ? "bg-gray-800 border-gray-700 text-gray-200"
+                  : "bg-white border-gray-300 text-gray-700"
+              }`}
+            >
+              {tabs.map((tab) => (
+                <option key={tab.key} value={tab.key}>
+                  {tab.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Tabs Navigation for Desktop */}
+          <div className="hidden mb-8 border-b border-gray-300 sm:block dark:border-gray-700">
+            <nav className="flex flex-wrap gap-6">
+              {tabs.map((tab) => (
                 <button
                   key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  className={`pb-2 text-lg font-medium transition-colors border-b-2 ${
+                  onClick={() =>
+                    navigate(
+                      tab.key === "events"
+                        ? "/alumni/notifications/event-updates"  // Fix: Correct path for events
+                        : "/alumni/notifications"  // For system (default)
+                    )
+                  }
+                  className={`flex items-center gap-2 pb-2 text-sm sm:text-lg font-medium border-b-2 transition-colors ${
                     activeTab === tab.key
                       ? isDark
                         ? "border-blue-400 text-blue-400"
@@ -110,88 +151,52 @@ const AlumniNotifications = () => {
                       : "border-transparent text-gray-600 hover:text-gray-900"
                   }`}
                 >
-                  {tab.label}
+                  <span>{tab.label}</span>
                 </button>
               ))}
             </nav>
           </div>
 
-          {/* Content */}
+          {/* Tab Content (Conditional Rendering, like AlumniSettings) */}
           <AnimatePresence mode="wait">
-            <motion.section
-              key={activeTab}
-              variants={tabVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="space-y-4"
-            >
-              {loading ? (
-                <div
-                  className={`p-6 rounded-lg shadow ${
-                    isDark ? "bg-gray-800 text-gray-300" : "bg-white text-gray-700"
-                  }`}
-                >
-                  Loading notifications...
-                </div>
-              ) : filteredNotifications.length === 0 ? (
-                <div
-                  className={`p-6 rounded-lg shadow ${
-                    isDark ? "bg-gray-800 text-gray-400" : "bg-white text-gray-500"
-                  }`}
-                >
-                  No {activeTab === "system" ? "system alerts" : "event updates"}.
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {filteredNotifications.map((notif) => (
-                    <motion.div
-                      key={notif.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className={`p-5 rounded-lg shadow cursor-pointer transition-colors ${
-                        notif.read
-                          ? isDark
-                            ? "bg-gray-800 text-gray-300"
-                            : "bg-white text-gray-700"
-                          : isDark
-                          ? "bg-blue-900/40 text-white border border-blue-500"
-                          : "bg-blue-50 border border-blue-300"
-                      }`}
-                      onClick={() => markAsRead(notif.id)}
-                    >
-                      <h3
-                        className={`text-lg font-semibold mb-1 ${
-                          isDark ? "text-gray-100" : "text-gray-900"
-                        }`}
-                      >
-                        {notif.title}
-                      </h3>
-                      <p
-                        className={`text-sm mb-2 ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        }`}
-                      >
-                        {notif.message}
-                      </p>
-                      <p
-                        className={`text-xs ${
-                          isDark ? "text-gray-400" : "text-gray-500"
-                        }`}
-                      >
-                        {new Date(notif.created_at).toLocaleString()}
-                      </p>
-                      {!notif.read && (
-                        <span className="inline-block px-2 py-1 mt-2 text-xs text-white bg-blue-600 rounded-full">
-                          New
-                        </span>
-                      )}
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-            </motion.section>
+            {activeTab === "system" && (
+              <motion.div
+                key="system"
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
+                  isDark ? "bg-gray-800" : "bg-white"
+                }`}
+              >
+                <AlumniSystemAlerts
+                  notifications={systemNotifications}
+                  loading={loading}
+                  markAsRead={markAsRead}
+                  isDark={isDark}
+                />
+              </motion.div>
+            )}
+            {activeTab === "events" && (
+              <motion.div
+                key="events"
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
+                  isDark ? "bg-gray-800" : "bg-white"
+                }`}
+              >
+                <AlumniEventUpdates
+                  notifications={eventNotifications}
+                  loading={loading}
+                  markAsRead={markAsRead}
+                  isDark={isDark}
+                />
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
       </main>

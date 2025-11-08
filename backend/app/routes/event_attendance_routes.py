@@ -1,19 +1,53 @@
-import io, base64, uuid, qrcode # pyright: ignore[reportMissingModuleSource]
+import io, base64, uuid, qrcode, json # pyright: ignore[reportMissingModuleSource]
 from fastapi import APIRouter, Body, Depends, HTTPException # pyright: ignore[reportMissingImports]
 from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
 from uuid import UUID
 from datetime import datetime, timezone
+from app.middleware.auth_middleware import AuthMiddleware
 from app.database import get_db
 from app.models.activity_logs_models import ActionType
 from app.models import (event_attendance_models, events_models)
 from app.models.users_models import Users
 from app.routes.users_routes import get_current_user 
-from app.schemas.event_attendance_schemas import AttendanceOut
+from app.schemas.event_attendance_schemas import AttendanceOut, QRScanRequest
 from app.utils.activity_logger import log_activity
 
 router = APIRouter(
     prefix="/attendance", 
     tags=["Attendance"])
+
+@router.post("/scan")
+def scan_qr(
+    body: QRScanRequest,
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user),
+):
+    token = body.token
+    print(f"Scanned token: {token}")
+
+    # Find record
+    record = db.query(event_attendance_models.EventAttendance).filter_by(qr_token=token).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="QR code not found.")
+
+    event = db.query(events_models.Events).filter_by(id=record.event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found.")
+
+    now = datetime.now(timezone.utc)
+    if now < event.start_date:
+        raise HTTPException(status_code=400, detail="Event has not started yet.")
+
+    if not record.is_valid:
+        raise HTTPException(status_code=400, detail="QR already used or invalid.")
+
+    # Mark attendance
+    record.is_valid = False
+    record.scanned_at = now
+    record.attended_at = now
+    db.commit()
+
+    return {"message": f"Attendance for {record.user.firstname} {record.user.lastname} validated successfully."}
 
 @router.post("/{event_id}", response_model=AttendanceOut)
 def attend_event(
@@ -65,56 +99,7 @@ def attend_event(
 
     return attendance
 
-@router.post("/{event_id}/decline")
-def decline_event(
-    event_id: UUID,
-    db: Session = Depends(get_db),
-    current_user: Users = Depends(get_current_user)
-):
-    if current_user.role != "alumni":
-        raise HTTPException(status_code=403, detail="Only alumni can decline events.")
-
-    event = db.query(events_models.Events).filter_by(id=event_id, status="approved").first()
-    if not event:
-        raise HTTPException(status_code=404, detail="Event not found or not approved")
-    
-    record = db.query(event_attendance_models.EventAttendance).filter_by(
-        event_id=event_id,
-        user_id=current_user.id
-    ).first()
-    
-    if not record:
-        record = event_attendance_models.EventAttendance(
-            event_id=event_id,
-            user_id=current_user.id,
-            status="declined",
-            attended_at=datetime.utcnow()
-        )
-        db.add(record)
-    else:
-        record.status = "declined"
-        record.attended_at = datetime.utcnow()
-
-    db.commit()
-    
-    log_activity(
-        db=db,
-        user_id=str(current_user.id),
-        action_type=ActionType.decline_event,
-        description=f"{current_user.firstname} {current_user.lastname} declined event '{event.title}'",
-        target_user_id=None,
-        meta_data={
-            "event_id": str(event.id),
-            "event_title": event.title,
-            "location": event.location,
-            "start_date": event.start_date.isoformat(),
-            "end_date": event.end_date.isoformat()
-        }
-    )
-    
-    return {"message": "Attendance declined successfully."}
-
-@router.post("/{event_id}/generate_qr")
+@router.post("/{event_id}/accept")
 def generate_qr_code(
     event_id: UUID,
     db: Session = Depends(get_db),
@@ -144,7 +129,7 @@ def generate_qr_code(
         db.refresh(record)
 
     # Create QR as image (Base64)
-    qr_data = {"token": record.qr_token}
+    qr_data = json.dumps({"token": record.qr_token})
     qr_img = qrcode.make(qr_data)
     buf = io.BytesIO()
     qr_img.save(buf, format="PNG")
@@ -152,29 +137,55 @@ def generate_qr_code(
 
     return {"qr_code": qr_b64, "token": record.qr_token}
 
-@router.post("/scan")
-def scan_qr(
-    token: str = Body(..., embed=True),
-    db: Session = Depends(get_db)
+@router.post("/{event_id}/decline")
+def decline_event(
+    event_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
 ):
-    record = db.query(event_attendance_models.EventAttendance).filter_by(qr_token=token).first()
-    if not record:
-        raise HTTPException(status_code=404, detail="QR code not found.")
+    if current_user.role != "alumni":
+        raise HTTPException(status_code=403, detail="Only alumni can decline events.")
 
-    event = db.query(events_models.Events).filter_by(id=record.event_id).first()
+    event = db.query(events_models.Events).filter_by(id=event_id, status="approved").first()
     if not event:
-        raise HTTPException(status_code=404, detail="Event not found.")
+        raise HTTPException(status_code=404, detail="Event not found")
+    
+    record = db.query(event_attendance_models.EventAttendance).filter_by(
+        event_id=event_id,
+        user_id=current_user.id
+    ).first()
+    
+    if not record:
+        record = event_attendance_models.EventAttendance(
+            event_id=event_id,
+            user_id=current_user.id,
+            status="declined"
+        )
+        db.add(record)
+    else:
+        record.status = "declined"
 
-    now = datetime.now(timezone.utc)
-    if now < event.start_date:
-        raise HTTPException(status_code=400, detail="Event has not started yet.")
-
-    if not record.is_valid:
-        raise HTTPException(status_code=400, detail="QR already used or invalid.")
-
-    record.is_valid = False
-    record.scanned_at = now
-    record.attended_at = now
     db.commit()
+    db.refresh(record)
+    
+    log_activity(
+        db=db,
+        user_id=str(current_user.id),
+        action_type=ActionType.decline_event,
+        description=f"{current_user.firstname} {current_user.lastname} declined event '{event.title}'",
+        target_user_id=None,
+        meta_data={
+            "event_id": str(event.id),
+            "event_title": event.title,
+            "location": event.location,
+            "start_date": event.start_date.isoformat(),
+            "end_date": event.end_date.isoformat()
+        }
+    )
+    
+    return record
 
-    return {"message": f"Attendance for {record.user.firstname} {record.user.lastname} validated successfully."}
+@router.get("/my-status")
+def get_my_attendance_status(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
+    records = db.query(event_attendance_models.EventAttendance).filter_by(user_id=current_user.id).all()
+    return [{"event_id": str(r.event_id), "status": r.status} for r in records]

@@ -21,8 +21,10 @@
     "@radix-ui/themes": "^3.2.1",
     "@tailwindcss/vite": "^4.1.8",
     "axios": "^1.9.0",
+    "country-state-city": "^3.2.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.24",
+    "jwt-decode": "^4.0.0",
     "libphonenumber-js": "^1.12.24",
     "lucide-react": "^0.545.0",
     "qrcode.react": "^4.2.0",
@@ -34,6 +36,7 @@
     "react-international-phone": "^4.6.0",
     "react-router-dom": "^7.6.2",
     "react-toastify": "^11.0.5",
+    "react-zxing": "^2.1.0",
     "recharts": "^2.15.3",
     "tailwindcss": "^4.1.8"
   },

@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams } from "react-router-dom";
 import api from "../../services/api";
 import AlumniGTSForm from "./AlumniGTSForm";
 
@@ -23,11 +24,47 @@ function useDarkMode() {
   return isDark;
 }
 
+const formatDate = (dateStr) =>
+  dateStr
+    ? new Date(dateStr).toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "TBA";
+
+const formatTime = (timeStr) => {
+  if (!timeStr) return "TBA";
+  try {
+    const [h, m, s] = timeStr.split(":");
+    const d = new Date();
+    d.setHours(h, m, s || 0);
+    return d.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return timeStr;
+  }
+};
+
 const AlumniDashboard = () => {
   const isDark = useDarkMode();
-  const [activeTab, setActiveTab] = useState("overview");
+  const [searchParams, setSearchParams] = useSearchParams();
   const [events, setEvents] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const activeTab = searchParams.get("tab") || "overview";
+
+  const setActiveTab = (newTab) => {
+    const params = { tab: newTab };
+    if (newTab === "gts") {
+      params.section = "general-information";
+    } else {
+      searchParams.delete("section");
+    }
+    setSearchParams(params);
+  };
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -42,7 +79,7 @@ const AlumniDashboard = () => {
   }, []);
 
   useEffect(() => {
-    const fetchApprovedEvents = async () => {
+    const fetchEvents = async () => {
       try {
         const res = await api.get("/events");
         setEvents(res.data);
@@ -50,9 +87,9 @@ const AlumniDashboard = () => {
         console.error("Failed to fetch approved events:", error);
       }
     };
-    fetchApprovedEvents();
+    fetchEvents();
 
-    const interval = setInterval(fetchApprovedEvents, 10000);
+    const interval = setInterval(fetchEvents, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -64,31 +101,33 @@ const AlumniDashboard = () => {
 
   return (
     <div
-      className={`flex min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-100"}`}
+      className={`flex min-h-screen flex-col ${
+        isDark ? "bg-gray-900" : "bg-gray-100"
+      }`}
     >
-      <main className="flex-1 p-6">
-        <div className="mx-auto max-w-7xl">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8">
+        <div className="w-full mx-auto max-w-7xl">
           {/* Header */}
-          <header className="mb-6">
+          <header className="mb-6 text-center sm:text-left">
             <h1
-              className={`text-3xl font-bold ${
+              className={`text-2xl sm:text-3xl font-bold ${
                 isDark ? "text-white" : "text-gray-900"
               }`}
             >
               Dashboard
             </h1>
             <p
-              className={`text-lg ${
+              className={`text-base sm:text-lg ${
                 isDark ? "text-gray-300" : "text-gray-700"
               }`}
             >
-              Welcome, {currentUser?.firstname}!
+              Welcome, {currentUser?.firstname || "User"}!
             </p>
           </header>
 
           {/* Tabs */}
           <div className="mb-8 border-b border-gray-300 dark:border-gray-700">
-            <nav className="flex space-x-6">
+            <nav className="flex flex-wrap justify-center gap-4 sm:justify-start sm:space-x-6">
               {[
                 { key: "overview", label: "Overview" },
                 { key: "gts", label: "Graduate Tracer Study" },
@@ -96,7 +135,7 @@ const AlumniDashboard = () => {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
-                  className={`pb-2 text-lg font-medium transition-colors border-b-2 ${
+                  className={`pb-2 text-base sm:text-lg font-medium transition-colors border-b-2 ${
                     activeTab === tab.key
                       ? isDark
                         ? "border-blue-400 text-blue-400"
@@ -112,7 +151,7 @@ const AlumniDashboard = () => {
             </nav>
           </div>
 
-          {/* Tab Content with animation */}
+          {/* Tab Content */}
           <AnimatePresence mode="wait">
             {activeTab === "overview" && (
               <motion.section
@@ -125,67 +164,58 @@ const AlumniDashboard = () => {
               >
                 <div>
                   <h3
-                    className={`text-2xl font-semibold mb-4 ${
+                    className={`text-xl sm:text-2xl font-semibold mb-4 ${
                       isDark ? "text-gray-100" : "text-gray-900"
                     }`}
                   >
                     Upcoming Events
                   </h3>
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6">
                     {events.length === 0 ? (
                       <div
-                        className={`p-6 rounded-lg shadow transition-colors ${
+                        className={`p-6 rounded-lg shadow ${
                           isDark
-                            ? "bg-gray-800 text-white"
-                            : "bg-white text-gray-900"
+                            ? "bg-gray-800 text-gray-400"
+                            : "bg-white text-gray-600"
                         }`}
                       >
-                        <p
-                          className={`${
-                            isDark ? "text-gray-400" : "text-gray-500"
-                          }`}
-                        >
-                          No upcoming events.
-                        </p>
+                        <p>No upcoming events.</p>
                       </div>
                     ) : (
                       events.map((event) => (
                         <div
                           key={event.id}
-                          className={`p-6 rounded-lg shadow transition-colors ${
+                          className={`p-6 rounded-lg shadow transition-all ${
                             isDark
-                              ? "bg-gray-800 text-white"
-                              : "bg-white text-gray-900"
+                              ? "bg-gray-800 hover:bg-gray-750 text-gray-200"
+                              : "bg-white hover:bg-gray-50 text-gray-900"
                           }`}
                         >
-                          <h3
-                            className={`text-lg font-semibold mb-2 ${
-                              isDark ? "text-gray-100" : "text-gray-900"
-                            }`}
-                          >
+                          <h3 className="mb-2 text-lg font-semibold">
                             {event.title}
                           </h3>
                           <p
-                            className={`text-sm mb-1 ${
+                            className={`text-sm mb-2 ${
                               isDark ? "text-gray-300" : "text-gray-700"
                             }`}
                           >
-                            {event.description || "No description"}
+                            {event.description || "No description provided."}
                           </p>
-                          <p
-                            className={`text-sm ${
-                              isDark ? "text-gray-400" : "text-gray-500"
-                            }`}
-                          >
-                            Start Date: {event.start_date || "To Be Announced"}
-                          </p>
-                          <p
-                            className={`text-sm ${
-                              isDark ? "text-gray-400" : "text-gray-500"
-                            }`}
-                          >
-                            End Date: {event.end_date || "To Be Announced"}
-                          </p>
+
+                          <div className="space-y-1 text-sm">
+                            <p>
+                              <strong>Start:</strong>{" "}
+                              {formatDate(event.start_date)} —{" "}
+                              {formatTime(event.start_time_startday)} —{" "}
+                              {formatTime(event.start_time_endday)}
+                            </p>
+                            <p>
+                              <strong>End:</strong> {formatDate(event.end_date)}{" "}
+                              — {formatTime(event.end_time_endday)} —{" "}
+                              {formatTime(event.end_time_startday)}
+                            </p>
+                          </div>
                         </div>
                       ))
                     )}
@@ -203,7 +233,7 @@ const AlumniDashboard = () => {
                 exit="exit"
               >
                 <div
-                  className={`rounded-xl shadow-md p-6 transition-colors ${
+                  className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
                     isDark ? "bg-gray-800" : "bg-white"
                   }`}
                 >

@@ -1,13 +1,12 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-import { getToken, getRole, isApproved, clearAuthData } from "./utils/storage";
+import { getToken, getRole, isApproved, clearAuthData, getUser, setUser } from "./utils/storage";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
-import { getUser, setUser } from "./utils/storage";
 import { Toaster } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "./context/ThemeProvider";
@@ -21,16 +20,22 @@ import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminCreateUser from "./pages/Admin/AdminCreateUser";
 import AdminCreateEvent from "./pages/Admin/AdminCreateEvent";
 import AdminEvents from "./pages/Admin/AdminEvents";
+import AdminQRScanner from "./pages/Admin/AdminQRScanner";
 import AdminAnalytics from "./pages/Admin/AdminAnalytics";
 import AdminReports from "./pages/Admin/AdminReports";
 import AdminNotifications from "./pages/Admin/AdminNotifications";
 import AdminSettings from "./pages/Admin/AdminSettings";
+import AdminChangePassword from "./pages/Admin/settings/ChangePassword";
+import AdminSystemPreference from "./pages/Admin/settings/SystemPreference";
 import AdminLayout from "./pages/Admin/AdminLayout";
 // Alumni imports
 import AlumniDashboard from "./pages/Alumni/AlumniDashboard";
 import AlumniEvents from "./pages/Alumni/AlumniEvents";
 import AlumniNotifications from "./pages/Alumni/AlumniNotifications";
+import AlumniEventUpdates from "./pages/Alumni/notifications/EventUpdates";
 import AlumniSettings from "./pages/Alumni/AlumniSettings";
+import AlumniChangePassword from "./pages/Alumni/settings/ChangePassword";
+import AlumniSystemPreference from "./pages/Alumni/settings/SystemPreference";
 import AlumniLayout from "./pages/Alumni/AlumniLayout";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -133,10 +138,14 @@ function App() {
               <Route path="create-user" element={<AdminCreateUser />} />
               <Route path="create-event" element={<AdminCreateEvent />} />
               <Route path="events" element={<AdminEvents />} />
+              <Route path="qr-scanner" element={<AdminQRScanner />} />
               <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="reports" element={<AdminReports />} />
               <Route path="notifications" element={<AdminNotifications />} />
-              <Route path="settings" element={<AdminSettings />} />
+              <Route path="settings" element={<AdminSettings />}>
+                <Route path="change-password" element={<AdminChangePassword />} />
+                <Route path="system-preference" element={<AdminSystemPreference />} />
+              </Route>
             </Route>
 
             {/* Alumni routes */}
@@ -154,8 +163,13 @@ function App() {
               />
               <Route path="dashboard" element={<AlumniDashboard />} />
               <Route path="events" element={<AlumniEvents />} />
-              <Route path="notifications" element={<AlumniNotifications />} />
-              <Route path="settings" element={<AlumniSettings />} />
+              <Route path="notifications" element={<AlumniNotifications />}>
+                <Route path="event-updates" element={<AlumniEventUpdates />} />
+              </Route>
+              <Route path="settings" element={<AlumniSettings />}>
+                <Route path="change-password" element={<AlumniChangePassword />} />
+                <Route path="system-preference" element={<AlumniSystemPreference />} />
+              </Route>
             </Route>
 
             <Route
@@ -185,7 +199,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
 
-          <Toaster position="top-right" autoClose={3000} pauseOnHover />
+          <Toaster position="top-right" reverseOrder={false} />
         </Router>
       </motion.div>
     </AnimatePresence>

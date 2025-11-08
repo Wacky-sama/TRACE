@@ -31,11 +31,16 @@ function FloatingSelect({
           {...props}
         >
           <option value="">{placeholder}</option>
-          {options.map((opt, i) => (
-            <option key={i} value={opt}>
-              {opt}
-            </option>
-          ))}
+          {options.map((opt, i) => {
+            const optionValue = typeof opt === "object" ? opt.value : opt;
+            const optionLabel = typeof opt === "object" ? opt.label : opt;
+
+            return (
+              <option key={i} value={optionValue}>
+                {optionLabel}
+              </option>
+            );
+          })}
         </select>
 
         <label

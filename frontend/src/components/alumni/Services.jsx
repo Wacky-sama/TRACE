@@ -46,20 +46,13 @@ const Services = ({ gtsData, onUpdate }) => {
         isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
       }`}
     >
-      <h2
-        className={`mb-4 text-xl font-semibold ${
-          isDark ? "text-gray-100" : "text-gray-800"
-        }`}
-      >
-        Services from CSU
-      </h2>
-
       <FloatingInput
         id="desired_services"
         type="text"
         label="List down services you want to avail from the university"
         value={formData.desired_services}
         onChange={handleChange}
+        labelClassName="text-[0.50rem] sm:text-xs peer-focus:text-[0.50rem]"
       />
 
       <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-end">

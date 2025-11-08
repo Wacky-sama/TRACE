@@ -1,6 +1,7 @@
 import { userLogout } from "../../utils/storage";
 import { useNavigate, NavLink } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { ScanQrCode } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouseUser,
@@ -15,14 +16,29 @@ import {
   faChevronDown,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
+import useTokenWatcher from "../../hooks/useTokenWatcher";
 import { useUser } from "../../context/UserContext";
 import { formatFullname } from "../../utils/format";
 
 const AdminSidebar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  useTokenWatcher();
+  const [isOpen, setIsOpen] = useState(window.innerWidth >= 768);
   const [openDropdowns, setOpenDropdowns] = useState([]);
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useUser();
+
+  useEffect(() => {
+      const handleResize = () => {
+        if (window.innerWidth < 768) {
+          setIsOpen(false);
+        } else {
+          setIsOpen(true);
+        }
+      };
+  
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
   const navigationItems = [
     { icon: faHouseUser, label: "Dashboard", route: "/admin/dashboard" },
@@ -46,10 +62,11 @@ const AdminSidebar = () => {
         { label: "Create Event", route: "/admin/create-event" },
       ],
     },
+    { icon: ScanQrCode, label: "QR Scanner", route: "/admin/qr-scanner" },
     { icon: faChartSimple, label: "Analytics", route: "/admin/analytics" },
     { icon: faFile, label: "Reports", route: "/admin/reports" },
     { icon: faBell, label: "Notifications", route: "/admin/notifications" },
-    { icon: faGear, label: "Account Settings", route: "/admin/settings" },
+    { icon: faGear, label: "Settings", route: "/admin/settings" },
   ];
 
   const handleLogout = () => {
@@ -78,7 +95,9 @@ const AdminSidebar = () => {
         {isOpen && currentUser && (
           <div className="w-full text-center">
             <div className="text-sm font-semibold text-white">
-              <p className="font-semibold">{formatFullname(currentUser)}</p>
+              <p className="font-semibold">
+                {formatFullname(currentUser)}
+              </p>
               <p className="text-sm text-gray-400 capitalize">
                 {currentUser.role}
               </p>
@@ -109,10 +128,18 @@ const AdminSidebar = () => {
                      }`
                   }
                 >
-                  <FontAwesomeIcon
-                    icon={item.icon}
-                    className="w-5 h-5 text-gray-400 group-hover:text-white"
-                  />
+                  {item.icon && (
+                    <>
+                      {item.icon.displayName ? (
+                        <item.icon className="w-5 h-5 text-gray-400 group-hover:text-white" />
+                      ) : (
+                        <FontAwesomeIcon
+                          icon={item.icon}
+                          className="w-5 h-5 text-gray-400 group-hover:text-white"
+                        />
+                      )}
+                    </>
+                  )}
                   {isOpen && <span className="font-medium">{item.label}</span>}
                 </NavLink>
               ) : (
@@ -175,7 +202,6 @@ const AdminSidebar = () => {
         {/* Divider */}
         <div className="mx-3 my-4 border-t border-gray-600"></div>
 
-        {/* Logout */}
         <div className="px-3">
           <button
             onClick={handleLogout}

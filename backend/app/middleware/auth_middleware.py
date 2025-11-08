@@ -1,6 +1,6 @@
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request
-from starlette.responses import JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware # pyright: ignore[reportMissingImports]
+from starlette.requests import Request # pyright: ignore[reportMissingImports]
+from starlette.responses import JSONResponse # pyright: ignore[reportMissingImports]
 from datetime import datetime
 from app.database import SessionLocal
 from app.models.users_models import Users, UserRole

@@ -34,7 +34,7 @@ function LoginForm() {
       const { token, role, is_approved } = await login(identifier, password);
 
       if (role === "alumni" && !is_approved) {
-        toast.info("Your account is pending approval by the admin.");
+        toast("Your account is pending approval by the admin.");
         return;
       }
 
