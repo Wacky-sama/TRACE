@@ -9,7 +9,6 @@ const AlumniEvents = () => {
 
   const [events, setEvents] = useState([]);
   const [attendanceStatuses, setAttendanceStatuses] = useState({});
-  const [loading, setLoading] = useState(true);
   const [loadingActions, setLoadingActions] = useState({});
 
   useEffect(() => {
@@ -29,8 +28,6 @@ const AlumniEvents = () => {
         toast.error(
           "Failed to load events or attendance status. Please refresh."
         );
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -108,21 +105,6 @@ const AlumniEvents = () => {
     } catch {
       return timeStr;
     }
-  };
-
-  if (loading) {
-    return (
-      <div
-        className={`min-h-screen p-6 ${
-          isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
-        }`}
-      >
-        <div className="flex items-center justify-center">
-          <div className="w-8 h-8 border-b-2 border-gray-600 rounded-full animate-spin"></div>
-          <p className="ml-2">Loading events...</p>
-        </div>
-      </div>
-    );
   }
 
   return (
