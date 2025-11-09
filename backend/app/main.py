@@ -8,9 +8,9 @@ from app.routes import (
     notifications_routes,
     users_routes
     )
-from fastapi import FastAPI # pyright: ignore[reportMissingImports]
-from fastapi.middleware.cors import CORSMiddleware # pyright: ignore[reportMissingImports]
-from dotenv import load_dotenv # pyright: ignore[reportMissingImports]
+from fastapi import FastAPI 
+from fastapi.middleware.cors import CORSMiddleware 
+from dotenv import load_dotenv 
 from app.config import settings
 from app.database import Base, engine
 from app.middleware.auth_middleware import AuthMiddleware

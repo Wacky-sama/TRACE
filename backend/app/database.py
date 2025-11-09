@@ -1,8 +1,8 @@
-from sqlalchemy import create_engine # pyright: ignore[reportMissingImports]
-from sqlalchemy.orm import sessionmaker, declarative_base, Session # pyright: ignore[reportMissingImports]
+from sqlalchemy import create_engine 
+from sqlalchemy.orm import sessionmaker, declarative_base, Session 
 from typing import Generator
 import os
-from dotenv import load_dotenv # pyright: ignore[reportMissingImports]
+from dotenv import load_dotenv 
 from urllib.parse import quote_plus
 
 load_dotenv(dotenv_path=".env")
