@@ -2,8 +2,6 @@
 
 ## Linux
 
-### Create Database and User
-
 **Note:** Skip this step if you are my Collaborator.
 
 ```bash
@@ -30,8 +28,6 @@ CREATE TYPE actiontype AS ENUM ('register', 'approve', 'decline', 'delete', 'upd
 
 \q
 ```
-
-### Create Table
 
 Inside trace_db:
 
@@ -220,8 +216,6 @@ psql -U trace_admin -d trace_db -h localhost -W
 
 ## Windows
 
-### Create Database and User
-
 Open CMD or PowerShell run it as Administrator and create the database and user:
 
 **Note:** Skip this step if you are my Collaborator.
@@ -248,8 +242,6 @@ CREATE TYPE actiontype AS ENUM ('register', 'approve', 'decline', 'delete', 'upd
 
 \q
 ```
-
-### Create Table
 
 Inside trace_db:
 

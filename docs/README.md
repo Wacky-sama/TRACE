@@ -16,23 +16,13 @@ TRACE: Tracking Alumni for Centralized Events
 
 ---
 
-### Auth Page – Alumni
+### Auth Page
 
 **Light Mode**
-![Alumni Auth Light Mode](/docs/images/AlumniAuthPageLight.png)
+![Auth Light Mode](/docs/images/)
 
 **Dark Mode**
-![Alumni Auth Dark Mode](/docs/images/AlumniAuthPageDark.png)
-
----
-
-### Auth Page – Admin
-
-**Light Mode**
-![Admin Auth Light Mode](/docs/images/AdminAuthPageLight.png)
-
-**Dark Mode**
-![Admin Auth Dark Mode](/docs/images/AdminAuthPageDark.png)
+![Auth Dark Mode](/docs/images/)
 
 ---
 
