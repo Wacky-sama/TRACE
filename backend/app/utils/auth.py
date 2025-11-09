@@ -1,8 +1,8 @@
 import jwt
 from jwt.exceptions import PyJWTError as JWTError
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.orm import Session
+from fastapi import Depends, HTTPException, status # pyright: ignore[reportMissingImports]
+from fastapi.security import OAuth2PasswordBearer # pyright: ignore[reportMissingImports]
+from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
 from app.database import get_db
 from app.models.users_models import Users
 from app.config import settings
