@@ -1,4 +1,4 @@
-# TRACE: Tracking Alumni for Centralized Events
+# TRACE: Tracking of Alumni for Centralized Events
 
 **Connecting CSU–Gonzaga alumni through centralized events and smart tracking.**
 
