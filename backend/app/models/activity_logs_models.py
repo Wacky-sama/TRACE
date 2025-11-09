@@ -1,8 +1,9 @@
 import enum
-from sqlalchemy import Boolean, Column, Enum, ForeignKey, func, DateTime, JSON 
-from sqlalchemy.dialects.postgresql import UUID 
-from sqlalchemy.orm import relationship 
+
 from app.database import Base
+from sqlalchemy import JSON, Boolean, Column, DateTime, Enum, ForeignKey, func
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 class ActionType(str, enum.Enum):
     register = "register" # Alumni registration

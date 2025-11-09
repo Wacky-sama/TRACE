@@ -1,9 +1,11 @@
 import uuid
-from sqlalchemy import Column, String, Boolean, Integer, Date, ForeignKey, Text, Numeric
-from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY
-from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
+
 from app.database import Base
+from sqlalchemy import (Boolean, Column, Date, ForeignKey, Integer, Numeric,
+                        String, Text)
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB, UUID
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
 class GTSResponses(Base):
     __tablename__ = "gts_responses"

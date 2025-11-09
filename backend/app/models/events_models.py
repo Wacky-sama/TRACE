@@ -1,9 +1,10 @@
-from sqlalchemy import Column, String, Text, Date, Time, ForeignKey, DateTime 
-from sqlalchemy.dialects.postgresql import UUID 
-from sqlalchemy.orm import relationship 
-from uuid import uuid4
 from datetime import datetime
+from uuid import uuid4
+
 from app.database import Base
+from sqlalchemy import Column, Date, DateTime, ForeignKey, String, Text, Time
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 class Events(Base):
     __tablename__ = "events"
