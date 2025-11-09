@@ -1,7 +1,7 @@
 import os
-import aiosmtplib # pyright: ignore[reportMissingImports]
+import aiosmtplib 
 from email.message import EmailMessage
-from dotenv import load_dotenv # pyright: ignore[reportMissingImports]
+from dotenv import load_dotenv 
 
 load_dotenv()
 
