@@ -500,9 +500,9 @@ const AdminDashboard = () => {
                           isDark ? "text-gray-200" : "text-gray-800"
                         }`}
                       >
-                        {user.firstname || "Unknown"}{" "}
+                        {user.firstname}{" "}
                         {user.middle_initial ? `${user.middle_initial}. ` : ""}
-                        {user.lastname || "User"} - {user.role || "unknown"}
+                        {user.lastname || "User"} - <span className="capitalize">{user.role}</span>
                       </li>
                     ))}
                   </ul>
