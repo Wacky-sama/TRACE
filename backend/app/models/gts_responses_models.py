@@ -3,7 +3,6 @@ from sqlalchemy import Column, String, Boolean, Integer, Date, ForeignKey, Text,
 from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-from app.models.trainings_models import Training
 from app.database import Base
 
 class GTSResponses(Base):
