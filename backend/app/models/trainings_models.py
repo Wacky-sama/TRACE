@@ -14,6 +14,7 @@ class Training(Base):
     credits_earned = Column(String, nullable=True)
     institution = Column(String, nullable=True)
     
+    # Relationships
     gts_response = relationship(
         "GTSResponses", 
         back_populates="trainings"
