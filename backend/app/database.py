@@ -1,9 +1,10 @@
-from sqlalchemy import create_engine 
-from sqlalchemy.orm import sessionmaker, declarative_base, Session 
-from typing import Generator
 import os
-from dotenv import load_dotenv 
+from typing import Generator
 from urllib.parse import quote_plus
+
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, declarative_base, sessionmaker
 
 load_dotenv(dotenv_path=".env")
 
