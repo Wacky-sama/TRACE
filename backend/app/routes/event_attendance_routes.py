@@ -26,6 +26,9 @@ def scan_qr(
     db: Session = Depends(get_db),
     current_user: Users = Depends(get_current_user),
 ):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Only admins can scan QR codes.")
+    
     token = body.token
     print(f"Scanned token: {token}")
 
