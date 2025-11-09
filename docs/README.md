@@ -28,57 +28,57 @@ TRACE: Tracking Alumni for Centralized Events
 
 ### Alumni Registration
 
-**Personal Information**
+#### Personal Information
 
 **Light Mode**
-![Personal Information](/docs/images/AlumniPersonalInfoLight.png)
+![Personal Information](/docs/images/)
 
 **Dark Mode**
-![Personal Information](/docs/images/AlumniPersonalInfoDark.png)
+![Personal Information](/docs/images/)
 
-**Employment Information**
+#### Employment Information
 
 **Light Mode**
-![Employment Status](/docs/images/AlumniEmploymentLight.png)
+![Employment Status](/docs/images/)
 
 **Dark Mode**
-![Employment Status](/docs/images/AlumniEmploymentInfoDark.png)
+![Employment Status](/docs/images/)
 
 **Light Mode**
-![Employment Status - Yes](/docs/images/AlumniEmployedYesLight.png)
+![Employment Status - Yes](/docs/images/)
 
 **Dark Mode**
-![Employment Status - Yes](/docs/images/AlumniEmploymentInfoYesDark.png)
+![Employment Status - Yes](/docs/images/)
 
 **Light Mode**
-![Employment Status - No](/docs/images/AlumniEmployedNoLight.png)
+![Employment Status - No](/docs/images/)
 
 **Dark Mode**
-![Employment Status - No](/docs/images/AlumniEmploymentInfoNoDark.png)
+![Employment Status - No](/docs/images/)
 
 **Light Mode**
-![Employment Status - Never](/docs/images/AlumniEmployedNeverLight.png)
+![Employment Status - Never](/docs/images/)
 
 **Dark Mode**
-![Employment Status - Never](/docs/images/AlumniEmploymentInfoNeverDark.png)
+![Employment Status - Never](/docs/images/)
 
 ---
 
 ### Admin View Users
 
 **Light Mode**
-![View Users](/docs/images/AdminViewUsersLight.png)
+![View Users](/docs/images/)
 
 **Dark Mode**
-![View Users](/docs/images/AdminViewUsersDark.png)
+![View Users](/docs/images/)
 
 ### Admin View Events
 
 **Light Mode**
-![View Events](/docs/images/AdminViewEventsLight.png)
+![View Events](/docs/images/)
 
 **Dark Mode**
-![View Events](/docs/images/AdminViewEventsDark.png)
+![View Events](/docs/images/)
 
 ---
 
