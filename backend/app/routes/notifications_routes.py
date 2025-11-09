@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status # pyright: ignore[
 from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
 from uuid import UUID
 from app.database import get_db
-from app.models.activity_logs_models import ActivityLog, ActionType
+from app.models.activity_logs_models import ActivityLog
 from app.schemas.activity_logs_schemas import ActivityLogResponse
 from typing import List
 
