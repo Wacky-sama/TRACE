@@ -1,18 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException 
-from sqlalchemy.orm import Session, selectinload 
 from typing import List
+from uuid import UUID
+
 from app.database import get_db
-from app.models.users_models import Users
 from app.models.gts_responses_models import GTSResponses
 from app.models.trainings_models import Training
-from app.utils.auth import get_current_user
+from app.models.users_models import Users
 from app.schemas.gts_responses_schemas import (
-    GTSResponsesCreate, GTSResponsesOut, 
-    GTSResponsesPersonalUpdate, GTSResponsesEducationalUpdate,
-    GTSResponsesTrainingUpdate, GTSResponsesEmploymentUpdate,
-    GTSResponsesJobSatisfactionUpdate, GTSResponsesServicesUpdate, 
-    GTSResponsesProblemsUpdate)
-from uuid import UUID
+    GTSResponsesCreate, GTSResponsesEducationalUpdate,
+    GTSResponsesEmploymentUpdate, GTSResponsesJobSatisfactionUpdate,
+    GTSResponsesOut, GTSResponsesPersonalUpdate, GTSResponsesProblemsUpdate,
+    GTSResponsesServicesUpdate, GTSResponsesTrainingUpdate)
+from app.utils.auth import get_current_user
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session, selectinload
 
 router = APIRouter(
     prefix="/gts_responses",

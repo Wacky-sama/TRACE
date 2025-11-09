@@ -1,33 +1,29 @@
 import re
-from uuid import UUID
-from fastapi import APIRouter,  BackgroundTasks, Depends, HTTPException, Query 
-from sqlalchemy.orm import Session 
-from sqlalchemy.exc import SQLAlchemyError 
-from starlette import status 
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional
+from uuid import UUID
+
 from app.config import settings
 from app.database import get_db
 from app.models.activity_logs_models import ActionType
-from app.models.users_models import Users, UserRole
 from app.models.gts_responses_models import GTSResponses
-from app.schemas.users_schemas import (ChangePasswordRequest,
-                                      EmailCheckRequest,
-                                      EmailCheckResponse,
-                                      UsernameCheckRequest, 
-                                      UsernameCheckResponse,
-                                      UserLogin,
-                                      AdminUserCreate, 
-                                      AlumniRegister, 
-                                      UserOut, 
-                                      UserPendingApprovalOut, 
-                                      PaginatedUserResponse,
-                                      TokenResponse, 
-                                      UserProfileOut)
+from app.models.users_models import UserRole, Users
+from app.schemas.users_schemas import (AdminUserCreate, AlumniRegister,
+                                       ChangePasswordRequest,
+                                       EmailCheckRequest, EmailCheckResponse,
+                                       PaginatedUserResponse, TokenResponse,
+                                       UserLogin, UsernameCheckRequest,
+                                       UsernameCheckResponse, UserOut,
+                                       UserPendingApprovalOut, UserProfileOut)
 from app.utils.activity_logger import log_activity
 from app.utils.auth import get_current_user
 from app.utils.email_sender import send_email
-from app.utils.security import hash_password, verify_password, create_access_token
-from datetime import timedelta, datetime, timezone
+from app.utils.security import (create_access_token, hash_password,
+                                verify_password)
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
+from starlette import status
 
 router = APIRouter(
     prefix="/users", 
