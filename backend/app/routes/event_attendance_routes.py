@@ -7,7 +7,6 @@ from uuid import UUID
 
 import qrcode
 from app.database import get_db
-from app.middleware.auth_middleware import AuthMiddleware
 from app.models import event_attendance_models, events_models
 from app.models.activity_logs_models import ActionType
 from app.models.users_models import Users
