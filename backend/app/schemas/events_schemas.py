@@ -1,7 +1,8 @@
-from pydantic import BaseModel, validator, model_validator 
-from uuid import UUID
 from datetime import date, datetime, time
 from typing import Optional
+from uuid import UUID
+
+from pydantic import BaseModel, model_validator, validator
 
 class EventCreate(BaseModel):
     title: str

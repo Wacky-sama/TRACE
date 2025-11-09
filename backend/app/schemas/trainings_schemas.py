@@ -1,6 +1,7 @@
-from pydantic import BaseModel, field_validator 
 from typing import Optional, Union
 from uuid import UUID
+
+from pydantic import BaseModel, field_validator
 
 class TrainingItem(BaseModel):
     id: Optional[Union[str, UUID]] = None

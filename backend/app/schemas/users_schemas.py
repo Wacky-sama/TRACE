@@ -1,9 +1,10 @@
 import enum
-from pydantic import BaseModel, EmailStr, Field 
-from typing import Optional, List
+from datetime import date, datetime, timezone
+from typing import List, Optional
 from uuid import UUID
-from datetime import datetime, date, timezone
+
 from app.schemas.gts_responses_schemas import GTSResponsesOut
+from pydantic import BaseModel, EmailStr, Field
 
 class EmailCheckRequest(BaseModel):
     email: EmailStr
