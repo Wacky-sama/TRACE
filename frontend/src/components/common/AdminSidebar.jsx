@@ -20,6 +20,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import useTokenWatcher from "../../hooks/useTokenWatcher";
 import { useUser } from "../../hooks/useUser";
+import api from "../../services/api";
 import { formatFullname } from "../../utils/format";
 
 const AdminSidebar = () => {
@@ -71,10 +72,16 @@ const AdminSidebar = () => {
     { icon: faGear, label: "Settings", route: "/admin/settings" },
   ];
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try{
+      await api.post("/users/logout");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
     userLogout();
     setCurrentUser(null);
     navigate("/login");
+    }
   };
 
   const toggleDropdown = (key) => {
