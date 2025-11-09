@@ -6,7 +6,10 @@ from app.models.activity_logs_models import ActivityLog, ActionType
 from app.schemas.activity_logs_schemas import ActivityLogResponse
 from typing import List
 
-router = APIRouter(prefix="/notifications", tags=["Notifications"])
+router = APIRouter(
+    prefix="/notifications", 
+    tags=["Notifications"]
+)
 
 @router.get("/", response_model=List[ActivityLogResponse])
 def get_notifications(db: Session = Depends(get_db)):
