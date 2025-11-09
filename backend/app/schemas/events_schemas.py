@@ -1,18 +1,7 @@
 from pydantic import BaseModel, validator, model_validator # pyright: ignore[reportMissingImports]
-from enum import Enum
 from uuid import UUID
 from datetime import date, datetime, time
 from typing import Optional
-
-class EventAction(str, Enum):
-    approve = "approve"
-    decline = "decline"
-
-    def to_db(self) -> str:
-        return {
-            "approve": "approved",
-            "decline": "declined"
-        }[self.value]
 
 class EventCreate(BaseModel):
     title: str
