@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session, aliased
+from fastapi import APIRouter, Depends, HTTPException # pyright: ignore[reportMissingImports]
+from sqlalchemy.orm import Session, aliased # pyright: ignore[reportMissingImports]
 from uuid import UUID
 from datetime import datetime
 from app.database import get_db
