@@ -1,7 +1,8 @@
-from sqlalchemy.orm import Session
-from app.models.activity_logs_models import ActivityLog, ActionType
-from app.models.users_models import Users
 from datetime import datetime, timezone
+
+from app.models.activity_logs_models import ActionType, ActivityLog
+from app.models.users_models import Users
+from sqlalchemy.orm import Session
 
 def log_activity(
     db: Session,
