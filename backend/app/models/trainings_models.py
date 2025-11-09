@@ -1,7 +1,7 @@
 import uuid
-from sqlalchemy import Column, String, ForeignKey # pyright: ignore[reportMissingImports]
-from sqlalchemy.dialects.postgresql import UUID # pyright: ignore[reportMissingImports]
-from sqlalchemy.orm import relationship # pyright: ignore[reportMissingImports]
+from sqlalchemy import Column, String, ForeignKey 
+from sqlalchemy.dialects.postgresql import UUID 
+from sqlalchemy.orm import relationship 
 from app.database import Base
 
 class Training(Base):
