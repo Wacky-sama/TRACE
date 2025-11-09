@@ -47,7 +47,6 @@ class AuthMiddleware(BaseHTTPMiddleware):
             payload = decode_access_token(token)
             username = payload.get("sub")
             role = payload.get("role", "unknown")
-            exp = payload.get("exp")
 
             if not username:
                 raise ValueError("Missing username in token payload")
