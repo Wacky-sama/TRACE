@@ -1,7 +1,8 @@
-from pydantic import BaseModel # pyright: ignore[reportMissingImports]
-from uuid import UUID
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
+
+from pydantic import BaseModel
 
 class QRScanRequest(BaseModel):
     token: str

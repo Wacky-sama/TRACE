@@ -1,7 +1,8 @@
-import jwt
-from argon2 import PasswordHasher # pyright: ignore[reportMissingImports]
 from datetime import datetime, timedelta, timezone
+
+import jwt
 from app.config import settings
+from argon2 import PasswordHasher
 
 ph = PasswordHasher()
 

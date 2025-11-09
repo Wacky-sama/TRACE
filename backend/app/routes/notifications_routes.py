@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status # pyright: ignore[reportMissingImports]
-from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
+from typing import List
 from uuid import UUID
+
 from app.database import get_db
 from app.models.activity_logs_models import ActivityLog
 from app.schemas.activity_logs_schemas import ActivityLogResponse
-from typing import List
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix="/notifications", 

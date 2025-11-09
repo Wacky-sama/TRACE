@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException # pyright: ignore[reportMissingImports]
-from sqlalchemy.orm import Session, aliased # pyright: ignore[reportMissingImports]
-from uuid import UUID
 from datetime import datetime
+from uuid import UUID
+
 from app.database import get_db
-from app.routes.users_routes import get_current_user  
-from app.models.users_models import Users 
 from app.models.events_models import Events
-from app.schemas.events_schemas import EventOut, EventCreate
+from app.models.users_models import Users
+from app.routes.users_routes import get_current_user
+from app.schemas.events_schemas import EventCreate, EventOut
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session, aliased
 
 router = APIRouter(
     prefix="/events",

@@ -1,16 +1,21 @@
-import io, base64, uuid, qrcode, json # pyright: ignore[reportMissingModuleSource]
-from fastapi import APIRouter, Body, Depends, HTTPException # pyright: ignore[reportMissingImports]
-from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
-from uuid import UUID
+import base64
+import io
+import json
+import uuid
 from datetime import datetime, timezone
-from app.middleware.auth_middleware import AuthMiddleware
+from uuid import UUID
+
+import qrcode
 from app.database import get_db
+from app.middleware.auth_middleware import AuthMiddleware
+from app.models import event_attendance_models, events_models
 from app.models.activity_logs_models import ActionType
-from app.models import (event_attendance_models, events_models)
 from app.models.users_models import Users
-from app.routes.users_routes import get_current_user 
+from app.routes.users_routes import get_current_user
 from app.schemas.event_attendance_schemas import AttendanceOut, QRScanRequest
 from app.utils.activity_logger import log_activity
+from fastapi import APIRouter, Body, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix="/attendance", 

@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException # pyright: ignore[reportMissingImports]
-from fastapi.responses import FileResponse # pyright: ignore[reportMissingImports]
-from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
 from tempfile import NamedTemporaryFile
+
 from app.database import get_db
-from app.models.users_models import Users
 from app.models.events_models import Events
 from app.models.gts_responses_models import GTSResponses
+from app.models.users_models import Users
 from app.utils.report_utils import generate_csv_report, generate_pdf_report
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import FileResponse
+from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix="/admin/reports",

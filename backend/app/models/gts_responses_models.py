@@ -1,10 +1,11 @@
 import uuid
-from sqlalchemy import Column, String, Boolean, Integer, Date, ForeignKey, Text, Numeric # pyright: ignore[reportMissingImports]
-from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY # pyright: ignore[reportMissingImports]
-from sqlalchemy.sql import func # pyright: ignore[reportMissingImports]
-from sqlalchemy.orm import relationship # pyright: ignore[reportMissingImports]
-from app.models.trainings_models import Training
+
 from app.database import Base
+from sqlalchemy import (Boolean, Column, Date, ForeignKey, Integer, Numeric,
+                        String, Text)
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB, UUID
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
 class GTSResponses(Base):
     __tablename__ = "gts_responses"

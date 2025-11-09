@@ -1,8 +1,9 @@
-from enum import Enum
-from pydantic import BaseModel # pyright: ignore[reportMissingImports]
-from typing import Any, Optional 
 from datetime import datetime, timezone
+from enum import Enum
+from typing import Any, Optional
 from uuid import UUID
+
+from pydantic import BaseModel
 
 class NotificationTYpe(str, Enum):
     alert = "alert"

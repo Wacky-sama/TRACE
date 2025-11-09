@@ -1,5 +1,6 @@
-from pydantic_settings import BaseSettings # pyright: ignore[reportMissingImports]
 from typing import List
+
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     SECRET_KEY: str

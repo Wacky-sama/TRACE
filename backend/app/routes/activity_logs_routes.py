@@ -1,11 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException # pyright: ignore[reportMissingImports]
-from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
 from datetime import datetime, timezone
 from typing import List
-from app.models.activity_logs_models import ActivityLog
-from app.schemas.activity_logs_schemas import ActivityLogResponse, ActivityLogCreate
+
 from app.database import get_db
+from app.models.activity_logs_models import ActivityLog
+from app.schemas.activity_logs_schemas import (ActivityLogCreate,
+                                               ActivityLogResponse)
 from app.utils.auth import get_current_user
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix="/activity",

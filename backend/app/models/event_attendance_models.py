@@ -1,9 +1,10 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String  # pyright: ignore[reportMissingImports]
-from sqlalchemy.dialects.postgresql import UUID # pyright: ignore[reportMissingImports]
-from sqlalchemy.orm import relationship # pyright: ignore[reportMissingImports]
-from uuid import uuid4
 from datetime import datetime
+from uuid import uuid4
+
 from app.database import Base
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 class EventAttendance(Base):
     __tablename__ = "event_attendance"

@@ -1,9 +1,10 @@
 import enum
-from pydantic import BaseModel, field_validator, validator # pyright: ignore[reportMissingImports]
-from typing import Any, Dict,  List, Optional, Union 
-from uuid import UUID
 from datetime import date
+from typing import Any, Dict, List, Optional, Union
+from uuid import UUID
+
 from app.schemas.trainings_schemas import TrainingItem
+from pydantic import BaseModel, field_validator, validator
 
 class SexEnum(str, enum.Enum):
     male = "Male"

@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, Query # type: ignore
-from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
-from sqlalchemy import func, extract # pyright: ignore[reportMissingImports]
 from datetime import datetime, timedelta
+
 from app.database import get_db
-from app.models.users_models import Users
-from app.models.gts_responses_models import GTSResponses
-from app.models.events_models import Events
 from app.models.activity_logs_models import ActivityLog
+from app.models.events_models import Events
+from app.models.gts_responses_models import GTSResponses
+from app.models.users_models import Users
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import extract, func
+from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix="/admin/analytics",
