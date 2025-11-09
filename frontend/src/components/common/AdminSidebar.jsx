@@ -109,7 +109,7 @@ const AdminSidebar = () => {
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
           className="text-gray-300 hover:text-white"
-          whileHover={{ scale: 1.1, rotate: 5 }} // Modern hover: scale and rotate
+          whileHover={{ scale: 1.1, rotate: 5 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
           <FontAwesomeIcon icon={faBars} />
@@ -122,7 +122,7 @@ const AdminSidebar = () => {
             <li key={item.label}>
               {!item.dropdown ? (
                 <motion.div
-                  whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(255, 255, 255, 0.1)" }} // Subtle lift and glow
+                  whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(255, 255, 255, 0.1)" }}
                   transition={{ duration: 0.2 }}
                 >
                   <NavLink
@@ -138,7 +138,7 @@ const AdminSidebar = () => {
                   >
                     {item.icon && (
                       <motion.div
-                        whileHover={{ scale: 1.1, rotate: 5 }} // Icon hover: scale and rotate
+                        whileHover={{ scale: 1.1, rotate: 5 }}
                         transition={{ type: "spring", stiffness: 300 }}
                       >
                         {item.icon.displayName ? (
@@ -163,12 +163,12 @@ const AdminSidebar = () => {
                         ? "bg-gray-700 text-white"
                         : "text-gray-300 hover:bg-gray-700 hover:text-white"
                     }`}
-                    whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(255, 255, 255, 0.1)" }} // Subtle lift and glow
+                    whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(255, 255, 255, 0.1)" }}
                     transition={{ duration: 0.2 }}
                   >
                     <div className="flex items-center gap-3">
                       <motion.div
-                        whileHover={{ scale: 1.1, rotate: 5 }} // Icon hover: scale and rotate
+                        whileHover={{ scale: 1.1, rotate: 5 }}
                         transition={{ type: "spring", stiffness: 300 }}
                       >
                         <FontAwesomeIcon
@@ -182,7 +182,7 @@ const AdminSidebar = () => {
                     </div>
                     {isOpen && (
                       <motion.div
-                        animate={{ rotate: openDropdowns.includes(item.key) ? 180 : 0 }} // Smooth chevron rotation
+                        animate={{ rotate: openDropdowns.includes(item.key) ? 180 : 0 }}
                         transition={{ duration: 0.2 }}
                       >
                         <FontAwesomeIcon
@@ -209,7 +209,7 @@ const AdminSidebar = () => {
                         {item.children.map((subItem) => (
                           <motion.li
                             key={subItem.label}
-                            whileHover={{ scale: 1.02 }} // Subtle scale for sub-items
+                            whileHover={{ scale: 1.02 }}
                             transition={{ duration: 0.2 }}
                           >
                             <NavLink

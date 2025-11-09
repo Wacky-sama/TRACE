@@ -74,7 +74,7 @@ const AlumniSidebar = () => {
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
           className="text-gray-300 hover:text-white"
-          whileHover={{ scale: 1.1, rotate: 5 }} // Modern hover: scale and rotate
+          whileHover={{ scale: 1.1, rotate: 5 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
           <FontAwesomeIcon icon={faBars} />
@@ -86,7 +86,7 @@ const AlumniSidebar = () => {
           {navigationItems.map((item) => (
             <motion.li
               key={item.label}
-              whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(255, 255, 255, 0.1)" }} // Subtle lift and glow
+              whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(255, 255, 255, 0.1)" }}
               transition={{ duration: 0.2 }}
             >
               <NavLink
@@ -101,7 +101,7 @@ const AlumniSidebar = () => {
                 }
               >
                 <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }} // Icon hover: scale and rotate
+                  whileHover={{ scale: 1.1, rotate: 5 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <FontAwesomeIcon
@@ -121,11 +121,11 @@ const AlumniSidebar = () => {
           <motion.button
             onClick={handleLogout}
             className="flex items-center w-full gap-3 px-3 py-2 text-gray-300 rounded-lg hover:bg-red-600 hover:text-white group"
-            whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(239, 68, 68, 0.2)" }} // Red glow for logout
+            whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(239, 68, 68, 0.2)" }}
             transition={{ duration: 0.2 }}
           >
             <motion.div
-              whileHover={{ scale: 1.1, rotate: -5 }} // Icon hover: scale and rotate opposite
+              whileHover={{ scale: 1.1, rotate: -5 }} 
               transition={{ type: "spring", stiffness: 300 }}
             >
               <FontAwesomeIcon
