@@ -15,4 +15,5 @@ logs/
 # Environment files (for safety)
 .env
 
+# VS Code
 .vs/
