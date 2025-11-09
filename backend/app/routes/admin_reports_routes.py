@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException # pyright: ignore[reportMissingImports]
-from fastapi.responses import FileResponse # pyright: ignore[reportMissingImports]
-from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
+from fastapi import APIRouter, Depends, HTTPException 
+from fastapi.responses import FileResponse 
+from sqlalchemy.orm import Session 
 from tempfile import NamedTemporaryFile
 from app.database import get_db
 from app.models.users_models import Users

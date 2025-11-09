@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel # pyright: ignore[reportMissingImports]
+from pydantic import BaseModel 
 from typing import Any, Optional 
 from datetime import datetime, timezone
 from uuid import UUID

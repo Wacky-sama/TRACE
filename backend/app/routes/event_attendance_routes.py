@@ -1,6 +1,6 @@
-import io, base64, uuid, qrcode, json # pyright: ignore[reportMissingModuleSource]
-from fastapi import APIRouter, Body, Depends, HTTPException # pyright: ignore[reportMissingImports]
-from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
+import io, base64, uuid, qrcode, json 
+from fastapi import APIRouter, Body, Depends, HTTPException 
+from sqlalchemy.orm import Session 
 from uuid import UUID
 from datetime import datetime, timezone
 from app.middleware.auth_middleware import AuthMiddleware

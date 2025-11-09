@@ -1,9 +1,9 @@
 import re
 from uuid import UUID
-from fastapi import APIRouter,  BackgroundTasks, Depends, HTTPException, Query # pyright: ignore[reportMissingImports]
-from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
-from sqlalchemy.exc import SQLAlchemyError # pyright: ignore[reportMissingImports]
-from starlette import status # pyright: ignore[reportMissingImports]
+from fastapi import APIRouter,  BackgroundTasks, Depends, HTTPException, Query 
+from sqlalchemy.orm import Session 
+from sqlalchemy.exc import SQLAlchemyError 
+from starlette import status 
 from typing import List, Optional
 from app.config import settings
 from app.database import get_db

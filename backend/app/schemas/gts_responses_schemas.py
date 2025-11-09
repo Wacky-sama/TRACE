@@ -1,5 +1,5 @@
 import enum
-from pydantic import BaseModel, field_validator, validator # pyright: ignore[reportMissingImports]
+from pydantic import BaseModel, field_validator, validator 
 from typing import Any, Dict,  List, Optional, Union 
 from uuid import UUID
 from datetime import date

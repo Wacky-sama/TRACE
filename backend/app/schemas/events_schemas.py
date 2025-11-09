@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator, model_validator # pyright: ignore[reportMissingImports]
+from pydantic import BaseModel, validator, model_validator 
 from uuid import UUID
 from datetime import date, datetime, time
 from typing import Optional

@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException # pyright: ignore[reportMissingImports]
-from sqlalchemy.orm import Session, selectinload # pyright: ignore[reportMissingImports]
+from fastapi import APIRouter, Depends, HTTPException 
+from sqlalchemy.orm import Session, selectinload 
 from typing import List
 from app.database import get_db
 from app.models.users_models import Users

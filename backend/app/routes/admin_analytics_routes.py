@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, Query # type: ignore
-from sqlalchemy.orm import Session # pyright: ignore[reportMissingImports]
-from sqlalchemy import func, extract # pyright: ignore[reportMissingImports]
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.orm import Session 
+from sqlalchemy import func, extract 
 from datetime import datetime, timedelta
 from app.database import get_db
 from app.models.users_models import Users
