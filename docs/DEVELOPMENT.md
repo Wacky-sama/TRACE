@@ -33,6 +33,9 @@ source venv/bin/activate # deactivate with: deactivate
 # Install dependencies
 pip install -r requirements.txt
 
+# Optional 
+pip install -r requirements-dev.txt
+
 # Run the FastAPI development server
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
