@@ -14,6 +14,7 @@ import {
 import { motion } from "framer-motion";
 import useTokenWatcher from "../../hooks/useTokenWatcher";
 import { useUser } from "../../hooks/useUser";
+import api from "../../services/api";
 import { formatFullname } from "../../utils/format";
 
 const AlumniSidebar = () => {
@@ -42,10 +43,16 @@ const AlumniSidebar = () => {
     { icon: faGear, label: "Settings", route: "/alumni/settings" },
   ];
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try{
+      await api.post("/users/logout");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
     userLogout();
     setCurrentUser(null);
     navigate("/login");
+    }
   };
 
   return (

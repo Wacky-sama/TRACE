@@ -124,6 +124,22 @@ def login(credentials: UserLogin, db: Session = Depends(get_db)):
         is_approved=user.is_approved,
     )
 
+# Logout endpoint
+@router.post("/logout", status_code=200)
+def logout(
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
+):
+    log_activity(
+        db=db,
+        user_id=current_user.id,
+        action_type=ActionType.logout,
+        description=f"{current_user.role.value.capitalize()} - {current_user.firstname} {current_user.lastname} logged out",
+        created_at=datetime.now(timezone.utc)
+    )
+    
+    return {"message": "Logged out successfully"}
+
 # Admin-only route to create Admin accounts (limits: 2 Admins)
 @router.post("/admin/create-user", response_model=UserOut, status_code=201)
 def create_user_as_admin(
