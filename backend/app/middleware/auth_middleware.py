@@ -62,7 +62,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 logger.warning(f"Unauthorized admin access: {username}")
                 return JSONResponse({"detail": "Admins only"}, status_code=403)
 
-            # Update last_seen only if >10s difference to reduce DB writes
+            # Update last_seen only if > 10s difference to reduce DB writes
             now = datetime.utcnow()
             if not user.last_seen or (now - user.last_seen).total_seconds() > 10:
                 old_seen = user.last_seen
