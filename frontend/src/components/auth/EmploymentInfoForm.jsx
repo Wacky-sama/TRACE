@@ -3,45 +3,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { EMPLOYED_STATUSES, NON_EMPLOYED_STATUSES, NON_EMPLOYED_REASONS, PLACE_OF_WORK_OPTIONS, EMPLOYMENT_NOW_OPTIONS, OCCUPATION_OPTIONS } from "../../data/GTS/contants"; 
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
-
-const EMPLOYED_STATUSES = [
-  "Regular or Permanent",
-  "Contractual",
-  "Temporary",
-  "Self-employed / Freelance",
-  "Casual",
-];
-
-const NON_EMPLOYED_STATUSES = ["Unemployed", "Retired", "Looking for Work"];
-
-const NON_EMPLOYED_REASONS = [
-  "Advance or further study",
-  "Family concern and decided not to find a job",
-  "Health-related reasons",
-  "Lack of work experience",
-  "No job opportunity",
-  "Did not look for a job",
-  "Other reasons, please specify",
-];
-
-const PLACE_OF_WORK_OPTIONS = ["Local", "Abroad"];
-
-const EMPLOYMENT_NOW_OPTIONS = ["Yes", "No", "Never Employed"];
-
-const OCCUPATION_OPTIONS = [
-  "Officials of Government and Special-Interest Organizations, Corporate Executives, Managers, Managing Proprietors and Supervisors",
-  "Professionals",
-  "Technicians and Associate Professionals",
-  "Clerks",
-  "Service Workers and Shop and Market Sales Workers",
-  "Farmers, Forestry Workers and Fishermen",
-  "Trades and Related Workers",
-  "Plant and Machine Operators and Assemblers",
-  "Laborers and Unskilled Workers",
-  "Others, please specify",
-];
 
 function useDarkMode() {
   const [isDark, setIsDark] = useState(() =>
@@ -109,7 +73,7 @@ function EmploymentInfoForm({
         newErrors.employmentStatus = "Select at least one reason.";
       }
       if (
-        formData.nonEmployedReasons.includes("Other reasons, please specify") &&
+        formData.nonEmployedReasons.includes("Other reason(s), please specify") &&
         !otherNonEmployedReason.trim()
       ) {
         newErrors.otherNonEmployedReason = "Please specify your reason.";
