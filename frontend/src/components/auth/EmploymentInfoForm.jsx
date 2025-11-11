@@ -3,77 +3,19 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { EMPLOYED_STATUSES, NON_EMPLOYED_STATUSES, NON_EMPLOYED_REASONS, PLACE_OF_WORK_OPTIONS, EMPLOYMENT_NOW_OPTIONS, OCCUPATION_OPTIONS } from "../../data/GTS/constants"; 
+import { useTheme } from "../../hooks/useTheme";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 
-const EMPLOYED_STATUSES = [
-  "Regular or Permanent",
-  "Contractual",
-  "Temporary",
-  "Self-employed / Freelance",
-  "Casual",
-];
-
-const NON_EMPLOYED_STATUSES = ["Unemployed", "Retired", "Looking for Work"];
-
-const NON_EMPLOYED_REASONS = [
-  "Advance or further study",
-  "Family concern and decided not to find a job",
-  "Health-related reasons",
-  "Lack of work experience",
-  "No job opportunity",
-  "Did not look for a job",
-  "Other reasons, please specify",
-];
-
-const PLACE_OF_WORK_OPTIONS = ["Local", "Abroad"];
-
-const EMPLOYMENT_NOW_OPTIONS = ["Yes", "No", "Never Employed"];
-
-const OCCUPATION_OPTIONS = [
-  "Officials of Government and Special-Interest Organizations, Corporate Executives, Managers, Managing Proprietors and Supervisors",
-  "Professionals",
-  "Technicians and Associate Professionals",
-  "Clerks",
-  "Service Workers and Shop and Market Sales Workers",
-  "Farmers, Forestry Workers and Fishermen",
-  "Trades and Related Workers",
-  "Plant and Machine Operators and Assemblers",
-  "Laborers and Unskilled Workers",
-  "Others, please specify",
-];
-
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return isDark;
-}
-
-function EmploymentInfoForm({
-  formData,
-  setFormData,
-  prevStep,
-  handleRegister,
-}) {
+function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const [errors, setErrors] = useState({});
   const [otherOccupation, setOtherOccupation] = useState("");
   const [otherNonEmployedReason, setOtherNonEmployedReason] = useState("");
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
-  const isDark = useDarkMode();
 
   const capitalizeEachWord = (str) =>
     str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
@@ -109,7 +51,7 @@ function EmploymentInfoForm({
         newErrors.employmentStatus = "Select at least one reason.";
       }
       if (
-        formData.nonEmployedReasons.includes("Other reasons, please specify") &&
+        formData.nonEmployedReasons.includes("Other reason(s), please specify") &&
         !otherNonEmployedReason.trim()
       ) {
         newErrors.otherNonEmployedReason = "Please specify your reason.";
@@ -161,7 +103,7 @@ function EmploymentInfoForm({
     setSubmitting(true);
 
     const finalNonEmployedReasons = formData.nonEmployedReasons.map((r) =>
-      r === "Other reasons, please specify"
+      r === "Other reason(s), please specify"
         ? otherNonEmployedReason.trim()
         : r.trim()
     );
@@ -251,7 +193,6 @@ function EmploymentInfoForm({
         }
         options={EMPLOYMENT_NOW_OPTIONS}
         error={errors.employmentNow}
-        darkMode={isDark}
       />
 
       <AnimatePresence mode="wait">
@@ -304,7 +245,6 @@ function EmploymentInfoForm({
                   }
                   error={errors.employmentStatus}
                   options={EMPLOYED_STATUSES}
-                  darkMode={isDark}
                 />
 
                 <FloatingSelect
@@ -316,7 +256,6 @@ function EmploymentInfoForm({
                   }
                   error={errors.placeOfWork}
                   options={PLACE_OF_WORK_OPTIONS}
-                  darkMode={isDark}
                 />
               </div>
 
@@ -330,7 +269,6 @@ function EmploymentInfoForm({
                     setFormData({ ...formData, companyName: capitalizeEachWord(e.target.value) })
                   }
                   error={errors.companyName}
-                  darkMode={isDark}
                 />
 
                 <FloatingInput
@@ -341,7 +279,6 @@ function EmploymentInfoForm({
                     setFormData({ ...formData, companyAddress:  capitalizeEachWord(e.target.value) })
                   }
                   error={errors.companyAddress}
-                  darkMode={isDark}
                 />
               </div>
 
@@ -384,7 +321,6 @@ function EmploymentInfoForm({
                     value={otherOccupation}
                     onChange={(e) => setOtherOccupation(e.target.value)}
                     error={errors.otherOccupation}
-                    darkMode={isDark}
                   />
                 )}
               </div>
@@ -458,7 +394,6 @@ function EmploymentInfoForm({
                   value={otherNonEmployedReason}
                   onChange={(e) => setOtherNonEmployedReason(e.target.value)}
                   error={errors.otherNonEmployedReason}
-                  darkMode={isDark}
                 />
               )}
             </motion.div>
