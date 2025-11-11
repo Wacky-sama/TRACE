@@ -4,35 +4,18 @@ import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { EMPLOYED_STATUSES, NON_EMPLOYED_STATUSES, NON_EMPLOYED_REASONS, PLACE_OF_WORK_OPTIONS, EMPLOYMENT_NOW_OPTIONS, OCCUPATION_OPTIONS } from "../../data/GTS/contants"; 
+import { useTheme } from "../../hooks/useTheme";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return isDark;
-}
-
 function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const [errors, setErrors] = useState({});
   const [otherOccupation, setOtherOccupation] = useState("");
   const [otherNonEmployedReason, setOtherNonEmployedReason] = useState("");
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
-  const isDark = useDarkMode();
 
   const capitalizeEachWord = (str) =>
     str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
@@ -120,7 +103,7 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
     setSubmitting(true);
 
     const finalNonEmployedReasons = formData.nonEmployedReasons.map((r) =>
-      r === "Other reasons, please specify"
+      r === "Other reason(s), please specify"
         ? otherNonEmployedReason.trim()
         : r.trim()
     );
@@ -210,7 +193,6 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
         }
         options={EMPLOYMENT_NOW_OPTIONS}
         error={errors.employmentNow}
-        darkMode={isDark}
       />
 
       <AnimatePresence mode="wait">
@@ -263,7 +245,6 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
                   }
                   error={errors.employmentStatus}
                   options={EMPLOYED_STATUSES}
-                  darkMode={isDark}
                 />
 
                 <FloatingSelect
@@ -275,7 +256,6 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
                   }
                   error={errors.placeOfWork}
                   options={PLACE_OF_WORK_OPTIONS}
-                  darkMode={isDark}
                 />
               </div>
 
@@ -289,7 +269,6 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
                     setFormData({ ...formData, companyName: capitalizeEachWord(e.target.value) })
                   }
                   error={errors.companyName}
-                  darkMode={isDark}
                 />
 
                 <FloatingInput
@@ -300,7 +279,6 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
                     setFormData({ ...formData, companyAddress:  capitalizeEachWord(e.target.value) })
                   }
                   error={errors.companyAddress}
-                  darkMode={isDark}
                 />
               </div>
 
@@ -343,7 +321,6 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
                     value={otherOccupation}
                     onChange={(e) => setOtherOccupation(e.target.value)}
                     error={errors.otherOccupation}
-                    darkMode={isDark}
                   />
                 )}
               </div>
@@ -417,7 +394,6 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
                   value={otherNonEmployedReason}
                   onChange={(e) => setOtherNonEmployedReason(e.target.value)}
                   error={errors.otherNonEmployedReason}
-                  darkMode={isDark}
                 />
               )}
             </motion.div>

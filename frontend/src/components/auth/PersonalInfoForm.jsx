@@ -10,6 +10,7 @@ import {
 } from "../../utils/passwordUtils";
 import phProvincesCities from "../../data/phProvincesCities.json";
 import otherCountriesProvincesCities from "../../data/otherCountriesProvincesCities.json";
+import { useTheme } from "../../hooks/useTheme";
 import PhoneInput from "../PhoneInput";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
@@ -17,6 +18,8 @@ import EmailInput from "../EmailInput";
 import UsernameInput from "../UsernameInput";
 
 function PersonalInfoForm({ formData, setFormData, nextStep }) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const allCountries = [
     "Philippines",
     ...Object.keys(otherCountriesProvincesCities),
@@ -312,7 +315,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       <div className="space-y-2">
         {/* PERMANENT ADDRESS */}
         <div>
-          <h3 className="mb-1 font-medium text-md">Permanent Address</h3>
+          <h3 className={`mb-1 font-medium text-md ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>Permanent Address</h3>
 
           {/* Country */}
           <FloatingSelect
@@ -397,7 +400,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
         {/* PRESENT ADDRESS */}
         <div>
-          <h3 className="mb-1 font-medium text-md">Present Address</h3>
+          <h3 className={`mb-1 font-medium text-md ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>Present Address</h3>
 
           {/* Country */}
           <FloatingSelect
@@ -591,22 +594,24 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
                 }`}
               />
             </div>
-            <p
-              className={`text-sm mt-1 ${
-                passwordStrength.score <= 2 ? "text-red-500" : "text-green-600"
-              }`}
-            >
-              {passwordStrength.label}
-            </p>
+           <p
+            className={`text-sm mt-1 ${
+              passwordStrength.score <= 2 
+                ? isDark ? "text-red-400" : "text-red-500"
+                : isDark ? "text-green-400" : "text-green-600"
+            }`}
+          >
+            {passwordStrength.label}
+          </p>
           </div>
         )}
 
         {formData.registerPassword && formData.registerConfirmPassword && (
-          <p
+         <p
             className={`text-sm mt-1 ${
               formData.registerPassword === formData.registerConfirmPassword
-                ? "text-green-600"
-                : "text-red-600"
+                ? isDark ? "text-green-400" : "text-green-600"
+                : isDark ? "text-red-400" : "text-red-600"
             }`}
           >
             {formData.registerPassword === formData.registerConfirmPassword
@@ -618,7 +623,11 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
       <button
         onClick={handleNext}
-        className="w-full py-3 mt-6 font-medium text-white transition bg-blue-600 rounded-md hover:bg-blue-700"
+        className={`w-full py-3 mt-6 font-medium rounded-md transition ${
+          isDark 
+            ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+            : 'bg-blue-600 hover:bg-blue-700 text-white'
+        }`}
       >
         Next
       </button>
