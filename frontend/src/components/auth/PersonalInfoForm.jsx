@@ -16,6 +16,7 @@ import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 import EmailInput from "../EmailInput";
 import UsernameInput from "../UsernameInput";
+import { COURSES_OPTIONS } from "../../data/GTS/contants";
 
 function PersonalInfoForm({ formData, setFormData, nextStep }) {
   const { theme } = useTheme();
@@ -507,15 +508,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             }
             label="Course"
             error={errors.course}
-            options={[
-              "BACHELOR OF SCIENCE IN AGRICULTURE",
-              "BACHELOR OF SCIENCE IN ACCOUNTING INFORMATION SYSTEM",
-              "BACHELOR OF SCIENCE IN CRIMINOLOGY",
-              "BACHELOR OF SCIENCE IN HOSPITALITY MANAGEMENT",
-              "BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY",
-              "BACHELOR OF ELEMENTARY EDUCATION",
-              "BACHELOR OF SECONDARY EDUCATION",
-            ]}
+            options={COURSES_OPTIONS}
           />
           <FloatingSelect
             id="batchYear"
@@ -529,6 +522,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
               { length: new Date().getFullYear() - 1950 + 1 },
               (_, i) => (new Date().getFullYear() - i).toString()
             )}
+            darkMode={isDark}
           />
         </div>
       </div>
