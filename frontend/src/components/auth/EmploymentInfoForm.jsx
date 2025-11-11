@@ -17,9 +17,6 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
 
-  const capitalizeEachWord = (str) =>
-    str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
-
   const validate = () => {
     const newErrors = {};
 
@@ -266,7 +263,7 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
                   label="Company Name"
                   value={formData.companyName}
                   onChange={(e) =>
-                    setFormData({ ...formData, companyName: capitalizeEachWord(e.target.value) })
+                    setFormData({ ...formData, companyName: e.target.value })
                   }
                   error={errors.companyName}
                 />
@@ -276,7 +273,7 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
                   label="Company Address"
                   value={formData.companyAddress}
                   onChange={(e) =>
-                    setFormData({ ...formData, companyAddress:  capitalizeEachWord(e.target.value) })
+                    setFormData({ ...formData, companyAddress:  e.target.value })
                   }
                   error={errors.companyAddress}
                 />
