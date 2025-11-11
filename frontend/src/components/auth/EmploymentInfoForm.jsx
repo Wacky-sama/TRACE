@@ -26,12 +26,7 @@ function useDarkMode() {
   return isDark;
 }
 
-function EmploymentInfoForm({
-  formData,
-  setFormData,
-  prevStep,
-  handleRegister,
-}) {
+function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
   const [errors, setErrors] = useState({});
   const [otherOccupation, setOtherOccupation] = useState("");
   const [otherNonEmployedReason, setOtherNonEmployedReason] = useState("");
