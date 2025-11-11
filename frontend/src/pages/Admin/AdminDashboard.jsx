@@ -281,7 +281,7 @@ const AdminDashboard = () => {
                     >
                       <div className="flex-1">
                         <p className="font-medium">
-                          {user.firstname} {user.lastname}
+                          {user.firstname} {user.middle_initial || "-"}. {user.lastname}
                         </p>
                         <p
                           className={`text-xs ${
