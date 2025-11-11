@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
-import { EMPLOYED_STATUSES, NON_EMPLOYED_STATUSES, NON_EMPLOYED_REASONS, PLACE_OF_WORK_OPTIONS, EMPLOYMENT_NOW_OPTIONS, OCCUPATION_OPTIONS } from "../../data/GTS/contants"; 
+import { EMPLOYED_STATUSES, NON_EMPLOYED_STATUSES, NON_EMPLOYED_REASONS, PLACE_OF_WORK_OPTIONS, EMPLOYMENT_NOW_OPTIONS, OCCUPATION_OPTIONS } from "../../data/GTS/constants"; 
 import { useTheme } from "../../hooks/useTheme";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";

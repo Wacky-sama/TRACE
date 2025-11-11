@@ -15,7 +15,7 @@ import {
   USEFUL_COMPETENCIES,
   JOB_LEVEL_OPTIONS_FIRST,
   JOB_LEVEL_OPTIONS_CURRENT,
-} from "../../data/GTS/contants";
+} from "../../data/GTS/constants";
 import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";

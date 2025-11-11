@@ -16,7 +16,7 @@ import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 import EmailInput from "../EmailInput";
 import UsernameInput from "../UsernameInput";
-import { COURSES_OPTIONS } from "../../data/GTS/contants";
+import { COURSES_OPTIONS } from "../../data/GTS/constants";
 
 function PersonalInfoForm({ formData, setFormData, nextStep }) {
   const { theme } = useTheme();
