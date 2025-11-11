@@ -200,7 +200,7 @@ const AdminUsers = () => {
               <td className="p-3">{user.email}</td>
               <td className="p-3">{user.lastname}</td>
               <td className="p-3">{user.firstname}</td>
-              <td className="p-3">{user.middle_initial || "-"}</td>
+              <td className="p-3">{user.middle_initial || "-"}.</td>
               <td className="p-3">{user.course || "-"}</td>
               <td className="p-3">{user.batch_year || "-"}</td>
               <td className="p-3">{user.contact_number || "-"}</td>
@@ -325,7 +325,16 @@ const AdminUsers = () => {
       <div className="mb-6 border-t"></div>
 
       <h3 className="mb-4 text-xl font-bold">Pending Alumni Approvals</h3>
-      {renderTable(pendingUsers, true)}
+      {renderTable(
+        pendingUsers
+        .filter((u) => ["alumni"].includes(u.role))
+          .filter((u) =>
+            `${u.firstname} ${u.lastname} ${u.username}`
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          ), 
+        true
+      )}
       <h3 className="mt-6 mb-4 text-xl font-bold">Registered Users</h3>
       {renderTable(
         approvedUsers
