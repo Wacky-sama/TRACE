@@ -270,7 +270,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           label="Name Extension (e.g., Jr., Sr., III)"
           placeholder="None"
           error={errors.nameExtension}
-          options={["Jr.", "Sr.", "II", "III", "IV", "V"]}
+          options={["Jr.", "Sr.", "I", "II", "III", "IV", "V"]}
         />
       </div>
 
