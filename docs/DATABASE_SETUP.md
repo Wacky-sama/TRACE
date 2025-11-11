@@ -208,7 +208,7 @@ Open your Terminal:
 
 ```bash
 # Command for backup including Database and Roles
-sudo -u postgres psql -f /path/to/TRACE/full_trace_backup_20250917_010857.sql
+sudo -u postgres psql -f /path/to/TRACE/full_trace_backup_xxx_xxx.sql
 
 # Connect to trace_db using trace_admin
 psql -U trace_admin -d trace_db -h localhost -W
@@ -421,11 +421,11 @@ Put the full_trace_backup on Downloads folder.
 Open CMD or PowerShell:
 
 ```bash
-# Change directory 
+# Change directory(Change the <18> depending on your PostgreSQL Version)
 cd "Program Files\PostgreSQL\18\bin"
 
 # Command for backup including Database and Roles
-psql -U postgres -f "C:\Users\username\Downloads\full_trace_backup_20250917_010857.sql"
+psql -U postgres -f "C:\Users\username\Downloads\full_trace_backup_xxx_xxx.sql"
 
 # Connect to trace_db using trace_admin
 psql -U trace_admin -d trace_db -h localhost -W
