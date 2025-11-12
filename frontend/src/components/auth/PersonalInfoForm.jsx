@@ -189,7 +189,11 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   };
 
   return (
-    <div className="space-y-2">
+    <div 
+      className={`${ 
+        isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
+        } space-y-2 p-3 rounded-lg shadow-md transition-colors duration-500`}
+      >
       <h2 className="pb-2 mb-4 text-xl font-semibold border-b">
         Personal Information
       </h2>
