@@ -15,7 +15,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useTheme } from "./hooks/useTheme";
 import api from "./services/api";
 import "react-toastify/dist/ReactToastify.css";
@@ -122,9 +122,7 @@ function App() {
   };
 
   return (
-    <AnimatePresence mode="wait">
       <motion.div
-        key={theme}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -441,7 +439,6 @@ function App() {
           <Toaster position="top-right" reverseOrder={false} />
         </Router>
       </motion.div>
-    </AnimatePresence>
   );
 }
 
