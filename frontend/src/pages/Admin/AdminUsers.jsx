@@ -153,144 +153,296 @@ const AdminUsers = () => {
     }
   };
 
+  // Card view for mobile
+  const renderCards = (users, showActions = false) => (
+    <div className="grid grid-cols-1 gap-4 md:hidden">
+      {users.length ? (
+        users.map((user) => (
+          <div
+            key={user.id}
+            className={`border rounded-lg p-4 shadow ${
+              isDark
+                ? "bg-gray-800 border-gray-700 text-gray-200"
+                : "bg-white border-gray-200 text-gray-900"
+            }`}
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div>
+                <h4 className="text-lg font-bold">
+                  {user.firstname} {user.middle_initial}. {user.lastname}
+                </h4>
+                <p className="text-sm opacity-75">@{user.username}</p>
+              </div>
+            </div>
+            
+            <div className="space-y-2 text-sm">
+              <div className="flex">
+                <span className="font-semibold w-28">Email:</span>
+                <span className="flex-1 break-all">{user.email}</span>
+              </div>
+              <div className="flex">
+                <span className="font-semibold w-28">Course:</span>
+                <span>{user.course || "-"}</span>
+              </div>
+              <div className="flex">
+                <span className="font-semibold w-28">Batch:</span>
+                <span>{user.batch_year || "-"}</span>
+              </div>
+              <div className="flex">
+                <span className="font-semibold w-28">Contact:</span>
+                <span>{user.contact_number || "-"}</span>
+              </div>
+              <div className="flex">
+                <span className="font-semibold w-28">Sex:</span>
+                <span>{user.sex}</span>
+              </div>
+              <div className="flex">
+                <span className="font-semibold w-28">Present:</span>
+                <span className="flex-1">{user.present_address || "-"}</span>
+              </div>
+              <div className="flex">
+                <span className="font-semibold w-28">Permanent:</span>
+                <span className="flex-1">{user.permanent_address || "-"}</span>
+              </div>
+            </div>
+
+            <div className="flex gap-2 mt-4">
+              {showActions ? (
+                <>
+                  <button
+                    disabled={actionLoadingId === user.id}
+                    onClick={() => handleAction(user.id, "approve")}
+                    className={`flex-1 px-3 py-2 rounded text-white font-medium ${
+                      actionLoadingId === user.id
+                        ? "bg-green-300"
+                        : "bg-green-500 hover:bg-green-600"
+                    }`}
+                  >
+                    {actionLoadingId === user.id ? "..." : "Approve"}
+                  </button>
+                  <button
+                    disabled={actionLoadingId === user.id}
+                    onClick={() => handleAction(user.id, "decline")}
+                    className={`flex-1 px-3 py-2 rounded text-white font-medium ${
+                      actionLoadingId === user.id
+                        ? "bg-red-300"
+                        : "bg-red-500 hover:bg-red-600"
+                    }`}
+                  >
+                    {actionLoadingId === user.id ? "..." : "Decline"}
+                  </button>
+                </>
+              ) : (
+                <>
+                  {!user.deleted_at && (
+                    <button
+                      title="Archive User"
+                      onClick={() => handleArchive(user.id)}
+                      className="flex items-center justify-center flex-1 px-3 py-2 text-red-500 border border-red-500 rounded hover:bg-red-50"
+                    >
+                      <FontAwesomeIcon icon={faUserMinus} className="mr-2" />
+                      Archive
+                    </button>
+                  )}
+                  {user.deleted_at && (
+                    <button
+                      title="Unarchive User"
+                      onClick={() => handleUnarchive(user.id)}
+                      className="flex items-center justify-center flex-1 px-3 py-2 text-yellow-500 border border-yellow-500 rounded hover:bg-yellow-50"
+                    >
+                      <FontAwesomeIcon icon={faRefresh} className="mr-2" />
+                      Unarchive
+                    </button>
+                  )}
+                  {!user.deleted_at && user.is_active && (
+                    <button
+                      title="Block User"
+                      onClick={() => handleBlock(user.id)}
+                      className="flex items-center justify-center flex-1 px-3 py-2 text-blue-500 border border-blue-500 rounded hover:bg-blue-50"
+                    >
+                      <FontAwesomeIcon icon={faUserSlash} className="mr-2" />
+                      Block
+                    </button>
+                  )}
+                  {!user.deleted_at && !user.is_active && (
+                    <button
+                      title="Unblock User"
+                      onClick={() => handleUnblock(user.id)}
+                      className="flex items-center justify-center flex-1 px-3 py-2 text-green-500 border border-green-500 rounded hover:bg-green-50"
+                    >
+                      <FontAwesomeIcon icon={faUserCheck} className="mr-2" />
+                      Unblock
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        ))
+      ) : (
+        <div
+          className={`p-8 text-center border rounded-lg ${
+            isDark
+              ? "bg-gray-800 border-gray-700 text-gray-400"
+              : "bg-white border-gray-200 text-gray-500"
+          }`}
+        >
+          No users found.
+        </div>
+      )}
+    </div>
+  );
+
+  // Table view for desktop
   const renderTable = (users, showActions = false, isArchivedTable = false) => (
-    <table
-      className={`min-w-full border rounded-lg shadow transition-colors duration-300 ${
-        isDark
-          ? "bg-gray-800 border-gray-700 text-gray-200"
-          : "bg-white border-gray-200 text-gray-900"
-      }`}
-    >
-      <thead
-        className={`${
-          isDark ? "bg-gray-700 text-gray-200" : "bg-gray-100 text-gray-700"
+    <div className="hidden overflow-x-auto md:block">
+      <table
+        className={`min-w-full border rounded-lg shadow transition-colors duration-300 ${
+          isDark
+            ? "bg-gray-800 border-gray-700 text-gray-200"
+            : "bg-white border-gray-200 text-gray-900"
         }`}
       >
-        <tr>
-          {[
-            "Username",
-            "Email",
-            "Lastname",
-            "Firstname",
-            "M.I.",
-            "Course",
-            "Batch",
-            "Contact No.",
-            "Sex",
-            "Present Address",
-            "Permanent Address",
-            "Actions",
-          ].map((header) => (
-            <th key={header} className="p-3 text-left align-middle">
-              {header}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody className="text-sm">
-        {users.length ? (
-          users.map((user) => (
-            <tr
-              key={user.id}
-              className={`border-t ${
-                isDark ? "border-gray-700" : "border-gray-200"
-              }`}
-            >
-              <td className="p-3">{user.username}</td>
-              <td className="p-3">{user.email}</td>
-              <td className="p-3">{user.lastname}</td>
-              <td className="p-3">{user.firstname}</td>
-              <td className="p-3">{user.middle_initial || "-"}.</td>
-              <td className="p-3">{user.course || "-"}</td>
-              <td className="p-3">{user.batch_year || "-"}</td>
-              <td className="p-3">{user.contact_number || "-"}</td>
-              <td className="p-3">{user.sex}</td>
-              <td className="p-3">{user.present_address || "-"}</td>
-              <td className="p-3">{user.permanent_address || "-"}</td>
-              <td className={`flex items-center gap-2 p-3 ${isArchivedTable ? 'justify-center' : ''}`}>
-                {showActions ? (
-                  <>
-                    <button
-                      disabled={actionLoadingId === user.id}
-                      onClick={() => handleAction(user.id, "approve")}
-                      className={`px-3 py-1 rounded text-white ${
-                        actionLoadingId === user.id
-                          ? "bg-green-300"
-                          : "bg-green-500 hover:bg-green-600"
-                      }`}
-                    >
-                      {actionLoadingId === user.id ? "..." : "Approve"}
-                    </button>
-                    <button
-                      disabled={actionLoadingId === user.id}
-                      onClick={() => handleAction(user.id, "decline")}
-                      className={`px-3 py-1 rounded text-white ${
-                        actionLoadingId === user.id
-                          ? "bg-red-300"
-                          : "bg-red-500 hover:bg-red-600"
-                      }`}
-                    >
-                      {actionLoadingId === user.id ? "..." : "Decline"}
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    {!user.deleted_at && (
+        <thead
+          className={`${
+            isDark ? "bg-gray-700 text-gray-200" : "bg-gray-100 text-gray-700"
+          }`}
+        >
+          <tr>
+            {[
+              "Username",
+              "Email",
+              "Lastname",
+              "Firstname",
+              "M.I.",
+              "Course",
+              "Batch",
+              "Contact No.",
+              "Sex",
+              "Present Address",
+              "Permanent Address",
+              "Actions",
+            ].map((header) => (
+              <th key={header} className="p-3 text-left align-middle">
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="text-sm">
+          {users.length ? (
+            users.map((user) => (
+              <tr
+                key={user.id}
+                className={`border-t ${
+                  isDark ? "border-gray-700" : "border-gray-200"
+                }`}
+              >
+                <td className="p-3">{user.username}</td>
+                <td className="p-3">{user.email}</td>
+                <td className="p-3">{user.lastname}</td>
+                <td className="p-3">{user.firstname}</td>
+                <td className="p-3">{user.middle_initial || "-"}.</td>
+                <td className="p-3">{user.course || "-"}</td>
+                <td className="p-3">{user.batch_year || "-"}</td>
+                <td className="p-3">{user.contact_number || "-"}</td>
+                <td className="p-3">{user.sex}</td>
+                <td className="p-3">{user.present_address || "-"}</td>
+                <td className="p-3">{user.permanent_address || "-"}</td>
+                <td className={`flex items-center gap-2 p-3 ${isArchivedTable ? 'justify-center' : ''}`}>
+                  {showActions ? (
+                    <>
                       <button
-                        title="Archive User"
-                        onClick={() => handleArchive(user.id)}
-                        className="text-red-500 hover:text-red-700"
+                        disabled={actionLoadingId === user.id}
+                        onClick={() => handleAction(user.id, "approve")}
+                        className={`px-3 py-1 rounded text-white ${
+                          actionLoadingId === user.id
+                            ? "bg-green-300"
+                            : "bg-green-500 hover:bg-green-600"
+                        }`}
                       >
-                        <FontAwesomeIcon icon={faUserMinus} />
+                        {actionLoadingId === user.id ? "..." : "Approve"}
                       </button>
-                    )}
-                    {user.deleted_at && (
                       <button
-                        title="Unarchive User"
-                        onClick={() => handleUnarchive(user.id)}
-                        className="text-yellow-500 hover:text-yellow-700"
+                        disabled={actionLoadingId === user.id}
+                        onClick={() => handleAction(user.id, "decline")}
+                        className={`px-3 py-1 rounded text-white ${
+                          actionLoadingId === user.id
+                            ? "bg-red-300"
+                            : "bg-red-500 hover:bg-red-600"
+                        }`}
                       >
-                        <FontAwesomeIcon icon={faRefresh} />
+                        {actionLoadingId === user.id ? "..." : "Decline"}
                       </button>
-                    )}
-                    {!user.deleted_at && user.is_active && (
-                      <button
-                        title="Block User"
-                        onClick={() => handleBlock(user.id)}
-                        className="text-blue-500 hover:text-blue-700"
-                      >
-                        <FontAwesomeIcon icon={faUserSlash} />
-                      </button>
-                    )}
-                    {!user.deleted_at && !user.is_active && (
-                      <button
-                        title="Unblock User"
-                        onClick={() => handleUnblock(user.id)}
-                        className="text-green-500 hover:text-green-700"
-                      >
-                        <FontAwesomeIcon icon={faUserCheck} />
-                      </button>
-                    )}
-                  </>
-                )}
+                    </>
+                  ) : (
+                    <>
+                      {!user.deleted_at && (
+                        <button
+                          title="Archive User"
+                          onClick={() => handleArchive(user.id)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <FontAwesomeIcon icon={faUserMinus} />
+                        </button>
+                      )}
+                      {user.deleted_at && (
+                        <button
+                          title="Unarchive User"
+                          onClick={() => handleUnarchive(user.id)}
+                          className="text-yellow-500 hover:text-yellow-700"
+                        >
+                          <FontAwesomeIcon icon={faRefresh} />
+                        </button>
+                      )}
+                      {!user.deleted_at && user.is_active && (
+                        <button
+                          title="Block User"
+                          onClick={() => handleBlock(user.id)}
+                          className="text-blue-500 hover:text-blue-700"
+                        >
+                          <FontAwesomeIcon icon={faUserSlash} />
+                        </button>
+                      )}
+                      {!user.deleted_at && !user.is_active && (
+                        <button
+                          title="Unblock User"
+                          onClick={() => handleUnblock(user.id)}
+                          className="text-green-500 hover:text-green-700"
+                        >
+                          <FontAwesomeIcon icon={faUserCheck} />
+                        </button>
+                      )}
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td
+                colSpan="12"
+                className={`p-4 text-center ${
+                  isDark ? "text-gray-400" : "text-gray-500"
+                }`}
+              >
+                No users found.
               </td>
             </tr>
-          ))
-        ) : (
-          <tr>
-            <td
-              colSpan="12"
-              className={`p-4 text-center ${
-                isDark ? "text-gray-400" : "text-gray-500"
-              }`}
-            >
-              No users found.
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </table>
+          )}
+        </tbody>
+      </table>
+    </div>
   );
+
+  const filterUsers = (users) =>
+    users
+      .filter((u) => ["alumni"].includes(u.role))
+      .filter((u) =>
+        `${u.firstname} ${u.lastname} ${u.username}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      );
 
   if (loading) return <p className="p-4">Loading...</p>;
 
@@ -298,19 +450,20 @@ const AdminUsers = () => {
     <div
       className={`${
         isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
-      } min-h-screen p-6`}
+      } min-h-screen p-4 md:p-6`}
     >
-      <h2 className="mb-4 text-2xl font-bold">Users</h2>
-      <p className="mb-4 text-lg font-semibold">
+      <h2 className="mb-4 text-2xl font-bold md:text-3xl">Users</h2>
+      <p className="mb-4 text-sm md:text-base">
         On this page, you can approve or decline, search, archive and unarchive, block and unblock users.
       </p>
+      
       <div className="flex items-center justify-end mb-4 space-x-2">
         <input
           type="text"
           placeholder="Search User"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className={`border rounded px-3 py-1 ${
+          className={`border rounded px-3 py-2 w-full md:w-auto ${
             isDark
               ? "bg-gray-800 border-gray-700 text-gray-100"
               : "bg-white border-gray-300 text-gray-900"
@@ -321,42 +474,20 @@ const AdminUsers = () => {
           className={isDark ? "text-gray-300" : "text-gray-600"}
         />
       </div>
-      {/* Border */}
+
       <div className="mb-6 border-t"></div>
 
       <h3 className="mb-4 text-xl font-bold">Pending Alumni Approvals</h3>
-      {renderTable(
-        pendingUsers
-        .filter((u) => ["alumni"].includes(u.role))
-          .filter((u) =>
-            `${u.firstname} ${u.lastname} ${u.username}`
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())
-          ), 
-        true
-      )}
+      {renderTable(filterUsers(pendingUsers), true)}
+      {renderCards(filterUsers(pendingUsers), true)}
+
       <h3 className="mt-6 mb-4 text-xl font-bold">Registered Users</h3>
-      {renderTable(
-        approvedUsers
-          .filter((u) => ["alumni"].includes(u.role))
-          .filter((u) =>
-            `${u.firstname} ${u.lastname} ${u.username}`
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())
-          )
-      )}
+      {renderTable(filterUsers(approvedUsers))}
+      {renderCards(filterUsers(approvedUsers))}
+
       <h3 className="mt-6 mb-4 text-xl font-bold">Archived Users</h3>
-      {renderTable(
-        archivedUsers
-          .filter((u) => ["alumni"].includes(u.role))
-          .filter((u) =>
-            `${u.firstname} ${u.lastname} ${u.username}`
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())
-          ),
-        false,  
-        true
-      )}
+      {renderTable(filterUsers(archivedUsers), false, true)}
+      {renderCards(filterUsers(archivedUsers), false, true)}
     </div>
   );
 };
