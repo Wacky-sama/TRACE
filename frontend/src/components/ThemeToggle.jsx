@@ -11,13 +11,12 @@ export default function ThemeToggle() {
     <button
       onClick={toggleTheme}
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
-      className="relative inline-flex items-center w-20 h-10 transition-colors rounded-full bg-muted group focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+      className="relative inline-flex items-center w-16 h-8 transition-colors rounded-full sm:w-20 sm:h-10 bg-muted group focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
     >
       <motion.span
-        className="inline-block w-8 h-8 rounded-full shadow-lg bg-background"
+        className="inline-block w-6 h-6 rounded-full shadow-lg sm:w-8 sm:h-8 bg-background"
         animate={{
-          x: isDark ? 44 : 4,
-          scale: 1
+          x: isDark ? 36 : 4,
         }}
         whileHover={{ scale: 1.1 }}
         transition={{
@@ -36,7 +35,7 @@ export default function ThemeToggle() {
                 exit={{ opacity: 0, rotate: 90, scale: 0.8 }}
                 transition={{ duration: 0.2 }}
               >
-                <Moon className="w-5 h-5 text-primary" />
+                <Moon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               </motion.div>
             ) : (
               <motion.div
@@ -46,7 +45,7 @@ export default function ThemeToggle() {
                 exit={{ opacity: 0, rotate: -90, scale: 0.8 }}
                 transition={{ duration: 0.2 }}
               >
-                <Sun className="w-5 h-5 text-yellow-400" />
+                <Sun className="w-4 h-4 text-yellow-400 sm:w-5 sm:h-5" />
               </motion.div>
             )}
           </AnimatePresence>
