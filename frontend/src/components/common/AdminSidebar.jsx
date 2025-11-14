@@ -75,8 +75,6 @@ const AdminSidebar = () => {
   const handleLogout = async () => {
     try{
       await api.post("/users/logout");
-    } catch (error) {
-      console.error("Logout failed:", error);
     } finally {
     userLogout();
     setCurrentUser(null);

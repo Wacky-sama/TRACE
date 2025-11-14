@@ -46,8 +46,6 @@ const AlumniSidebar = () => {
   const handleLogout = async () => {
     try{
       await api.post("/users/logout");
-    } catch (error) {
-      console.error("Logout failed:", error);
     } finally {
     userLogout();
     setCurrentUser(null);
@@ -72,7 +70,7 @@ const AlumniSidebar = () => {
               <p className="font-semibold">
                 {formatFullname(currentUser)}
               </p>
-              <p className="text-gray-400 capitalize">
+              <p className="text-sm text-gray-400 capitalize">
                 {currentUser.role}
               </p>
             </div>

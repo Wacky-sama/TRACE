@@ -1,34 +1,16 @@
 /* eslint-disable no-unused-vars */
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock, faGear } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import AlumniAccountInfo from "./settings/AccountInfo";
 import AlumniChangePassword from "./settings/ChangePassword";
 import AlumniSystemPreference from "./settings/SystemPreference";
-
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return isDark;
-}
+import { useTheme } from "../../hooks/useTheme";
 
 const AlumniSettings = () => {
-  const isDark = useDarkMode();
+  const { theme } = useTheme();  
+  const isDark = theme === "dark";
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -58,6 +40,7 @@ const AlumniSettings = () => {
     >
       <main className="flex-1 p-4 sm:p-6">
         <div className="w-full max-w-5xl mx-auto">
+          {/* Header */}
           <header className="mb-6 text-center sm:text-left">
             <h1
               className={`text-2xl sm:text-3xl font-bold ${

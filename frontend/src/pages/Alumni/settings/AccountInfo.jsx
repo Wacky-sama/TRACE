@@ -32,8 +32,8 @@ const AlumniAccountInfo = () => {
   if (!user) {
     return (
       <div
-        className={`flex flex-col min-h-screen transition-colors duration-300 ${
-          isDark ? "bg-gray-900" : "bg-gray-100"
+        className={`p-6 rounded-xl shadow-md text-center ${
+          isDark ? "bg-gray-800 text-gray-200" : "bg-white text-gray-700"
         }`}
       >
         <p>Failed to load account information.</p>
@@ -43,12 +43,12 @@ const AlumniAccountInfo = () => {
 
   return (
     <section
-      className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
+      className={`rounded-xl shadow-md p-6 transition-colors ${
         isDark ? "bg-gray-800" : "bg-white"
       }`}
     >
       <h2
-        className={`text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 ${
+        className={`text-2xl font-semibold mb-4 ${
           isDark ? "text-white" : "text-gray-900"
         }`}
       >
@@ -74,20 +74,18 @@ const AlumniAccountInfo = () => {
               isDark ? "text-gray-100" : "text-gray-800"
             }`}
           >
-            {user.email || "Email not provided"}
+            {user.email}
           </p>
         </div>
 
         <div>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Phone Number
-          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Role</p>
           <p
-            className={`text-lg font-semibold ${
+            className={`text-lg font-semibold capitalize ${
               isDark ? "text-gray-100" : "text-gray-800"
             }`}
           >
-            {user.contact_number || "Phone Number not provided"}
+            {user.role}
           </p>
         </div>
       </div>
