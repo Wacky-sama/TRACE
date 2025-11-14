@@ -52,7 +52,6 @@ const ProblemsIssuesAndConcerns = ({ gtsData, onUpdate }) => {
         label="Write problems, issues, or concerns you encountered in your job or in finding one"
         value={formData.job_problems}
         onChange={handleChange}
-        labelClassName="text-[0.50rem] sm:text-xs peer-focus:text-[0.50rem]"
       />
 
       <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-end">

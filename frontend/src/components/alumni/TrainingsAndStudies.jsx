@@ -103,7 +103,6 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
               label="Title of Training or Advance Study"
               value={training.title}
               onChange={(e) => handleChange(index, "title", e.target.value)}
-              labelClassName="text-[0.56rem] sm:text-xs peer-focus:text-[0.56rem]" 
             />
             <FloatingInput
               id={`duration-${index}`}
