@@ -25,9 +25,9 @@ import { useTheme } from "../../hooks/useTheme";
 import api from "../../services/api";
 
 const AdminDashboard = () => {
-  const { theme } = useTheme();  
-  const isDark = theme === "dark"; 
-  
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   const [userStats, setUserStats] = useState(null);
   const [activeUsers, setActiveUsers] = useState(null);
   const [blockedUsers, setBlockedUsers] = useState(null);
@@ -195,21 +195,23 @@ const AdminDashboard = () => {
       <main className="flex-1 p-6">
         <div className="mx-auto max-w-7xl">
           {/* Header */}
-          <h1
-            className={`text-3xl font-bold mb-2 ${
-              isDark ? "text-white" : "text-gray-900"
-            }`}
-          >
-            Dashboard
-          </h1>
-          <h2
-            className={`text-xl mb-8 ${
-              isDark ? "text-gray-200" : "text-gray-700"
-            }`}
-          >
-            Welcome, {currentUser?.firstname}!
-          </h2>
-
+          <header className="mb-6 text-center sm:text-left">
+            <h1
+              className={`text-2xl sm:text-3xl font-bold ${
+                isDark ? "text-white" : "text-gray-900"
+              }`}
+            >
+              Dashboard
+            </h1>
+            <p
+              className={`text-base sm:text-lg ${
+                isDark ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
+              Welcome, {currentUser?.firstname}!
+            </p>
+          </header>
+          
           {/* User Statistics */}
           <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
             {[
@@ -281,7 +283,8 @@ const AdminDashboard = () => {
                     >
                       <div className="flex-1">
                         <p className="font-medium">
-                          {user.firstname} {user.middle_initial || "-"}. {user.lastname}
+                          {user.firstname} {user.middle_initial || "-"}.{" "}
+                          {user.lastname}
                         </p>
                         <p
                           className={`text-xs ${
@@ -502,7 +505,8 @@ const AdminDashboard = () => {
                       >
                         {user.firstname}{" "}
                         {user.middle_initial ? `${user.middle_initial}. ` : ""}
-                        {user.lastname || "User"} - <span className="capitalize">{user.role}</span>
+                        {user.lastname || "User"} -{" "}
+                        <span className="capitalize">{user.role}</span>
                       </li>
                     ))}
                   </ul>
