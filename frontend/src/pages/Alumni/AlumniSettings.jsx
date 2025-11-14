@@ -126,9 +126,6 @@ const AlumniSettings = () => {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
-                  isDark ? "bg-gray-800" : "bg-white"
-                }`}
               >
                 <AlumniAccountInfo />
               </motion.div>
@@ -140,9 +137,6 @@ const AlumniSettings = () => {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
-                  isDark ? "bg-gray-800" : "bg-white"
-                }`}
               >
                 <AlumniChangePassword />
               </motion.div>
@@ -154,9 +148,6 @@ const AlumniSettings = () => {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
-                  isDark ? "bg-gray-800" : "bg-white"
-                }`}
               >
                 <AlumniSystemPreference />
               </motion.div>
