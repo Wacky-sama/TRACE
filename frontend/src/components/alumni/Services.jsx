@@ -52,7 +52,6 @@ const Services = ({ gtsData, onUpdate }) => {
         label="List down services you want to avail from the university"
         value={formData.desired_services}
         onChange={handleChange}
-        labelClassName="text-[0.50rem] sm:text-xs peer-focus:text-[0.50rem]"
       />
 
       <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-end">
