@@ -5,10 +5,13 @@ import { GraduationCap } from "lucide-react";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import ThemeToggle from "../ThemeToggle";
+import { useTheme } from "../../hooks/useTheme";
 
 function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const isRegistering = location.pathname === "/register";
 
   const goToLandingPage = () => {
@@ -40,9 +43,8 @@ function AuthPage() {
         </div>
       </header>
       <div className="flex items-center justify-center min-h-screen px-4 bg-[hsl(var(--background))]">
-        {/* Changed: bg-white to bg-card for theme-awareness */}
         <div className="flex flex-col w-full max-w-4xl overflow-hidden transition-transform duration-300 transform shadow-lg bg-card rounded-xl md:flex-row hover:-translate-y-2">
-          {/* Left side: Kept bg-gray-800 for contrast (dark in both modes); texts are already light */}
+          {/* Left side: Now matches PersonalInfoForm dark mode styling */}
           <div className="flex items-center justify-center flex-1 p-4 bg-gray-800 md:p-8">
             <div className="text-center">
               <img
@@ -59,10 +61,14 @@ function AuthPage() {
             </div>
           </div>
 
-          <div className="flex-1 p-6 md:p-10 bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))]">
+          {/* Right side: Now matches PersonalInfoForm styling */}
+          <div className={`flex-1 p-6 md:p-10 ${
+            isDark ? 'bg-gray-900 text-gray-100' : 'bg-white text-gray-900'
+          } transition-colors duration-500`}>
             <div className="w-full max-w-md mx-auto text-center">
-              {/* Added: text-foreground for h2 to ensure it adapts */}
-              <h2 className="mb-6 text-2xl font-semibold text-foreground">
+              <h2 className={`mb-6 text-2xl font-semibold ${
+                isDark ? 'text-gray-100' : 'text-gray-900'
+              }`}>
                 {isRegistering ? "Register" : "Login"}
               </h2>
               <AnimatePresence>
@@ -88,8 +94,9 @@ function AuthPage() {
                   </motion.div>
                 )}
               </AnimatePresence>
-              {/* Changed: text-muted-foreground for better theme adaptation; button to text-primary */}
-              <p className="mt-6 mb-4 text-lg text-muted-foreground">
+              <p className={`mt-6 mb-4 text-lg ${
+                isDark ? 'text-gray-400' : 'text-gray-600'
+              }`}>
                 {isRegistering
                   ? "Already have an account?"
                   : "Don't have an account?"}{" "}
@@ -97,7 +104,7 @@ function AuthPage() {
                   onClick={() =>
                     navigate(isRegistering ? "/login" : "/register")
                   }
-                  className="text-blue-600 text-primary hover:underline"
+                  className="text-blue-600 hover:underline"
                 >
                   {isRegistering ? "Login here." : "Register here."}
                 </button>
