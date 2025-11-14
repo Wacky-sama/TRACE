@@ -126,9 +126,6 @@ const AdminSettings = () => {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
-                  isDark ? "bg-gray-800" : "bg-white"
-                }`}
               >
                 <AdminAccountInfo />
               </motion.div>
@@ -140,9 +137,6 @@ const AdminSettings = () => {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
-                  isDark ? "bg-gray-800" : "bg-white"
-                }`}
               >
                 <AdminChangePassword />
               </motion.div>
@@ -154,9 +148,6 @@ const AdminSettings = () => {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className={`rounded-xl shadow-md p-4 sm:p-6 transition-colors ${
-                  isDark ? "bg-gray-800" : "bg-white"
-                }`}
               >
                 <AdminSystemPreference />
               </motion.div>

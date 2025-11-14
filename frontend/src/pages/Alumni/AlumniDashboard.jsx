@@ -4,25 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 import api from "../../services/api";
 import AlumniGTSForm from "./AlumniGTSForm";
-
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return isDark;
-}
+import { useTheme } from "../../hooks/useTheme";
 
 const formatDate = (dateStr) =>
   dateStr
@@ -50,7 +32,9 @@ const formatTime = (timeStr) => {
 };
 
 const AlumniDashboard = () => {
-  const isDark = useDarkMode();
+  const { theme } = useTheme();  
+  const isDark = theme === "dark";
+  
   const [searchParams, setSearchParams] = useSearchParams();
   const [events, setEvents] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
@@ -101,11 +85,11 @@ const AlumniDashboard = () => {
 
   return (
     <div
-      className={`flex min-h-screen flex-col ${
+      className={`flex min-h-screen ${
         isDark ? "bg-gray-900" : "bg-gray-100"
       }`}
     >
-      <main className="flex-1 p-4 sm:p-6 lg:p-8">
+      <main className="flex-1 p-6">
         <div className="w-full mx-auto max-w-7xl">
           {/* Header */}
           <header className="mb-6 text-center sm:text-left">
@@ -121,7 +105,7 @@ const AlumniDashboard = () => {
                 isDark ? "text-gray-300" : "text-gray-700"
               }`}
             >
-              Welcome, {currentUser?.firstname || "User"}!
+              Welcome, {currentUser?.firstname}!
             </p>
           </header>
 
