@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock, faGear } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,7 +11,6 @@ import { useTheme } from "../../hooks/useTheme";
 const AdminSettings = () => {
   const { theme } = useTheme();  
   const isDark = theme === "dark"; 
-
   const navigate = useNavigate();
   const location = useLocation();
 
