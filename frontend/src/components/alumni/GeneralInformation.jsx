@@ -1,6 +1,5 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useTheme } from "../../hooks/useTheme";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { CIVIL_STATUSES_OPTIONS } from "../../data/GTS/constants";
 import PhoneInput from "../PhoneInput";
@@ -8,8 +7,6 @@ import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 
 const GeneralInformation = ({ gtsData, onUpdate }) => {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
 
   const [formData, setFormData] = useState({
     full_name: gtsData.full_name || "",
@@ -62,105 +59,88 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
   };
 
   return (
-    <div
-      className={`p-4 rounded-lg shadow transition-colors duration-300 ${
-        isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-      }`}
-    >
-      <div className="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
-        <div>
-          <FloatingInput
-            id="full_name"
-            type="text"
-            label="Full Name"
-            value={formData.full_name}
-            onChange={handleChange}
-            readOnly
-          />
-        </div>
+    <div>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <FloatingInput
+          id="full_name"
+          type="text"
+          label="Full Name"
+          value={formData.full_name}
+          onChange={handleChange}
+          readOnly
+        />
 
-        <div>
-          <FloatingInput
-            id="contact_email"
-            type="email"
-            label="E-mail Address"
-            value={formData.contact_email}
-            onChange={handleChange}
-            readOnly
-          />
-        </div>
+        <FloatingInput
+          id="contact_email"
+          type="email"
+          label="E-mail Address"
+          value={formData.contact_email}
+          onChange={handleChange}
+          readOnly
+        />
 
-        <div>
-          <FloatingInput
-            id="permanent_address"
-            type="text"
-            label="Permanent Address"
-            value={formData.permanent_address}
-            onChange={handleChange}
-          />
-        </div>
+        <FloatingInput
+          id="permanent_address"
+          type="text"
+          label="Permanent Address"
+          value={formData.permanent_address}
+          onChange={handleChange}
+        />
 
-        <div>
-          <FloatingInput
-            id="present_address"
-            type="text"
-            label="Present Address"
-            value={formData.present_address}
-            onChange={handleChange}
-          />
-        </div>
+        <FloatingInput
+          id="present_address"
+          type="text"
+          label="Present Address"
+          value={formData.present_address}
+          onChange={handleChange}
+        />
 
-        <div className="mb-4">
-          <FloatingSelect
-            id="civil_status"
-            value={formData.civil_status}
-            label="Civil Status"
-            onChange={handleChange}
-            options={CIVIL_STATUSES_OPTIONS}
-          />
-        </div>
+        <FloatingSelect
+          id="civil_status"
+          value={formData.civil_status}
+          label="Civil Status"
+          onChange={handleChange}
+          options={CIVIL_STATUSES_OPTIONS}
+        />
 
-        <div>
-          <FloatingInput id="sex" value={formData.sex} label="Sex" readOnly />
-        </div>
+        <FloatingInput 
+          id="sex" 
+          value={formData.sex} 
+          label="Sex" 
+          readOnly 
+        />
 
-        <div>
-          <FloatingInput
-            id="birthday"
-            value={formData.birthday}
-            label="Birthday"
-            readOnly
-          />
-        </div>
+        <FloatingInput
+          id="birthday"
+          value={formData.birthday}
+          label="Birthday"
+          readOnly
+        />
 
-        <div>
-          <PhoneInput
-            id="mobile"
-            label="Contact Number"
-            value={formData.mobile}
-            onChange={handleChange}
-            error={errors.mobile}
-            defaultCountry="ph"
-            onError={(error) =>
-              setErrors((prev) => ({ ...prev, mobile: error }))
-            }
-          />
-        </div>
+        <PhoneInput
+          id="mobile"
+          label="Contact Number"
+          value={formData.mobile}
+          onChange={handleChange}
+          error={errors.mobile}
+          defaultCountry="ph"
+          onError={(error) =>
+            setErrors((prev) => ({ ...prev, mobile: error }))
+          }
+        />
       </div>
 
-      <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-end">
+      <div className="flex justify-end mt-8">
         <button
           onClick={handleSave}
           disabled={saving}
-          className={`px-4 py-2 rounded-md transition-colors ${
+          className={`w-full sm:w-auto px-6 py-2.5 rounded-lg font-medium transition-colors ${
             saving
-              ? "opacity-70 cursor-not-allowed"
-              : isDark
-              ? "bg-blue-600 hover:bg-blue-500 text-white"
+              ? "opacity-70 cursor-not-allowed bg-blue-400"
               : "bg-blue-600 hover:bg-blue-700 text-white"
           }`}
         >
-          {saving ? "Saving..." : "Save"}
+          {saving ? "Saving..." : "Save Changes"}
         </button>
       </div>
     </div>

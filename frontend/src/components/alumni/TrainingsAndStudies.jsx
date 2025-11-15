@@ -84,23 +84,20 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
   };
 
   return (
-    <div
-      className={`p-4 sm:p-6 rounded-lg shadow-md transition-colors duration-300 ${
-        isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-      }`}
-    >
+    <div className="space-y-6">
       {trainings.map((training, index) => (
         <div
           key={training.id || index}
-          className={`p-4 mb-4 rounded-lg border ${
-            isDark ? "border-gray-700" : "border-gray-300"
+          className={`p-4 rounded-lg border ${
+            isDark ? "border-gray-700 bg-gray-750" : "border-gray-300 bg-gray-50"
           }`}
         >
-          <div className="grid grid-cols-1 gap-4 mb-3 sm:grid-cols-2 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <FloatingInput
               id={`title-${index}`}
               type="text"
               label="Title of Training or Advance Study"
+              shortLabel="Training Title"
               value={training.title}
               onChange={(e) => handleChange(index, "title", e.target.value)}
             />
@@ -128,11 +125,11 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
           </div>
 
           {trainings.length > 1 && (
-            <div className="flex justify-end">
+            <div className="flex justify-end mt-4">
               <button
                 type="button"
                 onClick={() => handleRemoveTraining(index)}
-                className="text-red-500 hover:text-red-700"
+                className="text-sm font-medium text-red-500 hover:text-red-700"
                 disabled={saving}
               >
                 Remove
@@ -142,11 +139,11 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
         </div>
       ))}
 
-      <div className="flex flex-col gap-3 mt-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col justify-between gap-4 pt-4 sm:flex-row">
         <button
           onClick={handleAddTraining}
           type="button"
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+          className={`w-full sm:w-auto px-6 py-2.5 rounded-lg text-sm font-medium transition-colors ${
             isDark
               ? "bg-gray-700 hover:bg-gray-600 text-gray-100"
               : "bg-gray-200 hover:bg-gray-300 text-gray-800"
@@ -158,15 +155,13 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
         <button
           onClick={handleSave}
           disabled={saving}
-          className={`px-5 py-2 rounded-md font-medium transition-colors ${
+          className={`w-full sm:w-auto px-6 py-2.5 rounded-lg font-medium transition-colors ${
             saving
-              ? "opacity-70 cursor-not-allowed"
-              : isDark
-              ? "bg-blue-600 hover:bg-blue-500 text-white"
+              ? "opacity-70 cursor-not-allowed bg-blue-400"
               : "bg-blue-600 hover:bg-blue-700 text-white"
           }`}
         >
-          {saving ? "Saving..." : "Save"}
+          {saving ? "Saving..." : "Save Changes"}
         </button>
       </div>
     </div>

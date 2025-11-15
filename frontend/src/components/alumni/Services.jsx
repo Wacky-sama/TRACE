@@ -1,12 +1,8 @@
-// F. SERVICES FROM CSU
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useTheme } from "../../hooks/useTheme";
 import FloatingInput from "../FloatingInput";
 
 const Services = ({ gtsData, onUpdate }) => {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
 
   const [formData, setFormData] = useState({
     desired_services: gtsData.desired_services || "",
@@ -41,32 +37,27 @@ const Services = ({ gtsData, onUpdate }) => {
   };
 
   return (
-    <div
-      className={`p-4 rounded-lg shadow transition-colors duration-300 ${
-        isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-      }`}
-    >
+    <div className="space-y-6">
       <FloatingInput
         id="desired_services"
         type="text"
         label="List down services you want to avail from the university"
+        shortLabel="Desired Services"
         value={formData.desired_services}
         onChange={handleChange}
       />
 
-      <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-end">
+      <div className="flex justify-end pt-4">
         <button
           onClick={handleSave}
           disabled={saving}
-          className={`px-4 py-2 rounded-md transition-colors ${
+          className={`w-full sm:w-auto px-6 py-2.5 rounded-lg font-medium transition-colors ${
             saving
-              ? "opacity-70 cursor-not-allowed"
-              : isDark
-              ? "bg-blue-600 hover:bg-blue-500 text-white"
+              ? "opacity-70 cursor-not-allowed bg-blue-400"
               : "bg-blue-600 hover:bg-blue-700 text-white"
           }`}
         >
-          {saving ? "Saving..." : "Save"}
+          {saving ? "Saving..." : "Save Changes"}
         </button>
       </div>
     </div>

@@ -1,15 +1,11 @@
-// E. JOB SATISFACTION
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useTheme } from "../../hooks/useTheme";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 
 const SATISFACTION_LEVELS = ["Very High", "High", "Moderate", "Low", "Very Low"];
 
 const JobSatisfaction = ({ gtsData, onUpdate }) => {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
 
   const [formData, setFormData] = useState({
     job_satisfaction: gtsData.job_satisfaction || "",
@@ -50,54 +46,38 @@ const JobSatisfaction = ({ gtsData, onUpdate }) => {
   };
 
   return (
-    <div
-      className={`p-4 rounded-lg shadow transition-colors duration-300 ${
-        isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-      }`}
-    >
-      <h2
-        className={`mb-4 text-xl font-semibold ${
-          isDark ? "text-gray-100" : "text-gray-800"
-        }`}
-      >
-        Job Satisfaction
-      </h2>
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <FloatingSelect
+          id="job_satisfaction"
+          value={formData.job_satisfaction}
+          label="How would you rate your overall job satisfaction?"
+          shortLabel="Job Satisfaction"
+          onChange={handleSelectChange}
+          options={SATISFACTION_LEVELS}
+        />
 
-      <div className="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
-        <div>
-          <FloatingSelect
-            id="job_satisfaction"
-            value={formData.job_satisfaction}
-            label="How would you rate your overall job satisfaction?"
-            onChange={handleSelectChange}
-            options={SATISFACTION_LEVELS}
-          />
-        </div>
-
-        <div>
-          <FloatingInput
-            id="job_satisfaction_reason"
-            type="text"
-            label="Why? (Reason for your answer)"
-            value={formData.job_satisfaction_reason}
-            onChange={handleChange}
-          />
-        </div>
+        <FloatingInput
+          id="job_satisfaction_reason"
+          type="text"
+          label="Why? (Reason for your answer)"
+          shortLabel="Reason"
+          value={formData.job_satisfaction_reason}
+          onChange={handleChange}
+        />
       </div>
 
-      <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-end">
+      <div className="flex justify-end pt-4">
         <button
           onClick={handleSave}
           disabled={saving}
-          className={`px-4 py-2 rounded-md transition-colors ${
+          className={`w-full sm:w-auto px-6 py-2.5 rounded-lg font-medium transition-colors ${
             saving
-              ? "opacity-70 cursor-not-allowed"
-              : isDark
-              ? "bg-blue-600 hover:bg-blue-500 text-white"
+              ? "opacity-70 cursor-not-allowed bg-blue-400"
               : "bg-blue-600 hover:bg-blue-700 text-white"
           }`}
         >
-          {saving ? "Saving..." : "Save"}
+          {saving ? "Saving..." : "Save Changes"}
         </button>
       </div>
     </div>

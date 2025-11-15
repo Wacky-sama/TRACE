@@ -6,6 +6,7 @@ function FloatingInput({
   value,
   onChange,
   label,
+  shortLabel,
   error,
   icon,
   children,
@@ -18,22 +19,20 @@ function FloatingInput({
   const hasValue = value && value !== "";
 
   return (
-    <div className="mb-4">
+    <div>
       <div className="relative">
-        {/* Left Icon */}
         {icon && (
           <span className="absolute z-10 text-gray-400 -translate-y-1/2 left-3 top-1/2">
             {icon}
           </span>
         )}
-        {/* Input */}
         <input
           id={id}
           type={type}
           value={value}
           onChange={onChange}
           placeholder=" "
-          className={`w-full p-3 pt-6 ${icon ? "pl-10" : "pl-3"} ${
+          className={`w-full p-3 pt-7 pb-2 ${icon ? "pl-10" : "pl-3"} ${
             children ? "pr-8" : ""
           } 
             border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 peer
@@ -51,17 +50,25 @@ function FloatingInput({
           className={`absolute pointer-events-none ${
             icon ? "left-10" : "left-3"
           } transition-all duration-200 transform origin-left
-          ${hasValue ? "top-1" : "top-1/2 -translate-y-1/2"}
-          peer-focus:top-1 peer-focus:-translate-y-0
+          ${hasValue ? "top-1.5 text-[10px] sm:text-xs" : "top-1/2 -translate-y-1/2 text-xs sm:text-sm"}
+          peer-focus:top-1.5 peer-focus:text-[10px] sm:peer-focus:text-xs peer-focus:-translate-y-0
           ${
             isDark
               ? "text-gray-400 peer-focus:text-blue-400"
               : "text-gray-500 peer-focus:text-blue-600"
-          } ${labelClassName || "text-sm peer-focus:text-xs"}`}
-                >
-          {label}
+          } 
+          max-w-[85%] truncate leading-tight
+          ${labelClassName}`}
+        >
+          {shortLabel ? (
+            <>
+              <span className="hidden sm:inline">{label}</span>
+              <span className="sm:hidden">{shortLabel}</span>
+            </>
+          ) : (
+            label
+          )}
         </label>
-        {/* Right Children (e.g. Eye toggle) */}
         {children && (
           <div className="absolute inset-y-0 flex items-center right-3">
             {children}
@@ -69,7 +76,6 @@ function FloatingInput({
         )}
       </div>
 
-      {/* Error Message */}
       {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );
