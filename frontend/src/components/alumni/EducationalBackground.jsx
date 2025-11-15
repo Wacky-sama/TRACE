@@ -1,4 +1,3 @@
-// B. EDUCATIONAL BACKGROUND
 import { useState } from "react";
 import { useTheme } from "../../hooks/useTheme";
 import { ADVANCE_DEGREE_PROGRAMS } from "../../data/GTS/constants";

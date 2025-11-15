@@ -415,14 +415,11 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
   }, [formData.employmentNow]);
 
   return (
-    <div
-      className={`p-4 sm:p-6 md:p-8 rounded-lg shadow transition-colors duration-300 ${
-        isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-      }`}
-    >
+    <div className="space-y-6">
       <FloatingSelect
         id="employmentNow"
         label="Are you currently employed?"
+        shortLabel="Currently Employed?"
         value={formData.employmentNow}
         onChange={(e) => handleEmploymentNowChange(e.target.value)}
         options={EMPLOYMENT_NOW_OPTIONS}
@@ -431,7 +428,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
       />
 
       {formData.employmentNow === "Yes" && (
-        <>
+        <div className="space-y-6">
           <FloatingSelect
             id="employment_status"
             value={formData.employment_status}
@@ -470,9 +467,9 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
             label="Company Address"
             error={errors.company_address}
           />
-          <div className="mb-4">
+          <div>
             <label
-              className={`block mb-2 text-sm font-medium ${
+              className={`block mb-3 text-sm font-medium ${
                 isDark ? "text-gray-200" : "text-gray-700"
               }`}
             >
@@ -483,16 +480,15 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               {JOB_SECTORS.map((sector) => (
                 <label
                   key={sector}
-                  className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
+                  className={`px-3 py-2 border rounded-lg cursor-pointer text-sm font-medium transition-all ${
                     formData.job_sector === sector
-                      ? "bg-blue-600 text-white border-blue-600"
+                      ? "bg-blue-600 text-white border-blue-600 shadow-md"
                       : isDark
-                      ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                      : "bg-white text-gray-700 hover:bg-gray-50"
+                      ? "bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600"
+                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                   }`}
                 >
-                  <FloatingInput
-                    id="job_sector"
+                  <input
                     type="radio"
                     value={sector}
                     checked={formData.job_sector === sector}
@@ -505,36 +501,38 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
             </div>
 
             {formData.job_sector === "Others, please specify" && (
-              <FloatingInput
-                id="otherJobSector"
-                value={otherJobSector}
-                onChange={(e) => setOtherJobSector(e.target.value.trimStart())}
-                label="Please specify your job sector"
-                error={errors.otherJobSector}
-              />
+              <div className="mt-4">
+                <FloatingInput
+                  id="otherJobSector"
+                  value={otherJobSector}
+                  onChange={(e) => setOtherJobSector(e.target.value.trimStart())}
+                  label="Please specify your job sector"
+                  error={errors.otherJobSector}
+                />
+              </div>
             )}
             {errors.job_sector && (
-              <p className="mt-1 text-xs text-red-500">{errors.job_sector}</p>
+              <p className="mt-2 text-xs text-red-500">{errors.job_sector}</p>
             )}
           </div>
-          <div className="mb-4">
+          <div>
             <label
-              className={`block mb-2 text-sm font-medium ${
+              className={`block mb-3 text-sm font-medium ${
                 isDark ? "text-gray-200" : "text-gray-700"
               }`}
             >
-              Present occupation: (you may have multiple answers)
+              Present occupation (you may have multiple answers)
             </label>
             <div className="flex flex-wrap gap-2">
               {OCCUPATION_OPTIONS.map((opt) => (
                 <label
                   key={opt}
-                  className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
+                  className={`px-3 py-2 border rounded-lg cursor-pointer text-sm font-medium transition-all ${
                     formData.occupation.includes(opt)
-                      ? "bg-blue-600 text-white border-blue-600"
+                      ? "bg-blue-600 text-white border-blue-600 shadow-md"
                       : isDark
-                      ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                      : "bg-white text-gray-700 hover:bg-gray-50"
+                      ? "bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600"
+                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                   }`}
                 >
                   <input
@@ -549,22 +547,25 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               ))}
             </div>
             {formData.occupation.includes("Others, please specify") && (
-              <FloatingInput
-                id="otherOccupation"
-                value={otherOccupation}
-                onChange={(e) => setOtherOccupation(e.target.value.trimStart())}
-                label="Please specify your occupation"
-                error={errors.otherOccupation}
-              />
+              <div className="mt-4">
+                <FloatingInput
+                  id="otherOccupation"
+                  value={otherOccupation}
+                  onChange={(e) => setOtherOccupation(e.target.value.trimStart())}
+                  label="Please specify your occupation"
+                  error={errors.otherOccupation}
+                />
+              </div>
             )}
             {errors.occupation && (
-              <p className="mt-1 text-xs text-red-500">{errors.occupation}</p>
+              <p className="mt-2 text-xs text-red-500">{errors.occupation}</p>
             )}
           </div>
 
           <FloatingSelect
             id="first_job"
             label="Is this your first job after college?"
+            shortLabel="First job after college?"
             value={formData.first_job ? "Yes" : "No"}
             onChange={(e) =>
               setFormData({
@@ -578,6 +579,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
           <FloatingSelect
             id="job_related_to_course"
             label="Is your first job related to the course you took up in college?"
+            shortLabel="Job related to course?"
             value={formData.job_related_to_course ? "Yes" : "No"}
             onChange={(e) =>
               setFormData({
@@ -606,10 +608,11 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               setFormData({ ...formData, months_to_first_job: e.target.value })
             }
             label="How long did it take you to land your first job? (in months)"
+            shortLabel="Months to first job"
           />
-          <div className="mb-4">
+          <div>
             <label
-              className={`block mb-2 text-sm font-medium ${
+              className={`block mb-3 text-sm font-medium ${
                 isDark ? "text-gray-200" : "text-gray-700"
               }`}
             >
@@ -619,12 +622,12 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               {JOB_FIND_METHODS.map((method) => (
                 <label
                   key={method}
-                  className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
+                  className={`px-3 py-2 border rounded-lg cursor-pointer text-sm font-medium transition-all ${
                     formData.job_find_methods.includes(method)
-                      ? "bg-blue-600 text-white border-blue-600"
+                      ? "bg-blue-600 text-white border-blue-600 shadow-md"
                       : isDark
-                      ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                      : "bg-white text-gray-700 hover:bg-gray-50"
+                      ? "bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600"
+                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                   }`}
                 >
                   <input
@@ -645,19 +648,21 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               ))}
             </div>
             {formData.job_find_methods.includes("Others, please specify") && (
-              <FloatingInput
-                id="otherJobFindMethod"
-                value={otherJobFindMethod}
-                onChange={(e) =>
-                  setOtherJobFindMethod(e.target.value.trimStart())
-                }
-                label="Please specify"
-              />
+              <div className="mt-4">
+                <FloatingInput
+                  id="otherJobFindMethod"
+                  value={otherJobFindMethod}
+                  onChange={(e) =>
+                    setOtherJobFindMethod(e.target.value.trimStart())
+                  }
+                  label="Please specify"
+                />
+              </div>
             )}
           </div>
-          <div className="mb-4">
+          <div>
             <label
-              className={`block mb-2 text-sm font-medium ${
+              className={`block mb-3 text-sm font-medium ${
                 isDark ? "text-gray-200" : "text-gray-700"
               }`}
             >
@@ -668,12 +673,12 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               {JOB_REASONS.map((reason) => (
                 <label
                   key={reason}
-                  className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
+                  className={`px-3 py-2 border rounded-lg cursor-pointer text-sm font-medium transition-all ${
                     formData.job_reasons.includes(reason)
-                      ? "bg-blue-600 text-white border-blue-600"
+                      ? "bg-blue-600 text-white border-blue-600 shadow-md"
                       : isDark
-                      ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                      : "bg-white text-gray-700 hover:bg-gray-50"
+                      ? "bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600"
+                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                   }`}
                 >
                   <input
@@ -696,17 +701,19 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
             {formData.job_reasons.includes(
               "Other reason(s), please specify"
             ) && (
-              <FloatingInput
-                id="otherJobReason"
-                value={otherJobReason}
-                onChange={(e) => setOtherJobReason(e.target.value.trimStart())}
-                label="Please specify"
-              />
+              <div className="mt-4">
+                <FloatingInput
+                  id="otherJobReason"
+                  value={otherJobReason}
+                  onChange={(e) => setOtherJobReason(e.target.value.trimStart())}
+                  label="Please specify"
+                />
+              </div>
             )}
           </div>
-          <div className="mb-4">
+          <div>
             <label
-              className={`block mb-2 text-sm font-medium ${
+              className={`block mb-3 text-sm font-medium ${
                 isDark ? "text-gray-200" : "text-gray-700"
               }`}
             >
@@ -716,12 +723,12 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               {JOB_CHANGE_REASONS.map((reason) => (
                 <label
                   key={reason}
-                  className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
+                  className={`px-3 py-2 border rounded-lg cursor-pointer text-sm font-medium transition-all ${
                     formData.job_change_reasons.includes(reason)
-                      ? "bg-blue-600 text-white border-blue-600"
+                      ? "bg-blue-600 text-white border-blue-600 shadow-md"
                       : isDark
-                      ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                      : "bg-white text-gray-700 hover:bg-gray-50"
+                      ? "bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600"
+                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                   }`}
                 >
                   <input
@@ -744,14 +751,16 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
             {formData.job_change_reasons.includes(
               "Other reason(s), please specify"
             ) && (
-              <FloatingInput
-                id="otherJobChangeReason"
-                value={otherJobChangeReason}
-                onChange={(e) =>
-                  setOtherJobChangeReason(e.target.value.trimStart())
-                }
-                label="Please specify"
-              />
+              <div className="mt-4">
+                <FloatingInput
+                  id="otherJobChangeReason"
+                  value={otherJobChangeReason}
+                  onChange={(e) =>
+                    setOtherJobChangeReason(e.target.value.trimStart())
+                  }
+                  label="Please specify"
+                />
+              </div>
             )}
           </div>
           <FloatingSelect
@@ -761,6 +770,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               setFormData({ ...formData, job_level_first: e.target.value })
             }
             label="Job Level Position - First Job"
+            shortLabel="Job Level - First"
             options={JOB_LEVEL_OPTIONS_FIRST}
           />
 
@@ -771,6 +781,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               setFormData({ ...formData, job_level_current: e.target.value })
             }
             label="Job Level Position - Current Job"
+            shortLabel="Job Level - Current"
             options={JOB_LEVEL_OPTIONS_CURRENT}
           />
 
@@ -782,11 +793,13 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               setFormData({ ...formData, first_job_salary: e.target.value })
             }
             label="What are your initial gross monthly earning in your first job after college? (PhP)"
+            shortLabel="First job salary (PhP)"
           />
 
           <FloatingSelect
             id="curriculum_relevance_first_job"
             label="Was the curriculum you had in college relevant to your first job?"
+            shortLabel="Curriculum relevant to first job?"
             value={formData.curriculum_relevance_first_job ? "Yes" : "No"}
             onChange={(e) =>
               setFormData({
@@ -800,6 +813,7 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
           <FloatingSelect
             id="curriculum_relevance_second_job"
             label="Was the curriculum you had in college related to your second job (if any)?"
+            shortLabel="Curriculum relevant to 2nd job?"
             value={formData.curriculum_relevance_second_job ? "Yes" : "No"}
             onChange={(e) =>
               setFormData({
@@ -813,9 +827,9 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
           {(formData.curriculum_relevance_first_job === true ||
             formData.curriculum_relevance_second_job === true) && (
             <>
-              <div className="mb-4">
+              <div>
                 <label
-                  className={`block mb-2 text-sm font-medium ${
+                  className={`block mb-3 text-sm font-medium ${
                     isDark ? "text-gray-200" : "text-gray-700"
                   }`}
                 >
@@ -827,12 +841,12 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
                   {USEFUL_COMPETENCIES.map((competency) => (
                     <label
                       key={competency}
-                      className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
+                      className={`px-3 py-2 border rounded-lg cursor-pointer text-sm font-medium transition-all ${
                         formData.useful_competencies.includes(competency)
-                          ? "bg-blue-600 text-white border-blue-600"
+                          ? "bg-blue-600 text-white border-blue-600 shadow-md"
                           : isDark
-                          ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                          : "bg-white text-gray-700 hover:bg-gray-50"
+                          ? "bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600"
+                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                       }`}
                     >
                       <input
@@ -859,14 +873,16 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               {formData.useful_competencies.includes(
                 "Other skills, please specify"
               ) && (
-                <FloatingInput
-                  id="otherUsefulCompetency"
-                  value={otherUsefulCompetency}
-                  onChange={(e) =>
-                    setOtherUsefulCompetency(e.target.value.trimStart())
-                  }
-                  label="Please specify"
-                />
+                <div className="mt-4">
+                  <FloatingInput
+                    id="otherUsefulCompetency"
+                    value={otherUsefulCompetency}
+                    onChange={(e) =>
+                      setOtherUsefulCompetency(e.target.value.trimStart())
+                    }
+                    label="Please specify"
+                  />
+                </div>
               )}
             </>
           )}
@@ -881,13 +897,14 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
               })
             }
             label="List down suggestions to further improve your course curriculum"
+            shortLabel="Curriculum suggestions"
           />
-        </>
+        </div>
       )}
       {formData.employmentNow === "No" && (
-        <div className="mb-4">
+        <div>
           <label
-            className={`block mb-2 text-sm font-medium ${
+            className={`block mb-3 text-sm font-medium ${
               isDark ? "text-gray-200" : "text-gray-700"
             }`}
           >
@@ -897,12 +914,12 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
             {NON_EMPLOYED_REASONS.map((reason) => (
               <label
                 key={reason}
-                className={`px-2 py-1 border rounded cursor-pointer transition-colors ${
+                className={`px-3 py-2 border rounded-lg cursor-pointer text-sm font-medium transition-all ${
                   formData.non_employed_reasons.includes(reason)
-                    ? "bg-blue-600 text-white border-blue-600"
+                    ? "bg-blue-600 text-white border-blue-600 shadow-md"
                     : isDark
-                    ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
+                    ? "bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                 }`}
               >
                 <input
@@ -919,37 +936,37 @@ const EmploymentData = ({ gtsData, onUpdate }) => {
           {formData.non_employed_reasons.includes(
             "Other reason(s), please specify"
           ) && (
-            <FloatingInput
-              id="otherNonEmployedReason"
-              value={otherNonEmployedReason}
-              onChange={(e) =>
-                setOtherNonEmployedReason(e.target.value.trimStart())
-              }
-              label="Please specify"
-              error={errors.otherNonEmployedReason}
-            />
+            <div className="mt-4">
+              <FloatingInput
+                id="otherNonEmployedReason"
+                value={otherNonEmployedReason}
+                onChange={(e) =>
+                  setOtherNonEmployedReason(e.target.value.trimStart())
+                }
+                label="Please specify"
+                error={errors.otherNonEmployedReason}
+              />
+            </div>
           )}
           {errors.non_employed_reasons && (
-            <p className="mt-1 text-xs text-red-500">
+            <p className="mt-2 text-xs text-red-500">
               {errors.non_employed_reasons}
             </p>
           )}
         </div>
       )}
 
-      <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-end">
+      <div className="flex justify-end pt-4">
         <button
           onClick={handleSave}
           disabled={saving}
-          className={`px-4 py-2 rounded-md transition-colors ${
+          className={`w-full sm:w-auto px-6 py-2.5 rounded-lg font-medium transition-colors ${
             saving
-              ? "opacity-70 cursor-not-allowed"
-              : isDark
-              ? "bg-blue-600 hover:bg-blue-500 text-white"
+              ? "opacity-70 cursor-not-allowed bg-blue-400"
               : "bg-blue-600 hover:bg-blue-700 text-white"
           }`}
         >
-          {saving ? "Saving..." : "Save"}
+          {saving ? "Saving..." : "Save Changes"}
         </button>
       </div>
     </div>
