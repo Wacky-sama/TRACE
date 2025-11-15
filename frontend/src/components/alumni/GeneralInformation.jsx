@@ -1,6 +1,5 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useTheme } from "../../hooks/useTheme";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { CIVIL_STATUSES_OPTIONS } from "../../data/GTS/constants";
 import PhoneInput from "../PhoneInput";
@@ -8,8 +7,6 @@ import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 
 const GeneralInformation = ({ gtsData, onUpdate }) => {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
 
   const [formData, setFormData] = useState({
     full_name: gtsData.full_name || "",
@@ -62,11 +59,7 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
   };
 
   return (
-    <div
-      className={`p-6 rounded-lg shadow-sm ${
-        isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-      }`}
-    >
+    <div>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <FloatingInput
           id="full_name"
@@ -137,7 +130,7 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
         />
       </div>
 
-      <div className="flex justify-end mt-6">
+      <div className="flex justify-end mt-8">
         <button
           onClick={handleSave}
           disabled={saving}
