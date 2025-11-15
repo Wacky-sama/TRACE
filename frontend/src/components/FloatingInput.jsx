@@ -6,7 +6,7 @@ function FloatingInput({
   value,
   onChange,
   label,
-  shortLabel, // Short version for mobile
+  shortLabel,
   error,
   icon,
   children,
@@ -21,13 +21,11 @@ function FloatingInput({
   return (
     <div className="mb-4">
       <div className="relative">
-        {/* Left Icon */}
         {icon && (
           <span className="absolute z-10 text-gray-400 -translate-y-1/2 left-3 top-1/2">
             {icon}
           </span>
         )}
-        {/* Input */}
         <input
           id={id}
           type={type}
@@ -62,7 +60,6 @@ function FloatingInput({
           max-w-[85%] truncate leading-tight
           ${labelClassName}`}
         >
-          {/* Show short label on mobile if provided, otherwise show full label */}
           {shortLabel ? (
             <>
               <span className="hidden sm:inline">{label}</span>
@@ -72,7 +69,6 @@ function FloatingInput({
             label
           )}
         </label>
-        {/* Right Children (e.g. Eye toggle) */}
         {children && (
           <div className="absolute inset-y-0 flex items-center right-3">
             {children}
@@ -80,7 +76,6 @@ function FloatingInput({
         )}
       </div>
 
-      {/* Error Message */}
       {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );

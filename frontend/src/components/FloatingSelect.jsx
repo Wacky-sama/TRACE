@@ -5,7 +5,7 @@ function FloatingSelect({
   value,
   onChange,
   label,
-  shortLabel, // Short version for mobile
+  shortLabel,
   error,
   options = [],
   placeholder = "Select an option",
@@ -57,7 +57,6 @@ function FloatingSelect({
             }
             max-w-[85%] truncate leading-tight`}
         >
-          {/* Show short label on mobile if provided, otherwise show full label */}
           {shortLabel ? (
             <>
               <span className="hidden sm:inline">{label}</span>
@@ -68,7 +67,6 @@ function FloatingSelect({
           )}
         </label>
 
-        {/* Dropdown Arrow */}
         <div className="absolute inset-y-0 flex items-center pointer-events-none right-3">
           <svg
             className={`w-4 h-4 ${isDark ? "text-gray-400" : "text-gray-500"}`}
@@ -86,7 +84,6 @@ function FloatingSelect({
         </div>
       </div>
 
-      {/* Error Message */}
       {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );
