@@ -1,9 +1,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { SATISFACTION_LEVELS } from "../../data/GTS/constants";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
-
-const SATISFACTION_LEVELS = ["Very High", "High", "Moderate", "Low", "Very Low"];
 
 const JobSatisfaction = ({ gtsData, onUpdate }) => {
 
