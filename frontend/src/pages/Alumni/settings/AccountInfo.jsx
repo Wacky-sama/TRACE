@@ -63,7 +63,7 @@ const AlumniAccountInfo = () => {
               isDark ? "text-gray-100" : "text-gray-800"
             }`}
           >
-            {user.firstname} {user.lastname}
+            {user.firstname} {user.middle_initial ? `${user.middle_initial}. ` : ""}{user.lastname}
           </p>
         </div>
 

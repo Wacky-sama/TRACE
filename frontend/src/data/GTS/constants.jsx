@@ -156,3 +156,11 @@ export const COURSES_OPTIONS = [
   "BACHELOR OF ELEMENTARY EDUCATION",
   "BACHELOR OF SECONDARY EDUCATION"
 ];
+
+export const SATISFACTION_LEVELS = [
+  "Very High", 
+  "High", 
+  "Moderate", 
+  "Low", 
+  "Very Low"
+];

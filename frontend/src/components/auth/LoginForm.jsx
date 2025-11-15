@@ -56,9 +56,9 @@ function LoginForm() {
   };
 
   return (
-    <>
+    <div className="space-y-4">
       {loginError && (
-        <div className="px-4 py-3 mb-4 text-sm text-red-700 border border-red-200 rounded-md bg-red-50">
+        <div className="px-4 py-3 text-sm text-red-700 border border-red-200 rounded-md bg-red-50">
           {loginError}
         </div>
       )}
@@ -101,11 +101,11 @@ function LoginForm() {
 
       <button
         onClick={handleLogin}
-        className="w-full py-3 mb-4 font-medium text-white transition-colors bg-blue-600 rounded-md hover:bg-blue-700"
+        className="w-full py-3 font-medium text-white transition-colors bg-blue-600 rounded-md hover:bg-blue-700"
       >
         Login
       </button>
-    </>
+    </div>
   );
 }
 

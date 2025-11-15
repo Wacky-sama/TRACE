@@ -189,7 +189,6 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
     <div className="space-y-6">
       {/* Educational Attainment */}
       <section>
-        <h3 className="mb-4 text-lg font-semibold">Educational Attainment</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FloatingInput
             id="degree"

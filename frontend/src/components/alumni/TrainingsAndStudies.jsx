@@ -89,7 +89,7 @@ const TrainingsAndStudies = ({ gtsData, onUpdate }) => {
         <div
           key={training.id || index}
           className={`p-4 rounded-lg border ${
-            isDark ? "border-gray-700 bg-gray-750" : "border-gray-300 bg-gray-50"
+            isDark ? "border-gray-700 bg-gray-700" : "border-gray-300 bg-gray-50"
           }`}
         >
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
