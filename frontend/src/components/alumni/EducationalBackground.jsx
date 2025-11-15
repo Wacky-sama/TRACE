@@ -44,22 +44,39 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
   };
 
   const removeExamRow = async (index) => {
+    const examToRemove = formData.exams[index];
+    
+    // If it's an empty exam (just added, not saved), remove it instantly without API call
+    const isEmpty = !examToRemove.name?.trim() && 
+                    !examToRemove.date && 
+                    !examToRemove.rating?.trim();
+    
+    if (isEmpty) {
+      const updatedExams = formData.exams.filter((_, i) => i !== index);
+      setFormData((prev) => ({ ...prev, exams: updatedExams }));
+      toast.success("Examination removed!");
+      return;
+    }
+
+    // For saved exams, confirm before removing
     const confirmed = window.confirm(
       "Are you sure you want to remove this examination? This action cannot be undone."
     );
     if (!confirmed) return;
 
     const updatedExams = formData.exams.filter((_, i) => i !== index);
-    const removedExam = formData.exams[index];
     setFormData((prev) => ({ ...prev, exams: updatedExams }));
 
     setSaving(true);
     try {
+      // Filter out completely empty exams before sending
+      const cleanExams = updatedExams.filter(
+        (exam) => exam.name?.trim() || exam.date || exam.rating?.trim()
+      );
+
       const submitData = {
         ...formData,
-        exams: updatedExams.filter(
-          (exam) => exam.name?.trim() || exam.date || exam.rating?.trim()
-        ),
+        exams: cleanExams,
         pursued_advance_degree_reasons: [
           ...formData.pursued_advance_degree_reasons.filter(
             (r) => r !== "Others, please specify"
@@ -86,7 +103,7 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
       } else {
         setFormData((prev) => ({
           ...prev,
-          exams: [...updatedExams, removedExam],
+          exams: [...updatedExams, examToRemove],
         }));
         toast.error("Failed to remove examination. Please try again.");
       }
@@ -94,7 +111,7 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
       console.error("Remove error:", error);
       setFormData((prev) => ({
         ...prev,
-        exams: [...updatedExams, removedExam],
+        exams: [...updatedExams, examToRemove],
       }));
       toast.error("An error occurred while removing the examination.");
     } finally {
@@ -123,14 +140,17 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
 
     setSaving(true);
 
+    // Filter out completely empty exams before sending
+    const cleanExams = formData.exams.filter(
+      (exam) => exam.name?.trim() || exam.date || exam.rating?.trim()
+    );
+
     const submitData = {
       ...formData,
       year_graduated: formData.year_graduated
         ? parseInt(formData.year_graduated, 10)
         : null,
-      exams: formData.exams.filter(
-        (exam) => exam.name?.trim() || exam.date || exam.rating?.trim()
-      ),
+      exams: cleanExams,
       pursued_advance_degree_reasons: [
         ...formData.pursued_advance_degree_reasons.filter(
           (r) => r !== "Others, please specify"
@@ -424,7 +444,6 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
         )}
       </section>
 
-      {/* Save Button */}
       <div className="flex justify-end pt-4">
         <button
           onClick={handleSave}
