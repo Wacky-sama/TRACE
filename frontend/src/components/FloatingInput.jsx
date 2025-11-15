@@ -19,7 +19,7 @@ function FloatingInput({
   const hasValue = value && value !== "";
 
   return (
-    <div className="mb-4">
+    <div>
       <div className="relative">
         {icon && (
           <span className="absolute z-10 text-gray-400 -translate-y-1/2 left-3 top-1/2">
