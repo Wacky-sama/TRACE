@@ -33,17 +33,17 @@ function FloatingInput({
           value={value}
           onChange={onChange}
           placeholder=" "
-          className={`w-full p-3 pt-6 ${icon ? "pl-10" : "pl-3"} ${
+          className={`w-full p-3 pt-7 pb-2 ${icon ? "pl-10" : "pl-3"} ${
             children ? "pr-8" : ""
           } 
-            border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 peer
-            ${
-              error
-                ? "border-red-500"
-                : isDark
-                ? "bg-gray-800 text-white border-gray-600"
-                : "bg-white text-gray-900 border-gray-300"
-            }`}
+    border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 peer
+    ${
+      error
+        ? "border-red-500"
+        : isDark
+        ? "bg-gray-800 text-white border-gray-600"
+        : "bg-white text-gray-900 border-gray-300"
+    }`}
           {...props}
         />
         <label
@@ -51,14 +51,14 @@ function FloatingInput({
           className={`absolute pointer-events-none ${
             icon ? "left-10" : "left-3"
           } transition-all duration-200 transform origin-left
-          ${hasValue ? "top-1" : "top-1/2 -translate-y-1/2"}
-          peer-focus:top-1 peer-focus:-translate-y-0
-          ${
-            isDark
-              ? "text-gray-400 peer-focus:text-blue-400"
-              : "text-gray-500 peer-focus:text-blue-600"
-          } ${labelClassName || "text-sm peer-focus:text-xs"}`}
-                >
+  ${hasValue ? "top-1.5 text-xs" : "top-1/2 -translate-y-1/2 text-sm"}
+  peer-focus:top-1.5 peer-focus:text-xs peer-focus:-translate-y-0
+  ${
+    isDark
+      ? "text-gray-400 peer-focus:text-blue-400"
+      : "text-gray-500 peer-focus:text-blue-600"
+  } ${labelClassName}`}
+        >
           {label}
         </label>
         {/* Right Children (e.g. Eye toggle) */}
