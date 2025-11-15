@@ -5,6 +5,7 @@ function FloatingSelect({
   value,
   onChange,
   label,
+  shortLabel, // Short version for mobile
   error,
   options = [],
   placeholder = "Select an option",
@@ -22,13 +23,13 @@ function FloatingSelect({
           value={value}
           onChange={onChange}
           className={`w-full p-3 pt-7 pb-2 border rounded-md text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer
-    ${
-      error
-        ? "border-red-500"
-        : isDark
-        ? "bg-gray-800 text-white border-gray-600"
-        : "bg-white text-gray-900 border-gray-300"
-    }`}
+            ${
+              error
+                ? "border-red-500"
+                : isDark
+                ? "bg-gray-800 text-white border-gray-600"
+                : "bg-white text-gray-900 border-gray-300"
+            }`}
           {...props}
         >
           <option value="">{placeholder}</option>
@@ -47,12 +48,42 @@ function FloatingSelect({
         <label
           htmlFor={id}
           className={`absolute left-3 pointer-events-none transition-all duration-200 transform origin-left
-    ${value ? "top-1.5 text-xs" : "top-1/2 -translate-y-1/2 text-sm"}
-    peer-focus:top-1.5 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-blue-500
-    ${isDark ? "text-gray-400 peer-focus:text-blue-400" : "text-gray-500"}`}
+            ${value ? "top-1.5 text-[10px] sm:text-xs" : "top-1/2 -translate-y-1/2 text-xs sm:text-sm"}
+            peer-focus:top-1.5 peer-focus:text-[10px] sm:peer-focus:text-xs peer-focus:-translate-y-0
+            ${
+              isDark
+                ? "text-gray-400 peer-focus:text-blue-400"
+                : "text-gray-500 peer-focus:text-blue-600"
+            }
+            max-w-[85%] truncate leading-tight`}
         >
-          {label}
+          {/* Show short label on mobile if provided, otherwise show full label */}
+          {shortLabel ? (
+            <>
+              <span className="hidden sm:inline">{label}</span>
+              <span className="sm:hidden">{shortLabel}</span>
+            </>
+          ) : (
+            label
+          )}
         </label>
+
+        {/* Dropdown Arrow */}
+        <div className="absolute inset-y-0 flex items-center pointer-events-none right-3">
+          <svg
+            className={`w-4 h-4 ${isDark ? "text-gray-400" : "text-gray-500"}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </div>
       </div>
 
       {/* Error Message */}

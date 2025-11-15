@@ -184,6 +184,7 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
             id="specialization"
             type="text"
             label="Specialization/Major Field of Study"
+            shortLabel="Specialization"
             value={formData.specialization}
             onChange={handleChange}
           />
@@ -208,6 +209,7 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
             id="honors"
             type="text"
             label="Honors/Awards Received"
+            shortLabel="Honors/Awards"
             value={formData.honors}
             onChange={handleChange}
           />
@@ -364,6 +366,7 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
         <FloatingSelect
           id="pursued_advance_degree"
           label="Have you pursued advance degree program?"
+          shortLabel="Pursued Advance Degree?"
           value={formData.pursued_advance_degree ? "Yes" : "No"}
           onChange={(e) =>
             setFormData({
