@@ -22,7 +22,7 @@ function FloatingSelect({
           id={id}
           value={value}
           onChange={onChange}
-          className={`w-full p-3 pt-7 pb-2 border rounded-md text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer
+          className={`w-full px-3 pt-8 pb-3 border rounded-md text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 peer
             ${
               error
                 ? "border-red-500"
@@ -47,13 +47,12 @@ function FloatingSelect({
 
         <label
           htmlFor={id}
-          className={`absolute left-3 pointer-events-none transition-all duration-200 transform origin-left
-            ${value ? "top-1.5 text-[10px] sm:text-xs" : "top-1/2 -translate-y-1/2 text-xs sm:text-sm"}
-            peer-focus:top-1.5 peer-focus:text-[10px] sm:peer-focus:text-xs peer-focus:-translate-y-0
+          className={`absolute left-3 top-1.5 pointer-events-none transition-all duration-200 transform origin-left
+            ${value && value !== "" ? "text-[10px] sm:text-xs" : "text-xs sm:text-sm"}
             ${
               isDark
-                ? "text-gray-400 peer-focus:text-blue-400"
-                : "text-gray-500 peer-focus:text-blue-600"
+                ? "text-gray-400"
+                : "text-gray-500"
             }
             max-w-[85%] truncate leading-tight`}
         >
