@@ -167,14 +167,11 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
   };
 
   return (
-    <div
-      className={`p-4 sm:p-6 rounded-lg shadow transition-colors duration-300 ${
-        isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-      }`}
-    >
+    <div className="space-y-6">
       {/* Educational Attainment */}
-      <section className="mb-6">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+      <section>
+        <h3 className="mb-4 text-lg font-semibold">Educational Attainment</h3>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FloatingInput
             id="degree"
             type="text"
@@ -217,25 +214,99 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
         </div>
       </section>
 
-      {/* Exams Table */}
-      <section className="mb-6">
-        <h3 className="mb-2 text-base font-medium sm:text-lg">
+      {/* Exams - Responsive Cards/Table */}
+      <section>
+        <h3 className="mb-4 text-lg font-semibold">
           Professional Examination(s) Passed
         </h3>
-        <div className="overflow-x-auto border border-gray-300 rounded-md dark:border-gray-700">
-          <table className="min-w-[600px] w-full border-collapse text-sm sm:text-base">
+        
+        {/* Mobile: Card Layout */}
+        <div className="space-y-4 sm:hidden">
+          {formData.exams.map((exam, index) => (
+            <div
+              key={index}
+              className={`p-4 border rounded-lg ${
+                isDark ? "border-gray-700 bg-gray-750" : "border-gray-300 bg-gray-50"
+              }`}
+            >
+              <div className="space-y-3">
+                <div>
+                  <label className="block mb-1 text-xs font-medium text-gray-500">
+                    Examination Name
+                  </label>
+                  <input
+                    type="text"
+                    value={exam.name}
+                    onChange={(e) =>
+                      handleExamChange(index, "name", e.target.value)
+                    }
+                    className="w-full p-2 bg-transparent border border-gray-300 rounded dark:border-gray-600"
+                    placeholder="e.g., Licensure Exam"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block mb-1 text-xs font-medium text-gray-500">
+                    Date Taken
+                  </label>
+                  <AlumniFloatingDatePicker
+                    id={`exam_date_${index}`}
+                    label=""
+                    value={exam.date || ""}
+                    onChange={(date) => handleExamChange(index, "date", date)}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block mb-1 text-xs font-medium text-gray-500">
+                    Rating
+                  </label>
+                  <input
+                    type="text"
+                    value={exam.rating}
+                    onChange={(e) =>
+                      handleExamChange(index, "rating", e.target.value)
+                    }
+                    className="w-full p-2 bg-transparent border border-gray-300 rounded dark:border-gray-600"
+                    placeholder="e.g., 85%"
+                  />
+                </div>
+                
+                <button
+                  onClick={() => removeExamRow(index)}
+                  className="w-full px-3 py-2 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
+                  disabled={saving}
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop: Table Layout */}
+        <div className="hidden overflow-x-auto border border-gray-300 rounded-lg sm:block dark:border-gray-700">
+          <table className="w-full border-collapse">
             <thead>
               <tr className={isDark ? "bg-gray-700" : "bg-gray-100"}>
-                <th className="p-2 border border-gray-300">Name</th>
-                <th className="p-2 border border-gray-300">Date Taken</th>
-                <th className="p-2 border border-gray-300">Rating</th>
-                <th className="p-2 border border-gray-300">Actions</th>
+                <th className="p-3 text-left border-b border-gray-300 dark:border-gray-700">
+                  Name
+                </th>
+                <th className="p-3 text-left border-b border-gray-300 dark:border-gray-700">
+                  Date Taken
+                </th>
+                <th className="p-3 text-left border-b border-gray-300 dark:border-gray-700">
+                  Rating
+                </th>
+                <th className="p-3 text-center border-b border-gray-300 dark:border-gray-700">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
               {formData.exams.map((exam, index) => (
-                <tr key={index} className="text-sm sm:text-base">
-                  <td className="p-2 border border-gray-300">
+                <tr key={index} className="border-b border-gray-200 dark:border-gray-700">
+                  <td className="p-3">
                     <input
                       type="text"
                       value={exam.name}
@@ -246,15 +317,15 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
                       placeholder="e.g., Licensure Exam"
                     />
                   </td>
-                  <td className="p-2 text-center border border-gray-300">
+                  <td className="p-3">
                     <AlumniFloatingDatePicker
                       id={`exam_date_${index}`}
-                      label="Date"
+                      label=""
                       value={exam.date || ""}
                       onChange={(date) => handleExamChange(index, "date", date)}
                     />
                   </td>
-                  <td className="p-2 border border-gray-300">
+                  <td className="p-3">
                     <input
                       type="text"
                       value={exam.rating}
@@ -265,10 +336,10 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
                       placeholder="e.g., 85%"
                     />
                   </td>
-                  <td className="p-2 text-center border border-gray-300">
+                  <td className="p-3 text-center">
                     <button
                       onClick={() => removeExamRow(index)}
-                      className="text-sm text-red-500 hover:text-red-700 sm:text-base"
+                      className="text-sm font-medium text-red-500 hover:text-red-700"
                       disabled={saving}
                     >
                       Remove
@@ -279,9 +350,10 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
             </tbody>
           </table>
         </div>
+        
         <button
           onClick={addExamRow}
-          className="w-full px-4 py-2 mt-3 text-sm text-white bg-green-600 rounded sm:text-base hover:bg-green-700 sm:w-auto"
+          className="w-full px-4 py-2 mt-4 text-sm font-medium text-white bg-green-600 rounded hover:bg-green-700 sm:w-auto"
         >
           Add Examination
         </button>
@@ -303,20 +375,20 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
         />
 
         {formData.pursued_advance_degree && (
-          <div className="mt-4">
-            <h3 className="mb-2 text-base font-medium sm:text-lg">
+          <div className="mt-6">
+            <h4 className="mb-3 text-base font-medium">
               If yes, why? (You may select multiple answers)
-            </h3>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+            </h4>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {ADVANCE_DEGREE_PROGRAMS.map((reason) => (
                 <label
                   key={reason}
-                  className={`text-center px-2 py-2 border rounded cursor-pointer text-sm transition-colors ${
+                  className={`px-4 py-3 border rounded-lg cursor-pointer text-sm font-medium transition-all text-center ${
                     formData.pursued_advance_degree_reasons.includes(reason)
-                      ? "bg-blue-600 text-white border-blue-600"
+                      ? "bg-blue-600 text-white border-blue-600 shadow-md"
                       : isDark
-                      ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                      : "bg-white text-gray-700 hover:bg-gray-100"
+                      ? "bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600"
+                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                   }`}
                 >
                   <input
@@ -350,19 +422,17 @@ const EducationalBackground = ({ gtsData, onUpdate }) => {
       </section>
 
       {/* Save Button */}
-      <div className="flex flex-col gap-3 mt-6 sm:flex-row sm:justify-end">
+      <div className="flex justify-end pt-4">
         <button
           onClick={handleSave}
           disabled={saving}
-          className={`px-4 py-2 rounded-md font-medium transition-colors w-full sm:w-auto ${
+          className={`w-full sm:w-auto px-6 py-2.5 rounded-lg font-medium transition-colors ${
             saving
-              ? "opacity-70 cursor-not-allowed"
-              : isDark
-              ? "bg-blue-600 hover:bg-blue-500 text-white"
+              ? "opacity-70 cursor-not-allowed bg-blue-400"
               : "bg-blue-600 hover:bg-blue-700 text-white"
           }`}
         >
-          {saving ? "Saving..." : "Save"}
+          {saving ? "Saving..." : "Save Changes"}
         </button>
       </div>
     </div>
