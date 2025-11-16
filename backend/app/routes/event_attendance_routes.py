@@ -66,7 +66,7 @@ def attend_event(
         raise HTTPException(status_code=403, detail="Only alumni can attend events.")
 
     # Check for approved event
-    event = db.query(events_models.Events).filter_by(id=event_id, status="approved").first()
+    event = db.query(events_models.Events).filter_by(id=event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found or not approved")
 
@@ -117,9 +117,9 @@ def generate_qr_code(
         raise HTTPException(status_code=403, detail="Only alumni can generate QR codes.")
 
     # Confirm event
-    event = db.query(events_models.Events).filter_by(id=event_id, status="approved").first()
+    event = db.query(events_models.Events).filter_by(id=event_id).first()
     if not event:
-        raise HTTPException(status_code=404, detail="Event not found or not approved.")
+        raise HTTPException(status_code=404, detail="Event not found")
 
     # Must already be registered
     record = db.query(event_attendance_models.EventAttendance).filter_by(
@@ -153,10 +153,10 @@ def decline_event(
     if current_user.role != "alumni":
         raise HTTPException(status_code=403, detail="Only alumni can decline events.")
 
-    event = db.query(events_models.Events).filter_by(id=event_id, status="approved").first()
+    event = db.query(events_models.Events).filter_by(id=event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
-    
+
     record = db.query(event_attendance_models.EventAttendance).filter_by(
         event_id=event_id,
         user_id=current_user.id
