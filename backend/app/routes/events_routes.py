@@ -62,16 +62,10 @@ def get_events(
     )
 
     event_list = []
-    now = datetime.now()  # current timestamp
     for event, firstname, lastname in results:
-        event_start = datetime.combine(event.start_date, datetime.min.time())
-        is_upcoming = now < event_start
-
         event_out = EventOut(
             **{**event.__dict__, "created_by_name": f"{firstname} {lastname}"}
-        )
-        # add a new property for frontend use
-        event_out.is_upcoming = is_upcoming  
+        ) 
         event_list.append(event_out)
 
     return event_list
