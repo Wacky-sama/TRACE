@@ -2,8 +2,7 @@ import base64
 import io
 import json
 import uuid
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import datetime, timezone, time
 from uuid import UUID
 
 import qrcode
@@ -75,14 +74,24 @@ def scan_qr(body: QRScanRequest, db: Session = Depends(get_db), current_user: Us
     if not record:
         raise HTTPException(status_code=404, detail="QR code not found.")
 
+    if not record.is_valid:
+        if record.scanned_at:
+            raise HTTPException(status_code=400, detail="QR already scanned at {}".format(record.scanned_at))
+        else:
+            raise HTTPException(status_code=400, detail="QR invalid")
+
     # Fetch the associated event
     event = get_event(db, record.event_id)
 
     # Compare datetime safely
     now = datetime.now()
-    event_start = datetime.combine(event.start_date, getattr(event, "start_time_startday", datetime.min.time()))
+    event_start = datetime.combine(event.start_date, event.start_time_startday or time.min)
+    event_end   = datetime.combine(event.end_date, event.end_time_endday or time.max)
+
     if now < event_start:
         raise HTTPException(status_code=400, detail="Event hasn't started yet")
+    if now > event_end:
+        raise HTTPException(status_code=400, detail="Event has already ended")
 
     # Validate QR
     if not record.is_valid:
