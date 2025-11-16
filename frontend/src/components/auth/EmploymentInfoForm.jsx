@@ -173,11 +173,11 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
   }, [formData.employmentNow, setFormData]);
 
   return (
-    <div
-      className={`${
-        isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
-      } p-6 rounded-lg shadow-md`}
-    >
+  <div
+    className={`${
+      isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
+    } p-4 sm:p-6 lg:p-8 rounded-lg shadow-md max-w-7xl mx-auto w-full`}
+  >
       <h2 className="pb-2 mb-6 text-xl font-semibold border-b">
         Employment Information
       </h2>
@@ -231,7 +231,7 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
                   Employment Details
                 </h3>
 
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                   <FloatingSelect
                     id="employmentStatus"
                     label="Employment Status"
@@ -258,7 +258,7 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                   <FloatingInput
                     id="companyName"
                     label="Company Name"
@@ -388,7 +388,7 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
                   ))}
                 </div>
                 {formData.nonEmployedReasons.includes(
-                  "Other reasons, please specify"
+                  "Other reason(s), please specify"
                 ) && (
                   <FloatingInput
                     id="otherNonEmployedReason"
