@@ -12,30 +12,33 @@ const AdminQRScanner = () => {
   const [result, setResult] = useState("No result");
   const [isProcessing, setIsProcessing] = useState(false);
   const [flashState, setFlashState] = useState(null);
+  const [lastToken, setLastToken] = useState(null);
 
   const handleScan = async (token) => {
-    if (!token || isProcessing) return;
+    if (!token || isProcessing || token === lastToken) return;
+
+    setLastToken(token);
     setIsProcessing(true);
 
     try {
       const response = await api.post("/attendance/scan", { token });
       toast.success(response.data.message);
-
       setFlashState("success");
       setTimeout(() => setFlashState(null), 600);
-    } catch (err) {
-      const res = err.response;
-      console.error("QR Scan Error:", res?.data || err);
+    } catch (error) {
+      const res = error.response;
       const detail =
         typeof res?.data?.detail === "string"
           ? res.data.detail
           : Array.isArray(res?.data?.detail)
           ? res.data.detail.map((d) => d.msg).join(", ")
           : "Failed to validate QR.";
-
       toast.error(detail);
+      setFlashState("error");
+      setTimeout(() => setFlashState(null), 600);
     } finally {
       setIsProcessing(false);
+      setTimeout(() => setLastToken(null), 1000);
     }
   };
 

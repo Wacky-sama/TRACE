@@ -100,10 +100,12 @@ const AdminCreateEvent = () => {
           description: formData.description,
           location: formData.location,
           start_date: formData.start_date
-            ? formData.start_date.toISOString().split("T")[0]
+            ? `${formData.start_date.getFullYear()}-${(formData.start_date.getMonth()+1)
+                .toString().padStart(2,"0")}-${formData.start_date.getDate().toString().padStart(2,"0")}`
             : "",
           end_date: formData.end_date
-            ? formData.end_date.toISOString().split("T")[0]
+            ? `${formData.end_date.getFullYear()}-${(formData.end_date.getMonth()+1)
+                .toString().padStart(2,"0")}-${formData.end_date.getDate().toString().padStart(2,"0")}`
             : "",
           start_time_startday: formData.start_time_startday || null,
           end_time_startday: formData.end_time_startday || null,
