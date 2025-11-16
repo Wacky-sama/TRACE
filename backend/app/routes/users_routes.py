@@ -11,6 +11,7 @@ from app.models.users_models import UserRole, Users
 from app.schemas.users_schemas import (AdminUserCreate, AlumniRegister,
                                        ChangePasswordRequest,
                                        EmailCheckRequest, EmailCheckResponse,
+                                       PhoneCheckRequest, PhoneCheckResponse,
                                        PaginatedUserResponse, TokenResponse,
                                        UserLogin, UsernameCheckRequest,
                                        UsernameCheckResponse, UserOut,
@@ -89,6 +90,43 @@ def check_username_availability(
     return UsernameCheckResponse(
         available=True,
         message="Username is available"
+    )
+
+# Phone number check
+@router.post("/check-phone", response_model=PhoneCheckResponse, tags=["public"])
+def check_phone_availability(
+    request: PhoneCheckRequest,
+    db: Session = Depends(get_db)
+):
+    contact_number = request.contact_number.strip()
+    
+    if not contact_number:
+        return PhoneCheckResponse(
+            available=False,
+            message="Phone number is required"
+        )
+    
+    # Basic validation - you can add more sophisticated phone validation here
+    if len(contact_number) < 10:
+        return PhoneCheckResponse(
+            available=False,
+            message="Invalid phone number format"
+        )
+        
+    existing_user = db.query(Users).filter(
+        Users.contact_number == contact_number,
+        Users.deleted_at.is_(None)
+    ).first()
+        
+    if existing_user:
+        return PhoneCheckResponse(
+            available=False,
+            message="Phone number is already registered"
+        )
+            
+    return PhoneCheckResponse(
+        available=True,
+        message="Phone number is available"
     )
 
 # Login with username or email; returns JWT token and user role

@@ -23,6 +23,7 @@ PUBLIC_ROUTES = [
     "/users/check-email",
     "/users/check-username",
     "/gts_responses/register",
+    "/users/check-phone"
 ]
 
 class AuthMiddleware(BaseHTTPMiddleware):

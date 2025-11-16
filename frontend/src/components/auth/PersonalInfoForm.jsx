@@ -11,11 +11,11 @@ import {
 import phProvincesCities from "../../data/phProvincesCities.json";
 import otherCountriesProvincesCities from "../../data/otherCountriesProvincesCities.json";
 import { useTheme } from "../../hooks/useTheme";
-import PhoneInput from "../PhoneInput";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 import EmailInput from "../EmailInput";
 import UsernameInput from "../UsernameInput";
+import PhoneNumberInput from "../PhoneNumberInput";
 import { COURSES_OPTIONS } from "../../data/GTS/constants";
 
 function PersonalInfoForm({ formData, setFormData, nextStep }) {
@@ -32,6 +32,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   });
   const [emailAvailable, setEmailAvailable] = useState(null);
   const [usernameAvailable, setUsernameAvailable] = useState(null);
+  const [phoneAvailable, setPhoneAvailable] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -121,6 +122,8 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
     } else if (!isValidPhoneNumber(formData.contactNumber)) {
       validateErrors.contactNumber =
         "Please enter a valid phone number (e.g., +63 912 345 6789)";
+    } else if (phoneAvailable === false) {
+      validateErrors.contactNumber = "Phone number is already registered";
     }
 
     if (!formData.course) validateErrors.course = "Course is required";
@@ -189,9 +192,9 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   };
 
   return (
-  <div 
-    className={`${ 
-      isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
+    <div
+      className={`${
+        isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
       } p-4 sm:p-6 lg:p-8 rounded-lg shadow-md max-w-7xl mx-auto w-full`}
     >
       <h2 className="pb-2 mb-6 text-xl font-semibold border-b">
@@ -315,7 +318,11 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
         {/* PERMANENT ADDRESS */}
         <div className="space-y-6">
-          <h3 className={`font-medium text-base ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
+          <h3
+            className={`font-medium text-base ${
+              isDark ? "text-gray-100" : "text-gray-900"
+            }`}
+          >
             Permanent Address
           </h3>
 
@@ -401,7 +408,11 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
         {/* PRESENT ADDRESS */}
         <div className="space-y-6">
-          <h3 className={`font-medium text-base ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
+          <h3
+            className={`font-medium text-base ${
+              isDark ? "text-gray-100" : "text-gray-900"
+            }`}
+          >
             Present Address
           </h3>
 
@@ -484,7 +495,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           />
         </div>
 
-        <PhoneInput
+        <PhoneNumberInput
           id="contactNumber"
           value={formData.contactNumber || ""}
           onChange={(e) =>
@@ -493,6 +504,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           label="Contact Number"
           error={errors.contactNumber}
           defaultCountry="ph"
+          onAvailabilityChange={setPhoneAvailable}
           onError={(error) =>
             setErrors((prev) => ({ ...prev, contactNumber: error }))
           }
@@ -585,24 +597,32 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
                 }`}
               />
             </div>
-           <p
-            className={`text-sm mt-2 ${
-              passwordStrength.score <= 2 
-                ? isDark ? "text-red-400" : "text-red-500"
-                : isDark ? "text-green-400" : "text-green-600"
-            }`}
-          >
-            {passwordStrength.label}
-          </p>
+            <p
+              className={`text-sm mt-2 ${
+                passwordStrength.score <= 2
+                  ? isDark
+                    ? "text-red-400"
+                    : "text-red-500"
+                  : isDark
+                  ? "text-green-400"
+                  : "text-green-600"
+              }`}
+            >
+              {passwordStrength.label}
+            </p>
           </div>
         )}
 
         {formData.registerPassword && formData.registerConfirmPassword && (
-         <p
+          <p
             className={`text-sm ${
               formData.registerPassword === formData.registerConfirmPassword
-                ? isDark ? "text-green-400" : "text-green-600"
-                : isDark ? "text-red-400" : "text-red-600"
+                ? isDark
+                  ? "text-green-400"
+                  : "text-green-600"
+                : isDark
+                ? "text-red-400"
+                : "text-red-600"
             }`}
           >
             {formData.registerPassword === formData.registerConfirmPassword
@@ -615,9 +635,9 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       <button
         onClick={handleNext}
         className={`w-full py-3 mt-8 font-medium rounded-lg transition-colors ${
-          isDark 
-            ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-            : 'bg-blue-600 hover:bg-blue-700 text-white'
+          isDark
+            ? "bg-blue-600 hover:bg-blue-700 text-white"
+            : "bg-blue-600 hover:bg-blue-700 text-white"
         }`}
       >
         Next
