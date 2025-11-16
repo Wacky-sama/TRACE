@@ -5,19 +5,32 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import Base, engine
 from app.middleware.auth_middleware import AuthMiddleware
-from app.routes import (activity_logs_routes, admin_analytics_routes,
-                        admin_reports_routes, event_attendance_routes,
-                        events_routes, gts_responses_routes,
-                        notifications_routes, users_routes)
+from app.routes import (
+    activity_logs_routes,
+    admin_analytics_routes,
+    admin_reports_routes,
+    event_attendance_routes,
+    events_routes,
+    gts_responses_routes,
+    notifications_routes,
+    users_routes
+)
 
+# Load environment variables
 load_dotenv()
 
+# Initialize database tables
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+# Initialize FastAPI app
+app = FastAPI(
+    title="TRACE System Prototype",
+    description="Backend API for TRACE System",
+    version="1.0.0"
+)
 
+# Middleware
 app.add_middleware(AuthMiddleware)
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
@@ -26,15 +39,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(activity_logs_routes.router)  # Activity log routes
-app.include_router(admin_analytics_routes.router) # Admin analytics routes
-app.include_router(admin_reports_routes.router) # Admin reports routes
-app.include_router(events_routes.router) # Event routes
-app.include_router(event_attendance_routes.router) # Event attendance routes
-app.include_router(gts_responses_routes.router) # GTS response routes
-app.include_router(notifications_routes.router) # Notifications routes
-app.include_router(users_routes.router)  # User routes
+# Register routers
+routers = [
+    activity_logs_routes.router,
+    admin_analytics_routes.router,
+    admin_reports_routes.router,
+    events_routes.router,
+    event_attendance_routes.router,
+    gts_responses_routes.router,
+    notifications_routes.router,
+    users_routes.router
+]
 
-@app.get("/")
+for r in routers:
+    app.include_router(r)
+
+# Health check
+@app.get("/", tags=["Health Check"])
 def root():
     return {"message": "TRACE System Prototype backend is running!"}
