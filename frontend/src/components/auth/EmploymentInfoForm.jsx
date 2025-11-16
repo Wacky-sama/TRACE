@@ -173,278 +173,285 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
   }, [formData.employmentNow, setFormData]);
 
   return (
-    <div
-      className={`${
-        isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
-      } p-6 rounded-lg shadow-md transition-colors duration-500`}
-    >
-      <h2 className="pb-2 mb-4 text-xl font-semibold border-b">
+  <div
+    className={`${
+      isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
+    } p-4 sm:p-6 lg:p-8 rounded-lg shadow-md max-w-7xl mx-auto w-full`}
+  >
+      <h2 className="pb-2 mb-6 text-xl font-semibold border-b">
         Employment Information
       </h2>
-      <FloatingSelect
-        id="employmentNow"
-        label="Are you currently employed?"
-        value={formData.employmentNow}
-        onChange={(e) =>
-          setFormData({ ...formData, employmentNow: e.target.value })
-        }
-        options={EMPLOYMENT_NOW_OPTIONS}
-        error={errors.employmentNow}
-      />
 
-      <AnimatePresence mode="wait">
-        {/* If “Yes” */}
-        {formData.employmentNow === "Yes" && (
-          <motion.div
-            key="employment-yes"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{
-              height: "auto",
-              opacity: 1,
-              transition: { duration: 0.4, ease: "easeInOut" },
-            }}
-            exit={{
-              height: 0,
-              opacity: 0,
-              transition: { duration: 0.3, ease: "easeInOut" },
-            }}
-            className="overflow-hidden"
-          >
+      <div className="space-y-6">
+        <FloatingSelect
+          id="employmentNow"
+          label="Are you currently employed?"
+          shortLabel="Currently Employed?"
+          value={formData.employmentNow}
+          onChange={(e) =>
+            setFormData({ ...formData, employmentNow: e.target.value })
+          }
+          options={EMPLOYMENT_NOW_OPTIONS}
+          error={errors.employmentNow}
+        />
+
+        <AnimatePresence mode="wait">
+          {/* If "Yes" */}
+          {formData.employmentNow === "Yes" && (
             <motion.div
-              layout
-              className={`p-4 mt-4 rounded-lg ${
-                isDark ? "bg-gray-800" : "bg-gray-50"
-              } shadow-inner overflow-y-auto`}
-              style={{
-                maxHeight: "600px",
-                transition: "max-height 0.4s ease-in-out",
+              key="employment-yes"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{
+                height: "auto",
+                opacity: 1,
+                transition: { duration: 0.4, ease: "easeInOut" },
               }}
+              exit={{
+                height: 0,
+                opacity: 0,
+                transition: { duration: 0.3, ease: "easeInOut" },
+              }}
+              className="overflow-hidden"
             >
-              <h3
-                className={`mb-2 text-sm font-semibold ${
-                  isDark ? "text-gray-100" : "text-gray-800"
-                }`}
+              <motion.div
+                layout
+                className={`p-6 rounded-lg ${
+                  isDark ? "bg-gray-800" : "bg-gray-50"
+                } shadow-inner overflow-y-auto space-y-6`}
+                style={{
+                  maxHeight: "600px",
+                  transition: "max-height 0.4s ease-in-out",
+                }}
               >
-                Employment Details
-              </h3>
-
-              {/* Status and Place */}
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FloatingSelect
-                  id="employmentStatus"
-                  label="Employment Status"
-                  value={formData.employmentStatus}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      employmentStatus: e.target.value,
-                    })
-                  }
-                  error={errors.employmentStatus}
-                  options={EMPLOYED_STATUSES}
-                />
-
-                <FloatingSelect
-                  id="placeOfWork"
-                  label="Place of Work"
-                  value={formData.placeOfWork}
-                  onChange={(e) =>
-                    setFormData({ ...formData, placeOfWork: e.target.value })
-                  }
-                  error={errors.placeOfWork}
-                  options={PLACE_OF_WORK_OPTIONS}
-                />
-              </div>
-
-              {/* Company info */}
-              <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2">
-                <FloatingInput
-                  id="companyName"
-                  label="Company Name"
-                  value={formData.companyName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, companyName: e.target.value })
-                  }
-                  error={errors.companyName}
-                />
-
-                <FloatingInput
-                  id="companyAddress"
-                  label="Company Address"
-                  value={formData.companyAddress}
-                  onChange={(e) =>
-                    setFormData({ ...formData, companyAddress:  e.target.value })
-                  }
-                  error={errors.companyAddress}
-                />
-              </div>
-
-              {/* Occupation Section */}
-              <div className="mt-6">
                 <h3
-                  className={`mb-2 text-sm font-semibold ${
+                  className={`text-sm font-semibold ${
                     isDark ? "text-gray-100" : "text-gray-800"
                   }`}
                 >
-                  Present Occupation
+                  Employment Details
                 </h3>
-                <div className="flex flex-wrap gap-1 occupation-grid">
-                  {OCCUPATION_OPTIONS.map((option) => (
+
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                  <FloatingSelect
+                    id="employmentStatus"
+                    label="Employment Status"
+                    value={formData.employmentStatus}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        employmentStatus: e.target.value,
+                      })
+                    }
+                    error={errors.employmentStatus}
+                    options={EMPLOYED_STATUSES}
+                  />
+
+                  <FloatingSelect
+                    id="placeOfWork"
+                    label="Place of Work"
+                    value={formData.placeOfWork}
+                    onChange={(e) =>
+                      setFormData({ ...formData, placeOfWork: e.target.value })
+                    }
+                    error={errors.placeOfWork}
+                    options={PLACE_OF_WORK_OPTIONS}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                  <FloatingInput
+                    id="companyName"
+                    label="Company Name"
+                    value={formData.companyName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, companyName: e.target.value })
+                    }
+                    error={errors.companyName}
+                  />
+
+                  <FloatingInput
+                    id="companyAddress"
+                    label="Company Address"
+                    value={formData.companyAddress}
+                    onChange={(e) =>
+                      setFormData({ ...formData, companyAddress:  e.target.value })
+                    }
+                    error={errors.companyAddress}
+                  />
+                </div>
+
+                <div>
+                  <h3
+                    className={`mb-3 text-sm font-semibold ${
+                      isDark ? "text-gray-100" : "text-gray-800"
+                    }`}
+                  >
+                    Present Occupation
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {OCCUPATION_OPTIONS.map((option) => (
+                      <label
+                        key={option}
+                        className={`px-3 py-2 text-sm rounded-lg border cursor-pointer font-medium transition-all ${
+                          formData.occupation.includes(option)
+                            ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                            : isDark
+                            ? "bg-gray-700 border-gray-600 text-gray-100 hover:bg-gray-600"
+                            : "bg-gray-100 border-gray-300 text-gray-800 hover:bg-gray-200"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          value={option}
+                          checked={formData.occupation.includes(option)}
+                          onChange={() => handleOccupationChange(option)}
+                          className="hidden"
+                        />
+                        {option}
+                      </label>
+                    ))}
+                  </div>
+                  {formData.occupation.includes("Others, please specify") && (
+                    <div className="mt-4">
+                      <FloatingInput
+                        id="otherOccupation"
+                        label="Please specify"
+                        value={otherOccupation}
+                        onChange={(e) => setOtherOccupation(e.target.value)}
+                        error={errors.otherOccupation}
+                      />
+                    </div>
+                  )}
+                  {errors.occupation && (
+                    <p className="mt-2 text-xs text-red-500">{errors.occupation}</p>
+                  )}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {/* If "No" */}
+          {formData.employmentNow === "No" && (
+            <motion.div
+              key="employment-no"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{
+                height: "auto",
+                opacity: 1,
+                transition: { duration: 0.4, ease: "easeInOut" },
+              }}
+              exit={{
+                height: 0,
+                opacity: 0,
+                transition: { duration: 0.3, ease: "easeInOut" },
+              }}
+              className="overflow-hidden"
+            >
+              <motion.div
+                layout
+                className={`p-6 rounded-lg ${
+                  isDark ? "bg-gray-800" : "bg-gray-50"
+                } shadow-inner overflow-y-auto space-y-4`}
+                style={{
+                  maxHeight: "400px",
+                  transition: "max-height 0.4s ease-in-out",
+                }}
+              >
+                <h3
+                  className={`text-sm font-semibold ${
+                    isDark ? "text-gray-100" : "text-gray-800"
+                  }`}
+                >
+                  Reason for Not Being Employed
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {NON_EMPLOYED_REASONS.map((reason) => (
                     <label
-                      key={option}
-                      className={`px-2 py-1 text-sm rounded border cursor-pointer ${
-                        formData.occupation.includes(option)
-                          ? "bg-blue-500 text-white border-blue-600"
+                      key={reason}
+                      className={`px-3 py-2 text-sm rounded-lg border cursor-pointer font-medium transition-all ${
+                        formData.nonEmployedReasons.includes(reason)
+                          ? "bg-blue-600 text-white border-blue-600 shadow-md"
                           : isDark
-                          ? "bg-gray-700 border-gray-600 text-gray-100"
-                          : "bg-gray-100 border-gray-300 text-gray-800"
+                          ? "bg-gray-700 border-gray-600 text-gray-100 hover:bg-gray-600"
+                          : "bg-gray-100 border-gray-300 text-gray-800 hover:bg-gray-200"
                       }`}
                     >
                       <input
                         type="checkbox"
-                        value={option}
-                        checked={formData.occupation.includes(option)}
-                        onChange={() => handleOccupationChange(option)}
+                        value={reason}
+                        checked={formData.nonEmployedReasons.includes(reason)}
+                        onChange={() => handleNonEmployedReasonChange(reason)}
                         className="hidden"
                       />
-                      {option}
+                      {reason}
                     </label>
                   ))}
                 </div>
-                {formData.occupation.includes("Others, please specify") && (
+                {formData.nonEmployedReasons.includes(
+                  "Other reason(s), please specify"
+                ) && (
                   <FloatingInput
-                    id="otherOccupation"
+                    id="otherNonEmployedReason"
                     label="Please specify"
-                    value={otherOccupation}
-                    onChange={(e) => setOtherOccupation(e.target.value)}
-                    error={errors.otherOccupation}
+                    value={otherNonEmployedReason}
+                    onChange={(e) => setOtherNonEmployedReason(e.target.value)}
+                    error={errors.otherNonEmployedReason}
                   />
                 )}
-              </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
+          )}
 
-        {/* If “No” */}
-        {formData.employmentNow === "No" && (
-          <motion.div
-            key="employment-no"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{
-              height: "auto",
-              opacity: 1,
-              transition: { duration: 0.4, ease: "easeInOut" },
-            }}
-            exit={{
-              height: 0,
-              opacity: 0,
-              transition: { duration: 0.3, ease: "easeInOut" },
-            }}
-            className="overflow-hidden"
-          >
+          {/* If "Never Employed" */}
+          {formData.employmentNow === "Never Employed" && (
             <motion.div
-              layout
-              className={`p-4 mt-4 rounded-lg ${
-                isDark ? "bg-gray-800" : "bg-gray-50"
-              } shadow-inner overflow-y-auto`}
-              style={{
-                maxHeight: "400px",
-                transition: "max-height 0.4s ease-in-out",
+              key="employment-never"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{
+                height: "auto",
+                opacity: 1,
+                transition: { duration: 0.4, ease: "easeInOut" },
               }}
+              exit={{
+                height: 0,
+                opacity: 0,
+                transition: { duration: 0.3, ease: "easeInOut" },
+              }}
+              className="overflow-hidden"
             >
-              <h3
-                className={`mb-2 text-sm font-semibold ${
-                  isDark ? "text-gray-100" : "text-gray-800"
-                }`}
+              <motion.div
+                layout
+                className={`p-6 rounded-lg ${
+                  isDark ? "bg-gray-800" : "bg-gray-50"
+                } shadow-inner`}
               >
-                Reason for Not Being Employed
-              </h3>
-              <div className="flex flex-wrap gap-1">
-                {NON_EMPLOYED_REASONS.map((reason) => (
-                  <label
-                    key={reason}
-                    className={`px-2 py-1 text-sm rounded border cursor-pointer ${
-                      formData.nonEmployedReasons.includes(reason)
-                        ? "bg-blue-500 text-white border-blue-600"
-                        : isDark
-                        ? "bg-gray-700 border-gray-600 text-gray-100"
-                        : "bg-gray-100 border-gray-300 text-gray-800"
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      value={reason}
-                      checked={formData.nonEmployedReasons.includes(reason)}
-                      onChange={() => handleNonEmployedReasonChange(reason)}
-                      className="hidden"
-                    />
-                    {reason}
-                  </label>
-                ))}
-              </div>
-              {formData.nonEmployedReasons.includes(
-                "Other reasons, please specify"
-              ) && (
-                <FloatingInput
-                  id="otherNonEmployedReason"
-                  label="Please specify"
-                  value={otherNonEmployedReason}
-                  onChange={(e) => setOtherNonEmployedReason(e.target.value)}
-                  error={errors.otherNonEmployedReason}
-                />
-              )}
+                <h3
+                  className={`text-sm font-semibold ${
+                    isDark ? "text-gray-100" : "text-gray-800"
+                  }`}
+                >
+                  You indicated that you have never been employed.
+                </h3>
+                <p className="mt-2 text-sm text-gray-500">
+                  This information helps the Graduate Tracer Study identify
+                  first-time job seekers and analyze employability trends.
+                </p>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
+          )}
+        </AnimatePresence>
+      </div>
 
-        {/* If “Never Employed” */}
-        {formData.employmentNow === "Never Employed" && (
-          <motion.div
-            key="employment-never"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{
-              height: "auto",
-              opacity: 1,
-              transition: { duration: 0.4, ease: "easeInOut" },
-            }}
-            exit={{
-              height: 0,
-              opacity: 0,
-              transition: { duration: 0.3, ease: "easeInOut" },
-            }}
-            className="overflow-hidden"
-          >
-            <motion.div
-              layout
-              className={`p-4 mt-4 rounded-lg ${
-                isDark ? "bg-gray-800" : "bg-gray-50"
-              } shadow-inner`}
-            >
-              <h3
-                className={`text-sm font-semibold ${
-                  isDark ? "text-gray-100" : "text-gray-800"
-                }`}
-              >
-                You indicated that you have never been employed.
-              </h3>
-              <p className="mt-2 text-sm text-gray-500">
-                This information helps the Graduate Tracer Study identify
-                first-time job seekers and analyze employability trends.
-              </p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
       {/* Back & Register Buttons */}
       <div className="flex items-center justify-between mt-8">
         <button
           type="button"
           onClick={prevStep}
           disabled={submitting}
-          className={`px-6 py-2 rounded-md font-medium transition-all duration-300 border ${
+          className={`px-6 py-2.5 rounded-lg font-medium transition-colors ${
             isDark
-              ? "bg-gray-700 hover:bg-gray-600 text-gray-100 border-gray-600"
-              : "bg-gray-200 hover:bg-gray-300 text-gray-900 border-gray-400"
+              ? "bg-gray-700 hover:bg-gray-600 text-gray-100 border border-gray-600"
+              : "bg-gray-200 hover:bg-gray-300 text-gray-900 border border-gray-400"
           }`}
         >
           Back
@@ -454,7 +461,7 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
           type="button"
           onClick={onSubmit}
           disabled={submitting}
-          className={`px-8 py-2 rounded-md font-medium transition-all duration-300 ${
+          className={`px-8 py-2.5 rounded-lg font-medium transition-colors ${
             submitting
               ? "bg-blue-400 text-white cursor-not-allowed"
               : "bg-blue-600 hover:bg-blue-700 text-white"

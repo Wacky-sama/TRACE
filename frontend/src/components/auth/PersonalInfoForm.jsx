@@ -11,11 +11,11 @@ import {
 import phProvincesCities from "../../data/phProvincesCities.json";
 import otherCountriesProvincesCities from "../../data/otherCountriesProvincesCities.json";
 import { useTheme } from "../../hooks/useTheme";
-import PhoneInput from "../PhoneInput";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 import EmailInput from "../EmailInput";
 import UsernameInput from "../UsernameInput";
+import PhoneNumberInput from "../PhoneNumberInput";
 import { COURSES_OPTIONS } from "../../data/GTS/constants";
 
 function PersonalInfoForm({ formData, setFormData, nextStep }) {
@@ -32,6 +32,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   });
   const [emailAvailable, setEmailAvailable] = useState(null);
   const [usernameAvailable, setUsernameAvailable] = useState(null);
+  const [phoneAvailable, setPhoneAvailable] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -121,6 +122,8 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
     } else if (!isValidPhoneNumber(formData.contactNumber)) {
       validateErrors.contactNumber =
         "Please enter a valid phone number (e.g., +63 912 345 6789)";
+    } else if (phoneAvailable === false) {
+      validateErrors.contactNumber = "Phone number is already registered";
     }
 
     if (!formData.course) validateErrors.course = "Course is required";
@@ -189,17 +192,17 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   };
 
   return (
-    <div 
-      className={`${ 
+    <div
+      className={`${
         isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
-        } p-2 rounded-lg shadow-md transition-colors duration-500`}
-      >
-      <h2 className="pb-2 mb-4 text-xl font-semibold border-b">
+      } p-4 sm:p-6 lg:p-8 rounded-lg shadow-md max-w-7xl mx-auto w-full`}
+    >
+      <h2 className="pb-2 mb-6 text-xl font-semibold border-b">
         Personal Information
       </h2>
 
-      <div className="space-y-2">
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <EmailInput
             id="email"
             value={formData.email}
@@ -227,9 +230,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             onAvailabilityChange={setUsernameAvailable}
           />
         </div>
-      </div>
 
-      <div className="space-y-2">
         <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <FloatingInput
             id="lastName"
@@ -276,14 +277,13 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             setFormData({ ...formData, nameExtension: e.target.value })
           }
           label="Name Extension (e.g., Jr., Sr., III)"
+          shortLabel="Name Extension"
           placeholder="None"
           error={errors.nameExtension}
           options={["Jr.", "Sr.", "I", "II", "III", "IV", "V"]}
         />
-      </div>
 
-      <div className="space-y-2">
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <AlumniFloatingDatePicker
             id="birthday"
             label="Birthday"
@@ -306,23 +306,26 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             readOnly
           />
         </div>
-      </div>
 
-      <FloatingSelect
-        id="sex"
-        value={formData.sex || ""}
-        onChange={(e) => setFormData({ ...formData, sex: e.target.value })}
-        label="Sex"
-        error={errors.sex}
-        options={["Male", "Female"]}
-      />
+        <FloatingSelect
+          id="sex"
+          value={formData.sex || ""}
+          onChange={(e) => setFormData({ ...formData, sex: e.target.value })}
+          label="Sex"
+          error={errors.sex}
+          options={["Male", "Female"]}
+        />
 
-      <div className="space-y-2">
         {/* PERMANENT ADDRESS */}
-        <div>
-          <h3 className={`mb-1 font-medium text-md ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>Permanent Address</h3>
+        <div className="space-y-6">
+          <h3
+            className={`font-medium text-base ${
+              isDark ? "text-gray-100" : "text-gray-900"
+            }`}
+          >
+            Permanent Address
+          </h3>
 
-          {/* Country */}
           <FloatingSelect
             id="permanentCountry"
             label="Country"
@@ -339,7 +342,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             error={errors.permanentCountry}
           />
 
-          {/* Province */}
           <FloatingSelect
             id="permanentProvince"
             label="Province"
@@ -364,10 +366,10 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             error={errors.permanentProvince}
           />
 
-          {/* Municipality / City */}
           <FloatingSelect
             id="permanentMunicipality"
             label="City / Municipality"
+            shortLabel="City"
             value={formData.permanentMunicipality}
             onChange={(e) =>
               setFormData({
@@ -392,6 +394,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           <FloatingInput
             id="permanentBarangayStreet"
             label="Barangay / Street / House No."
+            shortLabel="Barangay / Street"
             value={formData.permanentBarangayStreet}
             onChange={(e) =>
               setFormData({
@@ -404,10 +407,15 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         </div>
 
         {/* PRESENT ADDRESS */}
-        <div>
-          <h3 className={`mb-1 font-medium text-md ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>Present Address</h3>
+        <div className="space-y-6">
+          <h3
+            className={`font-medium text-base ${
+              isDark ? "text-gray-100" : "text-gray-900"
+            }`}
+          >
+            Present Address
+          </h3>
 
-          {/* Country */}
           <FloatingSelect
             id="presentCountry"
             label="Country"
@@ -424,7 +432,6 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             error={errors.presentCountry}
           />
 
-          {/* Province */}
           <FloatingSelect
             id="presentProvince"
             label="Province"
@@ -448,10 +455,10 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             error={errors.presentProvince}
           />
 
-          {/* Municipality / City */}
           <FloatingSelect
             id="presentMunicipality"
             label="City / Municipality"
+            shortLabel="City"
             value={formData.presentMunicipality}
             onChange={(e) =>
               setFormData({
@@ -476,6 +483,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           <FloatingInput
             id="presentBarangayStreet"
             label="Barangay / Street / House No."
+            shortLabel="Barangay / Street"
             value={formData.presentBarangayStreet}
             onChange={(e) =>
               setFormData({
@@ -487,7 +495,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           />
         </div>
 
-        <PhoneInput
+        <PhoneNumberInput
           id="contactNumber"
           value={formData.contactNumber || ""}
           onChange={(e) =>
@@ -496,14 +504,13 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           label="Contact Number"
           error={errors.contactNumber}
           defaultCountry="ph"
+          onAvailabilityChange={setPhoneAvailable}
           onError={(error) =>
             setErrors((prev) => ({ ...prev, contactNumber: error }))
           }
         />
-      </div>
 
-      <div className="space-y-2">
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <FloatingSelect
             id="course"
             value={formData.course}
@@ -529,10 +536,8 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             darkMode={isDark}
           />
         </div>
-      </div>
 
-      <div className="space-y-2">
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <FloatingInput
             id="registerPassword"
             type={showPassword ? "text" : "password"}
@@ -545,7 +550,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           >
             <span
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 flex items-center text-gray-500 cursor-pointer right-3"
+              className="text-gray-500 cursor-pointer"
             >
               <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
             </span>
@@ -566,7 +571,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           >
             <span
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute inset-y-0 flex items-center text-gray-500 cursor-pointer right-3"
+              className="text-gray-500 cursor-pointer"
             >
               <FontAwesomeIcon
                 icon={showConfirmPassword ? faEyeSlash : faEye}
@@ -576,7 +581,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         </div>
 
         {formData.registerPassword && (
-          <div className="mt-2">
+          <div>
             <div className="w-full h-2 bg-gray-200 rounded-full">
               <div
                 className={`h-2 rounded-full transition-all duration-300 ${
@@ -592,24 +597,32 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
                 }`}
               />
             </div>
-           <p
-            className={`text-sm mt-1 ${
-              passwordStrength.score <= 2 
-                ? isDark ? "text-red-400" : "text-red-500"
-                : isDark ? "text-green-400" : "text-green-600"
-            }`}
-          >
-            {passwordStrength.label}
-          </p>
+            <p
+              className={`text-sm mt-2 ${
+                passwordStrength.score <= 2
+                  ? isDark
+                    ? "text-red-400"
+                    : "text-red-500"
+                  : isDark
+                  ? "text-green-400"
+                  : "text-green-600"
+              }`}
+            >
+              {passwordStrength.label}
+            </p>
           </div>
         )}
 
         {formData.registerPassword && formData.registerConfirmPassword && (
-         <p
-            className={`text-sm mt-1 ${
+          <p
+            className={`text-sm ${
               formData.registerPassword === formData.registerConfirmPassword
-                ? isDark ? "text-green-400" : "text-green-600"
-                : isDark ? "text-red-400" : "text-red-600"
+                ? isDark
+                  ? "text-green-400"
+                  : "text-green-600"
+                : isDark
+                ? "text-red-400"
+                : "text-red-600"
             }`}
           >
             {formData.registerPassword === formData.registerConfirmPassword
@@ -621,10 +634,10 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
 
       <button
         onClick={handleNext}
-        className={`w-full py-3 mt-6 font-medium rounded-md transition ${
-          isDark 
-            ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-            : 'bg-blue-600 hover:bg-blue-700 text-white'
+        className={`w-full py-3 mt-8 font-medium rounded-lg transition-colors ${
+          isDark
+            ? "bg-blue-600 hover:bg-blue-700 text-white"
+            : "bg-blue-600 hover:bg-blue-700 text-white"
         }`}
       >
         Next

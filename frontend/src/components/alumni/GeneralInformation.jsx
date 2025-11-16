@@ -2,7 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { CIVIL_STATUSES_OPTIONS } from "../../data/GTS/constants";
-import PhoneInput from "../PhoneInput";
+import PhoneNumberInput from "../PhoneNumberInput";
 import FloatingInput from "../FloatingInput";
 import FloatingSelect from "../FloatingSelect";
 
@@ -117,7 +117,7 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
           readOnly
         />
 
-        <PhoneInput
+        <PhoneNumberInput
           id="mobile"
           label="Contact Number"
           value={formData.mobile}

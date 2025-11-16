@@ -20,6 +20,13 @@ class UsernameCheckResponse(BaseModel):
     available: bool
     message: str
 
+class PhoneCheckRequest(BaseModel):
+    contact_number: str
+
+class PhoneCheckResponse(BaseModel):
+    available: bool
+    message: str
+
 class UserLogin(BaseModel):
     identifier: str
     password: str
