@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { PhoneInput as IntlPhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { useTheme } from "../hooks/useTheme";
@@ -10,7 +10,7 @@ function PhoneNumberInput({
   value,
   onChange,
   label,
-  error,
+  error: externalError,
   defaultCountry = "ph",
   onAvailabilityChange,
   onError,
@@ -18,168 +18,153 @@ function PhoneNumberInput({
 }) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
-  const [availability, setAvailability] = useState(null);
-  const [checking, setChecking] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
+  const [isAvailable, setIsAvailable] = useState(null);
   const [validationError, setValidationError] = useState("");
+  
+  // Store callbacks in refs to avoid dependency issues
+  const onAvailabilityChangeRef = useRef(onAvailabilityChange);
+  const onErrorRef = useRef(onError);
+  
+  useEffect(() => {
+    onAvailabilityChangeRef.current = onAvailabilityChange;
+    onErrorRef.current = onError;
+  }, [onAvailabilityChange, onError]);
 
   useEffect(() => {
-    const checkAvailability = async () => {
-      if (!value || value.length < 10) {
-        setAvailability(null);
-        onAvailabilityChange?.(null);
-        return;
-      }
+    if (!value || value.length < 10) {
+      setIsAvailable(null);
+      setValidationError("");
+      setIsChecking(false);
+      if (onAvailabilityChangeRef.current) onAvailabilityChangeRef.current(null);
+      return;
+    }
 
-      // First validate format
+    const timeoutId = setTimeout(async () => {
+      setIsChecking(true);
+      setValidationError("");
+
+      // Validate format first
       const normalizedValue = value.replace(/\s+/g, "");
       if (!isValidPhoneNumber(normalizedValue)) {
         setValidationError("Please enter a valid phone number");
-        setAvailability(null);
-        onAvailabilityChange?.(false);
-        onError?.("Please enter a valid phone number");
+        setIsAvailable(null);
+        if (onAvailabilityChangeRef.current) onAvailabilityChangeRef.current(null);
+        if (onErrorRef.current) onErrorRef.current("Please enter a valid phone number");
+        setIsChecking(false);
         return;
       }
-
-      setValidationError("");
-      setChecking(true);
 
       try {
         const response = await api.post("/users/check-phone", {
           contact_number: normalizedValue,
         });
-
-        setAvailability(response.data.available);
-        onAvailabilityChange?.(response.data.available);
-
+        setIsAvailable(response.data.available);
+        if (onAvailabilityChangeRef.current) onAvailabilityChangeRef.current(response.data.available);
         if (!response.data.available) {
-          onError?.(response.data.message);
+          setValidationError(response.data.message);
+          if (onErrorRef.current) onErrorRef.current(response.data.message);
         } else {
-          onError?.(null);
+          if (onErrorRef.current) onErrorRef.current(null);
         }
       } catch (err) {
-        console.error("Error checking phone availability:", err);
-        setAvailability(null);
-        onAvailabilityChange?.(null);
+        console.error("Phone check failed:", err);
+        setValidationError("Failed to check phone availability");
+        setIsAvailable(null);
+        if (onAvailabilityChangeRef.current) onAvailabilityChangeRef.current(null);
       } finally {
-        setChecking(false);
+        setIsChecking(false);
       }
-    };
+    }, 500);
 
-    const timeoutId = setTimeout(checkAvailability, 500);
     return () => clearTimeout(timeoutId);
-  }, [value, onAvailabilityChange, onError]);
+  }, [value]);
 
   const handleChange = (phone) => {
     onChange({ target: { id, value: phone } });
   };
 
-  const handleBlur = () => {
-    const normalizedValue = value?.replace(/\s+/g, "") || "";
-
-    if (normalizedValue && !isValidPhoneNumber(normalizedValue)) {
-      setValidationError("Please enter a valid phone number");
-      onError?.("Please enter a valid phone number (e.g., +63 912 345 6789)");
-    } else {
-      setValidationError("");
-      if (availability === true) {
-        onError?.(null);
-      }
+  const getStatusIcon = () => {
+    if (!value || value.length < 10) return null;
+    if (isChecking) {
+      return <div className="w-4 h-4 border-2 border-blue-600 rounded-full animate-spin border-t-transparent" />;
     }
+    if (isAvailable === true) {
+      return (
+        <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
+      );
+    }
+    if (isAvailable === false) {
+      return (
+        <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      );
+    }
+    return null;
   };
 
-  const getStatusColor = () => {
-    if (validationError) return isDark ? "text-red-400" : "text-red-600";
-    if (checking) return isDark ? "text-gray-400" : "text-gray-500";
-    if (availability === true) return isDark ? "text-green-400" : "text-green-600";
-    if (availability === false) return isDark ? "text-red-400" : "text-red-600";
-    return "";
-  };
-
-  const getStatusMessage = () => {
-    if (validationError) return validationError;
-    if (checking) return "Checking...";
-    if (availability === true) return "Phone number is available";
-    if (availability === false) return "Phone number is already registered";
-    return "";
-  };
-
+  const displayError = externalError || validationError;
   const hasValue = value && value.trim() !== "";
 
   return (
-    <div className="relative mb-4">
-      {/* Floating Label */}
-      <label
-        htmlFor={id}
-        className={`absolute left-3 px-1 transition-all duration-200 pointer-events-none z-10
-        ${
-          hasValue
-            ? "text-xs -top-2.5"
-            : "top-3 text-sm"
-        } 
-        ${
-          error || validationError
-            ? isDark
-              ? "text-red-400"
-              : "text-red-600"
-            : hasValue
-            ? isDark
-              ? "text-blue-400 bg-gray-800"
-              : "text-blue-600 bg-white"
-            : isDark
-            ? "bg-gray-800 text-gray-400"
-            : "bg-white text-gray-500"
-        }`}
-      >
-        {label}
-      </label>
-
-      {/* Phone Input */}
-      <IntlPhoneInput
-        id={id}
-        value={value}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        defaultCountry={defaultCountry}
-        className={`w-full p-3 border rounded-md text-sm focus:outline-none focus:ring-2 
-          ${
-            error || validationError
-              ? isDark
-                ? "border-red-500 focus:ring-red-500 bg-gray-800 text-white"
-                : "border-red-500 focus:ring-red-500 bg-white text-gray-900"
+    <div className="mb-2">
+      <div className="relative">
+        <IntlPhoneInput
+          id={id}
+          value={value}
+          onChange={handleChange}
+          defaultCountry={defaultCountry}
+          className={`w-full p-3 pt-6 pr-10 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 peer
+            ${displayError
+              ? "border-red-500"
+              : isAvailable === true
+              ? "border-green-500"
+              : isAvailable === false
+              ? "border-red-500"
               : isDark
-              ? "bg-gray-800 text-white border-gray-600 focus:ring-blue-500"
-              : "bg-white text-gray-900 border-gray-300 focus:ring-blue-500"
-          }`}
-        countrySelectorStyleProps={{
-          buttonClassName: `flex items-center px-2 py-1 border-r rounded-l-md ${
-            isDark
-              ? "bg-gray-800 text-white border-gray-600 hover:bg-gray-700"
-              : "bg-gray-100 text-gray-900 border-gray-300 hover:bg-gray-200"
-          }`,
-          dropdownStyleProps: {
-            className: `absolute z-50 mt-1 w-full max-h-60 overflow-auto border rounded-md shadow-lg ${
+              ? "border-gray-600 bg-gray-800 text-white"
+              : "border-gray-300 bg-white text-gray-900"}`}
+          countrySelectorStyleProps={{
+            buttonClassName: `flex items-center px-2 py-1 border-r rounded-l-md ${
               isDark
-                ? "bg-gray-800 border-gray-600 text-white"
-                : "bg-white border-gray-300 text-gray-900"
+                ? "bg-gray-800 text-white border-gray-600 hover:bg-gray-700"
+                : "bg-gray-100 text-gray-900 border-gray-300 hover:bg-gray-200"
             }`,
-          },
-        }}
-        {...props}
-      />
+            dropdownStyleProps: {
+              className: `absolute z-50 mt-1 w-full max-h-60 overflow-auto border rounded-md shadow-lg ${
+                isDark
+                  ? "bg-gray-800 border-gray-600 text-white"
+                  : "bg-white border-gray-300 text-gray-900"
+              }`,
+            },
+          }}
+          {...props}
+        />
 
-      {/* Status message */}
-      {value && getStatusMessage() && (
-        <p className={`text-sm mt-1 ${getStatusColor()}`}>
-          {getStatusMessage()}
-        </p>
-      )}
+        <label
+          htmlFor={id}
+          className={`absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm transition-all duration-200 transform origin-left pointer-events-none
+            peer-focus:top-1 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-blue-500
+            ${hasValue ? "top-1 translate-y-0 text-xs" : ""}
+            ${isDark ? "text-gray-400 peer-focus:text-blue-400" : "text-gray-500"}
+            ${hasValue && !isDark ? "text-gray-600" : ""}
+            ${hasValue && isDark ? "text-gray-300" : ""}`}
+        >
+          {label}
+        </label>
 
-      {/* Error from parent */}
-      {error && !validationError && !getStatusMessage() && (
-        <p className={`text-sm mt-1 ${isDark ? "text-red-400" : "text-red-600"}`}>
-          {error}
-        </p>
-      )}
+        <div className="absolute inset-y-0 flex items-center right-3">{getStatusIcon()}</div>
+      </div>
+
+      <div className="h-5 mt-1">
+        {displayError && <p className="text-xs text-red-500">{displayError}</p>}
+        {!displayError && value && value.length >= 10 && !isChecking && isAvailable === true && (
+          <p className="text-xs text-green-500">✓ Phone number is available</p>
+        )}
+      </div>
     </div>
   );
 }
