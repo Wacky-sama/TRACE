@@ -201,8 +201,8 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
         Personal Information
       </h2>
 
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="space-y-3">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
           <EmailInput
             id="email"
             value={formData.email}
@@ -283,7 +283,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           options={["Jr.", "Sr.", "I", "II", "III", "IV", "V"]}
         />
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
           <AlumniFloatingDatePicker
             id="birthday"
             label="Birthday"
@@ -510,7 +510,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           }
         />
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
           <FloatingSelect
             id="course"
             value={formData.course}
@@ -537,7 +537,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
           <FloatingInput
             id="registerPassword"
             type={showPassword ? "text" : "password"}

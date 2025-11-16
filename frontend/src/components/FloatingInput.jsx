@@ -47,10 +47,15 @@ function FloatingInput({
         />
         <label
           htmlFor={id}
-          className={`absolute pointer-events-none ${
-            icon ? "left-10" : "left-3"
-          } transition-all duration-200 transform origin-left
-          ${hasValue ? "top-1.5 text-[10px] sm:text-xs" : "top-1/2 -translate-y-1/2 text-xs sm:text-sm"}
+          className={`absolute pointer-events-none
+          ${icon ? "left-10" : "left-3"}
+          ${children ? "pr-6" : ""}
+          transition-all duration-200 transform origin-left
+          ${
+            hasValue
+              ? "top-1.5 text-[10px] sm:text-xs"
+              : "top-1/2 -translate-y-1/2 text-xs sm:text-sm"
+          }
           peer-focus:top-1.5 peer-focus:text-[10px] sm:peer-focus:text-xs peer-focus:-translate-y-0
           ${
             isDark
