@@ -175,42 +175,101 @@ const AdminEvents = () => {
     }
   };
 
-  if (loading) return <p className="p-4">Loading...</p>;
+  // Card view for mobile
+  const renderCards = (filteredEvents) => (
+    <div className="grid grid-cols-1 gap-4 md:hidden">
+      {filteredEvents.length ? (
+        filteredEvents.map((event) => {
+          const startDate = new Date(event.start_date);
+          const endDate = new Date(event.end_date);
+          const formattedStartDate = startDate.toLocaleDateString();
+          const formattedStartTime = startDate.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          const formattedEndDate = endDate.toLocaleDateString();
+          const formattedEndTime = endDate.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
 
-  return (
-    <div
-      className={`${
-        isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
-      } min-h-screen p-6`}
-    >
-      <h2 className="mb-4 text-2xl font-bold">Events</h2>
-      <p className="mb-4 text-lg font-semibold">
-        On this page, you can manage events that alumni can view and register
-        for.
-      </p>
-      <p className="mb-6 text-sm">
-        You can edit or delete existing events below.
-      </p>
-      <div className="flex items-center justify-end mb-4 space-x-2">
-        <input
-          type="text"
-          placeholder="Search Event"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className={`border rounded px-3 py-1 ${
+          return (
+            <div
+              key={event.id}
+              className={`border rounded-lg p-4 shadow ${
+                isDark
+                  ? "bg-gray-800 border-gray-700 text-gray-200"
+                  : "bg-white border-gray-200 text-gray-900"
+              }`}
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <h4 className="text-lg font-bold">{event.title}</h4>
+                  <p className="text-sm opacity-75">{event.location}</p>
+                </div>
+              </div>
+
+              <div className="mb-3 space-y-2 text-sm">
+                <div className="flex">
+                  <span className="font-semibold w-28">Description:</span>
+                  <span className="flex-1">{event.description || "-"}</span>
+                </div>
+                <div className="flex">
+                  <span className="font-semibold w-28">Start Date:</span>
+                  <span>{formattedStartDate}</span>
+                </div>
+                <div className="flex">
+                  <span className="font-semibold w-28">Start Time:</span>
+                  <span>{formattedStartTime}</span>
+                </div>
+                <div className="flex">
+                  <span className="font-semibold w-28">End Date:</span>
+                  <span>{formattedEndDate}</span>
+                </div>
+                <div className="flex">
+                  <span className="font-semibold w-28">End Time:</span>
+                  <span>{formattedEndTime}</span>
+                </div>
+              </div>
+
+              <div className="flex gap-2 mt-4">
+                <button
+                  title="Edit"
+                  onClick={() => handleEdit(event)}
+                  className="flex items-center justify-center flex-1 px-3 py-2 text-yellow-500 border border-yellow-500 rounded hover:bg-yellow-50"
+                >
+                  <FontAwesomeIcon icon={faPenToSquare} className="mr-2" />
+                  Edit
+                </button>
+                <button
+                  title="Delete"
+                  onClick={() => handleDelete(event.id)}
+                  className="flex items-center justify-center flex-1 px-3 py-2 text-red-500 border border-red-500 rounded hover:bg-red-50"
+                >
+                  <FontAwesomeIcon icon={faTrash} className="mr-2" />
+                  Delete
+                </button>
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        <div
+          className={`p-8 text-center border rounded-lg ${
             isDark
-              ? "bg-gray-800 border-gray-700 text-gray-100"
-              : "bg-white border-gray-300 text-gray-900"
+              ? "bg-gray-800 border-gray-700 text-gray-400"
+              : "bg-white border-gray-200 text-gray-500"
           }`}
-        />
-        <FontAwesomeIcon
-          icon={faMagnifyingGlass}
-          className={isDark ? "text-gray-300" : "text-gray-600"}
-        />
-      </div>
-      {/* Border */}
-      <div className="mb-6 border-t"></div>
+        >
+          No events found.
+        </div>
+      )}
+    </div>
+  );
 
+  // Table view for desktop
+  const renderTable = (filteredEvents) => (
+    <div className="hidden overflow-x-auto md:block">
       <table
         className={`min-w-full border rounded-lg shadow transition-colors duration-300 ${
           isDark
@@ -241,13 +300,8 @@ const AdminEvents = () => {
           </tr>
         </thead>
         <tbody className="text-sm">
-          {events
-            .filter((event) =>
-              `${event.title} ${event.location} ${event.description || ""}`
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase())
-            )
-            .map((event) => {
+          {filteredEvents.length ? (
+            filteredEvents.map((event) => {
               const startDate = new Date(event.start_date);
               const endDate = new Date(event.end_date);
               const formattedStartDate = startDate.toLocaleDateString();
@@ -293,12 +347,8 @@ const AdminEvents = () => {
                   </td>
                 </tr>
               );
-            })}
-          {events.filter((event) =>
-            `${event.title} ${event.location} ${event.description || ""}`
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())
-          ).length === 0 && (
+            })
+          ) : (
             <tr>
               <td
                 colSpan="8"
@@ -312,17 +362,64 @@ const AdminEvents = () => {
           )}
         </tbody>
       </table>
+    </div>
+  );
+
+  const filteredEvents = events.filter((event) =>
+    `${event.title} ${event.location} ${event.description || ""}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
+  if (loading) return <p className="p-4">Loading...</p>;
+
+  return (
+    <div
+      className={`${
+        isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
+      } min-h-screen p-4 md:p-6`}
+    >
+      <h2 className="mb-4 text-2xl font-bold md:text-3xl">Events</h2>
+      <p className="mb-4 text-sm font-semibold md:text-lg">
+        On this page, you can manage events that alumni can view and register
+        for.
+      </p>
+      <p className="mb-6 text-xs md:text-sm">
+        You can edit or delete existing events below.
+      </p>
+      <div className="flex items-center justify-end mb-4 space-x-2">
+        <input
+          type="text"
+          placeholder="Search Event"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className={`border rounded px-3 py-2 w-full md:w-auto ${
+            isDark
+              ? "bg-gray-800 border-gray-700 text-gray-100"
+              : "bg-white border-gray-300 text-gray-900"
+          }`}
+        />
+        <FontAwesomeIcon
+          icon={faMagnifyingGlass}
+          className={isDark ? "text-gray-300" : "text-gray-600"}
+        />
+      </div>
+      {/* Border */}
+      <div className="mb-6 border-t"></div>
+
+      {renderTable(filteredEvents)}
+      {renderCards(filteredEvents)}
 
       {editingEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
           <form
             onSubmit={handleEditSubmit}
-            className={`w-full max-w-md p-6 rounded-lg shadow-lg transition-colors ${
+            className={`w-full max-w-md max-h-[90vh] overflow-y-auto p-4 md:p-6 rounded-lg shadow-lg transition-colors ${
               isDark ? "bg-gray-800 text-gray-200" : "bg-white text-gray-900"
             }`}
           >
             <h2
-              className={`text-xl font-semibold border-b pb-2 mb-4 ${
+              className={`text-lg md:text-xl font-semibold border-b pb-2 mb-4 ${
                 isDark
                   ? "text-gray-100 border-gray-700"
                   : "text-gray-800 border-gray-200"
@@ -501,7 +598,7 @@ const AdminEvents = () => {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 mt-4">
+            <div className="flex flex-col-reverse gap-2 mt-4 md:flex-row md:justify-end">
               <button
                 type="button"
                 onClick={() => {
@@ -510,7 +607,7 @@ const AdminEvents = () => {
                   setCustomLocation("");
                   setShowCustomLocation(false);
                 }}
-                className={`px-4 py-2 rounded ${
+                className={`w-full md:w-auto px-4 py-2 rounded ${
                   isDark
                     ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
                     : "bg-gray-300 text-gray-800 hover:bg-gray-400"
@@ -520,7 +617,7 @@ const AdminEvents = () => {
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 font-medium text-white bg-blue-600 rounded hover:bg-blue-700"
+                className="w-full px-4 py-2 font-medium text-white bg-blue-600 rounded md:w-auto hover:bg-blue-700"
               >
                 Save Changes
               </button>
