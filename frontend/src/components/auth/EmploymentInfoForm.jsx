@@ -119,7 +119,7 @@ function EmploymentInfoForm({formData, setFormData, prevStep,handleRegister,}) {
       toast.success("Registration submitted successfully! Redirecting to login page...");
 
       setTimeout(() => {
-        navigate("/alumni-login");
+        navigate("/login");
       }, 2000);
     } catch (error) {
       setSubmitting(false);
