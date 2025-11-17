@@ -130,7 +130,6 @@ const AdminCreateUser = () => {
         sex: "",
       });
     } catch (error) {
-      console.error("Error response:", error.response);
       const errorMsg = error.response?.data
         ? JSON.stringify(error.response.data, null, 2)
         : "Creation failed";
@@ -142,24 +141,26 @@ const AdminCreateUser = () => {
     <div
       className={`${
         isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
-      } min-h-screen p-6`}
+      } min-h-screen p-4 sm:p-6`}
     >
-      <div>
-        <p className="mb-4 text-lg font-semibold">
-          On this page, Admin can create another admin account.
-        </p>
-        <p className="mb-6 text-sm">
-          Note: You can only create one admin account.
-        </p>
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-4 sm:mb-6">
+          <p className="mb-2 text-base font-semibold sm:mb-4 sm:text-lg">
+            On this page, Admin can create another admin account.
+          </p>
+          <p className="text-xs sm:text-sm">
+            Note: You can only create one admin account.
+          </p>
+        </div>
 
         <form
           onSubmit={handleSubmit}
           className={`${
             isDark ? "bg-gray-800" : "bg-white"
-          } p-6 shadow-md rounded-lg`}
+          } p-2 sm:p-6 shadow-md rounded-lg`}
         >
           <h2
-            className={`text-xl font-semibold border-b pb-2 mb-4 ${
+            className={`text-lg sm:text-xl font-semibold border-b pb-2 mb-4 ${
               isDark
                 ? "text-gray-100 border-gray-700"
                 : "text-gray-800 border-gray-200"
@@ -168,7 +169,8 @@ const AdminCreateUser = () => {
             Create User
           </h2>
 
-          <div className="grid grid-cols-1 gap-3 mb-4 md:grid-cols-2">
+          {/* Email & Username */}
+          <div className="grid grid-cols-1 gap-2 mb-4 sm:grid-cols-2">
             <EmailInput
               id="email"
               value={formData.email}
@@ -197,7 +199,8 @@ const AdminCreateUser = () => {
             />
           </div>
 
-          <div className="grid grid-cols-1 gap-2 mb-4 md:grid-cols-3">
+          {/* Name Fields */}
+          <div className="grid grid-cols-1 gap-3 mb-4 sm:grid-cols-2 lg:grid-cols-3">
             <FloatingInput
               id="lastName"
               value={formData.lastName}
@@ -236,28 +239,32 @@ const AdminCreateUser = () => {
             />
           </div>
 
-          <FloatingSelect
-            id="nameExtension"
-            value={formData.nameExtension || ""}
-            onChange={(e) =>
-              setFormData({ ...formData, nameExtension: e.target.value })
-            }
-            label="Name Extension (e.g., Jr., Sr., III)"
-            placeholder="None"
-            error={errors.nameExtension}
-            options={["Jr.", "Sr.", "II", "III", "IV", "V"]}
-          />
+          {/* Name Extension & Sex */}
+          <div className="grid grid-cols-1 gap-3 mb-4 sm:grid-cols-2">
+            <FloatingSelect
+              id="nameExtension"
+              value={formData.nameExtension || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, nameExtension: e.target.value })
+              }
+              label="Name Extension (e.g., Jr., Sr., III)"
+              placeholder="None"
+              error={errors.nameExtension}
+              options={["Jr.", "Sr.", "I", "II", "III", "IV", "V"]}
+            />
 
-          <FloatingSelect
-            id="sex"
-            value={formData.sex}
-            onChange={(e) => setFormData({ ...formData, sex: e.target.value })}
-            label="Sex"
-            error={errors.sex}
-            options={["Male", "Female"]}
-          />
+            <FloatingSelect
+              id="sex"
+              value={formData.sex}
+              onChange={(e) => setFormData({ ...formData, sex: e.target.value })}
+              label="Sex"
+              error={errors.sex}
+              options={["Male", "Female"]}
+            />
+          </div>
 
-          <div className="grid grid-cols-1 gap-3 mt-4 md:grid-cols-2">
+          {/* Password Fields */}
+          <div className="grid grid-cols-1 gap-3 mb-4 sm:grid-cols-2">
             <FloatingInput
               id="registerPassword"
               type={showPassword ? "text" : "password"}
@@ -301,8 +308,9 @@ const AdminCreateUser = () => {
             </FloatingInput>
           </div>
 
+          {/* Password Strength Indicator */}
           {formData.registerPassword && (
-            <div className="mt-2">
+            <div className="mt-2 mb-3">
               <div className="w-full h-2 bg-gray-200 rounded-full">
                 <div
                   className={`h-2 rounded-full transition-all duration-300 ${
@@ -319,7 +327,7 @@ const AdminCreateUser = () => {
                 />
               </div>
               <p
-                className={`text-sm mt-1 text-center ${
+                className={`text-xs sm:text-sm mt-1 text-center ${
                   passwordStrength.score <= 2 ? "text-red-500" : "text-green-600"
                 }`}
               >
@@ -328,9 +336,10 @@ const AdminCreateUser = () => {
             </div>
           )}
 
+          {/* Password Match Indicator */}
           {formData.registerPassword && formData.registerConfirmPassword && (
             <p
-              className={`text-sm mt-1 text-center ${
+              className={`text-xs sm:text-sm mb-3 text-center ${
                 formData.registerPassword === formData.registerConfirmPassword
                   ? "text-green-600"
                   : "text-red-600"
@@ -344,13 +353,17 @@ const AdminCreateUser = () => {
 
           <button
             type="submit"
-            className="w-full py-3 mt-4 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+            className="w-full py-2.5 sm:py-3 mt-2 font-medium text-sm sm:text-base text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
           >
             Create User
           </button>
 
           {message && (
-            <p className="mt-2 text-sm text-center text-green-600">{message}</p>
+            <p className={`mt-3 text-xs sm:text-sm text-center ${
+              message.includes("successfully") ? "text-green-600" : "text-red-600"
+            }`}>
+              {message}
+            </p>
           )}
         </form>
       </div>
