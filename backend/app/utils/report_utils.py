@@ -6,6 +6,46 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import (Paragraph, SimpleDocTemplate, Spacer, Table,
                                 TableStyle)
 
+def get_display_headers(report_type: str):
+    """Return human-readable column headers for each report type"""
+    headers = {
+        "alumni": {
+            "id": "ID",
+            "username": "Username",
+            "email": "Email",
+            "full_name": "Full Name",
+            "course": "Course",
+            "batch_year": "Batch Year",
+            "is_active": "Active Status"
+        },
+        "events": {
+            "id": "Event ID",
+            "title": "Event Title",
+            "description": "Description",
+            "location": "Location",
+            "start_date": "Start Date",
+            "end_date": "End Date",
+            "start_time": "Start Time",
+            "end_time": "End Time",
+            "created_by": "Created By"
+        },
+        "gts": {
+            "id": "Response ID",
+            "user_id": "User ID",
+            "full_name": "Full Name",
+            "degree": "Degree Program",
+            "year_graduated": "Year Graduated",
+            "is_employed": "Currently Employed",
+            "employment_status": "Employment Status",
+            "company_name": "Company Name",
+            "occupation": "Occupation/Position",
+            "job_sector": "Job Sector",
+            "job_related_to_course": "Job Related to Course",
+            "submitted_at": "Submission Date"
+        }
+    }
+    return headers.get(report_type, {})
+
 def sanitize_data(data, report_type: str):
     """Remove sensitive fields based on report type"""
     if report_type == "alumni":
@@ -63,11 +103,18 @@ def generate_csv_report(data, report_type: str, filepath: str):
         return
 
     sanitized = sanitize_data(data, report_type)
+    display_headers = get_display_headers(report_type)
     
     with open(filepath, "w", newline="", encoding="utf-8") as f:
         if sanitized:
-            writer = csv.DictWriter(f, fieldnames=sanitized[0].keys())
-            writer.writeheader()
+            # Map internal field names to display names
+            fieldnames = list(sanitized[0].keys())
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            
+            # Write custom headers
+            writer.writerow({field: display_headers.get(field, field) for field in fieldnames})
+            
+            # Write data
             writer.writerows(sanitized)
         else:
             f.write("No data available")
@@ -96,9 +143,13 @@ def generate_pdf_report(data, report_type: str, filepath: str):
         doc.build(elements)
         return
     
-    # Create table data
-    headers = list(sanitized[0].keys())
-    table_data = [headers] + [[str(row[h]) for h in headers] for row in sanitized]
+    # Get display headers
+    display_headers = get_display_headers(report_type)
+    internal_fields = list(sanitized[0].keys())
+    
+    # Create table with display headers
+    headers = [display_headers.get(field, field) for field in internal_fields]
+    table_data = [headers] + [[str(row[field]) for field in internal_fields] for row in sanitized]
     
     # Create table
     table = Table(table_data)
