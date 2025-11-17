@@ -7,6 +7,7 @@ import {
   faCircleExclamation,
   faSort,
   faFilter,
+  faCheckDouble,
 } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import { formatDistanceToNow, parseISO } from "date-fns";
@@ -66,7 +67,31 @@ const AdminNotifications = () => {
     }
   };
 
+  const markAllAsRead = async () => {
+    const unreadNotifs = notifications.filter(n => !n.is_read);
+    if (unreadNotifs.length === 0) {
+      toast.error("No unread notifications");
+      return;
+    }
+
+    try {
+      await Promise.all(
+        unreadNotifs.map(n => api.patch(`/notifications/${n.id}/read`))
+      );
+      setNotifications((prev) =>
+        prev.map((n) => ({ ...n, is_read: true }))
+      );
+      toast.success("All notifications marked as read");
+    } catch {
+      toast.error("Failed to mark all as read");
+    }
+  };
+
   const deleteNotification = async (id) => {
+    if (!window.confirm("Permanently delete this notification? This action cannot be undone.")) {
+      return;
+    }
+
     try {
       await api.delete(`/notifications/${id}`);
       setNotifications((prev) => prev.filter((n) => n.id !== id));
@@ -88,40 +113,65 @@ const AdminNotifications = () => {
       return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
     });
 
+  const unreadCount = notifications.filter(n => !n.is_read).length;
+
   return (
     <div
       className={`flex min-h-screen ${isDark ? "bg-gray-900" : "bg-gray-100"}`}
     >
-      <main className="flex-1 p-6">
+      <main className="flex-1 p-4 sm:p-6">
         <div className="max-w-5xl mx-auto">
-          <h1
-            className={`text-3xl font-bold mb-4 ${
-              isDark ? "text-white" : "text-gray-900"
-            }`}
-          >
-            Notifications
-          </h1>
-          <p className={`mb-8 ${isDark ? "text-gray-300" : "text-gray-600"}`}>
-            Manage system alerts, user updates, and platform events in
-            real-time.
-          </p>
+          <div className="flex flex-col gap-4 mb-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1
+                className={`text-2xl sm:text-3xl font-bold ${
+                  isDark ? "text-white" : "text-gray-900"
+                }`}
+              >
+                Notifications
+                {unreadCount > 0 && (
+                  <span className="px-2 py-1 ml-3 text-sm font-medium text-white bg-red-600 rounded-full">
+                    {unreadCount}
+                  </span>
+                )}
+              </h1>
+              <p className={`mt-1 text-sm sm:text-base ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+                Manage system alerts, user updates, and platform events.
+              </p>
+            </div>
+            
+            {unreadCount > 0 && (
+              <button
+                onClick={markAllAsRead}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  isDark
+                    ? "bg-blue-600 hover:bg-blue-700 text-white"
+                    : "bg-blue-600 hover:bg-blue-700 text-white"
+                }`}
+              >
+                <FontAwesomeIcon icon={faCheckDouble} />
+                <span className="hidden sm:inline">Mark All Read</span>
+                <span className="sm:hidden">Mark All</span>
+              </button>
+            )}
+          </div>
 
           {/* Filter and Sort Toolbar */}
           <div
-            className={`flex flex-wrap items-center justify-between p-4 mb-6 rounded-lg shadow ${
+            className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 mb-6 rounded-lg shadow ${
               isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
             }`}
           >
-            <div className="flex items-center space-x-2">
-              <FontAwesomeIcon icon={faFilter} />
-              <label htmlFor="filter" className="ml-2 text-sm font-medium">
+            <div className="flex items-center gap-3">
+              <FontAwesomeIcon icon={faFilter} className={isDark ? "text-gray-400" : "text-gray-500"} />
+              <label htmlFor="filter" className="text-sm font-medium whitespace-nowrap">
                 Filter:
               </label>
               <select
                 id="filter"
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                className={`text-sm px-2 py-1 rounded border ${
+                className={`text-sm px-3 py-1.5 rounded-md border flex-1 sm:flex-initial ${
                   isDark
                     ? "bg-gray-700 border-gray-600 text-white"
                     : "bg-gray-50 border-gray-300 text-gray-900"
@@ -133,16 +183,16 @@ const AdminNotifications = () => {
               </select>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <FontAwesomeIcon icon={faSort} />
-              <label htmlFor="sort" className="ml-2 text-sm font-medium">
+            <div className="flex items-center gap-3">
+              <FontAwesomeIcon icon={faSort} className={isDark ? "text-gray-400" : "text-gray-500"} />
+              <label htmlFor="sort" className="text-sm font-medium whitespace-nowrap">
                 Sort:
               </label>
               <select
                 id="sort"
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
-                className={`text-sm px-2 py-1 rounded border ${
+                className={`text-sm px-3 py-1.5 rounded-md border flex-1 sm:flex-initial ${
                   isDark
                     ? "bg-gray-700 border-gray-600 text-white"
                     : "bg-gray-50 border-gray-300 text-gray-900"
@@ -156,7 +206,7 @@ const AdminNotifications = () => {
 
           {/* Notifications List */}
           <div
-            className={`p-6 rounded-lg shadow transition-colors ${
+            className={`p-4 sm:p-6 rounded-lg shadow transition-colors ${
               isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
             }`}
           >
@@ -178,15 +228,15 @@ const AdminNotifications = () => {
                     isDark ? "text-gray-400" : "text-gray-500"
                   }`}
                 >
-                  You’re all caught up! No notifications found.
+                  You're all caught up! No notifications found.
                 </p>
               </div>
             ) : (
-              <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+              <ul className="space-y-3">
                 {filteredNotifications.map((notif) => (
                   <li
                     key={notif.id}
-                    className={`flex justify-between items-start p-4 rounded-lg my-2 transition-colors ${
+                    className={`flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 p-4 rounded-lg transition-colors ${
                       isDark
                         ? notif.is_read
                           ? "bg-gray-700"
@@ -196,14 +246,14 @@ const AdminNotifications = () => {
                         : "bg-blue-50 hover:bg-blue-100"
                     }`}
                   >
-                    <div className="flex items-start space-x-3">
+                    <div className="flex items-start flex-1 min-w-0 gap-3">
                       <div
-                        className={`flex items-center justify-center w-10 h-10 rounded-full ${
+                        className={`flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0 ${
                           getNotifType(notif.action_type) === "alert"
-                            ? "bg-red-100 text-red-600 dark:bg-red-800 dark:text-red-400"
+                            ? "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
                             : getNotifType(notif.action_type) === "message"
-                            ? "bg-green-100 text-green-600 dark:bg-green-800 dark:text-green-400"
-                            : "bg-blue-100 text-blue-600 dark:bg-blue-800 dark:text-blue-400"
+                            ? "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400"
+                            : "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
                         }`}
                       >
                         <FontAwesomeIcon
@@ -217,12 +267,12 @@ const AdminNotifications = () => {
                         />
                       </div>
 
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium capitalize">
-                          {notif.action_type}
+                          {notif.action_type.replace(/_/g, ' ')}
                         </p>
                         <p
-                          className={`text-xs mt-1 ${
+                          className={`text-sm mt-1 break-words ${
                             isDark ? "text-gray-300" : "text-gray-600"
                           }`}
                         >
@@ -238,20 +288,22 @@ const AdminNotifications = () => {
                       </div>
                     </div>
 
-                    <div className="flex space-x-2">
+                    <div className="flex gap-2 sm:flex-col sm:gap-1 sm:ml-2">
                       {!notif.is_read && (
                         <button
                           onClick={() => markAsRead(notif.id)}
-                          className="px-3 py-1 text-xs font-medium text-white transition bg-green-600 rounded hover:bg-green-700"
+                          className="flex-1 sm:flex-initial px-3 py-1.5 text-xs font-medium text-white transition bg-green-600 rounded-md hover:bg-green-700 whitespace-nowrap"
                         >
                           Mark Read
                         </button>
                       )}
                       <button
                         onClick={() => deleteNotification(notif.id)}
-                        className="px-3 py-1 text-xs font-medium text-white transition bg-red-600 rounded hover:bg-red-700"
+                        className="flex-1 sm:flex-initial px-3 py-1.5 text-xs font-medium text-white transition bg-red-600 rounded-md hover:bg-red-700"
+                        title="Delete permanently"
                       >
                         <FontAwesomeIcon icon={faTrash} />
+                        <span className="ml-1.5 sm:hidden">Remove</span>
                       </button>
                     </div>
                   </li>
