@@ -141,25 +141,34 @@ const AdminCreateEvent = () => {
     <div
       className={`${
         isDark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900"
-      } min-h-screen p-6`}
+      } min-h-screen p-4 sm:p-6`}
     >
-      <div>
-        <p className="mb-4 text-lg font-semibold">
-          On this page, you can create events that alumni can view and attend
-          for.
-        </p>
-        <p className="mb-6 text-sm">
-          Note: Make sure to provide accurate details for your event.
-        </p>
+      <style>
+        {`
+          input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: ${isDark ? 'invert(1)' : 'invert(0)'};
+          }
+        `}
+      </style>
+      
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-4 sm:mb-6">
+          <p className="mb-2 text-base font-semibold sm:mb-4 sm:text-lg">
+            On this page, you can create events that alumni can view and attend.
+          </p>
+          <p className="text-xs sm:text-sm">
+            Note: Make sure to provide accurate details for your event.
+          </p>
+        </div>
 
         <form
           onSubmit={handleSubmit}
           className={`${
             isDark ? "bg-gray-800" : "bg-white"
-          } p-6 shadow-md rounded-lg`}
+          } p-4 sm:p-6 shadow-md rounded-lg`}
         >
           <h2
-            className={`text-xl font-semibold border-b pb-2 mb-4 ${
+            className={`text-lg sm:text-xl font-semibold border-b pb-2 mb-4 ${
               isDark
                 ? "text-gray-100 border-gray-700"
                 : "text-gray-800 border-gray-200"
@@ -168,7 +177,8 @@ const AdminCreateEvent = () => {
             Create Event
           </h2>
 
-          <div className="grid grid-cols-1 gap-3 mb-4 md:grid-cols-2">
+          {/* Title & Location */}
+          <div className="grid grid-cols-1 gap-3 mb-4 sm:grid-cols-2">
             <FloatingInput
               id="title"
               label="Event Title"
@@ -180,7 +190,7 @@ const AdminCreateEvent = () => {
               darkMode={isDark}
             />
 
-            <div>
+            <div className="space-y-3">
               <FloatingSelect
                 id="location"
                 label="Location"
@@ -203,10 +213,11 @@ const AdminCreateEvent = () => {
             </div>
           </div>
 
+          {/* Description */}
           <div className="mb-4">
             <label
               htmlFor="description"
-              className={`block mb-1 text-sm font-medium ${
+              className={`block mb-1 text-xs sm:text-sm font-medium ${
                 isDark ? "text-gray-200" : "text-gray-700"
               }`}
             >
@@ -222,8 +233,8 @@ const AdminCreateEvent = () => {
               rows={3}
               className={`w-full p-3 text-sm border rounded-md focus:outline-none focus:ring ${
                 isDark
-                  ? "border-gray-600 bg-gray-700 text-gray-100 focus:ring-blue-500"
-                  : "border-gray-300 bg-white text-gray-900 focus:ring-blue-200"
+                  ? "border-gray-600 bg-gray-700 text-gray-100 placeholder-gray-400 focus:ring-blue-500"
+                  : "border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-blue-200"
               }`}
             />
           </div>
@@ -231,14 +242,13 @@ const AdminCreateEvent = () => {
           {/* Start Date Section */}
           <div className="mb-4">
             <h3
-              className={`text-sm font-medium mb-2 ${
+              className={`text-xs sm:text-sm font-medium mb-2 ${
                 isDark ? "text-gray-300" : "text-gray-700"
               }`}
             >
               Start Date and Times
             </h3>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-              {/* Start Date */}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <AdminFloatingDatePicker
                 id="start_date"
                 label="Start Date"
@@ -251,7 +261,6 @@ const AdminCreateEvent = () => {
                 showTimeSelect={false}
               />
 
-              {/* Start Time */}
               <FloatingInput
                 id="start_time_startday"
                 label="Start Time"
@@ -267,7 +276,6 @@ const AdminCreateEvent = () => {
                 darkMode={isDark}
               />
 
-              {/* End Time */}
               <FloatingInput
                 id="end_time_startday"
                 label="End Time (Same Day)"
@@ -288,14 +296,13 @@ const AdminCreateEvent = () => {
           {/* End Date Section */}
           <div className="mb-4">
             <h3
-              className={`text-sm font-medium mb-2 ${
+              className={`text-xs sm:text-sm font-medium mb-2 ${
                 isDark ? "text-gray-300" : "text-gray-700"
               }`}
             >
               End Date and Times
             </h3>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-              {/* End Date */}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <AdminFloatingDatePicker
                 id="end_date"
                 label="End Date"
@@ -308,7 +315,6 @@ const AdminCreateEvent = () => {
                 showTimeSelect={false}
               />
 
-              {/* Start Time (End Day) */}
               <FloatingInput
                 id="start_time_endday"
                 label="Start Time (End Day)"
@@ -324,7 +330,6 @@ const AdminCreateEvent = () => {
                 darkMode={isDark}
               />
 
-              {/* End Time (End Day) */}
               <FloatingInput
                 id="end_time_endday"
                 label="End Time (End Day)"
@@ -341,7 +346,7 @@ const AdminCreateEvent = () => {
 
           <button
             type="submit"
-            className="w-full py-3 mt-4 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+            className="w-full py-2.5 sm:py-3 mt-4 font-medium text-sm sm:text-base text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={loading}
           >
             {loading ? "Creating..." : "Create Event"}
