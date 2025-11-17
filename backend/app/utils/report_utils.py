@@ -1,8 +1,10 @@
 import csv
-from reportlab.lib.pagesizes import A4
+
 from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.platypus import (Paragraph, SimpleDocTemplate, Spacer, Table,
+                                TableStyle)
 
 def sanitize_data(data, report_type: str):
     """Remove sensitive fields based on report type"""
