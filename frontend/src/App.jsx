@@ -16,7 +16,7 @@ import {
 } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
-import { useTheme } from "./hooks/useTheme";
+import useTokenWatcher from "./hooks/useTokenWatcher";
 import api from "./services/api";
 import "react-toastify/dist/ReactToastify.css";
 import LandingPage from "./pages/LandingPage";
@@ -87,8 +87,9 @@ const PublicRoute = ({ children }) => {
 };
 
 function App() {
+  useTokenWatcher();
+
   const [user, setUserState] = useState(getUser());
-  const { theme } = useTheme();
 
   useEffect(() => {
     const token = getToken();

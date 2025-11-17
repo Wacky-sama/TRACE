@@ -12,13 +12,11 @@ import {
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
-import useTokenWatcher from "../../hooks/useTokenWatcher";
 import { useUser } from "../../hooks/useUser";
 import api from "../../services/api";
 import { formatFullname } from "../../utils/format";
 
 const AlumniSidebar = () => {
-  useTokenWatcher();
   const [isOpen, setIsOpen] = useState(window.innerWidth >= 768);
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useUser();
