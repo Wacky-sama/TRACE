@@ -124,6 +124,7 @@ const GeneralInformation = ({ gtsData, onUpdate }) => {
           onChange={handleChange}
           error={errors.mobile}
           defaultCountry="ph"
+          checkAvailability={false}
           onError={(error) =>
             setErrors((prev) => ({ ...prev, mobile: error }))
           }
