@@ -113,13 +113,10 @@ const AdminCreateUser = () => {
       sex: formData.sex,
     };
 
-    console.log("Payload being sent:", payload);
-
     try {
-      const response = await api.post("/users/admin/create-user", payload, {
+      await api.post("/users/admin/create-user", payload, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
-      console.log("Success response:", response);
       setMessage("User created successfully!");
       setFormData({
         registerIdentifier: "",
