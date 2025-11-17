@@ -25,9 +25,12 @@ def sanitize_data(data, report_type: str):
                 "id": str(row.id),
                 "title": row.title,
                 "description": row.description or "N/A",
-                "date": row.date.strftime("%Y-%m-%d") if row.date else "N/A",
                 "location": row.location or "N/A",
-                "capacity": row.capacity or "Unlimited",
+                "start_date": row.start_date.strftime("%Y-%m-%d") if row.start_date else "N/A",
+                "end_date": row.end_date.strftime("%Y-%m-%d") if row.end_date else "N/A",
+                "start_time": row.start_time_startday.strftime("%H:%M") if row.start_time_startday else "N/A",
+                "end_time": row.end_time_endday.strftime("%H:%M") if row.end_time_endday else "N/A",
+                "created_by": str(row.created_by),
             }
             for row in data
         ]
@@ -36,9 +39,15 @@ def sanitize_data(data, report_type: str):
             {
                 "id": str(row.id),
                 "user_id": str(row.user_id),
+                "full_name": row.full_name or "N/A",
+                "degree": row.degree or "N/A",
+                "year_graduated": row.year_graduated or "N/A",
+                "is_employed": "Yes" if row.is_employed else "No" if row.is_employed is False else "N/A",
                 "employment_status": row.employment_status or "N/A",
-                "company": row.company or "N/A",
-                "position": row.position or "N/A",
+                "company_name": row.company_name or "N/A",
+                "occupation": ", ".join(row.occupation) if row.occupation else "N/A",
+                "job_sector": row.job_sector or "N/A",
+                "job_related_to_course": "Yes" if row.job_related_to_course else "No" if row.job_related_to_course is False else "N/A",
                 "submitted_at": row.submitted_at.strftime("%Y-%m-%d") if row.submitted_at else "N/A",
             }
             for row in data
