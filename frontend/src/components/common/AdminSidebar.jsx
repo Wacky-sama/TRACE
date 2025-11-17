@@ -202,14 +202,14 @@ const AdminSidebar = () => {
                     )}
                   </motion.button>
 
-                  <AnimatePresence>
-                    {openDropdowns.includes(item.key) && isOpen && (
+                 <AnimatePresence>
+                    {openDropdowns.includes(item.key) && (
                       <motion.ul
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="mt-1 ml-10 space-y-1"
+                        className={`mt-1 space-y-1 ${isOpen ? 'ml-10' : ''}`}
                       >
                         {item.children.map((subItem) => (
                           <motion.li
