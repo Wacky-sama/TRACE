@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useRef } from "react";
 import { jwtDecode } from "jwt-decode";
 import toast from "react-hot-toast";
@@ -9,16 +10,13 @@ export default function useTokenWatcher() {
   useEffect(() => {
     const token = getToken();
     if (!token) {
-      console.log("No token found — skipping watcher.");
       return;
     }
 
     try {
       const decoded = jwtDecode(token);
-      console.log("Decoded token:", decoded);
 
       if (!decoded.exp) {
-        console.warn("No exp field in token");
         return;
       }
 
@@ -46,7 +44,6 @@ export default function useTokenWatcher() {
       }, Math.max(0, remaining - notifyThreshold));
 
       const logoutTimer = setTimeout(() => {
-        console.log("Token expired, logging out...");
         toast.error("Your session has expired. Please log in again.");
         userLogout();
       }, remaining);
@@ -56,7 +53,7 @@ export default function useTokenWatcher() {
         clearTimeout(logoutTimer);
       };
     } catch (error) {
-      console.error("Failed to decode token:", error);
+      // Silent fail - token will be handled by API interceptors
     }
   }, []);
 }
