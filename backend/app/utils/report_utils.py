@@ -10,7 +10,6 @@ def get_display_headers(report_type: str):
     """Return human-readable column headers for each report type"""
     headers = {
         "alumni": {
-            "id": "ID",
             "username": "Username",
             "email": "Email",
             "full_name": "Full Name",
@@ -19,7 +18,6 @@ def get_display_headers(report_type: str):
             "is_active": "Active Status"
         },
         "events": {
-            "id": "Event ID",
             "title": "Event Title",
             "description": "Description",
             "location": "Location",
@@ -30,8 +28,6 @@ def get_display_headers(report_type: str):
             "created_by": "Created By"
         },
         "gts": {
-            "id": "Response ID",
-            "user_id": "User ID",
             "full_name": "Full Name",
             "degree": "Degree Program",
             "year_graduated": "Year Graduated",
@@ -51,7 +47,6 @@ def sanitize_data(data, report_type: str):
     if report_type == "alumni":
         return [
             {
-                "id": str(row.id),
                 "username": row.username,
                 "email": row.email,
                 "full_name": f"{row.firstname} {row.middle_initial or ''}. {row.lastname} {row.name_extension or ''}".strip(),
@@ -64,7 +59,6 @@ def sanitize_data(data, report_type: str):
     elif report_type == "events":
         return [
             {
-                "id": str(row.id),
                 "title": row.title,
                 "description": row.description or "N/A",
                 "location": row.location or "N/A",
@@ -79,8 +73,6 @@ def sanitize_data(data, report_type: str):
     elif report_type == "gts":
         return [
             {
-                "id": str(row.id),
-                "user_id": str(row.user_id),
                 "full_name": row.full_name or "N/A",
                 "degree": row.degree or "N/A",
                 "year_graduated": row.year_graduated or "N/A",
