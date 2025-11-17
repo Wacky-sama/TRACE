@@ -18,13 +18,11 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
-import useTokenWatcher from "../../hooks/useTokenWatcher";
 import { useUser } from "../../hooks/useUser";
 import api from "../../services/api";
 import { formatFullname } from "../../utils/format";
 
 const AdminSidebar = () => {
-  useTokenWatcher();
   const [isOpen, setIsOpen] = useState(window.innerWidth >= 768);
   const [openDropdowns, setOpenDropdowns] = useState([]);
   const navigate = useNavigate();

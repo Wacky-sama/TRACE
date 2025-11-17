@@ -5,55 +5,63 @@ import toast from "react-hot-toast";
 import { getToken, userLogout } from "../utils/storage";
 
 export default function useTokenWatcher() {
-  const notifiedRef = useRef(false);
+  const warnedRef = useRef(false);
+  const logoutTimerRef = useRef(null);
+  const warnTimerRef = useRef(null);
+
+  const token = getToken();
 
   useEffect(() => {
-    const token = getToken();
-    if (!token) {
-      return;
-    }
+    // Clear old timers
+    if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
+    if (warnTimerRef.current) clearTimeout(warnTimerRef.current);
+    warnedRef.current = false;
+
+    if (!token) return;
 
     try {
       const decoded = jwtDecode(token);
+      if (!decoded.exp) return;
 
-      if (!decoded.exp) {
-        return;
-      }
+      const exp = decoded.exp * 1000;
+      const now = Date.now();
+      const remaining = exp - now;
 
-      const expTime = decoded.exp * 1000;
-      const currentTime = Date.now();
-      const remaining = expTime - currentTime;
+      const warnThreshold = 30 * 1000;
 
-      const notifyThreshold = 30 * 1000;
-
+      // Token already expired?
       if (remaining <= 0) {
         toast.error("Your session has expired. Please log in again.");
         userLogout();
         return;
       }
 
-      if (remaining <= notifyThreshold) {
+      // If within warning threshold immediately
+      if (remaining <= warnThreshold) {
         toast("Your session will expire soon.");
+        warnedRef.current = true;
       }
 
-      const notifyTimer = setTimeout(() => {
-        if (!notifiedRef.current) {
-          notifiedRef.current = true;
+      // Delay warning
+      warnTimerRef.current = setTimeout(() => {
+        if (!warnedRef.current) {
+          warnedRef.current = true;
           toast("Your session will expire soon.");
         }
-      }, Math.max(0, remaining - notifyThreshold));
+      }, Math.max(0, remaining - warnThreshold));
 
-      const logoutTimer = setTimeout(() => {
+      // Auto logout
+      logoutTimerRef.current = setTimeout(() => {
         toast.error("Your session has expired. Please log in again.");
         userLogout();
       }, remaining);
-
-      return () => {
-        clearTimeout(notifyTimer);
-        clearTimeout(logoutTimer);
-      };
-    } catch (error) {
-      // Silent fail - token will be handled by API interceptors
+    } catch (_) {
+      // silent fail
     }
-  }, []);
+
+    return () => {
+      if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
+      if (warnTimerRef.current) clearTimeout(warnTimerRef.current);
+    };
+  }, [token]);
 }
