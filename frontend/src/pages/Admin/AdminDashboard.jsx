@@ -406,28 +406,37 @@ const AdminDashboard = () => {
                     return (
                       <div
                         key={log.id}
-                        className={`flex items-start justify-between p-3 rounded-lg transition-colors ${
+                        className={`flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3 p-3 rounded-lg transition-colors ${
                           isDark
                             ? "bg-gray-700 hover:bg-gray-600"
                             : "bg-gray-50 hover:bg-gray-100"
                         }`}
                       >
-                        <div className="flex items-center space-x-3">
+                        <div className="flex items-start flex-1 min-w-0 gap-3">
                           <div
-                            className={`flex items-center justify-center w-8 h-8 rounded-full ${color}`}
+                            className={`flex items-center justify-center w-8 h-8 rounded-full flex-shrink-0 ${color}`}
                           >
                             <FontAwesomeIcon icon={icon} />
                           </div>
-                          <span
-                            className={`text-sm ${
-                              isDark ? "text-gray-200" : "text-gray-800"
-                            }`}
-                          >
-                            {log.description || "No description"}
-                          </span>
+                          <div className="flex-1 min-w-0">
+                            <span
+                              className={`text-sm break-words ${
+                                isDark ? "text-gray-200" : "text-gray-800"
+                              }`}
+                            >
+                              {log.description || "No description"}
+                            </span>
+                            <span
+                              className={`block sm:hidden text-xs mt-1 ${
+                                isDark ? "text-gray-400" : "text-gray-500"
+                              }`}
+                            >
+                              {safeFormatDate(log.created_at)}
+                            </span>
+                          </div>
                         </div>
                         <span
-                          className={`text-xs whitespace-nowrap ml-2 ${
+                          className={`hidden sm:block text-xs flex-shrink-0 whitespace-nowrap ${
                             isDark ? "text-gray-400" : "text-gray-500"
                           }`}
                         >
