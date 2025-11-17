@@ -14,6 +14,7 @@ function PhoneNumberInput({
   defaultCountry = "ph",
   onAvailabilityChange,
   onError,
+  checkAvailability = true,
   ...props
 }) {
   const { theme } = useTheme();
@@ -33,6 +34,14 @@ function PhoneNumberInput({
 
   // Debounced phone checker
   useEffect(() => {
+     if (!checkAvailability) {
+      setIsAvailable(null);
+      setValidationError("");
+      setIsChecking(false);
+      onAvailabilityChangeRef.current?.(null);
+      return;
+    }
+
     if (!value || value.length < 10) {
       setIsAvailable(null);
       setValidationError("");
@@ -81,7 +90,7 @@ function PhoneNumberInput({
     }, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [value]);
+  }, [value, checkAvailability]);
 
   const handleChange = (phone) => {
     onChange({ target: { id, value: phone } });

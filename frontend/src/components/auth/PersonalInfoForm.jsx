@@ -504,6 +504,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
           label="Contact Number"
           error={errors.contactNumber}
           defaultCountry="ph"
+          checkAvailability={true}
           onAvailabilityChange={setPhoneAvailable}
           onError={(error) =>
             setErrors((prev) => ({ ...prev, contactNumber: error }))
