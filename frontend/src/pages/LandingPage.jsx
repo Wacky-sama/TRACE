@@ -97,7 +97,7 @@ export default function LandingPage() {
 
         <div className="container relative z-10 flex flex-col items-center justify-center px-4 py-24 mx-auto text-center md:py-32">
           <h2 className="text-4xl font-extrabold md:text-6xl text-[hsl(var(--foreground))] tracking-tight">
-            Tracking Alumni for Centralized Events
+            Tracking of Alumni for Centralized Event
           </h2>
           <p className="max-w-2xl mt-6 text-lg text-[hsl(var(--muted-foreground))]">
             Connect with Cagayan State University – Gonzaga Campus alumni
