@@ -4,7 +4,6 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import AlumniFloatingDatePicker from "../common/AlumniFloatingDatePicker";
 import {
-  isStrongPassword,
   getPasswordStrength,
   getPasswordStrengthMessage,
 } from "../../utils/passwordUtils";
@@ -68,55 +67,52 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
   const validate = () => {
     const validateErrors = {};
 
+    // EMAIL
     if (!formData.email?.trim()) validateErrors.email = "Email is required";
     else if (emailAvailable === false)
       validateErrors.email = "Email is already taken";
 
+    // USERNAME
     if (!formData.registerIdentifier?.trim())
       validateErrors.registerIdentifier = "Username is required";
     else if (usernameAvailable === false)
       validateErrors.registerIdentifier = "Username is already taken";
 
+    // NAMES
     if (!formData.lastName?.trim())
       validateErrors.lastName = "Last name is required";
-
     if (!formData.firstName?.trim())
       validateErrors.firstName = "First name is required";
 
+    // BIRTHDAY & AGE
     if (!formData.birthday) validateErrors.birthday = "Birthday is required";
-
     if (!formData.age) validateErrors.age = "Age is required";
 
+    // SEX
     if (!formData.sex) validateErrors.sex = "Sex is required";
 
-    if (formData.presentCountry === "Philippines") {
-      if (!formData.presentProvince)
-        validateErrors.presentProvince = "Province is required";
-      if (!formData.presentMunicipality)
-        validateErrors.presentMunicipality = "City/Municipality is required";
-      if (!formData.presentBarangayStreet?.trim())
-        validateErrors.presentBarangayStreet = "Barangay/Street is required";
-    } else {
-      if (!formData.presentProvince)
-        validateErrors.presentProvince = "State/Region is required";
-      if (!formData.presentMunicipality)
-        validateErrors.presentMunicipality = "City is required";
-    }
+    // ADDRESSES
+    const checkAddress = (prefix, country) => {
+      if (country === "Philippines") {
+        if (!formData[`${prefix}Province`])
+          validateErrors[`${prefix}Province`] = "Province is required";
+        if (!formData[`${prefix}Municipality`])
+          validateErrors[`${prefix}Municipality`] =
+            "City/Municipality is required";
+        if (!formData[`${prefix}BarangayStreet`]?.trim())
+          validateErrors[`${prefix}BarangayStreet`] =
+            "Barangay/Street is required";
+      } else {
+        if (!formData[`${prefix}Province`])
+          validateErrors[`${prefix}Province`] = "State/Region is required";
+        if (!formData[`${prefix}Municipality`])
+          validateErrors[`${prefix}Municipality`] = "City is required";
+      }
+    };
+    checkAddress("present", formData.presentCountry);
+    checkAddress("permanent", formData.permanentCountry);
 
-    if (formData.permanentCountry === "Philippines") {
-      if (!formData.permanentProvince)
-        validateErrors.permanentProvince = "Province is required";
-      if (!formData.permanentMunicipality)
-        validateErrors.permanentMunicipality = "City/Municipality is required";
-      if (!formData.permanentBarangayStreet?.trim())
-        validateErrors.permanentBarangayStreet = "Barangay/Street is required";
-    } else {
-      if (!formData.permanentProvince)
-        validateErrors.permanentProvince = "State/Region is required";
-      if (!formData.permanentMunicipality)
-        validateErrors.permanentMunicipality = "City is required";
-    }
-
+    // CONTACT NUMBER
     if (!formData.contactNumber?.trim()) {
       validateErrors.contactNumber = "Contact number is required";
     } else if (!isValidPhoneNumber(formData.contactNumber)) {
@@ -126,30 +122,26 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
       validateErrors.contactNumber = "Phone number is already registered";
     }
 
+    // COURSE & BATCH
     if (!formData.course) validateErrors.course = "Course is required";
-
     if (!formData.batchYear)
       validateErrors.batchYear = "Batch year is required";
 
-    if (!formData.registerPassword)
-      validateErrors.registerPassword = "Password is required";
-    else if (!isStrongPassword(formData.registerPassword))
-      validateErrors.registerPassword = getPasswordStrengthMessage(
-        formData.registerPassword
-      );
+    // PASSWORDS
+    const password = formData.registerPassword;
+    const confirm = formData.registerConfirmPassword;
 
-    if (!formData.registerConfirmPassword)
+    if (!password) validateErrors.registerPassword = "Password is required";
+    else {
+      const strength = getPasswordStrength(password);
+      if (strength.score < 3) {
+        validateErrors.registerPassword = getPasswordStrengthMessage(password);
+      }
+    }
+
+    if (!confirm)
       validateErrors.registerConfirmPassword = "Confirm Password is required";
-    else if (!isStrongPassword(formData.registerConfirmPassword))
-      validateErrors.registerConfirmPassword = getPasswordStrengthMessage(
-        formData.registerConfirmPassword
-      );
-
-    if (
-      formData.registerPassword &&
-      formData.registerConfirmPassword &&
-      formData.registerPassword !== formData.registerConfirmPassword
-    ) {
+    else if (password && password !== confirm) {
       validateErrors.registerConfirmPassword = "Passwords do not match";
     }
 
