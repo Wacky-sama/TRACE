@@ -7,9 +7,11 @@ import {
   faUserMinus,
   faUserCheck,
   faRefresh,
-  faMagnifyingGlass
+  faMagnifyingGlass,
+  faXmark
 } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "../../hooks/useTheme";
+import HighlightText from "../../components/HighlightText"
 
 const AdminUsers = () => {
   const { theme } = useTheme();
@@ -169,40 +171,59 @@ const AdminUsers = () => {
             <div className="flex items-start justify-between mb-3">
               <div>
                 <h4 className="text-lg font-bold">
-                  {user.firstname} {user.middle_initial}. {user.lastname}
+                  <HighlightText 
+                    text={`${user.firstname} ${user.middle_initial}. ${user.lastname}`}
+                    highlight={searchTerm}
+                  />
                 </h4>
-                <p className="text-sm opacity-75">@{user.username}</p>
+                <p className="text-sm opacity-75">
+                  @<HighlightText text={user.username} highlight={searchTerm} />
+                </p>
               </div>
             </div>
             
             <div className="space-y-2 text-sm">
               <div className="flex">
                 <span className="font-semibold w-28">Email:</span>
-                <span className="flex-1 break-all">{user.email}</span>
+                <span className="flex-1 break-all">
+                  <HighlightText text={user.email} highlight={searchTerm} />
+                </span>
               </div>
               <div className="flex">
                 <span className="font-semibold w-28">Course:</span>
-                <span>{user.course || "-"}</span>
+                <span>
+                  <HighlightText text={user.course || "-"} highlight={searchTerm} />
+                </span>
               </div>
               <div className="flex">
                 <span className="font-semibold w-28">Batch:</span>
-                <span>{user.batch_year || "-"}</span>
+                <span>
+                  <HighlightText text={user.batch_year || "-"} highlight={searchTerm} />
+                </span>
               </div>
               <div className="flex">
                 <span className="font-semibold w-28">Contact:</span>
-                <span>{user.contact_number || "-"}</span>
+                <span>
+                  <HighlightText text={user.contact_number || "-"} highlight={searchTerm} />
+                </span>
               </div>
               <div className="flex">
                 <span className="font-semibold w-28">Sex:</span>
-                <span>{user.sex}</span>
+                <span>
+                  <HighlightText text={user.sex} highlight={searchTerm} />
+                </span>
               </div>
               <div className="flex">
                 <span className="font-semibold w-28">Present:</span>
-                <span className="flex-1">{user.present_address || "-"}</span>
+                <span className="flex-1">
+                  <HighlightText text={user.present_address || "-"} highlight={searchTerm} />
+                </span>
               </div>
               <div className="flex">
                 <span className="font-semibold w-28">Permanent:</span>
-                <span className="flex-1">{user.permanent_address || "-"}</span>
+                <span className="flex-1">
+                  <HighlightText text={user.permanent_address || "-"} highlight={searchTerm} />
+                </span>
               </div>
             </div>
 
@@ -338,17 +359,39 @@ const AdminUsers = () => {
                   isDark ? "border-gray-700" : "border-gray-200"
                 }`}
               >
-                <td className="p-3">{user.username}</td>
-                <td className="p-3">{user.email}</td>
-                <td className="p-3">{user.lastname}</td>
-                <td className="p-3">{user.firstname}</td>
-                <td className="p-3">{user.middle_initial || "-"}.</td>
-                <td className="p-3">{user.course || "-"}</td>
-                <td className="p-3">{user.batch_year || "-"}</td>
-                <td className="p-3">{user.contact_number || "-"}</td>
-                <td className="p-3">{user.sex}</td>
-                <td className="p-3">{user.present_address || "-"}</td>
-                <td className="p-3">{user.permanent_address || "-"}</td>
+                <td className="p-3">
+                  <HighlightText text={user.username} highlight={searchTerm} />
+                </td>
+                <td className="p-3">
+                  <HighlightText text={user.email} highlight={searchTerm} />
+                </td>
+                <td className="p-3">
+                  <HighlightText text={user.lastname} highlight={searchTerm} />
+                </td>
+                <td className="p-3">
+                  <HighlightText text={user.firstname} highlight={searchTerm} />
+                </td>
+                <td className="p-3">
+                  <HighlightText text={`${user.middle_initial || "-"}.`} highlight={searchTerm} />
+                </td>
+                <td className="p-3">
+                  <HighlightText text={user.course || "-"} highlight={searchTerm} />
+                </td>
+                <td className="p-3">
+                  <HighlightText text={user.batch_year || "-"} highlight={searchTerm} />
+                </td>
+                <td className="p-3">
+                  <HighlightText text={user.contact_number || "-"} highlight={searchTerm} />
+                </td>
+                <td className="p-3">
+                  <HighlightText text={user.sex} highlight={searchTerm} />
+                </td>
+                <td className="p-3">
+                  <HighlightText text={user.present_address || "-"} highlight={searchTerm} />
+                </td>
+                <td className="p-3">
+                  <HighlightText text={user.permanent_address || "-"} highlight={searchTerm} />
+                </td>
                 <td className={`flex items-center gap-2 p-3 ${isArchivedTable ? 'justify-center' : ''}`}>
                   {showActions ? (
                     <>
@@ -439,7 +482,7 @@ const AdminUsers = () => {
     users
       .filter((u) => ["alumni"].includes(u.role))
       .filter((u) =>
-        `${u.firstname} ${u.lastname} ${u.username}`
+        `${u.firstname} ${u.lastname} ${u.username} ${u.email} ${u.course || ""} ${u.batch_year || ""}`
           .toLowerCase()
           .includes(searchTerm.toLowerCase())
       );
@@ -457,23 +500,46 @@ const AdminUsers = () => {
         On this page, you can approve or decline, search, archive and unarchive, block and unblock users.
       </p>
       
-      <div className="flex items-center justify-end mb-4 space-x-2">
-        <input
-          type="text"
-          placeholder="Search User"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className={`border rounded px-3 py-2 w-full md:w-auto ${
-            isDark
-              ? "bg-gray-800 border-gray-700 text-gray-100"
-              : "bg-white border-gray-300 text-gray-900"
-          }`}
-        />
-        <FontAwesomeIcon
-          icon={faMagnifyingGlass}
-          className={isDark ? "text-gray-300" : "text-gray-600"}
-        />
+      <div className="relative flex items-center mb-4">
+        <div className="relative flex-1">
+          <input
+            type="text"
+            placeholder="Search by name, username, email, course, or batch..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={`border rounded px-3 py-2 pr-20 w-full transition-colors ${
+              isDark
+                ? "bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-500"
+                : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
+            } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          />
+          <div className="absolute inset-y-0 right-0 flex items-center gap-2 pr-3">
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className={`p-1 rounded hover:bg-opacity-10 transition-colors ${
+                  isDark
+                    ? "text-gray-400 hover:bg-white hover:text-gray-300"
+                    : "text-gray-500 hover:bg-black hover:text-gray-600"
+                }`}
+                title="Clear search"
+              >
+                <FontAwesomeIcon icon={faXmark} className="w-4 h-4" />
+              </button>
+            )}
+            <FontAwesomeIcon
+              icon={faMagnifyingGlass}
+              className={isDark ? "text-gray-400" : "text-gray-500"}
+            />
+          </div>
+        </div>
       </div>
+
+      {searchTerm && (
+        <p className={`mb-4 text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+          Showing results for: <span className="font-semibold">"{searchTerm}"</span>
+        </p>
+      )}
 
       <div className="mb-6 border-t"></div>
 
