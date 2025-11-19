@@ -11,6 +11,7 @@ import phProvincesCities from "../../data/phProvincesCities.json";
 import otherCountriesProvincesCities from "../../data/otherCountriesProvincesCities.json";
 import { useTheme } from "../../hooks/useTheme";
 import FloatingInput from "../FloatingInput";
+import FloatingSearchSelect from "../FloatingSearchSelect";
 import FloatingSelect from "../FloatingSelect";
 import EmailInput from "../EmailInput";
 import UsernameInput from "../UsernameInput";
@@ -318,7 +319,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             Permanent Address
           </h3>
 
-          <FloatingSelect
+          <FloatingSearchSelect
             id="permanentCountry"
             label="Country"
             value={formData.permanentCountry}
@@ -334,7 +335,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             error={errors.permanentCountry}
           />
 
-          <FloatingSelect
+          <FloatingSearchSelect
             id="permanentProvince"
             label="Province"
             value={formData.permanentProvince}
@@ -358,7 +359,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             error={errors.permanentProvince}
           />
 
-          <FloatingSelect
+          <FloatingSearchSelect
             id="permanentMunicipality"
             label="City / Municipality"
             shortLabel="City"
@@ -408,7 +409,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             Present Address
           </h3>
 
-          <FloatingSelect
+          <FloatingSearchSelect
             id="presentCountry"
             label="Country"
             value={formData.presentCountry}
@@ -424,7 +425,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             error={errors.presentCountry}
           />
 
-          <FloatingSelect
+          <FloatingSearchSelect
             id="presentProvince"
             label="Province"
             value={formData.presentProvince}
@@ -447,7 +448,7 @@ function PersonalInfoForm({ formData, setFormData, nextStep }) {
             error={errors.presentProvince}
           />
 
-          <FloatingSelect
+          <FloatingSearchSelect
             id="presentMunicipality"
             label="City / Municipality"
             shortLabel="City"
