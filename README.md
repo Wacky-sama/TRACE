@@ -39,6 +39,10 @@
 
 ---
 
+CAPSTONE DEFENDED!
+
+---
+
 ## Developer
 
 Built by [**Tabugadir, Kenji "Brocks" I.**](https://www.facebook.com/Wackyfu/)
