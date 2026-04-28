@@ -17,3 +17,6 @@ logs/
 
 # VS Code
 .vs/
+
+# Txt
+credentials.txt
